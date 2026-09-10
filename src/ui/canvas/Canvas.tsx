@@ -253,6 +253,30 @@ export function Canvas({ store }: { store: EditorStore }) {
       <div style={{ flex: "0 0 auto", display: "flex", alignItems: "center", gap: 10, padding: "10px 16px", borderBottom: "1px solid var(--border)" }}>
         <ToggleChip label={`Grid ${state.grid.visible ? "ON" : "OFF"}`} active={state.grid.visible} onClick={() => store.setGrid({ visible: !state.grid.visible })} />
         <ToggleChip label={`Snap ${state.grid.snapEnabled ? "ON" : "OFF"}`} active={state.grid.snapEnabled} onClick={() => store.setGrid({ snapEnabled: !state.grid.snapEnabled })} />
+        <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--text-secondary)" }}>
+          Gap X
+          <input
+            type="number"
+            className="mono"
+            min={0.1}
+            step={0.1}
+            value={state.grid.gapX}
+            onChange={(e) => store.setGrid({ gapX: Math.max(0.1, Number(e.target.value)) })}
+            style={{ width: 52, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "3px 6px", fontSize: 11 }}
+          />
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--text-secondary)" }}>
+          Gap Y
+          <input
+            type="number"
+            className="mono"
+            min={0.1}
+            step={0.1}
+            value={state.grid.gapY}
+            onChange={(e) => store.setGrid({ gapY: Math.max(0.1, Number(e.target.value)) })}
+            style={{ width: 52, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "3px 6px", fontSize: 11 }}
+          />
+        </label>
         <div style={{ flex: 1 }} />
         <button className="btn mono" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={() => store.setViewport({ ...viewport, zoom: Math.max(0.5, viewport.zoom / 1.25) })}>
           −
@@ -282,9 +306,11 @@ export function Canvas({ store }: { store: EditorStore }) {
           <defs>
             <BoardFillDefs id="board-fill" appearance={state.board.appearance} />
             <pattern id="grid-dots" width={state.grid.gapX} height={state.grid.gapY} patternUnits="userSpaceOnUse">
-              <circle cx={0.02} cy={0.02} r={0.02} fill="white" fillOpacity={0.18} />
+              <UnclippedGridDot gapX={state.grid.gapX} gapY={state.grid.gapY} />
             </pattern>
           </defs>
+
+          <path d={pathD} fill={boardFillPaint("board-fill", state.board.appearance)} stroke="#00000055" strokeWidth={0.1} data-testid="board-outline" />
 
           {gridLines && (
             <rect
@@ -293,10 +319,9 @@ export function Canvas({ store }: { store: EditorStore }) {
               width={VIEWPORT_PX.width / viewport.zoom}
               height={VIEWPORT_PX.height / viewport.zoom}
               fill="url(#grid-dots)"
+              data-testid="grid-overlay"
             />
           )}
-
-          <path d={pathD} fill={boardFillPaint("board-fill", state.board.appearance)} stroke="#00000055" strokeWidth={0.1} data-testid="board-outline" />
 
           {state.pinLayers.flatMap((l) =>
             l.visible
@@ -450,6 +475,15 @@ function SymmetryOverlay({ config }: { config: SymmetryConfig }) {
       )}
     </g>
   );
+}
+
+function gridDotRadius(gapX: number, gapY: number): number {
+  return Math.max(0.03, Math.min(gapX, gapY) * 0.06);
+}
+
+function UnclippedGridDot({ gapX, gapY }: { gapX: number; gapY: number }) {
+  const r = gridDotRadius(gapX, gapY);
+  return <circle cx={r} cy={r} r={r} fill="var(--accent)" fillOpacity={0.6} />;
 }
 
 function ToggleChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {

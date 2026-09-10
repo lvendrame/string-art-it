@@ -1,0 +1,710 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+  <style>
+    :root {
+      --bg-app: oklch(19% 0.012 264);
+      --bg-panel: oklch(22.5% 0.014 264);
+      --bg-panel-2: oklch(26% 0.015 264);
+      --bg-canvas: oklch(13.5% 0.010 264);
+      --border: oklch(33% 0.014 264);
+      --border-strong: oklch(41% 0.016 264);
+      --text-primary: oklch(93% 0.006 264);
+      --text-secondary: oklch(68% 0.014 264);
+      --text-tertiary: oklch(50% 0.014 264);
+      --accent-soft: color-mix(in oklch, var(--accent) 16%, transparent);
+      --accent-soft-2: color-mix(in oklch, var(--accent) 28%, transparent);
+      --danger: oklch(66% 0.18 22);
+      --danger-soft: color-mix(in oklch, var(--danger) 16%, transparent);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Manrope", system-ui, sans-serif; background: var(--bg-app); color: var(--text-primary); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: color-mix(in oklch, var(--accent) 80%, white); }
+    .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+    button { font-family: inherit; }
+    .btn { border: 1px solid var(--border); background: var(--bg-panel-2); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; transition: background 120ms ease, color 120ms ease, border-color 120ms ease; }
+    .btn:hover { background: var(--bg-panel); color: var(--text-primary); border-color: var(--border-strong); }
+    .btn:active { transform: translateY(1px); }
+    .btn-icon:hover { color: var(--text-primary); }
+    .row-hover:hover { background: var(--bg-panel-2); }
+    .icon { width: 16px; height: 16px; display: block; }
+    .icon-sm { width: 14px; height: 14px; display: block; }
+    .no-scrollbar::-webkit-scrollbar { width: 8px; }
+    .no-scrollbar::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 8px; }
+    .no-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    input[type="range"] { -webkit-appearance: none; appearance: none; height: 4px; border-radius: 4px; background: var(--border-strong); outline: none; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg-app); cursor: pointer; }
+    ::selection { background: var(--accent-soft-2); }
+  </style>
+</helmet>
+
+<div style="--accent: {{accent}}; width: 1440px; height: 900px; display: flex; flex-direction: column; background: var(--bg-app); overflow: hidden; position: relative;">
+
+  <!-- Icon library -->
+  <svg style="position:absolute; width:0; height:0;" aria-hidden="true">
+    <defs>
+      <symbol id="icon-cursor" viewBox="0 0 24 24"><path d="M6 3l14 8-6 2-2 6-6-16z" fill="currentColor" stroke="none"/></symbol>
+      <symbol id="icon-pin" viewBox="0 0 24 24"><circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M12 13v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+      <symbol id="icon-thread" viewBox="0 0 24 24"><path d="M4 6c6 0 4 12 10 12s4-12 6-12" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></symbol>
+      <symbol id="icon-hand" viewBox="0 0 24 24"><path d="M8 12V6a1.5 1.5 0 0 1 3 0v5M11 11V4.5a1.5 1.5 0 0 1 3 0V11M14 11.5V6a1.5 1.5 0 0 1 3 0v9c0 3.3-2.2 6-6 6-2.4 0-3.7-.9-5-2.4L3.6 14.8a1.4 1.4 0 0 1 2-2L8 15" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="icon-line" viewBox="0 0 24 24"><path d="M4 20L20 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+      <symbol id="icon-arc" viewBox="0 0 24 24"><path d="M4 18C4 9 9 4 18 4" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></symbol>
+      <symbol id="icon-ellipse" viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="9" ry="6" stroke="currentColor" stroke-width="1.6" fill="none"/></symbol>
+      <symbol id="icon-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6" fill="none"/></symbol>
+      <symbol id="icon-rect" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="1.5" stroke="currentColor" stroke-width="1.6" fill="none"/></symbol>
+      <symbol id="icon-square" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1.5" stroke="currentColor" stroke-width="1.6" fill="none"/></symbol>
+      <symbol id="icon-polygon" viewBox="0 0 24 24"><path d="M12 3l8 6-3 10H7L4 9z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/></symbol>
+      <symbol id="icon-eraser" viewBox="0 0 24 24"><path d="M15 3l6 6-9.5 9.5H6L3 15.5z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/><path d="M8.5 20.5H21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+      <symbol id="icon-magnet" viewBox="0 0 24 24"><path d="M6 4v8a6 6 0 0 0 12 0V4" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M6 4H2v8M22 4h-4v8" stroke="currentColor" stroke-width="1.6" fill="none"/></symbol>
+      <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="icon-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/></symbol>
+      <symbol id="icon-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 10.6a3 3 0 0 0 4.2 4.2M6.5 6.7C4 8.3 2 12 2 12s4 7 10 7c1.7 0 3.2-.4 4.5-1.1M9.9 5.2A10 10 0 0 1 12 5c6 0 10 7 10 7a15 15 0 0 1-2.3 3.1" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></symbol>
+      <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="1.5" fill="none"/></symbol>
+      <symbol id="icon-unlock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 11V7a4 4 0 0 1 7.5-2" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></symbol>
+      <symbol id="icon-zoom-in" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M21 21l-4.7-4.7M10.5 7.5v6M7.5 10.5h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+      <symbol id="icon-zoom-out" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M21 21l-4.7-4.7M7.5 10.5h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+      <symbol id="icon-fit" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="icon-undo" viewBox="0 0 24 24"><path d="M8 7L3 12l5 5M3 12h11a6 6 0 0 1 0 12h-1" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="icon-redo" viewBox="0 0 24 24"><path d="M16 7l5 5-5 5M21 12H10a6 6 0 0 0 0 12h1" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="icon-printer" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><rect x="6" y="14" width="12" height="7" stroke="currentColor" stroke-width="1.5" fill="none"/></symbol>
+      <symbol id="icon-export" viewBox="0 0 24 24"><path d="M12 3v12M7 8l5-5 5 5M4 17v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="icon-mirror-v" viewBox="0 0 24 24"><path d="M12 3v18" stroke="currentColor" stroke-width="1.4" stroke-dasharray="2 2"/><path d="M6 6l3 12M18 6l-3 12" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></symbol>
+      <symbol id="icon-mirror-h" viewBox="0 0 24 24"><path d="M3 12h18" stroke="currentColor" stroke-width="1.4" stroke-dasharray="2 2"/><path d="M6 6l12 3M6 18l12-3" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></symbol>
+      <symbol id="icon-mirror-both" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18" stroke="currentColor" stroke-width="1.4" stroke-dasharray="2 2"/><circle cx="7" cy="7" r="1.6" fill="currentColor"/><circle cx="17" cy="7" r="1.6" fill="currentColor"/><circle cx="7" cy="17" r="1.6" fill="currentColor"/><circle cx="17" cy="17" r="1.6" fill="currentColor"/></symbol>
+      <symbol id="icon-radial" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.8" fill="currentColor"/><path d="M12 12L12 3M12 12l7.8 4.5M12 12L4.2 16.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
+      <symbol id="icon-none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-dasharray="3 3"/></symbol>
+      <symbol id="icon-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M3 13l9 5 9-5M3 17l9 5 9-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    </defs>
+  </svg>
+
+  <!-- ===== TOP BAR ===== -->
+  <div style="height: 56px; flex: 0 0 auto; display: flex; align-items: center; gap: 20px; padding: 0 16px; background: var(--bg-panel); border-bottom: 1px solid var(--border);">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <svg viewBox="0 0 24 24" style="width:20px;height:20px;color:var(--accent);"><use href="#icon-radial"/></svg>
+      <span style="font-weight:800; font-size:15px; letter-spacing:-0.01em;">StringArtIt</span>
+    </div>
+    <div style="width:1px; height:24px; background:var(--border);"></div>
+    <div style="display:flex; flex-direction:column; gap:1px;">
+      <span style="font-size:13px; font-weight:600; color:var(--text-primary);">Sunburst Mandala</span>
+      <span class="mono" style="font-size:11px; color:var(--text-tertiary);">Circle · 60 cm · Painted Wood</span>
+    </div>
+
+    <div style="flex:1;"></div>
+
+    <!-- Mode switcher -->
+    <div style="display:flex; background:var(--bg-app); border:1px solid var(--border); border-radius:var(--radius-md); padding:3px; gap:2px;">
+      <sc-for list="{{modeButtons}}" as="m" hint-placeholder-count="4">
+        <button class="btn" onClick="{{m.onClick}}" style="{{m.style}}; border:none; border-radius:8px; padding:7px 14px; gap:7px; font-size:12.5px; font-weight:600;">
+          <svg viewBox="0 0 24 24" class="icon"><use href="#icon-{{m.icon}}"/></svg>
+          {{m.label}}
+        </button>
+      </sc-for>
+    </div>
+
+    <div style="flex:1;"></div>
+
+    <div style="display:flex; align-items:center; gap:6px;">
+      <button class="btn" style="border-radius:8px; padding:8px; background:transparent; border-color:transparent;" title="Undo">
+        <svg viewBox="0 0 24 24" class="icon"><use href="#icon-undo"/></svg>
+      </button>
+      <button class="btn" style="border-radius:8px; padding:8px; background:transparent; border-color:transparent;" title="Redo">
+        <svg viewBox="0 0 24 24" class="icon"><use href="#icon-redo"/></svg>
+      </button>
+      <div style="width:1px; height:20px; background:var(--border); margin:0 4px;"></div>
+      <button class="btn" style="border-radius:8px; padding:7px 12px; gap:6px; font-size:12.5px; font-weight:600;">
+        <svg viewBox="0 0 24 24" class="icon-sm"><use href="#icon-printer"/></svg>
+        Print
+      </button>
+      <button class="btn" style="border-radius:8px; padding:7px 12px; gap:6px; font-size:12.5px; font-weight:600; background:var(--accent); color:white; border-color:transparent;">
+        <svg viewBox="0 0 24 24" class="icon-sm"><use href="#icon-export"/></svg>
+        Export
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== MAIN BODY ===== -->
+  <div style="flex:1; display:flex; min-height:0;">
+
+    <!-- ===== LEFT PANEL ===== -->
+    <div class="no-scrollbar" style="width: 248px; flex:0 0 auto; background:var(--bg-panel); border-right:1px solid var(--border); overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:20px;">
+
+      <sc-if value="{{isPin}}" hint-placeholder-val="{{true}}">
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--text-tertiary); text-transform:uppercase;">Pin Tools</div>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px;">
+            <sc-for list="{{pinTools}}" as="t" hint-placeholder-count="8">
+              <button class="btn" onClick="{{t.onClick}}" style="{{t.style}}; flex-direction:column; border-radius:var(--radius-sm); padding:10px 4px 7px; gap:5px;" title="{{t.label}}">
+                <svg viewBox="0 0 24 24" class="icon"><use href="#icon-{{t.icon}}"/></svg>
+                <span style="font-size:10px; font-weight:600;">{{t.label}}</span>
+              </button>
+            </sc-for>
+          </div>
+          <button class="btn" style="width:100%; justify-content:space-between; border-radius:var(--radius-sm); padding:9px 10px; margin-top:2px;">
+            <span style="display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600;">
+              <svg viewBox="0 0 24 24" class="icon"><use href="#icon-polygon"/></svg>
+              Polygon / Star
+            </span>
+            <svg viewBox="0 0 24 24" class="icon-sm"><use href="#icon-chevron"/></svg>
+          </button>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--text-tertiary); text-transform:uppercase;">Pin Properties</div>
+          <div style="display:flex; flex-direction:column; gap:8px; background:var(--bg-app); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:baseline;">
+              <span style="font-size:12px; color:var(--text-secondary);">Requested spacing</span>
+              <span class="mono" style="font-size:12px; font-weight:600; color:var(--accent);">{{spacingLabel}} cm</span>
+            </div>
+            <input type="range" min="0.5" max="5" step="0.1" value="{{spacing}}" onInput="{{setSpacing}}"/>
+            <div style="display:flex; justify-content:space-between; margin-top:4px;">
+              <span style="font-size:12px; color:var(--text-secondary);">Diameter</span>
+              <span class="mono" style="font-size:12px; color:var(--text-primary);">2 mm</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:12px; color:var(--text-secondary);">Colour</span>
+              <div style="width:16px; height:16px; border-radius:4px; background:#e8e6e1; border:1px solid var(--border-strong);"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:12px; color:var(--text-secondary);">Guide visible</span>
+              <div style="width:32px; height:18px; border-radius:10px; background:var(--accent-soft-2); border:1px solid var(--accent); position:relative;">
+                <div style="position:absolute; right:2px; top:2px; width:12px; height:12px; border-radius:50%; background:var(--accent);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--text-tertiary); text-transform:uppercase;">Symmetry</div>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px;">
+            <sc-for list="{{symmetryOptions}}" as="s" hint-placeholder-count="5">
+              <button class="btn" onClick="{{s.onClick}}" style="{{s.style}}; flex-direction:column; border-radius:var(--radius-sm); padding:10px 4px 7px; gap:5px;" title="{{s.label}}">
+                <svg viewBox="0 0 24 24" class="icon"><use href="#icon-{{s.icon}}"/></svg>
+                <span style="font-size:9.5px; font-weight:600;">{{s.label}}</span>
+              </button>
+            </sc-for>
+          </div>
+          <sc-if value="{{symmetryIsRadial}}" hint-placeholder-val="{{true}}">
+            <div style="display:flex; align-items:center; gap:8px; font-size:11px; color:var(--text-secondary); background:var(--bg-app); border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px 10px;">
+              <svg viewBox="0 0 24 24" class="icon-sm" style="color:var(--accent); flex:0 0 auto;"><use href="#icon-radial"/></svg>
+              Interval 45° · centre ◎ draggable on canvas
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{isSelect}}" hint-placeholder-val="{{true}}">
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--text-tertiary); text-transform:uppercase;">Selection</div>
+          <div style="display:flex; align-items:center; gap:8px; background:var(--accent-soft); border:1px solid var(--accent); border-radius:var(--radius-md); padding:10px 12px;">
+            <svg viewBox="0 0 24 24" class="icon" style="color:var(--accent);"><use href="#icon-circle"/></svg>
+            <div style="display:flex; flex-direction:column;">
+              <span style="font-size:12.5px; font-weight:700;">Outer Circle</span>
+              <span style="font-size:11px; color:var(--text-secondary);">Pin Path</span>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:1px; background:var(--border); border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border);">
+            <sc-for list="{{selectFields}}" as="f" hint-placeholder-count="6">
+              <div style="display:flex; justify-content:space-between; padding:9px 12px; background:var(--bg-app);">
+                <span style="font-size:12px; color:var(--text-secondary);">{{f.label}}</span>
+                <span class="mono" style="font-size:12px; color:var(--text-primary); font-weight:600;">{{f.value}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{isThread}}" hint-placeholder-val="{{true}}">
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--text-tertiary); text-transform:uppercase;">Thread</div>
+          <div style="display:flex; gap:6px;">
+            <button class="btn" style="flex:1; justify-content:center; border-radius:var(--radius-sm); padding:9px; gap:6px; background:var(--accent); color:white; border-color:transparent; font-size:12px; font-weight:600;">
+              <svg viewBox="0 0 24 24" class="icon-sm"><use href="#icon-thread"/></svg>
+              Draw
+            </button>
+            <button class="btn" style="flex:1; justify-content:center; border-radius:var(--radius-sm); padding:9px; gap:6px; font-size:12px; font-weight:600;">
+              <svg viewBox="0 0 24 24" class="icon-sm"><use href="#icon-eraser"/></svg>
+              Eraser
+            </button>
+          </div>
+
+          <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--text-tertiary); text-transform:uppercase; margin-top:4px;">Colours</div>
+          <div style="display:flex; gap:6px;">
+            <sc-for list="{{threadColorOptions}}" as="c" hint-placeholder-count="3">
+              <button class="btn" onClick="{{c.onClick}}" style="{{c.style}}; flex:1; justify-content:center; border-radius:var(--radius-sm); padding:9px; font-size:12px; font-weight:700;">{{c.label}}</button>
+            </sc-for>
+          </div>
+          <div style="display:flex; gap:6px; margin-top:2px;">
+            <div style="width:20px; height:20px; border-radius:5px; background:#5b8def; border:1px solid var(--border-strong);"></div>
+            <div style="width:20px; height:20px; border-radius:5px; background:#edeff7; border:1px solid var(--border-strong);"></div>
+            <div style="width:20px; height:20px; border-radius:5px; background:#e8b449; border:1px solid var(--border-strong);"></div>
+          </div>
+
+          <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--text-tertiary); text-transform:uppercase; margin-top:8px;">Width</div>
+          <input type="range" min="1" max="5" step="0.5" value="1.5"/>
+
+          <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--text-tertiary); text-transform:uppercase; margin-top:8px;">Pin states</div>
+          <div style="display:flex; flex-direction:column; gap:8px; background:var(--bg-app); border:1px solid var(--border); border-radius:var(--radius-md); padding:10px 12px;">
+            <div style="display:flex; align-items:center; gap:9px;">
+              <svg viewBox="0 0 24 24" style="width:14px;height:14px;"><circle cx="12" cy="12" r="6" fill="#c7cad3"/></svg>
+              <span style="font-size:11.5px; color:var(--text-secondary);">Normal</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:9px;">
+              <svg viewBox="0 0 24 24" style="width:14px;height:14px;"><circle cx="12" cy="12" r="9" fill="none" stroke="#e8b449" stroke-width="1.6"/><circle cx="12" cy="12" r="4.5" fill="#e8b449"/></svg>
+              <span style="font-size:11.5px; color:var(--text-secondary);">Nearest candidate</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:9px;">
+              <svg viewBox="0 0 24 24" style="width:14px;height:14px;"><circle cx="12" cy="12" r="6" fill="var(--accent)"/></svg>
+              <span style="font-size:11.5px; color:var(--text-secondary);">Active origin</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{isPan}}" hint-placeholder-val="{{true}}">
+        <div style="display:flex; flex-direction:column; gap:12px; align-items:center; text-align:center; padding:24px 8px; color:var(--text-secondary);">
+          <svg viewBox="0 0 24 24" style="width:32px;height:32px; color:var(--text-tertiary);"><use href="#icon-hand"/></svg>
+          <div style="font-size:12.5px; line-height:1.5;">Pan mode. Drag the canvas to navigate — no objects are modified.</div>
+        </div>
+      </sc-if>
+
+    </div>
+
+    <!-- ===== CENTER CANVAS ===== -->
+    <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:var(--bg-canvas); position:relative;">
+
+      <!-- canvas toolbar -->
+      <div style="flex:0 0 auto; display:flex; align-items:center; gap:10px; padding:10px 16px; border-bottom:1px solid var(--border); background:color-mix(in oklch, var(--bg-canvas) 92%, var(--bg-panel));">
+        <button class="btn" onClick="{{toggleGrid}}" style="{{gridChipStyle}}; border-radius:999px; padding:6px 12px; gap:6px; font-size:11.5px; font-weight:600;">
+          <span style="width:6px;height:6px;border-radius:50%; background:currentColor;"></span>
+          Grid {{gridStateLabel}}
+        </button>
+        <button class="btn" onClick="{{toggleSnap}}" style="{{snapChipStyle}}; border-radius:999px; padding:6px 12px; gap:6px; font-size:11.5px; font-weight:600;">
+          <span style="width:6px;height:6px;border-radius:50%; background:currentColor;"></span>
+          Snap {{snapStateLabel}}
+        </button>
+        <div style="flex:1;"></div>
+        <div style="display:flex; align-items:center; gap:2px; background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius-md); padding:3px;">
+          <button class="btn" onClick="{{zoomOut}}" style="border:none; background:transparent; border-radius:7px; padding:6px;">
+            <svg viewBox="0 0 24 24" class="icon-sm"><use href="#icon-zoom-out"/></svg>
+          </button>
+          <span class="mono" style="font-size:11.5px; font-weight:600; width:46px; text-align:center;">{{zoom}}%</span>
+          <button class="btn" onClick="{{zoomIn}}" style="border:none; background:transparent; border-radius:7px; padding:6px;">
+            <svg viewBox="0 0 24 24" class="icon-sm"><use href="#icon-zoom-in"/></svg>
+          </button>
+          <div style="width:1px; height:16px; background:var(--border); margin:0 2px;"></div>
+          <button class="btn" onClick="{{zoomFit}}" style="border:none; background:transparent; border-radius:7px; padding:6px;" title="Fit to viewport">
+            <svg viewBox="0 0 24 24" class="icon-sm"><use href="#icon-fit"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- board canvas -->
+      <div style="flex:1; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center;">
+        <svg viewBox="0 0 600 600" style="width:min(100%, 620px); height:min(100%, 620px); transform: scale({{zoomScale}}); transition: transform 150ms ease;">
+          <defs>
+            <radialGradient id="woodGrad" cx="40%" cy="35%" r="75%">
+              <stop offset="0%" stop-color="#8a5a3c"/>
+              <stop offset="55%" stop-color="#6b3f28"/>
+              <stop offset="100%" stop-color="#4a2a1a"/>
+            </radialGradient>
+            <pattern id="gridDots" width="24" height="24" patternUnits="userSpaceOnUse">
+              <circle cx="1" cy="1" r="1" fill="#ffffff" fill-opacity="0.16"/>
+            </pattern>
+          </defs>
+
+          <rect x="0" y="0" width="600" height="600" fill="url(#gridDots)" style="opacity:{{gridOpacity}}"/>
+
+          <circle cx="300" cy="300" r="270" fill="url(#woodGrad)" stroke="#2c180f" stroke-width="3"/>
+          <circle cx="300" cy="300" r="250" fill="none" stroke="#111111" stroke-opacity="0.55" stroke-width="1.2" stroke-dasharray="2 4"/>
+          <polygon points="300,150 375,170.1 429.9,225 450,300 429.9,375 375,429.9 300,450 225,429.9 170.1,375 150,300 170.1,225 225,170.1"
+                   fill="none" stroke="#111111" stroke-opacity="0.55" stroke-width="1.2" stroke-dasharray="2 4"/>
+
+          <!-- symmetry axes -->
+          <g style="display:{{axisDisplay}}">
+            <line x1="300" y1="24" x2="300" y2="576" stroke="var(--accent)" stroke-width="1" stroke-dasharray="5 5" opacity="0.55"/>
+            <line x1="24" y1="300" x2="576" y2="300" stroke="var(--accent)" stroke-width="1" stroke-dasharray="5 5" opacity="0.55"/>
+          </g>
+
+          <!-- radial symmetry spokes -->
+          <g style="display:{{radialDisplay}}">
+            <line x1="300" y1="300" x2="580" y2="300" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 5" opacity="0.5"/>
+            <line x1="300" y1="300" x2="498" y2="498" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 5" opacity="0.5"/>
+            <line x1="300" y1="300" x2="300" y2="580" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 5" opacity="0.5"/>
+            <line x1="300" y1="300" x2="102" y2="498" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 5" opacity="0.5"/>
+            <line x1="300" y1="300" x2="20" y2="300" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 5" opacity="0.5"/>
+            <line x1="300" y1="300" x2="102" y2="102" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 5" opacity="0.5"/>
+            <line x1="300" y1="300" x2="300" y2="20" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 5" opacity="0.5"/>
+            <line x1="300" y1="300" x2="498" y2="102" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 5" opacity="0.5"/>
+            <circle cx="300" cy="300" r="10" fill="none" stroke="var(--accent)" stroke-width="1.6"/>
+            <circle cx="300" cy="300" r="3" fill="var(--accent)"/>
+          </g>
+
+          <!-- Red Pattern thread (inner dodecagon, single colour, locked layer) -->
+          <polygon style="display:{{redDisplay}}" points="300,150 375,170.1 429.9,225 450,300 429.9,375 375,429.9 300,450 225,429.9 170.1,375 150,300 170.1,225 225,170.1"
+                   fill="none" stroke="#d96c6c" stroke-width="1.4" opacity="0.9"/>
+
+          <!-- Detail thread (hidden by default) -->
+          <g style="display:{{detailDisplay}}" stroke="#8fd6c8" stroke-width="1" opacity="0.7">
+            <line x1="300" y1="150" x2="450" y2="300"/>
+            <line x1="450" y1="300" x2="300" y2="450"/>
+            <line x1="300" y1="450" x2="150" y2="300"/>
+            <line x1="150" y1="300" x2="300" y2="150"/>
+          </g>
+
+          <!-- Blue Pattern thread — geometry fixed, styling driven by colour-count -->
+          <g style="display:{{blueDisplay}}">
+            <g stroke="#5b8def" stroke-width="1.3" opacity="0.85">
+              <line x1="300.0" y1="50.0" x2="541.5" y2="364.7"/><line x1="364.7" y1="58.5" x2="516.5" y2="425.0"/>
+              <line x1="425.0" y1="83.5" x2="476.8" y2="476.8"/><line x1="476.8" y1="123.2" x2="425.0" y2="516.5"/>
+              <line x1="516.5" y1="175.0" x2="364.7" y2="541.5"/><line x1="541.5" y1="235.3" x2="300.0" y2="550.0"/>
+              <line x1="550.0" y1="300.0" x2="235.3" y2="541.5"/><line x1="541.5" y1="364.7" x2="175.0" y2="516.5"/>
+              <line x1="516.5" y1="425.0" x2="123.2" y2="476.8"/><line x1="476.8" y1="476.8" x2="83.5" y2="425.0"/>
+              <line x1="425.0" y1="516.5" x2="58.5" y2="364.7"/><line x1="364.7" y1="541.5" x2="50.0" y2="300.0"/>
+              <line x1="300.0" y1="550.0" x2="58.5" y2="235.3"/><line x1="235.3" y1="541.5" x2="83.5" y2="175.0"/>
+              <line x1="175.0" y1="516.5" x2="123.2" y2="123.2"/><line x1="123.2" y1="476.8" x2="175.0" y2="83.5"/>
+              <line x1="83.5" y1="425.0" x2="235.3" y2="58.5"/>
+            </g>
+            <g style="display:{{strandTwoDisplay}}" stroke="#edeff7" stroke-width="1.3" stroke-dasharray="9 9" stroke-dashoffset="9" opacity="0.9">
+              <line x1="300.0" y1="50.0" x2="541.5" y2="364.7"/><line x1="364.7" y1="58.5" x2="516.5" y2="425.0"/>
+              <line x1="425.0" y1="83.5" x2="476.8" y2="476.8"/><line x1="476.8" y1="123.2" x2="425.0" y2="516.5"/>
+              <line x1="516.5" y1="175.0" x2="364.7" y2="541.5"/><line x1="541.5" y1="235.3" x2="300.0" y2="550.0"/>
+              <line x1="550.0" y1="300.0" x2="235.3" y2="541.5"/><line x1="541.5" y1="364.7" x2="175.0" y2="516.5"/>
+              <line x1="516.5" y1="425.0" x2="123.2" y2="476.8"/><line x1="476.8" y1="476.8" x2="83.5" y2="425.0"/>
+              <line x1="425.0" y1="516.5" x2="58.5" y2="364.7"/><line x1="364.7" y1="541.5" x2="50.0" y2="300.0"/>
+              <line x1="300.0" y1="550.0" x2="58.5" y2="235.3"/><line x1="235.3" y1="541.5" x2="83.5" y2="175.0"/>
+              <line x1="175.0" y1="516.5" x2="123.2" y2="123.2"/><line x1="123.2" y1="476.8" x2="175.0" y2="83.5"/>
+              <line x1="83.5" y1="425.0" x2="235.3" y2="58.5"/>
+            </g>
+            <g style="display:{{strandThreeDisplay}}" stroke="#e8b449" stroke-width="1.1" stroke-dasharray="6 12" stroke-dashoffset="15" opacity="0.9">
+              <line x1="300.0" y1="50.0" x2="541.5" y2="364.7"/><line x1="364.7" y1="58.5" x2="516.5" y2="425.0"/>
+              <line x1="425.0" y1="83.5" x2="476.8" y2="476.8"/><line x1="476.8" y1="123.2" x2="425.0" y2="516.5"/>
+              <line x1="516.5" y1="175.0" x2="364.7" y2="541.5"/><line x1="541.5" y1="235.3" x2="300.0" y2="550.0"/>
+              <line x1="550.0" y1="300.0" x2="235.3" y2="541.5"/><line x1="541.5" y1="364.7" x2="175.0" y2="516.5"/>
+              <line x1="516.5" y1="425.0" x2="123.2" y2="476.8"/><line x1="476.8" y1="476.8" x2="83.5" y2="425.0"/>
+              <line x1="425.0" y1="516.5" x2="58.5" y2="364.7"/><line x1="364.7" y1="541.5" x2="50.0" y2="300.0"/>
+              <line x1="300.0" y1="550.0" x2="58.5" y2="235.3"/><line x1="235.3" y1="541.5" x2="83.5" y2="175.0"/>
+              <line x1="175.0" y1="516.5" x2="123.2" y2="123.2"/><line x1="123.2" y1="476.8" x2="175.0" y2="83.5"/>
+              <line x1="83.5" y1="425.0" x2="235.3" y2="58.5"/>
+            </g>
+          </g>
+
+          <!-- Outer Circle pins -->
+          <g style="display:{{outerPinsDisplay}}" fill="#f2ede4" stroke="#1b1b1b" stroke-width="1">
+            <circle cx="300.0" cy="50.0" r="4.5"/><circle cx="364.7" cy="58.5" r="4.5"/><circle cx="425.0" cy="83.5" r="4.5"/>
+            <circle cx="476.8" cy="123.2" r="4.5"/><circle cx="516.5" cy="175.0" r="4.5"/><circle cx="541.5" cy="235.3" r="4.5"/>
+            <circle cx="550.0" cy="300.0" r="4.5"/><circle cx="541.5" cy="364.7" r="4.5"/><circle cx="516.5" cy="425.0" r="4.5"/>
+            <circle cx="476.8" cy="476.8" r="4.5"/><circle cx="425.0" cy="516.5" r="4.5"/><circle cx="364.7" cy="541.5" r="4.5"/>
+            <circle cx="300.0" cy="550.0" r="4.5"/><circle cx="235.3" cy="541.5" r="4.5"/><circle cx="175.0" cy="516.5" r="4.5"/>
+            <circle cx="123.2" cy="476.8" r="4.5"/><circle cx="83.5" cy="425.0" r="4.5"/><circle cx="58.5" cy="364.7" r="4.5"/>
+            <circle cx="50.0" cy="300.0" r="4.5"/><circle cx="58.5" cy="235.3" r="4.5"/><circle cx="83.5" cy="175.0" r="4.5"/>
+            <circle cx="123.2" cy="123.2" r="4.5"/><circle cx="175.0" cy="83.5" r="4.5"/><circle cx="235.3" cy="58.5" r="4.5"/>
+          </g>
+
+          <!-- Inner Star pins -->
+          <g style="display:{{innerPinsDisplay}}" fill="#f2ede4" stroke="#1b1b1b" stroke-width="1">
+            <circle cx="300.0" cy="150.0" r="4"/><circle cx="375.0" cy="170.1" r="4"/><circle cx="429.9" cy="225.0" r="4"/>
+            <circle cx="450.0" cy="300.0" r="4"/><circle cx="429.9" cy="375.0" r="4"/><circle cx="375.0" cy="429.9" r="4"/>
+            <circle cx="300.0" cy="450.0" r="4"/><circle cx="225.0" cy="429.9" r="4"/><circle cx="170.1" cy="375.0" r="4"/>
+            <circle cx="150.0" cy="300.0" r="4"/><circle cx="170.1" cy="225.0" r="4"/><circle cx="225.0" cy="170.1" r="4"/>
+          </g>
+
+          <!-- highlight states demo -->
+          <circle cx="550.0" cy="300.0" r="9" fill="none" stroke="#e8b449" stroke-width="1.8"/>
+          <circle cx="550.0" cy="300.0" r="4.5" fill="#e8b449" stroke="#1b1b1b" stroke-width="1"/>
+          <circle cx="300.0" cy="50.0" r="5.5" fill="var(--accent)" stroke="#1b1b1b" stroke-width="1"/>
+
+          <!-- snap radius indicator -->
+          <circle style="display:{{snapIndicatorDisplay}}" cx="300.0" cy="50.0" r="20" fill="none" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 3" opacity="0.7"/>
+        </svg>
+      </div>
+
+      <!-- status bar -->
+      <div class="mono" style="flex:0 0 auto; height:32px; display:flex; align-items:center; gap:14px; padding:0 16px; background:var(--bg-panel); border-top:1px solid var(--border); font-size:11.5px; color:var(--text-secondary);">
+        {{statusText}}
+      </div>
+    </div>
+
+    <!-- ===== RIGHT PANEL (LAYERS) ===== -->
+    <div class="no-scrollbar" style="width: 260px; flex:0 0 auto; background:var(--bg-panel); border-left:1px solid var(--border); overflow-y:auto; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:center; gap:8px; padding:14px 16px 10px;">
+        <svg viewBox="0 0 24 24" class="icon" style="color:var(--text-tertiary);"><use href="#icon-layers"/></svg>
+        <span style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--text-tertiary); text-transform:uppercase;">Layers</span>
+      </div>
+
+      <div style="display:flex; padding:0 16px; gap:4px; border-bottom:1px solid var(--border);">
+        <button class="btn" onClick="{{selectPinTab}}" style="{{pinTabStyle}}; flex:1; justify-content:center; border:none; border-bottom:2px solid transparent; border-radius:0; padding:9px 0; font-size:12px; font-weight:700; background:transparent;">Pin Layers</button>
+        <button class="btn" onClick="{{selectThreadTab}}" style="{{threadTabStyle}}; flex:1; justify-content:center; border:none; border-bottom:2px solid transparent; border-radius:0; padding:9px 0; font-size:12px; font-weight:700; background:transparent;">Thread Layers</button>
+      </div>
+
+      <sc-if value="{{layerTabIsPin}}" hint-placeholder-val="{{true}}">
+        <div style="display:flex; flex-direction:column;">
+          <sc-for list="{{pinLayerRows}}" as="l" hint-placeholder-count="3">
+            <div class="row-hover" onClick="{{l.onSelect}}" style="{{l.rowStyle}}; display:flex; align-items:center; gap:9px; padding:9px 16px; cursor:pointer; border-left:2px solid transparent;">
+              <button class="btn-icon" onClick="{{l.onToggleVisible}}" style="border:none; background:transparent; padding:2px; color:{{l.eyeColor}};">
+                <svg viewBox="0 0 24 24" class="icon-sm"><use href="#icon-{{l.eyeIcon}}"/></svg>
+              </button>
+              <button class="btn-icon" onClick="{{l.onToggleLocked}}" style="border:none; background:transparent; padding:2px; color:{{l.lockColor}};">
+                <svg viewBox="0 0 24 24" class="icon-sm"><use href="#icon-{{l.lockIcon}}"/></svg>
+              </button>
+              <span style="{{l.nameStyle}}; font-size:12.5px; flex:1;">{{l.name}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{layerTabIsThread}}" hint-placeholder-val="{{true}}">
+        <div style="display:flex; flex-direction:column;">
+          <sc-for list="{{threadLayerRows}}" as="l" hint-placeholder-count="3">
+            <div class="row-hover" onClick="{{l.onSelect}}" style="{{l.rowStyle}}; display:flex; align-items:center; gap:9px; padding:9px 16px; cursor:pointer; border-left:2px solid transparent;">
+              <button class="btn-icon" onClick="{{l.onToggleVisible}}" style="border:none; background:transparent; padding:2px; color:{{l.eyeColor}};">
+                <svg viewBox="0 0 24 24" class="icon-sm"><use href="#icon-{{l.eyeIcon}}"/></svg>
+              </button>
+              <button class="btn-icon" onClick="{{l.onToggleLocked}}" style="border:none; background:transparent; padding:2px; color:{{l.lockColor}};">
+                <svg viewBox="0 0 24 24" class="icon-sm"><use href="#icon-{{l.lockIcon}}"/></svg>
+              </button>
+              <span style="{{l.nameStyle}}; font-size:12.5px; flex:1;">{{l.name}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <div style="flex:1;"></div>
+      <div style="padding:12px 16px; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:3px;">
+        <div style="display:flex; justify-content:space-between;">
+          <span style="font-size:11px; color:var(--text-tertiary);">Total pins</span>
+          <span class="mono" style="font-size:11px; color:var(--text-secondary); font-weight:600;">384</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="font-size:11px; color:var(--text-tertiary);">Thread length</span>
+          <span class="mono" style="font-size:11px; color:var(--text-secondary); font-weight:600;">23.7 m</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#6d5ef7","options":["#6d5ef7","#4f8cff","#1fb6a6","#e0725a"]}}'>
+class Component extends DCLogic {
+  setMode = (m) => this.setState({ mode: m });
+  setPinTool = (t) => this.setState({ pinTool: t });
+  setSymmetry = (s) => this.setState({ symmetry: s });
+  setThreadColorCount = (n) => this.setState({ threadColorCount: n });
+  toggleGrid = () => this.setState({ gridVisible: !this.state.gridVisible });
+  toggleSnap = () => this.setState({ snapEnabled: !this.state.snapEnabled });
+  zoomIn = () => this.setState({ zoom: Math.min(400, this.state.zoom + 25) });
+  zoomOut = () => this.setState({ zoom: Math.max(25, this.state.zoom - 25) });
+  zoomFit = () => this.setState({ zoom: 100 });
+  selectPinTab = () => this.setState({ layerTab: 'pin' });
+  selectThreadTab = () => this.setState({ layerTab: 'thread' });
+  setSpacing = (e) => this.setState({ spacing: parseFloat(e.target.value) });
+
+  toggleLayerVisible = (kind, id) => {
+    const key = kind === 'pin' ? 'pinLayers' : 'threadLayers';
+    const list = this.state[key].map((l) => (l.id === id ? { ...l, visible: !l.visible } : l));
+    this.setState({ [key]: list });
+  };
+  toggleLayerLocked = (kind, id) => {
+    const key = kind === 'pin' ? 'pinLayers' : 'threadLayers';
+    const list = this.state[key].map((l) => (l.id === id ? { ...l, locked: !l.locked } : l));
+    this.setState({ [key]: list });
+  };
+  selectLayer = (kind, id) => {
+    if (kind === 'pin') this.setState({ selectedPinLayer: id });
+    else this.setState({ selectedThreadLayer: id });
+  };
+
+  computeClosedSpacing(perimeter, requested) {
+    const approx = perimeter / requested;
+    const lo = Math.max(1, Math.floor(approx));
+    const hi = Math.max(1, Math.ceil(approx));
+    let best = lo;
+    let bestDiff = Math.abs(perimeter / lo - requested);
+    const hiDiff = Math.abs(perimeter / hi - requested);
+    if (hiDiff < bestDiff) { best = hi; bestDiff = hiDiff; }
+    return { n: best, actual: perimeter / best };
+  }
+
+  state = {
+    mode: 'pin',
+    pinTool: 'circle',
+    symmetry: 'radial',
+    threadColorCount: 2,
+    gridVisible: true,
+    snapEnabled: true,
+    zoom: 125,
+    spacing: 2.0,
+    layerTab: 'pin',
+    selectedPinLayer: 'outer',
+    selectedThreadLayer: 'blue',
+    pinLayers: [
+      { id: 'outer', name: 'Outer Circle', visible: true, locked: true },
+      { id: 'inner', name: 'Inner Star', visible: true, locked: false },
+      { id: 'deco', name: 'Decoration', visible: false, locked: false },
+    ],
+    threadLayers: [
+      { id: 'red', name: 'Red Pattern', visible: true, locked: true },
+      { id: 'blue', name: 'Blue Pattern', visible: true, locked: false },
+      { id: 'detail', name: 'Detail', visible: false, locked: false },
+    ],
+  };
+
+  renderVals() {
+    const s = this.state;
+    const accent = this.props.accent ?? '#6d5ef7';
+    const activeBtn = 'background:var(--accent-soft); color:var(--accent); border-color:var(--accent);';
+    const inactiveBtn = 'background:transparent; color:var(--text-secondary); border-color:transparent;';
+    const toolActive = 'background:var(--accent-soft); color:var(--accent); border-color:var(--accent);';
+    const toolInactive = 'background:var(--bg-app); color:var(--text-secondary); border-color:var(--border);';
+
+    const modeDefs = [
+      { id: 'select', label: 'Select', icon: 'cursor' },
+      { id: 'pin', label: 'Pin', icon: 'pin' },
+      { id: 'thread', label: 'Thread', icon: 'thread' },
+      { id: 'pan', label: 'Pan', icon: 'hand' },
+    ];
+    const modeButtons = modeDefs.map((m) => ({
+      ...m,
+      onClick: () => this.setMode(m.id),
+      style: s.mode === m.id ? activeBtn : inactiveBtn,
+    }));
+
+    const toolDefs = [
+      { id: 'line', label: 'Line', icon: 'line' },
+      { id: 'arc', label: 'Arc', icon: 'arc' },
+      { id: 'ellipse', label: 'Ellipse', icon: 'ellipse' },
+      { id: 'circle', label: 'Circle', icon: 'circle' },
+      { id: 'rectangle', label: 'Rect', icon: 'rect' },
+      { id: 'square', label: 'Square', icon: 'square' },
+      { id: 'eraser', label: 'Eraser', icon: 'eraser' },
+      { id: 'snap', label: 'Snap', icon: 'magnet' },
+    ];
+    const pinTools = toolDefs.map((t) => ({
+      ...t,
+      onClick: () => this.setPinTool(t.id),
+      style: s.pinTool === t.id ? toolActive : toolInactive,
+    }));
+
+    const symDefs = [
+      { id: 'none', label: 'None', icon: 'none' },
+      { id: 'horizontal', label: 'Horiz', icon: 'mirror-h' },
+      { id: 'vertical', label: 'Vert', icon: 'mirror-v' },
+      { id: 'both', label: 'Both', icon: 'mirror-both' },
+      { id: 'radial', label: 'Radial', icon: 'radial' },
+    ];
+    const symmetryOptions = symDefs.map((o) => ({
+      ...o,
+      onClick: () => this.setSymmetry(o.id),
+      style: s.symmetry === o.id ? toolActive : toolInactive,
+    }));
+
+    const threadColorOptions = [1, 2, 3].map((n) => ({
+      label: String(n),
+      onClick: () => this.setThreadColorCount(n),
+      style: s.threadColorCount === n ? toolActive : toolInactive,
+    }));
+
+    const buildRows = (kind, list, selectedId) =>
+      list.map((l) => ({
+        id: l.id,
+        name: l.name,
+        rowStyle: `${l.id === selectedId ? 'background:var(--accent-soft); border-left-color:var(--accent);' : ''}`,
+        nameStyle: l.visible ? 'color:var(--text-primary);' : 'color:var(--text-tertiary);',
+        eyeIcon: l.visible ? 'eye' : 'eye-off',
+        eyeColor: l.visible ? 'var(--text-secondary)' : 'var(--text-tertiary)',
+        lockIcon: l.locked ? 'lock' : 'unlock',
+        lockColor: l.locked ? 'var(--accent)' : 'var(--text-tertiary)',
+        onSelect: () => this.selectLayer(kind, l.id),
+        onToggleVisible: (e) => { e.stopPropagation(); this.toggleLayerVisible(kind, l.id); },
+        onToggleLocked: (e) => { e.stopPropagation(); this.toggleLayerLocked(kind, l.id); },
+      }));
+
+    const pinLayerRows = buildRows('pin', s.pinLayers, s.selectedPinLayer);
+    const threadLayerRows = buildRows('thread', s.threadLayers, s.selectedThreadLayer);
+
+    const findLayer = (list, id) => list.find((l) => l.id === id) || {};
+    const outerPinsDisplay = findLayer(s.pinLayers, 'outer').visible ? 'inline' : 'none';
+    const innerPinsDisplay = findLayer(s.pinLayers, 'inner').visible ? 'inline' : 'none';
+    const redDisplay = findLayer(s.threadLayers, 'red').visible ? 'inline' : 'none';
+    const blueDisplay = findLayer(s.threadLayers, 'blue').visible ? 'inline' : 'none';
+    const detailDisplay = findLayer(s.threadLayers, 'detail').visible ? 'inline' : 'none';
+
+    const zoomScale = (s.zoom / 100).toFixed(2);
+    const spacingLabel = s.spacing.toFixed(1);
+    const closed = this.computeClosedSpacing(31.0, s.spacing);
+
+    let statusText = '';
+    if (s.mode === 'select') statusText = 'X: 13.4 cm  |  Y: 27.8 cm  |  Zoom: ' + s.zoom + '%';
+    else if (s.mode === 'pin') statusText = 'Perimeter: 31.0 cm  |  Requested: ' + spacingLabel + ' cm  |  Actual: ' + closed.actual.toFixed(2) + ' cm  |  Pins: ' + closed.n;
+    else if (s.mode === 'thread') statusText = 'From Pin 24 → Pin 7  |  Segment: 8.3 cm';
+    else statusText = 'Pan mode — drag to navigate  |  Zoom: ' + s.zoom + '%';
+
+    return {
+      accent,
+      isSelect: s.mode === 'select',
+      isPin: s.mode === 'pin',
+      isThread: s.mode === 'thread',
+      isPan: s.mode === 'pan',
+      modeButtons,
+      pinTools,
+      symmetryOptions,
+      symmetryIsRadial: s.symmetry === 'radial',
+      threadColorOptions,
+      spacing: s.spacing,
+      spacingLabel,
+      setSpacing: this.setSpacing,
+      selectFields: [
+        { label: 'Centre', value: '(30.0, 30.0) cm' },
+        { label: 'Radius', value: '27.0 cm' },
+        { label: 'Spacing', value: spacingLabel + ' cm' },
+        { label: 'Actual gap', value: closed.actual.toFixed(2) + ' cm' },
+        { label: 'Diameter', value: '2 mm' },
+        { label: 'Guide', value: 'Visible' },
+      ],
+      gridChipStyle: s.gridVisible ? activeBtn : inactiveBtn,
+      snapChipStyle: s.snapEnabled ? activeBtn : inactiveBtn,
+      gridStateLabel: s.gridVisible ? 'ON' : 'OFF',
+      snapStateLabel: s.snapEnabled ? 'ON' : 'OFF',
+      toggleGrid: this.toggleGrid,
+      toggleSnap: this.toggleSnap,
+      gridOpacity: s.gridVisible ? 1 : 0,
+      snapIndicatorDisplay: s.snapEnabled ? 'inline' : 'none',
+      zoom: s.zoom,
+      zoomScale,
+      zoomIn: this.zoomIn,
+      zoomOut: this.zoomOut,
+      zoomFit: this.zoomFit,
+      axisDisplay: s.symmetry === 'horizontal' || s.symmetry === 'vertical' || s.symmetry === 'both' ? 'inline' : 'none',
+      radialDisplay: s.symmetry === 'radial' ? 'inline' : 'none',
+      outerPinsDisplay,
+      innerPinsDisplay,
+      redDisplay,
+      blueDisplay,
+      detailDisplay,
+      strandTwoDisplay: s.threadColorCount >= 2 ? 'inline' : 'none',
+      strandThreeDisplay: s.threadColorCount >= 3 ? 'inline' : 'none',
+      layerTabIsPin: s.layerTab === 'pin',
+      layerTabIsThread: s.layerTab === 'thread',
+      pinTabStyle: s.layerTab === 'pin' ? 'color:var(--text-primary); border-bottom-color:var(--accent) !important;' : 'color:var(--text-tertiary);',
+      threadTabStyle: s.layerTab === 'thread' ? 'color:var(--text-primary); border-bottom-color:var(--accent) !important;' : 'color:var(--text-tertiary);',
+      selectPinTab: this.selectPinTab,
+      selectThreadTab: this.selectThreadTab,
+      pinLayerRows,
+      threadLayerRows,
+      statusText,
+    };
+  }
+}
+</script>
+</body>
+</html>

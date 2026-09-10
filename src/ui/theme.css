@@ -1,0 +1,61 @@
+/* docs/specs/18-design-system.md — tokens, dark direction. Every colour used in
+   chrome must resolve to one of these; never hardcode a literal elsewhere. */
+:root {
+  --bg-app: oklch(19% 0.012 264);
+  --bg-panel: oklch(22.5% 0.014 264);
+  --bg-panel-2: oklch(26% 0.015 264);
+  --bg-canvas: oklch(13.5% 0.01 264);
+  --border: oklch(33% 0.014 264);
+  --border-strong: oklch(41% 0.016 264);
+  --text-primary: oklch(93% 0.006 264);
+  --text-secondary: oklch(68% 0.014 264);
+  --text-tertiary: oklch(50% 0.014 264);
+  --accent: oklch(68% 0.19 292);
+  --accent-soft: color-mix(in oklch, var(--accent) 16%, transparent);
+  --accent-soft-2: color-mix(in oklch, var(--accent) 28%, transparent);
+  --danger: oklch(66% 0.18 22);
+  --danger-soft: color-mix(in oklch, var(--danger) 16%, transparent);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Manrope", system-ui, sans-serif;
+  background: var(--bg-app);
+  color: var(--text-primary);
+}
+
+.mono {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+
+button {
+  font-family: inherit;
+}
+
+.btn {
+  border: 1px solid var(--border);
+  background: var(--bg-panel-2);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.btn:hover {
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.btn-active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}

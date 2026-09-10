@@ -60,26 +60,22 @@ button {
   border-color: var(--accent);
 }
 
-/* docs/specs/14-printing.md — window.print() prints the whole document by default, so
-   everything except the print pages themselves (editor chrome, Print Preview sidebar)
-   must be hidden, and each .print-page must land on its own physical page. */
+/* docs/specs/14-printing.md — window.print() prints the whole document by default.
+   #print-portal (PrintPreviewPanel.tsx's <PrintPortal>) holds a plain, unstyled copy of
+   the print pages mounted directly on <body> — outside the app's own flex/absolute
+   layout — so #root is hidden outright for print and the portal's .print-page elements
+   sit in normal top-to-bottom page flow, each landing on its own physical page. */
+#print-portal {
+  display: none;
+}
+
 @media print {
-  body * {
-    visibility: hidden;
+  #root {
+    display: none !important;
   }
 
-  .print-pages,
-  .print-pages * {
-    visibility: visible;
-  }
-
-  .print-pages {
-    position: absolute;
-    inset: 0;
+  #print-portal {
     display: block !important;
-    padding: 0 !important;
-    margin: 0;
-    overflow: visible !important;
   }
 
   .print-tile-grid {

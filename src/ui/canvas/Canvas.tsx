@@ -34,7 +34,7 @@ export function Canvas({ store }: { store: EditorStore }) {
   const threadLayerId = state.activeThreadLayerId;
   const maxDist = state.snap.radiusPx / viewport.zoom;
 
-  const altHeldRef = useAltModifier();
+  const altHeld = useAltModifier();
   const { cursorDoc, screenToDoc, resolvePoint, updateCursor } = useSnappedPointer(state, viewport);
   const pan = usePanInteraction(store);
   const pinDrawing = usePinDrawing(store, layerId);
@@ -92,7 +92,7 @@ export function Canvas({ store }: { store: EditorStore }) {
     }
     if (state.mode !== "pin" || !DRAG_TOOLS.includes(state.pinTool)) return;
     const point = resolvePoint(screenToDoc(e));
-    pinDrawing.handleMouseUp(point, state.pinTool, altHeldRef.current);
+    pinDrawing.handleMouseUp(point, state.pinTool, altHeld);
   }
 
   // docs/specs/29-ending-cutting-thread
@@ -107,7 +107,7 @@ export function Canvas({ store }: { store: EditorStore }) {
     threadDrawing.handleContextMenu();
   }
 
-  const previewGeometry = pinDrawing.previewGeometry(state.pinTool, cursorDoc, altHeldRef.current);
+  const previewGeometry = pinDrawing.previewGeometry(state.pinTool, cursorDoc, altHeld);
   const selectedPathId = state.selection.type === "pinPath" ? state.selection.pathId : null;
 
   return (

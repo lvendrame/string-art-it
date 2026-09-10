@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   boardPath,
   computeCorrectionFactor,
@@ -14,7 +14,7 @@ import {
   type PrintScaleMode,
 } from "../../application/document";
 import { pathBoundingBoxPoints } from "../../domain/paths";
-import { boundingBoxOf, type BoundingBox } from "../../domain/transforms";
+import { boundingBoxOf, CSS_PIXELS_PER_CM, type BoundingBox } from "../../domain/transforms";
 import { boardFillPaint, BoardFillDefs } from "../../infrastructure/rendering/boardFill";
 import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
 import { useEditorState } from "../useEditorStore";
@@ -29,7 +29,10 @@ const ELEMENT_LABELS: { key: keyof PrintElements; label: string }[] = [
   { key: "grid", label: "Grid" },
 ];
 
-const PREVIEW_PX_PER_CM = 10;
+// docs/specs/14-printing.md — printed/on-screen-preview pages both use the CSS
+// reference-pixel/cm ratio (96dpi ÷ 2.54, same anchor as the editor zoom baseline) so
+// what prints is physically true to the selected paper size, not an arbitrary UI scale.
+const PRINT_PX_PER_CM = CSS_PIXELS_PER_CM;
 const CALIBRATION_LENGTH_CM = 10;
 
 // docs/specs/14-printing.md + Phase 2 §42/§43 (tiling, calibration) — print visibility
@@ -52,6 +55,8 @@ export function PrintPreviewPanel({ store, onClose }: { store: EditorStore; onCl
   const tileContentAreaCm = { width: paperSize.width - marginCm * 2, height: paperSize.height - marginCm * 2 };
   const needsTiling = tiling.enabled && (printedSize.width > tileContentAreaCm.width || printedSize.height > tileContentAreaCm.height);
   const grid = needsTiling ? computeTileGrid(printedSize, tileContentAreaCm, tiling.overlapCm) : null;
+
+  usePrintPageSize(paperSize);
 
   function applyCalibration() {
     const factor = computeCorrectionFactor(CALIBRATION_LENGTH_CM, measuredCm);
@@ -195,11 +200,13 @@ export function PrintPreviewPanel({ store, onClose }: { store: EditorStore; onCl
         </button>
       </div>
 
-      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", overflow: "auto", padding: 24 }}>
+      <div className="print-pages" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", overflow: "auto", padding: 24 }}>
         {calibrating ? (
-          <CalibrationPage paperSize={paperSize} />
+          <div className="print-page">
+            <CalibrationPage paperSize={paperSize} />
+          </div>
         ) : grid ? (
-          <div style={{ display: "grid", gridTemplateColumns: `repeat(${grid.cols}, auto)`, gap: 16 }}>
+          <div className="print-tile-grid" style={{ display: "grid", gridTemplateColumns: `repeat(${grid.cols}, auto)`, gap: 16 }}>
             {grid.tiles.map((tile) => (
               <PrintPage
                 key={`${tile.col}-${tile.row}`}
@@ -224,11 +231,23 @@ export function PrintPreviewPanel({ store, onClose }: { store: EditorStore; onCl
   );
 }
 
+// Chrome's print dialog otherwise falls back to whatever paper size/orientation it
+// last used, ignoring the Paper section here — so the selected size is pushed into an
+// @page rule for the duration this panel is open.
+function usePrintPageSize(paperSize: { width: number; height: number }) {
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = `@media print { @page { size: ${paperSize.width}cm ${paperSize.height}cm; } }`;
+    document.head.appendChild(style);
+    return () => style.remove();
+  }, [paperSize.width, paperSize.height]);
+}
+
 function CalibrationPage({ paperSize }: { paperSize: { width: number; height: number } }) {
-  const paperPx = { width: paperSize.width * PREVIEW_PX_PER_CM, height: paperSize.height * PREVIEW_PX_PER_CM };
+  const paperPx = { width: paperSize.width * PRINT_PX_PER_CM, height: paperSize.height * PRINT_PX_PER_CM };
   const lineY = paperPx.height / 2;
-  const lineStartX = (paperPx.width - CALIBRATION_LENGTH_CM * PREVIEW_PX_PER_CM) / 2;
-  const lineEndX = lineStartX + CALIBRATION_LENGTH_CM * PREVIEW_PX_PER_CM;
+  const lineStartX = (paperPx.width - CALIBRATION_LENGTH_CM * PRINT_PX_PER_CM) / 2;
+  const lineEndX = lineStartX + CALIBRATION_LENGTH_CM * PRINT_PX_PER_CM;
   return (
     <svg width={paperPx.width} height={paperPx.height} style={{ background: "white" }}>
       <line x1={lineStartX} y1={lineY} x2={lineEndX} y2={lineY} stroke="black" strokeWidth={1.5} />
@@ -267,18 +286,18 @@ function PrintPage({
   alignmentMarks?: boolean;
 }) {
   const { elements } = state.printSettings;
-  const paperPx = { width: paperSize.width * PREVIEW_PX_PER_CM, height: paperSize.height * PREVIEW_PX_PER_CM };
+  const paperPx = { width: paperSize.width * PRINT_PX_PER_CM, height: paperSize.height * PRINT_PX_PER_CM };
   const boardCenter = { x: (box.minX + box.maxX) / 2, y: (box.minY + box.maxY) / 2 };
   // Content origin: board centre maps to paper centre, then the tile's offset shifts
   // that origin so each page shows a different slice of the printed-size content.
   const originPx = {
-    x: (paperSize.width / 2 - (tileOffsetCm?.x ?? 0)) * PREVIEW_PX_PER_CM,
-    y: (paperSize.height / 2 - (tileOffsetCm?.y ?? 0)) * PREVIEW_PX_PER_CM,
+    x: (paperSize.width / 2 - (tileOffsetCm?.x ?? 0)) * PRINT_PX_PER_CM,
+    y: (paperSize.height / 2 - (tileOffsetCm?.y ?? 0)) * PRINT_PX_PER_CM,
   };
   const clipId = `tile-clip-${tileLabel ?? "single"}-${coordLabel ?? ""}`;
 
   return (
-    <div style={{ position: "relative" }}>
+    <div className="print-page" style={{ position: "relative" }}>
       <svg width={paperPx.width} height={paperPx.height} style={{ background: "white" }}>
         <defs>
           <clipPath id={clipId}>
@@ -286,7 +305,7 @@ function PrintPage({
           </clipPath>
         </defs>
         <g clipPath={`url(#${clipId})`}>
-          <g transform={`translate(${originPx.x}, ${originPx.y}) scale(${effectiveScale * PREVIEW_PX_PER_CM}) translate(${-boardCenter.x}, ${-boardCenter.y})`}>
+          <g transform={`translate(${originPx.x}, ${originPx.y}) scale(${effectiveScale * PRINT_PX_PER_CM}) translate(${-boardCenter.x}, ${-boardCenter.y})`}>
             <defs>{elements.background && <BoardFillDefs id={`print-fill-${clipId}`} appearance={state.board.appearance} />}</defs>
             {elements.grid && (
               <g opacity={0.15}>

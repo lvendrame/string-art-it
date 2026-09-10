@@ -59,3 +59,43 @@ button {
   color: var(--accent);
   border-color: var(--accent);
 }
+
+/* docs/specs/14-printing.md — window.print() prints the whole document by default, so
+   everything except the print pages themselves (editor chrome, Print Preview sidebar)
+   must be hidden, and each .print-page must land on its own physical page. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .print-pages,
+  .print-pages * {
+    visibility: visible;
+  }
+
+  .print-pages {
+    position: absolute;
+    inset: 0;
+    display: block !important;
+    padding: 0 !important;
+    margin: 0;
+    overflow: visible !important;
+  }
+
+  .print-tile-grid {
+    display: block !important;
+    gap: 0 !important;
+  }
+
+  .print-page {
+    break-after: page;
+  }
+
+  .print-page:last-child {
+    break-after: auto;
+  }
+
+  @page {
+    margin: 0;
+  }
+}

@@ -31,6 +31,20 @@ export function screenDistanceToDocument(distance: number, viewport: Viewport): 
   return distance / viewport.zoom;
 }
 
+// The CSS spec defines a "reference pixel" as 1/96 inch, which is what CSS `cm`/`mm`/
+// `in` units resolve against in every browser — so this is the one baseline where
+// "100%" genuinely means one physical centimetre rendering as one on-screen
+// centimetre, not an arbitrary scale factor.
+export const CSS_PIXELS_PER_CM = 96 / 2.54;
+
+export function zoomToPercent(zoom: number): number {
+  return (zoom / CSS_PIXELS_PER_CM) * 100;
+}
+
+export function percentToZoom(percent: number): number {
+  return (percent / 100) * CSS_PIXELS_PER_CM;
+}
+
 export function fitToViewport(
   box: BoundingBox,
   viewportSize: { width: number; height: number },

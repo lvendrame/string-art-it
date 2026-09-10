@@ -14,15 +14,18 @@ import {
   type SymmetryConfig,
   type ThreadPath,
 } from "../../application/document";
-import { boundingBoxOf, fitToViewport, toDocument } from "../../domain/transforms";
+import { percentToZoom, toDocument, zoomToPercent } from "../../domain/transforms";
 import { resolveSnapPosition, type SnapPin } from "../../domain/snapping";
-import { pathBoundingBoxPoints, type Point } from "../../domain/paths";
+import type { Point } from "../../domain/paths";
 import { BoardFillDefs, boardFillPaint } from "../../infrastructure/rendering/boardFill";
 import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
 import { useEditorState } from "../useEditorStore";
+import { CANVAS_VIEWPORT_PX, fitViewportForBoard } from "./boardViewport";
 import { StatusBar } from "./StatusBar";
 
-const VIEWPORT_PX = { width: 720, height: 640 };
+const VIEWPORT_PX = CANVAS_VIEWPORT_PX;
+const MIN_ZOOM_PERCENT = 5;
+const MAX_ZOOM_PERCENT = 1600;
 
 interface ArcDraft {
   start: Point;
@@ -65,11 +68,9 @@ export function Canvas({ store }: { store: EditorStore }) {
 
   const path = useMemo(() => boardPath(state.board), [state.board]);
   const pathD = useMemo(() => pathToSvgD(path), [path]);
-  const box = useMemo(() => boundingBoxOf(pathBoundingBoxPoints(path)), [path]);
 
   const fitViewport = () => {
-    const padded = { minX: box.minX - 5, minY: box.minY - 5, maxX: box.maxX + 5, maxY: box.maxY + 5 };
-    store.setViewport(fitToViewport(padded, VIEWPORT_PX, 20));
+    store.setViewport(fitViewportForBoard(state.board));
   };
 
   const { viewport } = state;
@@ -328,11 +329,11 @@ export function Canvas({ store }: { store: EditorStore }) {
           />
         </label>
         <div style={{ flex: 1 }} />
-        <button className="btn mono" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={() => store.setViewport({ ...viewport, zoom: Math.max(0.5, viewport.zoom / 1.25) })}>
+        <button className="btn mono" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={() => store.setViewport({ ...viewport, zoom: Math.max(percentToZoom(MIN_ZOOM_PERCENT), viewport.zoom / 1.25) })}>
           −
         </button>
-        <span className="mono" style={{ fontSize: 12, width: 46, textAlign: "center" }}>{Math.round(viewport.zoom * 100)}%</span>
-        <button className="btn mono" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={() => store.setViewport({ ...viewport, zoom: Math.min(40, viewport.zoom * 1.25) })}>
+        <span className="mono" style={{ fontSize: 12, width: 46, textAlign: "center" }}>{Math.round(zoomToPercent(viewport.zoom))}%</span>
+        <button className="btn mono" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={() => store.setViewport({ ...viewport, zoom: Math.min(percentToZoom(MAX_ZOOM_PERCENT), viewport.zoom * 1.25) })}>
           +
         </button>
         <button className="btn" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={fitViewport}>
@@ -436,7 +437,7 @@ export function Canvas({ store }: { store: EditorStore }) {
 
       <StatusBar
         mode={state.mode}
-        zoomPercent={Math.round(viewport.zoom * 100)}
+        zoomPercent={Math.round(zoomToPercent(viewport.zoom))}
         cursor={cursorDoc}
         pinTool={state.pinTool}
         previewGeometry={previewGeometry}

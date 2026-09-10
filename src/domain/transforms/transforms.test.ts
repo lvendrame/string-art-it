@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { rotatePoint, boundingBoxOf } from "./point";
-import { toScreen, toDocument, screenDistanceToDocument, fitToViewport, type Viewport } from "./viewport";
+import {
+  toScreen,
+  toDocument,
+  screenDistanceToDocument,
+  fitToViewport,
+  zoomToPercent,
+  percentToZoom,
+  CSS_PIXELS_PER_CM,
+  type Viewport,
+} from "./viewport";
 
 describe("rotatePoint", () => {
   it("rotates 90 degrees about a pivot", () => {
@@ -36,6 +45,22 @@ describe("viewport transform", () => {
   it("screenDistanceToDocument scales inversely with zoom", () => {
     expect(screenDistanceToDocument(20, { zoom: 2, panOrigin: { x: 0, y: 0 } })).toBe(10);
     expect(screenDistanceToDocument(20, { zoom: 200, panOrigin: { x: 0, y: 0 } })).toBe(0.1);
+  });
+});
+
+describe("zoomToPercent / percentToZoom", () => {
+  it("100% is true physical 1:1 scale (CSS reference pixel: 96px/inch)", () => {
+    expect(zoomToPercent(CSS_PIXELS_PER_CM)).toBeCloseTo(100, 6);
+    expect(percentToZoom(100)).toBeCloseTo(CSS_PIXELS_PER_CM, 6);
+  });
+
+  it("a raw zoom of 1 (1 px per cm) is nowhere near 100% — this was the bug", () => {
+    expect(zoomToPercent(1)).toBeCloseTo(100 / CSS_PIXELS_PER_CM, 6);
+    expect(zoomToPercent(1)).toBeLessThan(3);
+  });
+
+  it("round-trips", () => {
+    expect(zoomToPercent(percentToZoom(250))).toBeCloseTo(250, 6);
   });
 });
 

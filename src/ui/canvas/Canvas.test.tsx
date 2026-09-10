@@ -120,6 +120,29 @@ describe("Canvas", () => {
     expect(svg.style.cursor).toBe("grabbing");
   });
 
+  it("Fit sizes the viewport so the board fills most of the canvas, not a tiny corner", () => {
+    const store = new EditorStore();
+    store.setBoardDimensions({ diameter: 60 });
+    render(<Canvas store={store} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Fit" }));
+
+    const { zoom } = store.getState().viewport;
+    expect(zoom * 60).toBeGreaterThan(400);
+  });
+
+  it("zoom percentage reflects true physical scale, not a raw px-per-cm value", () => {
+    const store = new EditorStore();
+    render(<Canvas store={store} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Fit" }));
+    const zoomLabel = screen.getByText(/%$/);
+    const displayedPercent = Number(zoomLabel.textContent!.replace("%", ""));
+    const actualPercent = (store.getState().viewport.zoom / (96 / 2.54)) * 100;
+
+    expect(displayedPercent).toBe(Math.round(actualPercent));
+  });
+
   it("zoom controls change viewport zoom without touching board dimensions", () => {
     const store = new EditorStore();
     const before = store.getState().board;

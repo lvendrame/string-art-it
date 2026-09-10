@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { EditorStore } from "./application/document";
+import { fitViewportForBoard } from "./ui/canvas/boardViewport";
 import { EditorShell } from "./ui/EditorShell";
 import { BoardSetup } from "./ui/panels/BoardSetup";
 import { useAutosave } from "./ui/useAutosave";
@@ -8,6 +9,11 @@ export function App() {
   const store = useMemo(() => new EditorStore(), []);
   const [entered, setEntered] = useState(false);
   const { pendingAutosave, restore, discard } = useAutosave(store);
+
+  function enterEditor() {
+    store.setViewport(fitViewportForBoard(store.getState().board));
+    setEntered(true);
+  }
 
   return (
     <>
@@ -34,7 +40,7 @@ export function App() {
           <span>An autosaved project was found.</span>
           <button
             className="btn"
-            onClick={() => { restore(); setEntered(true); }}
+            onClick={() => { restore(); enterEditor(); }}
             style={{ borderRadius: 6, padding: "5px 10px", fontSize: 12, fontWeight: 600, background: "var(--accent)", color: "white", borderColor: "transparent" }}
           >
             Restore
@@ -48,7 +54,7 @@ export function App() {
       {entered ? (
         <EditorShell store={store} onNewProject={() => setEntered(false)} />
       ) : (
-        <BoardSetup store={store} onContinue={() => setEntered(true)} />
+        <BoardSetup store={store} onContinue={enterEditor} />
       )}
     </>
   );

@@ -5,6 +5,7 @@ import {
   projectFileToDocument,
   type EditorStore,
 } from "../../application/document";
+import { fitViewportForBoard } from "../canvas/boardViewport";
 
 // docs/specs/16-persistence.md — New/Save/Open. This MVP stands the real file system
 // in with a browser download (Save) and a file picker (Open); a File System Access
@@ -40,6 +41,7 @@ export function FileMenu({ store, onNewProject }: { store: EditorStore; onNewPro
       const text = await file.text();
       const parsed = migrateProjectFile(JSON.parse(text));
       store.loadProject(projectFileToDocument(parsed));
+      store.setViewport(fitViewportForBoard(store.getState().board));
     } catch (err) {
       window.alert(err instanceof Error ? err.message : "Could not open that project file.");
     }

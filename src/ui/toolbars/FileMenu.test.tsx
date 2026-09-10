@@ -58,6 +58,22 @@ describe("FileMenu", () => {
     vi.restoreAllMocks();
   });
 
+  it("Open fits the viewport to the loaded project's board, whatever size it is", async () => {
+    const seed = new EditorStore();
+    seed.setBoardDimensions({ diameter: 300 }); // very different from the default board
+    const file = new File([JSON.stringify(seed.toProjectFile())], "project.json", { type: "application/json" });
+
+    const store = new EditorStore();
+    const beforeViewport = store.getState().viewport;
+    render(<FileMenu store={store} onNewProject={() => {}} />);
+
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(input, { target: { files: [file] } });
+
+    await vi.waitFor(() => expect(store.getState().viewport).not.toEqual(beforeViewport));
+    expect(store.getState().viewport.zoom * 300).toBeGreaterThan(400);
+  });
+
   it("Open loads a valid project file", async () => {
     const seed = new EditorStore();
     seed.addPinPath(seed.getState().pinLayers[0].id, { type: "circle", center: { x: 0, y: 0 }, radius: 5 });

@@ -19,6 +19,7 @@ import { SymmetryOverlay } from "./SymmetryOverlay";
 import { ThreadLayersView } from "./ThreadLayersView";
 import { ThreadDraftLayer } from "./ThreadDraftLayer";
 import { nearestPinOrMirrorOwner, nearestPinOwner } from "./hitTesting";
+import { symmetryPreviewTransforms } from "./symmetryPreviewTransforms";
 import { useAltModifier } from "./useAltModifier";
 import { useSnappedPointer } from "./useSnappedPointer";
 import { usePanInteraction } from "./usePanInteraction";
@@ -130,6 +131,7 @@ export function Canvas({ store }: { store: EditorStore }) {
   );
   const selectedPathId =
     state.selection.type === "pinPath" ? state.selection.pathId : null;
+  const activeSymmetry = store.getSelectedPinPath()?.symmetry ?? state.symmetryDefaults;
 
   return (
     <div
@@ -185,22 +187,35 @@ export function Canvas({ store }: { store: EditorStore }) {
           />
 
           {state.mode === "pin" && (
-            <SymmetryOverlay
-              config={
-                store.getSelectedPinPath()?.symmetry ?? state.symmetryDefaults
-              }
-            />
+            <SymmetryOverlay config={activeSymmetry} />
           )}
 
           {previewGeometry && (
-            <path
-              d={pathToSvgD(geometryToPath(previewGeometry))}
-              fill="none"
-              stroke="var(--accent)"
-              strokeWidth={0.1}
-              strokeDasharray="0.3 0.2"
-              data-testid="pin-preview"
-            />
+            <>
+              <path
+                d={pathToSvgD(geometryToPath(previewGeometry))}
+                fill="none"
+                stroke="var(--accent)"
+                strokeWidth={0.1}
+                strokeDasharray="0.3 0.2"
+                data-testid="pin-preview"
+              />
+              {/* docs/specs/06-symmetry.md — mirrored/radial copies appear live while
+                  drawing, not only after the shape is committed. */}
+              {symmetryPreviewTransforms(activeSymmetry).map((transform, i) => (
+                <path
+                  key={i}
+                  transform={transform}
+                  d={pathToSvgD(geometryToPath(previewGeometry))}
+                  fill="none"
+                  stroke="var(--accent)"
+                  strokeOpacity={0.55}
+                  strokeWidth={0.1}
+                  strokeDasharray="0.3 0.2"
+                  data-testid="pin-preview-mirror"
+                />
+              ))}
+            </>
           )}
 
           {state.mode === "thread" && state.threadDraft && (

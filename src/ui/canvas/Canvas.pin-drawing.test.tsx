@@ -73,6 +73,22 @@ describe("Canvas — pin drawing interaction", () => {
     expect(remaining.find((p) => p.id === targetPin.id)).toBeUndefined();
   });
 
+  it("shows a mirrored preview while drawing, when symmetry is selected", () => {
+    const store = new EditorStore();
+    store.setPinTool("line");
+    store.setSymmetryConfig({ type: "vertical", axis: { x: 20, y: 0 } });
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    mouseDownAt(svg, 200, 200); // dragStart doc(10,10)
+    fireEvent.mouseMove(svg, { clientX: 280, clientY: 200 }); // cursor doc(30,10)
+
+    expect(screen.getByTestId("pin-preview")).toBeInTheDocument();
+    const mirrored = screen.getByTestId("pin-preview-mirror");
+    expect(mirrored).toBeInTheDocument();
+    expect(mirrored.getAttribute("transform")).toBe("translate(40 0) scale(-1 1)");
+  });
+
   it("select mode selects the Pin Path owning the clicked pin", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;

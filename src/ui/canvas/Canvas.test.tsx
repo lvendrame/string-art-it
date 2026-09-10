@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { act, render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { EditorStore } from "../../application/document";
 import { Canvas } from "./Canvas";
@@ -72,6 +72,52 @@ describe("Canvas", () => {
     const dot = document.querySelector("#grid-dots circle") as SVGCircleElement | null;
     expect(dot?.getAttribute("fill")).toBe("#ff0000");
     expect(dot?.getAttribute("fill-opacity")).toBe("0.3");
+  });
+
+  it("pan mode: dragging translates the viewport, following the cursor", () => {
+    const store = new EditorStore();
+    store.setMode("pan");
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+    const before = store.getState().viewport.panOrigin;
+    const zoom = store.getState().viewport.zoom;
+
+    fireEvent.mouseDown(svg, { clientX: 200, clientY: 200 });
+    fireEvent.mouseMove(svg, { clientX: 240, clientY: 160 });
+
+    const after = store.getState().viewport.panOrigin;
+    expect(after.x).toBeCloseTo(before.x - 40 / zoom, 6);
+    expect(after.y).toBeCloseTo(before.y - -40 / zoom, 6);
+  });
+
+  it("pan mode: releasing the mouse stops the drag", () => {
+    const store = new EditorStore();
+    store.setMode("pan");
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.mouseDown(svg, { clientX: 200, clientY: 200 });
+    fireEvent.mouseMove(svg, { clientX: 240, clientY: 200 });
+    fireEvent.mouseUp(svg, { clientX: 240, clientY: 200 });
+    const afterRelease = store.getState().viewport.panOrigin;
+    fireEvent.mouseMove(svg, { clientX: 300, clientY: 200 });
+
+    expect(store.getState().viewport.panOrigin).toEqual(afterRelease);
+  });
+
+  it("cursor reflects the active mode (grab for pan, crosshair for drawing tools)", () => {
+    const store = new EditorStore();
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    act(() => store.setMode("select"));
+    expect(svg.style.cursor).toBe("default");
+
+    act(() => store.setMode("pan"));
+    expect(svg.style.cursor).toBe("grab");
+
+    fireEvent.mouseDown(svg, { clientX: 200, clientY: 200 });
+    expect(svg.style.cursor).toBe("grabbing");
   });
 
   it("zoom controls change viewport zoom without touching board dimensions", () => {

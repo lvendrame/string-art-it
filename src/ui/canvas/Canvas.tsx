@@ -7,6 +7,7 @@ import {
   findPinById,
   geometryFromDrag,
   geometryToPath,
+  type EditorMode,
   type EditorStore,
   type PinLayer,
   type PinPath,
@@ -37,6 +38,7 @@ export function Canvas({ store }: { store: EditorStore }) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [arcDraft, setArcDraft] = useState<ArcDraft | null>(null);
   const [threadCandidateId, setThreadCandidateId] = useState<string | null>(null);
+  const [panStart, setPanStart] = useState<{ screenX: number; screenY: number; origin: Point } | null>(null);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -53,6 +55,13 @@ export function Canvas({ store }: { store: EditorStore }) {
       window.removeEventListener("keyup", onKeyUp);
     };
   }, [store]);
+
+  useEffect(() => {
+    if (!panStart) return;
+    const onWindowMouseUp = () => setPanStart(null);
+    window.addEventListener("mouseup", onWindowMouseUp);
+    return () => window.removeEventListener("mouseup", onWindowMouseUp);
+  }, [panStart]);
 
   const path = useMemo(() => boardPath(state.board), [state.board]);
   const pathD = useMemo(() => pathToSvgD(path), [path]);
@@ -137,6 +146,11 @@ export function Canvas({ store }: { store: EditorStore }) {
   }
 
   function handlePointerDown(e: React.MouseEvent<SVGSVGElement>) {
+    if (state.mode === "pan") {
+      setPanStart({ screenX: e.clientX, screenY: e.clientY, origin: viewport.panOrigin });
+      return;
+    }
+
     const raw = screenToDoc(e);
     const point = resolvePoint(raw);
     const maxDist = state.snap.radiusPx / viewport.zoom;
@@ -192,6 +206,16 @@ export function Canvas({ store }: { store: EditorStore }) {
   }
 
   function handlePointerMove(e: React.MouseEvent<SVGSVGElement>) {
+    if (panStart) {
+      const dx = e.clientX - panStart.screenX;
+      const dy = e.clientY - panStart.screenY;
+      store.setViewport({
+        ...viewport,
+        panOrigin: { x: panStart.origin.x - dx / viewport.zoom, y: panStart.origin.y - dy / viewport.zoom },
+      });
+      return;
+    }
+
     const raw = screenToDoc(e);
     setCursorDoc(resolvePoint(raw));
     if (state.mode === "thread") {
@@ -201,6 +225,10 @@ export function Canvas({ store }: { store: EditorStore }) {
   }
 
   function handlePointerUp(e: React.MouseEvent<SVGSVGElement>) {
+    if (panStart) {
+      setPanStart(null);
+      return;
+    }
     if (state.mode !== "pin" || !dragStart) return;
     if (!DRAG_TOOLS.includes(state.pinTool)) return;
     const point = resolvePoint(screenToDoc(e));
@@ -317,6 +345,7 @@ export function Canvas({ store }: { store: EditorStore }) {
           width={VIEWPORT_PX.width}
           height={VIEWPORT_PX.height}
           viewBox={viewBox}
+          style={{ cursor: canvasCursor(state.mode, !!panStart) }}
           onMouseDown={handlePointerDown}
           onMouseMove={handlePointerMove}
           onMouseUp={handlePointerUp}
@@ -497,6 +526,12 @@ function SymmetryOverlay({ config }: { config: SymmetryConfig }) {
       )}
     </g>
   );
+}
+
+function canvasCursor(mode: EditorMode, isPanning: boolean): string {
+  if (mode === "pan") return isPanning ? "grabbing" : "grab";
+  if (mode === "select") return "default";
+  return "crosshair";
 }
 
 function gridDotRadius(gapX: number, gapY: number): number {

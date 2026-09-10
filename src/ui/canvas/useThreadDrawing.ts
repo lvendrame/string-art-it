@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { findPinById, type EditorState, type EditorStore } from "../../application/document";
 import type { Point } from "../../domain/paths";
-import { nearestPinOwner, nearestThreadPath } from "./hitTesting";
+import { nearestPinOrMirrorOwner, nearestThreadPath } from "./hitTesting";
 
 // Thread mode drawing workflow (docs/specs/12-thread-editor.md §26-29): click extends
 // the draft, double-click/right-click/Esc terminate it in their respective ways.
@@ -24,17 +24,17 @@ export function useThreadDrawing(store: EditorStore, state: EditorState, threadL
       if (hit) store.deleteThreadPath(hit.layerId, hit.pathId);
       return;
     }
-    const hit = nearestPinOwner(state.pinLayers, raw, maxDist);
+    const hit = nearestPinOrMirrorOwner(state.pinLayers, raw, maxDist);
     if (hit) store.extendThreadDraft(hit.pinId);
   }
 
   function handleMouseMove(raw: Point, maxDist: number): void {
-    setThreadCandidateId(nearestPinOwner(state.pinLayers, raw, maxDist)?.pinId ?? null);
+    setThreadCandidateId(nearestPinOrMirrorOwner(state.pinLayers, raw, maxDist)?.pinId ?? null);
   }
 
   function handleDoubleClick(raw: Point, maxDist: number): void {
     if (state.threadTool !== "draw") return;
-    const hit = nearestPinOwner(state.pinLayers, raw, maxDist);
+    const hit = nearestPinOrMirrorOwner(state.pinLayers, raw, maxDist);
     if (hit) store.finishThreadDraftWithSegment(threadLayerId, hit.pinId);
   }
 

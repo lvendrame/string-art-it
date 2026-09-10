@@ -1,4 +1,5 @@
 import { clonePinPath, type Pin, type PinPath } from "./pinPath";
+import { allPinsWithMirrors } from "./symmetryConfig";
 
 // docs/specs/13-layers.md — full layer panel UI lands at M6, but the shape exists from
 // M3 so Pin Paths always live inside a layer, never as an unrelated top-level list.
@@ -67,11 +68,13 @@ export function duplicatePinLayer(layer: PinLayer): PinLayer {
 }
 
 // Threads reference pins by stable ID across the whole document, not by layer
-// (docs/specs/02-document-model.md) — so lookup scans every layer/path.
+// (docs/specs/02-document-model.md) — so lookup scans every layer/path. A Thread
+// endpoint may also be a mirrored pin's derived id (docs/specs/06-symmetry.md), so
+// each path's real pins and its live-recomputed mirrored copies are both searched.
 export function findPinById(layers: PinLayer[], pinId: string): Pin | undefined {
   for (const l of layers) {
     for (const p of l.pinPaths) {
-      const pin = p.pins.find((x) => x.id === pinId);
+      const pin = allPinsWithMirrors(p).find((x) => x.id === pinId);
       if (pin) return pin;
     }
   }

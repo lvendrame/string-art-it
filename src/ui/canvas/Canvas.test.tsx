@@ -120,6 +120,21 @@ describe("Canvas", () => {
     expect(svg.style.cursor).toBe("grabbing");
   });
 
+  it("select mode: clicking a mirrored (symmetry-generated) pin selects its source Pin Path", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.setSymmetryConfig({ type: "vertical", axis: { x: 50, y: 0 } });
+    const pathId = store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } });
+    store.setMode("select");
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    // Source pins at doc(10,10)/(30,10); mirrored across x=50 land at doc(90,10)/(70,10).
+    fireEvent.mouseDown(svg, { clientX: 520, clientY: 200 }); // mirrored pin at doc(90,10)
+
+    expect(store.getState().selection).toEqual({ type: "pinPath", layerId, pathId });
+  });
+
   it("Fit sizes the viewport so the board fills most of the canvas, not a tiny corner", () => {
     const store = new EditorStore();
     store.setBoardDimensions({ diameter: 60 });

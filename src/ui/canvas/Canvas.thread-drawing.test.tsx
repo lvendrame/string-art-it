@@ -74,6 +74,45 @@ describe("Canvas — thread drawing interaction", () => {
     expect(store.getState().threadLayers[0].threadPaths).toHaveLength(0);
   });
 
+  it("a mirrored (symmetry-generated) pin is a real click target for a Thread endpoint", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.setSymmetryConfig({ type: "vertical", axis: { x: 50, y: 0 } });
+    store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } });
+    store.setMode("thread");
+
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    // Source pins at doc(10,10)/(30,10); mirrored across x=50 land at doc(90,10)/(70,10).
+    fireEvent.mouseDown(svg, { clientX: 520, clientY: 200 }); // mirrored pin at doc(90,10)
+    fireEvent.doubleClick(svg, { clientX: 440, clientY: 200 }); // mirrored pin at doc(70,10)
+
+    const threads = store.getState().threadLayers[0].threadPaths;
+    expect(threads).toHaveLength(1);
+    expect(threads[0].pinIds.every((id) => id.includes("~mirror-"))).toBe(true);
+  });
+
+  it("hovering a mirrored pin outlines it as the candidate, and clicking it outlines it as the origin", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.setSymmetryConfig({ type: "vertical", axis: { x: 50, y: 0 } });
+    store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } });
+    store.setMode("thread");
+
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.mouseDown(svg, { clientX: 200, clientY: 200 }); // start the draft at source pin doc(10,10)
+
+    // Mirrored pin at doc(90,10), across x=50 from the source at doc(10,10).
+    fireEvent.mouseMove(svg, { clientX: 520, clientY: 200 });
+    expect(screen.getByTestId("pin-candidate")).toBeInTheDocument();
+
+    fireEvent.mouseDown(svg, { clientX: 520, clientY: 200 }); // extend the draft to that mirrored pin
+    expect(screen.getByTestId("pin-active-origin")).toBeInTheDocument();
+  });
+
   it("thread eraser removes the whole Thread Path on click near a segment", () => {
     const { store, pins } = seedPinsAndEnterThreadMode();
     const threadLayerId = store.getState().threadLayers[0].id;

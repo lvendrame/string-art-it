@@ -17,7 +17,18 @@ describe("computeMirroredPinGroups", () => {
     });
     const groups = computeMirroredPinGroups(path);
     expect(groups).toHaveLength(1);
-    expect(groups[0][0]).toEqual({ x: -1, y: 0 });
+    expect(groups[0][0]).toMatchObject({ x: -1, y: 0 });
+  });
+
+  it("gives each mirrored pin a stable id distinct from its source, so it can be a Thread endpoint", () => {
+    const path = createPinPath({ type: "line", start: { x: 1, y: 0 }, end: { x: 1, y: 0 } }, 4, STYLE, {
+      type: "vertical",
+      axis: { x: 0, y: 0 },
+    });
+    const sourceId = path.pins[0].id;
+    const mirroredId = computeMirroredPinGroups(path)[0][0].id;
+    expect(mirroredId).not.toBe(sourceId);
+    expect(mirroredId).toContain(sourceId);
   });
 
   it("radial 45deg produces 7 mirrored groups (8 total instances)", () => {

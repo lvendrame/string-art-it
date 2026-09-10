@@ -12,7 +12,7 @@ import { PinLayersView } from "./PinLayersView";
 import { SymmetryOverlay } from "./SymmetryOverlay";
 import { ThreadLayersView } from "./ThreadLayersView";
 import { ThreadDraftLayer } from "./ThreadDraftLayer";
-import { nearestPinOwner } from "./hitTesting";
+import { nearestPinOrMirrorOwner, nearestPinOwner } from "./hitTesting";
 import { useAltModifier } from "./useAltModifier";
 import { useSnappedPointer } from "./useSnappedPointer";
 import { usePanInteraction } from "./usePanInteraction";
@@ -54,7 +54,7 @@ export function Canvas({ store }: { store: EditorStore }) {
     const point = resolvePoint(raw);
 
     if (state.mode === "select") {
-      const hit = nearestPinOwner(state.pinLayers, raw, maxDist);
+      const hit = nearestPinOrMirrorOwner(state.pinLayers, raw, maxDist);
       store.select(hit ? { type: "pinPath", layerId: hit.layerId, pathId: hit.pathId } : { type: "none" });
       return;
     }

@@ -1,4 +1,4 @@
-import { findPinById, type PinLayer, type ThreadLayer } from "../../application/document";
+import { allPinsWithMirrors, findPinById, type Pin, type PinLayer, type PinPath, type ThreadLayer } from "../../application/document";
 import type { Point } from "../../domain/paths";
 
 export interface PinHit {
@@ -7,12 +7,12 @@ export interface PinHit {
   pinId: string;
 }
 
-export function nearestPinOwner(pinLayers: PinLayer[], point: Point, maxDocDistance: number): PinHit | null {
+function nearestAmongPins(pinLayers: PinLayer[], point: Point, maxDocDistance: number, pinsOf: (path: PinPath) => Pin[]): PinHit | null {
   let best: PinHit | null = null;
   let bestDist = Infinity;
   for (const l of pinLayers) {
     for (const p of l.pinPaths) {
-      for (const pin of p.pins) {
+      for (const pin of pinsOf(p)) {
         const d = Math.hypot(pin.x - point.x, pin.y - point.y);
         if (d <= maxDocDistance && d < bestDist) {
           bestDist = d;
@@ -22,6 +22,18 @@ export function nearestPinOwner(pinLayers: PinLayer[], point: Point, maxDocDista
     }
   }
   return best;
+}
+
+export function nearestPinOwner(pinLayers: PinLayer[], point: Point, maxDocDistance: number): PinHit | null {
+  return nearestAmongPins(pinLayers, point, maxDocDistance, (p) => p.pins);
+}
+
+// docs/specs/06-symmetry.md: mirrored pins are real physical pins on the board, so
+// Thread drawing (and select-mode, which resolves a mirrored hit's pathId back to its
+// source per §94) must be able to target them too — unlike the Pin Eraser, which only
+// ever targets real, stored pins.
+export function nearestPinOrMirrorOwner(pinLayers: PinLayer[], point: Point, maxDocDistance: number): PinHit | null {
+  return nearestAmongPins(pinLayers, point, maxDocDistance, allPinsWithMirrors);
 }
 
 function distanceToSegment(p: Point, a: Point, b: Point): number {

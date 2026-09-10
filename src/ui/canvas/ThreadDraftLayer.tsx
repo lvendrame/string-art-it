@@ -1,4 +1,4 @@
-import { findPinById, type EditorState, type PinLayer, type ThreadDraft } from "../../application/document";
+import { allPinsWithMirrors, findPinById, type EditorState, type PinLayer, type ThreadDraft } from "../../application/document";
 import type { Point } from "../../domain/paths";
 import { ThreadPathVisual } from "./ThreadPathVisual";
 
@@ -72,7 +72,7 @@ function PinHighlightOverlay({ pinLayers, lastPinId, threadCandidateId }: { pinL
     <>
       {pinLayers.flatMap((l) =>
         l.pinPaths.flatMap((p) =>
-          p.pins.map((pin) => {
+          allPinsWithMirrors(p).map((pin) => {
             const isOrigin = pin.id === lastPinId;
             const isCandidate = pin.id === threadCandidateId && !isOrigin;
             if (!isOrigin && !isCandidate) return null;

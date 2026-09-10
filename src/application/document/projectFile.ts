@@ -11,7 +11,7 @@ export const CURRENT_PROJECT_VERSION = 1;
 export interface ProjectFileV1 {
   version: 1;
   board: Board;
-  grid: Pick<GridSettings, "gapX" | "gapY">;
+  grid: Pick<GridSettings, "gapX" | "gapY" | "colour" | "opacity">;
   pinLayers: PinLayer[];
   threadLayers: ThreadLayer[];
 }
@@ -20,7 +20,7 @@ export type ProjectFile = ProjectFileV1;
 
 export interface SerializableDocument {
   board: Board;
-  grid: Pick<GridSettings, "gapX" | "gapY">;
+  grid: Pick<GridSettings, "gapX" | "gapY" | "colour" | "opacity">;
   pinLayers: PinLayer[];
   threadLayers: ThreadLayer[];
 }
@@ -32,7 +32,7 @@ export function serializeProject(doc: SerializableDocument): ProjectFile {
 export function createEmptyProject(): SerializableDocument {
   return {
     board: createDefaultBoard(),
-    grid: { gapX: 1, gapY: 1 },
+    grid: { gapX: 1, gapY: 1, colour: "#6d5ef7", opacity: 0.6 },
     pinLayers: [createPinLayer("Layer 1")],
     threadLayers: [createThreadLayer("Layer 1")],
   };

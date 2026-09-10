@@ -59,6 +59,21 @@ describe("Canvas", () => {
     expect(store.getState().grid.gapY).toBe(0.5);
   });
 
+  it("grid colour and opacity are configurable and reflected in the rendered dot", () => {
+    const store = new EditorStore();
+    render(<Canvas store={store} />);
+
+    fireEvent.change(screen.getByLabelText("Grid colour"), { target: { value: "#ff0000" } });
+    fireEvent.change(screen.getByLabelText("Grid opacity"), { target: { value: "0.3" } });
+
+    expect(store.getState().grid.colour).toBe("#ff0000");
+    expect(store.getState().grid.opacity).toBe(0.3);
+
+    const dot = document.querySelector("#grid-dots circle") as SVGCircleElement | null;
+    expect(dot?.getAttribute("fill")).toBe("#ff0000");
+    expect(dot?.getAttribute("fill-opacity")).toBe("0.3");
+  });
+
   it("zoom controls change viewport zoom without touching board dimensions", () => {
     const store = new EditorStore();
     const before = store.getState().board;

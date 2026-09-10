@@ -8,7 +8,7 @@ describe("EditorShell undo/redo shortcuts", () => {
     const store = new EditorStore();
     const before = store.getState().board.dimensions.diameter;
     store.setBoardDimensions({ diameter: 90 });
-    render(<EditorShell store={store} />);
+    render(<EditorShell store={store} onNewProject={() => {}} />);
 
     fireEvent.keyDown(window, { key: "z", ctrlKey: true });
 
@@ -19,7 +19,7 @@ describe("EditorShell undo/redo shortcuts", () => {
     const store = new EditorStore();
     store.setBoardDimensions({ diameter: 90 });
     store.undo();
-    render(<EditorShell store={store} />);
+    render(<EditorShell store={store} onNewProject={() => {}} />);
 
     fireEvent.keyDown(window, { key: "z", ctrlKey: true, shiftKey: true });
 
@@ -29,7 +29,7 @@ describe("EditorShell undo/redo shortcuts", () => {
   it("does not intercept the shortcut while a text field has focus", () => {
     const store = new EditorStore();
     store.setBoardDimensions({ diameter: 90 });
-    render(<EditorShell store={store} />);
+    render(<EditorShell store={store} onNewProject={() => {}} />);
     const input = document.createElement("input");
     document.body.appendChild(input);
     input.focus();
@@ -42,7 +42,7 @@ describe("EditorShell undo/redo shortcuts", () => {
 
   it("Undo/Redo toolbar buttons reflect and drive history state", () => {
     const store = new EditorStore();
-    render(<EditorShell store={store} />);
+    render(<EditorShell store={store} onNewProject={() => {}} />);
     expect(screen.getByRole("button", { name: "Undo" })).toBeDisabled();
 
     act(() => store.setBoardDimensions({ diameter: 90 }));

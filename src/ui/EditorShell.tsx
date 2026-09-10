@@ -19,7 +19,7 @@ function isTextEntryTarget(target: EventTarget | null): boolean {
   return target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
 }
 
-export function EditorShell({ store }: { store: EditorStore }) {
+export function EditorShell({ store, onNewProject }: { store: EditorStore; onNewProject: () => void }) {
   const state = useEditorState(store);
   const [overlay, setOverlay] = useState<"none" | "print" | "stats">("none");
 
@@ -42,7 +42,7 @@ export function EditorShell({ store }: { store: EditorStore }) {
     <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg-app)" }}>
       <div style={{ height: 56, flex: "0 0 auto", display: "flex", alignItems: "center", gap: 20, padding: "0 16px", background: "var(--bg-panel)", borderBottom: "1px solid var(--border)" }}>
         <span style={{ fontWeight: 800, fontSize: 15, letterSpacing: "-0.01em" }}>StringArtIt</span>
-        <FileMenu store={store} />
+        <FileMenu store={store} onNewProject={onNewProject} />
         <ExportMenu store={store} />
         <div style={{ flex: 1 }} />
         <ModeSwitcher mode={state.mode} onChange={store.setMode.bind(store)} />

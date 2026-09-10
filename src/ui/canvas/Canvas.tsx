@@ -277,6 +277,28 @@ export function Canvas({ store }: { store: EditorStore }) {
             style={{ width: 52, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "3px 6px", fontSize: 11 }}
           />
         </label>
+        <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--text-secondary)" }}>
+          Grid colour
+          <input
+            type="color"
+            value={state.grid.colour}
+            onChange={(e) => store.setGrid({ colour: e.target.value })}
+            style={{ width: 24, height: 22, border: "1px solid var(--border)", borderRadius: 4, background: "none", padding: 0 }}
+          />
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--text-secondary)" }}>
+          Grid opacity
+          <input
+            type="number"
+            className="mono"
+            min={0}
+            max={1}
+            step={0.05}
+            value={state.grid.opacity}
+            onChange={(e) => store.setGrid({ opacity: Math.min(1, Math.max(0, Number(e.target.value))) })}
+            style={{ width: 48, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "3px 6px", fontSize: 11 }}
+          />
+        </label>
         <div style={{ flex: 1 }} />
         <button className="btn mono" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={() => store.setViewport({ ...viewport, zoom: Math.max(0.5, viewport.zoom / 1.25) })}>
           −
@@ -306,7 +328,7 @@ export function Canvas({ store }: { store: EditorStore }) {
           <defs>
             <BoardFillDefs id="board-fill" appearance={state.board.appearance} />
             <pattern id="grid-dots" width={state.grid.gapX} height={state.grid.gapY} patternUnits="userSpaceOnUse">
-              <UnclippedGridDot gapX={state.grid.gapX} gapY={state.grid.gapY} />
+              <UnclippedGridDot gapX={state.grid.gapX} gapY={state.grid.gapY} colour={state.grid.colour} opacity={state.grid.opacity} />
             </pattern>
           </defs>
 
@@ -481,9 +503,9 @@ function gridDotRadius(gapX: number, gapY: number): number {
   return Math.max(0.03, Math.min(gapX, gapY) * 0.06);
 }
 
-function UnclippedGridDot({ gapX, gapY }: { gapX: number; gapY: number }) {
+function UnclippedGridDot({ gapX, gapY, colour, opacity }: { gapX: number; gapY: number; colour: string; opacity: number }) {
   const r = gridDotRadius(gapX, gapY);
-  return <circle cx={r} cy={r} r={r} fill="var(--accent)" fillOpacity={0.6} />;
+  return <circle cx={r} cy={r} r={r} fill={colour} fillOpacity={opacity} />;
 }
 
 function ToggleChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {

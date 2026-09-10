@@ -45,7 +45,11 @@ export function App() {
         </div>
       )}
 
-      {entered ? <EditorShell store={store} /> : <BoardSetup store={store} onContinue={() => setEntered(true)} />}
+      {entered ? (
+        <EditorShell store={store} onNewProject={() => setEntered(false)} />
+      ) : (
+        <BoardSetup store={store} onContinue={() => setEntered(true)} />
+      )}
     </>
   );
 }

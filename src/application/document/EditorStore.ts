@@ -45,7 +45,7 @@ export class EditorStore {
     this.state = {
       board: createDefaultBoard(),
       mode: "pin",
-      grid: { gapX: 1, gapY: 1, visible: true, snapEnabled: true },
+      grid: { gapX: 1, gapY: 1, visible: true, snapEnabled: true, colour: "#6d5ef7", opacity: 0.6 },
       snap: { pinSnapEnabled: true, radiusPx: 12 },
       viewport: { zoom: 4, panOrigin: { x: -40, y: -40 } },
       pinLayers: [defaultPinLayer],
@@ -471,7 +471,7 @@ export class EditorStore {
   toProjectFile(): ProjectFile {
     return serializeProject({
       board: this.state.board,
-      grid: { gapX: this.state.grid.gapX, gapY: this.state.grid.gapY },
+      grid: { gapX: this.state.grid.gapX, gapY: this.state.grid.gapY, colour: this.state.grid.colour, opacity: this.state.grid.opacity },
       pinLayers: this.state.pinLayers,
       threadLayers: this.state.threadLayers,
     });
@@ -484,7 +484,7 @@ export class EditorStore {
     this.state = {
       ...this.state,
       board: doc.board,
-      grid: { ...this.state.grid, gapX: doc.grid.gapX, gapY: doc.grid.gapY },
+      grid: { ...this.state.grid, gapX: doc.grid.gapX, gapY: doc.grid.gapY, colour: doc.grid.colour, opacity: doc.grid.opacity },
       pinLayers: doc.pinLayers,
       threadLayers: doc.threadLayers,
       activePinLayerId: doc.pinLayers[0]?.id ?? this.state.activePinLayerId,

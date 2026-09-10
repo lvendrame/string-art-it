@@ -14,6 +14,8 @@ export interface GridSettings {
   gapY: number;
   visible: boolean;
   snapEnabled: boolean;
+  colour: string;
+  opacity: number;
 }
 
 export interface SnapSettings {

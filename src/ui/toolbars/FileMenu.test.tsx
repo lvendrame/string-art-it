@@ -8,11 +8,21 @@ describe("FileMenu", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;
     store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: 5 });
-    render(<FileMenu store={store} />);
+    render(<FileMenu store={store} onNewProject={() => {}} />);
 
     fireEvent.click(screen.getByRole("button", { name: "New" }));
 
     expect(store.getState().pinLayers[0].pinPaths).toHaveLength(0);
+  });
+
+  it("New calls onNewProject so the app can return to the board setup screen", () => {
+    const store = new EditorStore();
+    const onNewProject = vi.fn();
+    render(<FileMenu store={store} onNewProject={onNewProject} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "New" }));
+
+    expect(onNewProject).toHaveBeenCalledTimes(1);
   });
 
   it("Save triggers a file download with the correct filename and MIME type", () => {
@@ -36,7 +46,7 @@ describe("FileMenu", () => {
       return "blob:mock";
     });
 
-    render(<FileMenu store={store} />);
+    render(<FileMenu store={store} onNewProject={() => {}} />);
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
 
     expect(downloadedName).toBe("string-art-project.json");
@@ -54,7 +64,7 @@ describe("FileMenu", () => {
     const file = new File([JSON.stringify(seed.toProjectFile())], "project.json", { type: "application/json" });
 
     const store = new EditorStore();
-    render(<FileMenu store={store} />);
+    render(<FileMenu store={store} onNewProject={() => {}} />);
 
     const input = document.querySelector('input[type="file"]') as HTMLInputElement;
     fireEvent.change(input, { target: { files: [file] } });
@@ -66,7 +76,7 @@ describe("FileMenu", () => {
     const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
     const badFile = new File(["not json"], "bad.json", { type: "application/json" });
     const store = new EditorStore();
-    render(<FileMenu store={store} />);
+    render(<FileMenu store={store} onNewProject={() => {}} />);
 
     const input = document.querySelector('input[type="file"]') as HTMLInputElement;
     fireEvent.change(input, { target: { files: [badFile] } });

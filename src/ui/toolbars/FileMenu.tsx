@@ -9,11 +9,12 @@ import {
 // docs/specs/16-persistence.md — New/Save/Open. This MVP stands the real file system
 // in with a browser download (Save) and a file picker (Open); a File System Access
 // API / IndexedDB autosave adapter is Phase 2 (docs/specs §00-overview-and-scope).
-export function FileMenu({ store }: { store: EditorStore }) {
+export function FileMenu({ store, onNewProject }: { store: EditorStore; onNewProject: () => void }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleNew() {
     store.loadProject(createEmptyProject());
+    onNewProject();
   }
 
   function handleSave() {

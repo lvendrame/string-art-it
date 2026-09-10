@@ -14,6 +14,7 @@ describe("EditorStore project save/load round-trip", () => {
     store.extendThreadDraft(pins[0].id);
     store.finishThreadDraftWithSegment(threadLayerId, pins[1].id);
     store.setBoardDimensions({ diameter: 42 });
+    store.setGrid({ gapX: 2, gapY: 3, colour: "#00ff00", opacity: 0.25 });
 
     const file = store.toProjectFile();
     // Simulate writing to disk and reading back — must survive real JSON serialization.
@@ -23,6 +24,7 @@ describe("EditorStore project save/load round-trip", () => {
     loaded.loadProject(roundTripped);
 
     expect(loaded.getState().board.dimensions.diameter).toBe(42);
+    expect(loaded.getState().grid).toMatchObject({ gapX: 2, gapY: 3, colour: "#00ff00", opacity: 0.25 });
     expect(loaded.getState().pinLayers).toHaveLength(2);
     expect(loaded.getState().threadLayers).toHaveLength(2);
     expect(loaded.getState().pinLayers[0].pinPaths[0].pins).toEqual(pins);
@@ -41,7 +43,7 @@ describe("EditorStore project save/load round-trip", () => {
 
     store.loadProject({
       board: store.getState().board,
-      grid: { gapX: 1, gapY: 1 },
+      grid: { gapX: 1, gapY: 1, colour: "#6d5ef7", opacity: 0.6 },
       pinLayers: store.getState().pinLayers,
       threadLayers: store.getState().threadLayers,
     });

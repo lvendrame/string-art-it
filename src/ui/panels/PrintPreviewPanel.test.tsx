@@ -87,6 +87,26 @@ describe("PrintPreviewPanel", () => {
     expect(threadD).toBeDefined();
   });
 
+  it("prints pins above threads, not hidden underneath thread ink", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    const threadLayerId = store.getState().threadLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } });
+    const pins = store.getState().pinLayers[0].pinPaths[0].pins;
+    store.extendThreadDraft(pins[0].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[pins.length - 1].id);
+    store.setPrintSettings({ elements: { ...store.getState().printSettings.elements, threads: true } });
+    const threadColour = store.getState().threadDefaults.colours[0];
+
+    render(<PrintPreviewPanel store={store} onClose={() => {}} />);
+
+    const threadPath = document.querySelector(`path[stroke='${threadColour}']`);
+    const pinDot = document.querySelector("circle[fill='black']");
+    expect(threadPath).not.toBeNull();
+    expect(pinDot).not.toBeNull();
+    expect(threadPath!.compareDocumentPosition(pinDot!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it("pin dots and numbers stay legible on paper even when fit-to-page shrinks a large board", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;

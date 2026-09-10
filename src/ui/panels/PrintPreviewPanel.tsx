@@ -823,6 +823,27 @@ function PrintPage({
                 strokeWidth={0.05}
               />
             )}
+            {elements.threads &&
+              state.threadLayers.flatMap((l) =>
+                l.threadPaths.map((t) => {
+                  const points = t.pinIds
+                    .map((id) => findPinById(state.pinLayers, id))
+                    .filter((p): p is NonNullable<typeof p> => !!p);
+                  if (points.length < 2) return null;
+                  const d = points
+                    .map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`)
+                    .join(" ");
+                  return (
+                    <path
+                      key={t.id}
+                      d={d}
+                      fill="none"
+                      stroke={t.colours[0]}
+                      strokeWidth={0.03}
+                    />
+                  );
+                }),
+              )}
             {state.pinLayers.flatMap((l) =>
               l.pinPaths.map((p) => (
                 <g key={p.id}>
@@ -885,27 +906,6 @@ function PrintPage({
                 </g>
               )),
             )}
-            {elements.threads &&
-              state.threadLayers.flatMap((l) =>
-                l.threadPaths.map((t) => {
-                  const points = t.pinIds
-                    .map((id) => findPinById(state.pinLayers, id))
-                    .filter((p): p is NonNullable<typeof p> => !!p);
-                  if (points.length < 2) return null;
-                  const d = points
-                    .map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`)
-                    .join(" ");
-                  return (
-                    <path
-                      key={t.id}
-                      d={d}
-                      fill="none"
-                      stroke={t.colours[0]}
-                      strokeWidth={0.03}
-                    />
-                  );
-                }),
-              )}
           </g>
         </g>
 

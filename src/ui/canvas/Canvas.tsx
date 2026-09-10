@@ -1,5 +1,11 @@
 import { useMemo, type MouseEvent as ReactMouseEvent } from "react";
-import { boardPath, DRAG_TOOLS, geometryToPath, type EditorMode, type EditorStore } from "../../application/document";
+import {
+  boardPath,
+  DRAG_TOOLS,
+  geometryToPath,
+  type EditorMode,
+  type EditorStore,
+} from "../../application/document";
 import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
 import { zoomToPercent } from "../../domain/transforms";
 import { useEditorState } from "../useEditorStore";
@@ -35,10 +41,16 @@ export function Canvas({ store }: { store: EditorStore }) {
   const maxDist = state.snap.radiusPx / viewport.zoom;
 
   const altHeld = useAltModifier();
-  const { cursorDoc, screenToDoc, resolvePoint, updateCursor } = useSnappedPointer(state, viewport);
+  const { cursorDoc, screenToDoc, resolvePoint, updateCursor } =
+    useSnappedPointer(state, viewport);
   const pan = usePanInteraction(store);
   const pinDrawing = usePinDrawing(store, layerId);
-  const threadDrawing = useThreadDrawing(store, state, threadLayerId, cursorDoc);
+  const threadDrawing = useThreadDrawing(
+    store,
+    state,
+    threadLayerId,
+    cursorDoc,
+  );
 
   const path = useMemo(() => boardPath(state.board), [state.board]);
   const pathD = useMemo(() => pathToSvgD(path), [path]);
@@ -55,7 +67,11 @@ export function Canvas({ store }: { store: EditorStore }) {
 
     if (state.mode === "select") {
       const hit = nearestPinOrMirrorOwner(state.pinLayers, raw, maxDist);
-      store.select(hit ? { type: "pinPath", layerId: hit.layerId, pathId: hit.pathId } : { type: "none" });
+      store.select(
+        hit
+          ? { type: "pinPath", layerId: hit.layerId, pathId: hit.pathId }
+          : { type: "none" },
+      );
       return;
     }
 
@@ -107,14 +123,36 @@ export function Canvas({ store }: { store: EditorStore }) {
     threadDrawing.handleContextMenu();
   }
 
-  const previewGeometry = pinDrawing.previewGeometry(state.pinTool, cursorDoc, altHeld);
-  const selectedPathId = state.selection.type === "pinPath" ? state.selection.pathId : null;
+  const previewGeometry = pinDrawing.previewGeometry(
+    state.pinTool,
+    cursorDoc,
+    altHeld,
+  );
+  const selectedPathId =
+    state.selection.type === "pinPath" ? state.selection.pathId : null;
 
   return (
-    <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, background: "var(--bg-canvas)" }}>
+    <div
+      style={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        minWidth: 0,
+        background: "var(--bg-canvas)",
+      }}
+    >
       <CanvasToolbar store={store} />
 
-      <div style={{ flex: 1, position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div
+        style={{
+          flex: 1,
+          position: "relative",
+          overflow: "hidden",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <svg
           width={VIEWPORT_PX.width}
           height={VIEWPORT_PX.height}
@@ -130,20 +168,48 @@ export function Canvas({ store }: { store: EditorStore }) {
         >
           <BoardLayer board={state.board} pathD={pathD} />
 
-          <GridLayer grid={state.grid} viewport={viewport} viewportPx={VIEWPORT_PX} />
+          <GridLayer
+            grid={state.grid}
+            viewport={viewport}
+            viewportPx={VIEWPORT_PX}
+          />
 
-          <PinLayersView pinLayers={state.pinLayers} selectedPathId={selectedPathId} />
+          <ThreadLayersView
+            threadLayers={state.threadLayers}
+            pinLayers={state.pinLayers}
+          />
 
-          {state.mode === "pin" && <SymmetryOverlay config={store.getSelectedPinPath()?.symmetry ?? state.symmetryDefaults} />}
+          <PinLayersView
+            pinLayers={state.pinLayers}
+            selectedPathId={selectedPathId}
+          />
 
-          {previewGeometry && (
-            <path d={pathToSvgD(geometryToPath(previewGeometry))} fill="none" stroke="var(--accent)" strokeWidth={0.1} strokeDasharray="0.3 0.2" data-testid="pin-preview" />
+          {state.mode === "pin" && (
+            <SymmetryOverlay
+              config={
+                store.getSelectedPinPath()?.symmetry ?? state.symmetryDefaults
+              }
+            />
           )}
 
-          <ThreadLayersView threadLayers={state.threadLayers} pinLayers={state.pinLayers} />
+          {previewGeometry && (
+            <path
+              d={pathToSvgD(geometryToPath(previewGeometry))}
+              fill="none"
+              stroke="var(--accent)"
+              strokeWidth={0.1}
+              strokeDasharray="0.3 0.2"
+              data-testid="pin-preview"
+            />
+          )}
 
           {state.mode === "thread" && state.threadDraft && (
-            <ThreadDraftLayer state={state} threadDraft={state.threadDraft} cursorDoc={cursorDoc} threadCandidateId={threadDrawing.threadCandidateId} />
+            <ThreadDraftLayer
+              state={state}
+              threadDraft={state.threadDraft}
+              cursorDoc={cursorDoc}
+              threadCandidateId={threadDrawing.threadCandidateId}
+            />
           )}
         </svg>
       </div>

@@ -31,6 +31,22 @@ describe("Canvas", () => {
     expect(children.indexOf(gridOverlay)).toBeGreaterThan(children.indexOf(boardOutline));
   });
 
+  it("pins render above threads, not hidden underneath thread ink", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    const threadLayerId = store.getState().threadLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } });
+    const pins = store.getState().pinLayers[0].pinPaths[0].pins;
+    store.extendThreadDraft(pins[0].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[pins.length - 1].id);
+
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+    const children = Array.from(svg.querySelectorAll("[data-testid='thread-path'], [data-testid='pin-path']"));
+
+    expect(children[children.length - 1].getAttribute("data-testid")).toBe("pin-path");
+  });
+
   it("grid dot is fully inset within its pattern tile, not clipped to a quarter-circle at the corner", () => {
     const store = new EditorStore();
     render(<Canvas store={store} />);

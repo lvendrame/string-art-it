@@ -15,7 +15,7 @@ export function PinPathVisual({ pinPath, selected }: { pinPath: PinPath; selecte
         <path d={d} fill="none" stroke={selected ? "var(--accent)" : "#000000"} strokeOpacity={selected ? 1 : 0.8} strokeWidth={selected ? 0.08 : 0.05} strokeDasharray="0.2 0.15" />
       )}
       {mirroredGroups.map((group, gi) => (
-        <g key={gi} data-testid="mirrored-pins" opacity={0.45}>
+        <g key={gi} data-testid="mirrored-pins" opacity={1}>
           {group.map((pin) => (
             <circle key={pin.id} cx={pin.x} cy={pin.y} r={Math.max(radius, 0.06)} fill={pinPath.colour} stroke="#1b1b1b" strokeWidth={0.02} />
           ))}

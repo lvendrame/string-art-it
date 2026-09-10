@@ -33,6 +33,22 @@ describe("Canvas — thread drawing interaction", () => {
     expect(store.getState().threadDraft).toBeNull();
   });
 
+  it("confirmed segments stay visible while drawing the rest of the thread", () => {
+    const { store } = seedPinsAndEnterThreadMode();
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.mouseDown(svg, { clientX: 200, clientY: 200 }); // pin at doc(10,10) — origin only, no segment yet
+    expect(screen.queryByTestId("thread-path")).not.toBeInTheDocument();
+
+    fireEvent.mouseDown(svg, { clientX: 240, clientY: 200 }); // pin at doc(20,10) — first segment confirmed
+    expect(screen.getByTestId("thread-path")).toBeInTheDocument(); // must NOT disappear
+
+    fireEvent.mouseDown(svg, { clientX: 280, clientY: 200 }); // pin at doc(30,10) — second segment confirmed
+    expect(screen.getByTestId("thread-path")).toBeInTheDocument(); // still must not disappear
+    expect(store.getState().threadDraft?.pinIds).toHaveLength(3);
+  });
+
   it("right-click finishes without adding a pending segment", () => {
     const { store, pins } = seedPinsAndEnterThreadMode();
     render(<Canvas store={store} />);

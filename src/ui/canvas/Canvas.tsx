@@ -316,6 +316,19 @@ export function Canvas({ store }: { store: EditorStore }) {
             l.visible ? l.threadPaths.map((t) => <ThreadPathVisual key={t.id} threadPath={t} pinLayers={state.pinLayers} />) : [],
           )}
 
+          {state.mode === "thread" && state.threadDraft && state.threadDraft.pinIds.length >= 2 && (
+            <ThreadPathVisual
+              threadPath={{
+                id: "draft",
+                colours: state.threadDefaults.colours,
+                width: state.threadDefaults.width,
+                twistPitch: state.threadDefaults.twistPitch,
+                pinIds: state.threadDraft.pinIds,
+              }}
+              pinLayers={state.pinLayers}
+            />
+          )}
+
           {state.mode === "thread" && state.threadDraft && cursorDoc && (() => {
             const lastPinId = state.threadDraft.pinIds[state.threadDraft.pinIds.length - 1];
             const from = findPinById(state.pinLayers, lastPinId);

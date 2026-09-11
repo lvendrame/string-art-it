@@ -12,6 +12,7 @@ import {
 } from "../../domain/shapes";
 import { distributeClosedPath, distributeOpenPath, distributePathPerVertex } from "../../domain/paths";
 import type { Path, Point } from "../../domain/paths";
+import { rotatePoint, translatePoint } from "../../domain/transforms";
 import { NO_SYMMETRY, type SymmetryConfig } from "./symmetryConfig";
 import { nextId } from "./idCounter";
 
@@ -50,6 +51,67 @@ export function geometryToPath(geometry: PinPathGeometry): Path {
       return polygramShape(geometry.center, geometry.radius, geometry.points, geometry.skip, geometry.rotation);
     case "freehand":
       return freehandShape(geometry.points);
+  }
+}
+
+// docs/specs/09-selection-and-editing.md Move tool — shifts every point field of a
+// geometry by `delta`; `rotation` fields are translation-invariant, untouched.
+export function translateGeometry(geometry: PinPathGeometry, delta: Point): PinPathGeometry {
+  switch (geometry.type) {
+    case "line":
+    case "arc":
+      return { ...geometry, start: translatePoint(geometry.start, delta), end: translatePoint(geometry.end, delta) };
+    case "ellipse":
+    case "circle":
+    case "regular-polygon":
+    case "star":
+    case "polygram":
+      return { ...geometry, center: translatePoint(geometry.center, delta) };
+    case "rectangle":
+    case "square":
+      return { ...geometry, position: translatePoint(geometry.position, delta) };
+    case "freehand":
+      return { ...geometry, points: geometry.points.map((p) => translatePoint(p, delta)) };
+  }
+}
+
+// docs/specs/09-selection-and-editing.md Rotation tool — rotates by `theta` radians
+// about an ARBITRARY external pivot (wherever the user pressed down, not the shape's
+// own center). Rectangle/square need special handling: `position` is always
+// `center - halfSize` in the shape's UNROTATED local frame (rectangleShape derives
+// center from position BEFORE applying `rotation`), so rotating `position` directly
+// around an external pivot and separately bumping `rotation` would NOT keep
+// `position + halfSize` equal to the correctly-rotated center. Instead: rotate the
+// derived center about the pivot, then re-derive `position` from the new center using
+// the same unrotated halfSize offset.
+export function rotateGeometry(geometry: PinPathGeometry, pivot: Point, theta: number): PinPathGeometry {
+  switch (geometry.type) {
+    case "line":
+    case "arc":
+      return { ...geometry, start: rotatePoint(geometry.start, pivot, theta), end: rotatePoint(geometry.end, pivot, theta) };
+    case "circle":
+      // Rotationally symmetric about its own center; only the center needs to move.
+      return { ...geometry, center: rotatePoint(geometry.center, pivot, theta) };
+    case "ellipse":
+    case "regular-polygon":
+    case "star":
+    case "polygram":
+      return { ...geometry, center: rotatePoint(geometry.center, pivot, theta), rotation: geometry.rotation + theta };
+    case "rectangle": {
+      const halfW = geometry.width / 2;
+      const halfH = geometry.height / 2;
+      const oldCenter: Point = { x: geometry.position.x + halfW, y: geometry.position.y + halfH };
+      const newCenter = rotatePoint(oldCenter, pivot, theta);
+      return { ...geometry, position: { x: newCenter.x - halfW, y: newCenter.y - halfH }, rotation: geometry.rotation + theta };
+    }
+    case "square": {
+      const half = geometry.side / 2;
+      const oldCenter: Point = { x: geometry.position.x + half, y: geometry.position.y + half };
+      const newCenter = rotatePoint(oldCenter, pivot, theta);
+      return { ...geometry, position: { x: newCenter.x - half, y: newCenter.y - half }, rotation: geometry.rotation + theta };
+    }
+    case "freehand":
+      return { ...geometry, points: geometry.points.map((p) => rotatePoint(p, pivot, theta)) };
   }
 }
 

@@ -18,6 +18,8 @@ export type {
   PinTool,
   PinDefaults,
   Selection,
+  SelectTool,
+  MergeCandidate,
   ThreadTool,
   ThreadDefaults,
   ThreadDraft,
@@ -29,6 +31,8 @@ export {
   recomputePinPath,
   distributePins,
   isVertexAnchoredGeometry,
+  translateGeometry,
+  rotateGeometry,
   type PinPathGeometry,
   type Pin,
   type PinPath,
@@ -42,13 +46,14 @@ export {
   removePinPathFromLayers,
   updatePinPathInLayers,
   erasePinFromLayers,
+  mergePinsInLayers,
   findPinById,
   duplicatePinLayer,
   type PinLayer,
 } from "./pinLayer";
 export { geometryFromDrag, curvatureFromCursor, DRAG_TOOLS } from "./pinToolGeometry";
 export { NO_SYMMETRY, allPinsWithMirrors, computeMirroredPinGroups, mirroredPinId, type SymmetryConfig } from "./symmetryConfig";
-export { createThreadPath, removePinFromThreadPath, splitThreadPathAtSegment, type ThreadPath } from "./threadPath";
+export { createThreadPath, removePinFromThreadPath, splitThreadPathAtSegment, remapPinsInThreadPath, type ThreadPath } from "./threadPath";
 export {
   createThreadLayer,
   isThreadLayerLocked,
@@ -57,6 +62,7 @@ export {
   removeThreadPathFromLayers,
   removePinFromAllThreadLayers,
   splitThreadPathInLayer,
+  remapPinsInAllThreadLayers,
   duplicateThreadLayer,
   type ThreadLayer,
 } from "./threadLayer";

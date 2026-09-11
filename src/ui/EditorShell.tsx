@@ -7,6 +7,7 @@ import { FileMenu } from "./toolbars/FileMenu";
 import { ExportMenu } from "./toolbars/ExportMenu";
 import { PinToolbar } from "./toolbars/PinToolbar";
 import { ThreadToolbar } from "./toolbars/ThreadToolbar";
+import { SelectToolbar } from "./toolbars/SelectToolbar";
 import { PinPropertiesPanel } from "./panels/PinPropertiesPanel";
 import { SelectionPanel } from "./panels/SelectionPanel";
 import { SymmetryPanel } from "./panels/SymmetryPanel";
@@ -77,7 +78,8 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
           </div>
         )}
         {state.mode === "select" && (
-          <div style={{ width: 248, flex: "0 0 auto", background: "var(--bg-panel)", borderRight: "1px solid var(--border)", overflowY: "auto" }}>
+          <div style={{ width: 248, flex: "0 0 auto", background: "var(--bg-panel)", borderRight: "1px solid var(--border)", overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 20 }}>
+            <SelectToolbar store={store} />
             <SelectionPanel store={store} />
           </div>
         )}

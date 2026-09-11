@@ -24,7 +24,7 @@ export function SelectionPanel({ store }: { store: EditorStore }) {
   const state = useEditorState(store);
   if (state.selection.type !== "pinPath") {
     return (
-      <div style={{ padding: 24, color: "var(--text-tertiary)", fontSize: 12 }}>
+      <div style={{ color: "var(--text-tertiary)", fontSize: 12 }}>
         Click a pin to select its Pin Path.
       </div>
     );
@@ -38,7 +38,7 @@ export function SelectionPanel({ store }: { store: EditorStore }) {
   const set = (next: PinPathGeometry) => store.updatePinPathGeometry(layerId, pathId, next);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: 16 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
         Selection — {g.type}
       </div>

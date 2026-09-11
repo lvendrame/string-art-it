@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { removePinFromThreadPath, splitThreadPathAtSegment, type ThreadPath } from "./threadPath";
+import { remapPinsInThreadPath, removePinFromThreadPath, splitThreadPathAtSegment, type ThreadPath } from "./threadPath";
 
 function makeThread(pinIds: string[]): ThreadPath {
   return { id: "t1", colours: ["red"], width: 1, pinIds, twistPitch: 6 };
@@ -61,5 +61,30 @@ describe("splitThreadPathAtSegment", () => {
     expect(fragments).toHaveLength(2);
     expect(fragments[0].id).not.toBe(fragments[1].id);
     expect(fragments[0].id).not.toBe("t1");
+  });
+});
+
+describe("remapPinsInThreadPath", () => {
+  it("replaces merged-away ids and collapses the adjacent duplicate they create", () => {
+    // A-B-C-D-E, merging B and C into M -> A-M-M-D-E -> collapses to A-M-D-E.
+    const [result, ...rest] = remapPinsInThreadPath(makeThread(["A", "B", "C", "D", "E"]), new Set(["B", "C"]), "M");
+    expect(rest).toHaveLength(0);
+    expect(result.pinIds).toEqual(["A", "M", "D", "E"]);
+  });
+
+  it("keeps the same path id — it's a contraction, not a fragment", () => {
+    const [result] = remapPinsInThreadPath(makeThread(["A", "B", "C"]), new Set(["B"]), "M");
+    expect(result.id).toBe("t1");
+  });
+
+  it("a thread reduced below 2 ids after collapsing is dropped entirely", () => {
+    // A-B merging both A and B into the same new pin M collapses to just [M].
+    const fragments = remapPinsInThreadPath(makeThread(["A", "B"]), new Set(["A", "B"]), "M");
+    expect(fragments).toHaveLength(0);
+  });
+
+  it("no ids referenced by the merge leaves the thread unchanged in content", () => {
+    const [result] = remapPinsInThreadPath(makeThread(["A", "B", "C"]), new Set(["Z"]), "M");
+    expect(result.pinIds).toEqual(["A", "B", "C"]);
   });
 });

@@ -3,7 +3,7 @@ import type { ComponentType } from "react";
 import type { EditorMode } from "../../application/document";
 
 const MODES: { id: EditorMode; label: string; icon: ComponentType<{ size?: number }> }[] = [
-  { id: "select", label: "Select", icon: MousePointer2 },
+  { id: "select", label: "Edit", icon: MousePointer2 },
   { id: "pin", label: "Pin", icon: PinIcon },
   { id: "thread", label: "Thread", icon: Spline },
   { id: "pan", label: "Pan", icon: Hand },

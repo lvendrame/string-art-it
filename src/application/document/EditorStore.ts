@@ -1,7 +1,7 @@
 import { HistoryStack } from "../commands/HistoryStack";
 import { SetValueCommand } from "../commands/SetValueCommand";
 import { createDefaultBoard, defaultDimensionsFor, clampDimension, type Board, type BoardAppearance, type BoardDimensions, type BoardShape, type TriangleType } from "./board";
-import type { EditorMode, EditorState, GridSettings, PinDefaults, PinTool, Selection, ThreadDefaults, ThreadTool } from "./EditorState";
+import type { EditorMode, EditorState, GridSettings, MergeCandidate, PinDefaults, PinTool, SelectTool, Selection, ThreadDefaults, ThreadTool } from "./EditorState";
 import {
   addPinPathToLayers,
   createPinLayer,
@@ -9,18 +9,20 @@ import {
   erasePinFromLayers,
   findPinPath,
   isLayerLocked,
+  mergePinsInLayers,
   removePinPathFromLayers,
   updatePinPathInLayers,
   type PinLayer,
 } from "./pinLayer";
 import { deleteLayer, renameLayer, reorderLayer, toggleLayerLocked, toggleLayerVisible } from "./layerOps";
-import { createPinPath, recomputePinPath, type PinPathGeometry } from "./pinPath";
+import { createPinPath, nextPinId, recomputePinPath, type Pin, type PinPathGeometry } from "./pinPath";
 import { NO_SYMMETRY, type SymmetryConfig } from "./symmetryConfig";
 import {
   addThreadPathToLayers,
   createThreadLayer,
   duplicateThreadLayer as cloneThreadLayer,
   isThreadLayerLocked,
+  remapPinsInAllThreadLayers,
   removePinFromAllThreadLayers,
   removeThreadPathFromLayers,
   splitThreadPathInLayer,
@@ -74,6 +76,8 @@ export class EditorStore {
       pinDefaults: { spacing: 1, colour: "#f2ede4", diameter: 2, guideVisible: true },
       symmetryDefaults: NO_SYMMETRY,
       selection: { type: "none" },
+      selectTool: "select",
+      mergeSelection: [],
       threadLayers: [defaultThreadLayer],
       activeThreadLayerId: defaultThreadLayer.id,
       threadTool: "draw",
@@ -178,6 +182,15 @@ export class EditorStore {
 
   select(selection: Selection): void {
     this.state = { ...this.state, selection };
+    this.notify();
+  }
+
+  setSelectTool(tool: SelectTool): void {
+    // Leaving Merge clears any pending accumulation — it's tool-specific transient UI
+    // state with no meaning once you switch tools; unlike ThreadDraft (which has no
+    // mode-switch-clears precedent and relies on Esc), a half-built merge left behind
+    // would just be a stale, confusing highlight. Esc still cancels while staying on Merge.
+    this.state = { ...this.state, selectTool: tool, mergeSelection: tool === "merge" ? this.state.mergeSelection : [] };
     this.notify();
   }
 
@@ -311,6 +324,96 @@ export class EditorStore {
     const { selection } = this.state;
     if (selection.type !== "pinPath") return undefined;
     return findPinPath(this.state.pinLayers, selection.layerId, selection.pathId);
+  }
+
+  // --- Edit mode: Move / Rotation / Merge (docs/specs/09-selection-and-editing.md) ---
+
+  // Live preview only — bypasses undo history entirely, like setViewport. The real
+  // committed transform happens once, on release, via commitPinPathTransform.
+  previewPinPathPins(layerId: string, pathId: string, pins: Pin[]): void {
+    this.state = { ...this.state, pinLayers: updatePinPathInLayers(this.state.pinLayers, layerId, pathId, (p) => ({ ...p, pins })) };
+    this.notify();
+  }
+
+  // Move/Rotation commit. Takes the already-transformed `pins` (same ids, moved
+  // positions — computed by the calling hook the same way as its live preview)
+  // instead of recomputing via distributePins: unlike a SelectionPanel geometry edit,
+  // Move/Rotation must NOT mint fresh pin ids, or every Thread Path segment touching
+  // this Pin Path would silently orphan (nothing remaps thread pinIds after a plain
+  // geometry edit, unlike the Merge/Erase tools, which cascade explicitly). Keeping
+  // ids stable also means any pins already removed by the Pin Eraser survive a Move.
+  // Takes an explicit `previous` snapshot (captured at gesture start by the calling
+  // hook) instead of reading this.state.pinLayers: by commit time, this.state.pinLayers
+  // holds the last PREVIEW frame's temporarily-swapped pins, not the true pre-gesture
+  // state, so it can't be trusted as the undo-`previous` here.
+  commitPinPathTransform(layerId: string, pathId: string, geometry: PinPathGeometry, pins: Pin[], previous: PinLayer[]): void {
+    // Checked against the LIVE lock flag (this.state.pinLayers), not `previous` — the
+    // layer could have been locked via the Layers panel mid-drag; `previous` only
+    // exists to give undo the correct pre-gesture pins/geometry snapshot.
+    if (isLayerLocked(this.state.pinLayers, layerId)) {
+      this.setPinLayers(previous);
+      return;
+    }
+    const next = updatePinPathInLayers(previous, layerId, pathId, (path) => ({ ...path, geometry, pins }));
+    const command = new SetValueCommand<PinLayer[]>((l) => this.setPinLayers(l), previous, next);
+    this.history.run(command);
+  }
+
+  // Abandon a Move/Rotation drag (Esc, or mouseup outside the canvas) — restores the
+  // pre-gesture pins with a plain, non-undoable write; nothing reaches history.
+  restorePinLayers(previous: PinLayer[]): void {
+    this.setPinLayers(previous);
+  }
+
+  extendMergeSelection(candidate: MergeCandidate): void {
+    const existing = this.state.mergeSelection;
+    const next = existing.some((c) => c.pinId === candidate.pinId)
+      ? existing.filter((c) => c.pinId !== candidate.pinId) // click again to deselect
+      : [...existing, candidate];
+    this.state = { ...this.state, mergeSelection: next };
+    this.notify();
+  }
+
+  cancelMergeSelection(): void {
+    this.state = { ...this.state, mergeSelection: [] };
+    this.notify();
+  }
+
+  commitMergeSelection(): void {
+    const candidates = this.state.mergeSelection;
+    if (candidates.length < 2) {
+      this.cancelMergeSelection();
+      return;
+    }
+    if (candidates.some((c) => isLayerLocked(this.state.pinLayers, c.layerId))) return; // whole merge aborts; selection left intact
+
+    const destination = candidates[0];
+    const oldPinIds = new Set(candidates.map((c) => c.pinId));
+    const points = candidates
+      .map((c) => findPinPath(this.state.pinLayers, c.layerId, c.pathId)?.pins.find((p) => p.id === c.pinId))
+      .filter((p): p is Pin => !!p);
+    const newPin: Pin = {
+      id: nextPinId(),
+      x: points.reduce((s, p) => s + p.x, 0) / points.length,
+      y: points.reduce((s, p) => s + p.y, 0) / points.length,
+    };
+
+    const nextPinLayers = mergePinsInLayers(this.state.pinLayers, oldPinIds, destination, newPin);
+    const nextThreadLayers = remapPinsInAllThreadLayers(this.state.threadLayers, oldPinIds, newPin.id);
+    const prev = { pinLayers: this.state.pinLayers, threadLayers: this.state.threadLayers };
+    const next = { pinLayers: nextPinLayers, threadLayers: nextThreadLayers };
+    const command = new SetValueCommand<typeof next>(
+      (v) => {
+        this.state = { ...this.state, ...v };
+        this.notify();
+      },
+      prev,
+      next,
+    );
+    this.history.run(command);
+
+    this.state = { ...this.state, mergeSelection: [], selection: { type: "pinPath", layerId: destination.layerId, pathId: destination.pathId } };
+    this.notify();
   }
 
   // --- Thread editor (docs/specs/12-thread-editor.md) ---
@@ -556,6 +659,8 @@ export class EditorStore {
       activePinLayerId: doc.pinLayers[0]?.id ?? this.state.activePinLayerId,
       activeThreadLayerId: doc.threadLayers[0]?.id ?? this.state.activeThreadLayerId,
       selection: { type: "none" },
+      selectTool: "select",
+      mergeSelection: [],
       threadDraft: null,
     };
     this.notify();

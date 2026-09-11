@@ -6,6 +6,7 @@ import {
   type EditorMode,
   type EditorStore,
   type PinPathGeometry,
+  type SelectTool,
 } from "../../application/document";
 import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
 import { zoomToPercent } from "../../domain/transforms";
@@ -21,6 +22,7 @@ import { SymmetryOverlay } from "./SymmetryOverlay";
 import { ThreadLayersView } from "./ThreadLayersView";
 import { ThreadDraftLayer } from "./ThreadDraftLayer";
 import { PinHighlightOverlay } from "./PinHighlightOverlay";
+import { MergeSelectionOverlay } from "./MergeSelectionOverlay";
 import { nearestPinOrMirrorOwner, nearestPinOwner } from "./hitTesting";
 import { symmetryPreviewTransforms } from "./symmetryPreviewTransforms";
 import { useAltModifier } from "./useAltModifier";
@@ -29,12 +31,19 @@ import { usePanInteraction } from "./usePanInteraction";
 import { usePinDrawing } from "./usePinDrawing";
 import { useFreehandDrawing } from "./useFreehandDrawing";
 import { useThreadDrawing } from "./useThreadDrawing";
+import { useMoveTool } from "./useMoveTool";
+import { useRotateTool } from "./useRotateTool";
+import { useMergeTool } from "./useMergeTool";
 
 const VIEWPORT_PX = CANVAS_VIEWPORT_PX;
 
-function canvasCursor(mode: EditorMode, isPanning: boolean): string {
+function canvasCursor(mode: EditorMode, selectTool: SelectTool, isPanning: boolean): string {
   if (mode === "pan") return isPanning ? "grabbing" : "grab";
-  if (mode === "select") return "default";
+  if (mode === "select") {
+    if (selectTool === "move") return "move";
+    if (selectTool === "rotate") return "crosshair";
+    return "default";
+  }
   return "crosshair";
 }
 
@@ -57,12 +66,21 @@ export function Canvas({ store }: { store: EditorStore }) {
     threadLayerId,
     cursorDoc,
   );
+  const moveTool = useMoveTool(store, state);
+  const rotateTool = useRotateTool(store, state);
+  const mergeTool = useMergeTool(store, state);
 
   const path = useMemo(() => boardPath(state.board), [state.board]);
   const pathD = useMemo(() => pathToSvgD(path), [path]);
   const viewBox = `${viewport.panOrigin.x} ${viewport.panOrigin.y} ${VIEWPORT_PX.width / viewport.zoom} ${VIEWPORT_PX.height / viewport.zoom}`;
 
   function handlePointerDown(e: ReactMouseEvent<SVGSVGElement>) {
+    // Only the primary (left) button starts a drawing/drag/select/accumulate gesture —
+    // a right-click is exclusively for the context-menu actions below (Thread finish,
+    // Merge commit). Without this guard, right-clicking directly on an already-
+    // selected Merge candidate would toggle it off via this handler a moment before
+    // handleContextMenu commits, silently dropping it from the merge.
+    if (e.button !== 0) return;
     if (state.mode === "pan") {
       pan.begin(e, viewport);
       return;
@@ -72,12 +90,20 @@ export function Canvas({ store }: { store: EditorStore }) {
     const point = resolvePoint(raw);
 
     if (state.mode === "select") {
-      const hit = nearestPinOrMirrorOwner(state.pinLayers, raw, maxDist);
-      store.select(
-        hit
-          ? { type: "pinPath", layerId: hit.layerId, pathId: hit.pathId }
-          : { type: "none" },
-      );
+      if (state.selectTool === "select") {
+        const hit = nearestPinOrMirrorOwner(state.pinLayers, raw, maxDist);
+        store.select(
+          hit
+            ? { type: "pinPath", layerId: hit.layerId, pathId: hit.pathId }
+            : { type: "none" },
+        );
+      } else if (state.selectTool === "move" && state.selection.type === "pinPath") {
+        moveTool.handleMouseDown(point);
+      } else if (state.selectTool === "rotate" && state.selection.type === "pinPath") {
+        rotateTool.handleMouseDown(point, e.clientX);
+      } else if (state.selectTool === "merge") {
+        mergeTool.handleMouseDown(raw, maxDist);
+      }
       return;
     }
 
@@ -117,6 +143,8 @@ export function Canvas({ store }: { store: EditorStore }) {
     const { raw } = updateCursor(e);
     if (state.mode === "thread") threadDrawing.handleMouseMove(raw, maxDist);
     if (state.mode === "pin" && state.pinTool === "freehand") freehandDrawing.handleMouseMove(raw, viewport);
+    if (state.mode === "select" && state.selectTool === "move") moveTool.handleMouseMove(resolvePoint(raw));
+    if (state.mode === "select" && state.selectTool === "rotate") rotateTool.handleMouseMove(resolvePoint(raw), e.clientX);
   }
 
   function handlePointerUp(e: ReactMouseEvent<SVGSVGElement>) {
@@ -126,6 +154,14 @@ export function Canvas({ store }: { store: EditorStore }) {
     }
     if (state.mode === "pin" && state.pinTool === "freehand") {
       freehandDrawing.handleMouseUp();
+      return;
+    }
+    if (state.mode === "select" && state.selectTool === "move") {
+      moveTool.handleMouseUp(resolvePoint(screenToDoc(e)));
+      return;
+    }
+    if (state.mode === "select" && state.selectTool === "rotate") {
+      rotateTool.handleMouseUp(resolvePoint(screenToDoc(e)), e.clientX);
       return;
     }
     if (state.mode !== "pin" || !DRAG_TOOLS.includes(state.pinTool)) return;
@@ -141,8 +177,8 @@ export function Canvas({ store }: { store: EditorStore }) {
 
   function handleContextMenu(e: ReactMouseEvent<SVGSVGElement>) {
     e.preventDefault();
-    if (state.mode !== "thread") return;
-    threadDrawing.handleContextMenu();
+    if (state.mode === "thread") threadDrawing.handleContextMenu();
+    else if (state.mode === "select" && state.selectTool === "merge") mergeTool.handleContextMenu();
   }
 
   const previewGeometry = pinDrawing.previewGeometry(
@@ -185,7 +221,7 @@ export function Canvas({ store }: { store: EditorStore }) {
           width={VIEWPORT_PX.width}
           height={VIEWPORT_PX.height}
           viewBox={viewBox}
-          style={{ cursor: canvasCursor(state.mode, pan.isPanning) }}
+          style={{ cursor: canvasCursor(state.mode, state.selectTool, pan.isPanning) }}
           onMouseDown={handlePointerDown}
           onMouseMove={handlePointerMove}
           onMouseUp={handlePointerUp}
@@ -265,6 +301,10 @@ export function Canvas({ store }: { store: EditorStore }) {
               threadCandidateId={threadDrawing.threadCandidateId}
               usedPinIds={state.threadDraft?.pinIds.slice(0, -1) ?? []}
             />
+          )}
+
+          {state.mode === "select" && state.selectTool === "merge" && (
+            <MergeSelectionOverlay pinLayers={state.pinLayers} selectedPinIds={state.mergeSelection.map((c) => c.pinId)} />
           )}
         </svg>
       </div>

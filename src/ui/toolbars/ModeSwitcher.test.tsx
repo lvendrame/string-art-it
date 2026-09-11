@@ -6,7 +6,7 @@ describe("ModeSwitcher", () => {
   it("shows all four modes and marks the active one", () => {
     render(<ModeSwitcher mode="pin" onChange={() => {}} />);
     expect(screen.getByRole("tab", { name: "Pin" })).toHaveAttribute("aria-selected", "true");
-    expect(screen.getByRole("tab", { name: "Select" })).toHaveAttribute("aria-selected", "false");
+    expect(screen.getByRole("tab", { name: "Edit" })).toHaveAttribute("aria-selected", "false");
   });
 
   it("calls onChange with the clicked mode", () => {

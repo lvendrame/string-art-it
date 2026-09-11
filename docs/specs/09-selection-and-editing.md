@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Define what the Selection tool can select and how selecting an existing Pin Path exposes its editable geometry, enabling modification rather than requiring redraw.
+Define what the Selection tool can select and how selecting an existing Pin Path exposes its editable geometry, enabling modification rather than requiring redraw. Also defines the Edit-mode tool area (Select / Move / Rotation / Merge) — the mode tab itself is labeled **"Edit"**, since it now covers more than plain selection.
 
 ## Selection Scope
 
@@ -46,6 +46,39 @@ Also editable regardless of shape (see [08-pin-tools-and-properties.md](./08-pin
 - Selecting a Thread Path exposes thread-level properties (colours, width — see [12-thread-editor.md](./12-thread-editor.md)); it does not expose pin-geometry controls.
 - Selecting the radial symmetry centre allows it to be dragged, per [06-symmetry.md](./06-symmetry.md).
 - Selecting an object on a locked layer must not allow edits (see [13-layers.md](./13-layers.md)).
+
+## Edit Tool Area
+
+Edit mode has four tools:
+
+- **Select** — click a pin to select its Pin Path (the existing behaviour above).
+- **Move** — translates the selected Pin Path.
+- **Rotation** — rotates the selected Pin Path.
+- **Merge** — combines several pins (from any Pin Path, any layer) into one.
+
+Move and Rotation are disabled unless a Pin Path is currently selected. Merge is always enabled — it builds its own multi-pin selection independent of the single-object Selection.
+
+### Move
+
+Press-drag-release: pressing the left mouse button anywhere starts the translation, dragging shows a live preview (both the path's pins and any Thread Path segments referencing them visibly follow), and releasing commits the move as **one** undoable operation. Unlike a numeric geometry edit in the property panel (which fully regenerates `pins[]` from `geometry`+spacing, discarding any manual Pin Eraser removals), Move translates the **existing** pins in place and keeps their ids stable — any pin already erased stays erased, and every Thread Path segment referencing this Pin Path's pins keeps resolving correctly after the move.
+
+### Rotation
+
+Press-drag-release: the point where the mouse was pressed becomes the rotation pivot — **not** the shape's own centre. Dragging **right increases** the angle, dragging **left decreases** it, at a rate of **0.3° per screen pixel** dragged (a tunable constant, independent of zoom level so the feel stays consistent). Releasing commits the rotation as one undoable operation, with the same live pin+thread preview and same in-place, id-stable pin rotation as Move.
+
+Rotating about an external pivot moves the shape's centre/position to `rotatePoint(oldCentre, pivot, θ)` and adds `θ` to the shape's own `rotation` field (for shapes that have one). For Rectangle/Square this requires care: `position` is defined as the shape's corner in its own unrotated frame, so the centre must be derived, rotated about the pivot, and re-derived back into a new `position` — rotating `position` directly around an external pivot would not keep the shape's actual centre correctly placed.
+
+### Merge
+
+Left-click accumulates pins into a pending selection (clicking an already-selected pin again deselects it); right-click commits. Merging fewer than 2 pins is a no-op that just clears the pending selection. On commit:
+
+- A new pin is created at the **average position** of every selected pin.
+- The new pin is added to the **first-clicked pin's Pin Path** (which becomes the new Selection); every merged-away pin is removed from wherever it lived.
+- Every Thread Path segment referencing a merged-away pin is repointed to the new pin. This **contracts** the Thread Path (it is never fragmented the way the Segment Eraser splits one) — any adjacent duplicate ids the merge creates are collapsed, and a Thread Path left with fewer than 2 distinct ids after collapsing is dropped entirely.
+- The whole merge is one undoable operation. If any selected pin belongs to a locked Pin Layer, the entire merge is aborted with no mutation — the pending selection is left intact so the user can deselect the locked pin or press Esc.
+- Only real, stored pins are selectable for Merge — a mirrored/radial copy is not, since it has no entry in any Pin Path's `pins[]` to remove.
+
+Esc cancels an in-progress Move, Rotation, or Merge without committing anything.
 
 ## Test Cases
 
@@ -106,4 +139,56 @@ Feature: Editing respects layer locks
     When the user attempts to drag one of its geometry handles
     Then the geometry does not change
     And the property panel controls for that object are disabled or the edit is rejected
+
+Feature: Move tool
+
+  Scenario: Moving a Pin Path shows threads following live during the drag
+    Given a selected Pin Path with a Thread Path connecting two of its pins
+    When the user presses and drags with the Move tool
+    Then the pins and the connecting thread segment visibly follow the cursor before release
+    And nothing is committed to the document until the mouse is released
+
+  Scenario: Move commits once, as a single undo step
+    Given a selected Pin Path
+    When the user drags it with the Move tool and releases
+    Then the Pin Path's geometry and pins reflect the translation
+    When the user invokes Undo once
+    Then the Pin Path is restored to its exact pre-move geometry and pins
+
+Feature: Rotation tool
+
+  Scenario: Rotating a Rectangle about an external pivot keeps its shape and size
+    Given a selected Rectangle Pin Path
+    When the user presses at a point OUTSIDE the rectangle and drags right by an amount producing a 90° rotation
+    Then the rectangle's centre moves to exactly where rotating its original centre by 90° about that pivot would place it
+    And the rectangle's width and height are unchanged
+
+  Scenario: Dragging left decreases the angle
+    Given a selected Pin Path and the Rotation tool
+    When the user presses and drags left
+    Then the rotation angle is negative relative to the press point
+
+Feature: Merge tool
+
+  Scenario: Merging pins from two different Pin Paths lands the result in the first-clicked path
+    Given pin-1 in Pin Path A and pin-2 in Pin Path B
+    When the user left-clicks pin-1, then pin-2, then right-clicks to commit
+    Then a new pin appears in Pin Path A at the midpoint of pin-1 and pin-2
+    And pin-1 and pin-2 no longer exist
+
+  Scenario: Merge collapses adjacent duplicate thread pin ids it creates
+    Given a Thread Path visiting pin-1, pin-2, pin-3 in order
+    When the user merges pin-2 and pin-3 into a new pin
+    Then the Thread Path now visits pin-1 and the new pin only, with no repeated consecutive id
+
+  Scenario: Merge aborts entirely when one selected pin's layer is locked
+    Given pin-1 on an unlocked Pin Layer and pin-2 on a locked Pin Layer
+    When the user selects both and right-clicks to commit
+    Then no pin is merged and no Thread Path changes
+    And the pending merge selection is left intact
+
+  Scenario: Clicking an already-selected pin again removes it from the pending merge
+    Given the user has left-clicked pin-1 with the Merge tool
+    When the user left-clicks pin-1 again
+    Then pin-1 is no longer part of the pending merge selection
 ```

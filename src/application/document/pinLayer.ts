@@ -77,3 +77,23 @@ export function findPinById(layers: PinLayer[], pinId: string): Pin | undefined 
   }
   return undefined;
 }
+
+// docs/specs/09-selection-and-editing.md Merge tool: strip every merged-away pin from
+// wherever it lived, then add the new merged pin to its destination path (the first
+// pin the user clicked).
+export function mergePinsInLayers(
+  layers: PinLayer[],
+  oldPinIds: Set<string>,
+  destination: { layerId: string; pathId: string },
+  newPin: Pin,
+): PinLayer[] {
+  const stripped = layers.map((l) => ({
+    ...l,
+    pinPaths: l.pinPaths.map((p) => ({ ...p, pins: p.pins.filter((pin) => !oldPinIds.has(pin.id)) })),
+  }));
+  return stripped.map((l) =>
+    l.id === destination.layerId
+      ? { ...l, pinPaths: l.pinPaths.map((p) => (p.id === destination.pathId ? { ...p, pins: [...p.pins, newPin] } : p)) }
+      : l,
+  );
+}

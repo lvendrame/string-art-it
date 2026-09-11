@@ -53,3 +53,15 @@ export function splitThreadPathAtSegment(path: ThreadPath, segmentIndex: number)
   if (after.length >= 2) fragments.push({ ...path, id: nextThreadId(), pinIds: after });
   return fragments;
 }
+
+// docs/specs/09-selection-and-editing.md Merge tool: contracts (never fragments) a
+// Thread Path by replacing every merged-away pin id with the new merged pin's id,
+// then collapsing any adjacent duplicate ids the merge created (A→B→C where B,C both
+// merge into M becomes A→M→M → collapses to A→M). Unlike removePinFromThreadPath/
+// splitThreadPathAtSegment, path.id is kept — this is the SAME conceptual thread,
+// contracted, not fragmented into new ones.
+export function remapPinsInThreadPath(path: ThreadPath, oldPinIds: Set<string>, newPinId: string): ThreadPath[] {
+  const remapped = path.pinIds.map((id) => (oldPinIds.has(id) ? newPinId : id));
+  const collapsed = remapped.filter((id, i) => i === 0 || id !== remapped[i - 1]);
+  return collapsed.length >= 2 ? [{ ...path, pinIds: collapsed }] : [];
+}

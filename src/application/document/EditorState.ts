@@ -46,6 +46,18 @@ export type PinTool =
 
 export type Selection = { type: "none" } | { type: "pinPath"; layerId: string; pathId: string };
 
+// docs/specs/09-selection-and-editing.md — the Edit-mode tool area.
+export type SelectTool = "select" | "move" | "rotate" | "merge";
+
+// A candidate pin accumulated by the Merge tool before commit — transient,
+// non-undoable, same status as ThreadDraft. EditorState.ts can't import
+// ui/canvas/hitTesting.ts's PinHit (Clean Architecture), so this is a local twin.
+export interface MergeCandidate {
+  layerId: string;
+  pathId: string;
+  pinId: string;
+}
+
 export interface PinDefaults extends PinStyle {
   spacing: number;
 }
@@ -75,6 +87,8 @@ export interface EditorState {
   pinDefaults: PinDefaults;
   symmetryDefaults: SymmetryConfig;
   selection: Selection;
+  selectTool: SelectTool;
+  mergeSelection: MergeCandidate[];
   threadLayers: ThreadLayer[];
   activeThreadLayerId: string;
   threadTool: ThreadTool;

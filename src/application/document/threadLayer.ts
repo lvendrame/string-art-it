@@ -1,4 +1,4 @@
-import { createThreadPath, removePinFromThreadPath, splitThreadPathAtSegment, type ThreadPath } from "./threadPath";
+import { createThreadPath, remapPinsInThreadPath, removePinFromThreadPath, splitThreadPathAtSegment, type ThreadPath } from "./threadPath";
 import { nextId } from "./idCounter";
 
 // docs/specs/13-layers.md — mirrors pinLayer.ts; full layer panel lands at M6.
@@ -60,4 +60,10 @@ export function splitThreadPathInLayer(layers: ThreadLayer[], layerId: string, p
       ? { ...l, threadPaths: l.threadPaths.flatMap((p) => (p.id === pathId ? splitThreadPathAtSegment(p, segmentIndex) : [p])) }
       : l,
   );
+}
+
+// docs/specs/09-selection-and-editing.md Merge tool — applied across every thread
+// layer at once so the caller can fold it into the SAME undo step as the pin merge.
+export function remapPinsInAllThreadLayers(layers: ThreadLayer[], oldPinIds: Set<string>, newPinId: string): ThreadLayer[] {
+  return layers.map((l) => ({ ...l, threadPaths: l.threadPaths.flatMap((p) => remapPinsInThreadPath(p, oldPinIds, newPinId)) }));
 }

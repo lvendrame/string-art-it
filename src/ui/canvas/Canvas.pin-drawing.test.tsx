@@ -146,6 +146,32 @@ describe("Canvas — pin drawing interaction", () => {
     expect(screen.queryByTestId("grid-snap-indicator")).not.toBeInTheDocument();
   });
 
+  it("live status bar reflects vertex-anchored pin counts for a hexagon before mouse-up", () => {
+    const store = new EditorStore();
+    store.setPinTool("hexagon");
+    const { container } = render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    mouseDownAt(svg, 160, 160); // centre doc(0,0)
+    fireEvent.mouseMove(svg, { clientX: 180, clientY: 160 }); // doc(5,0) -> radius 5 -> side 5
+
+    // spacing defaults to 1cm; each 5cm edge divides evenly into 5 -> 30 pins total
+    expect(container.textContent).toContain("Perimeter: 30.0 cm | Requested: 1.0 cm | Actual: 1.00 cm | Pins: 30");
+  });
+
+  it("live status bar reflects vertex-anchored (forced-endpoint) pin counts for a Line before mouse-up", () => {
+    const store = new EditorStore();
+    store.setPinTool("line");
+    store.setGrid({ snapEnabled: false });
+    const { container } = render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    mouseDownAt(svg, 160, 160); // dragStart doc(0,0)
+    fireEvent.mouseMove(svg, { clientX: 190, clientY: 160 }); // cursor doc(7.5,0)
+
+    expect(container.textContent).toContain("Length: 7.5 cm | Requested: 1.0 cm | Actual: 0.94 cm | Pins: 9");
+  });
+
   it("select mode selects the Pin Path owning the clicked pin", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;

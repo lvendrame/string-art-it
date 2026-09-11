@@ -6,6 +6,7 @@ export { pathLength, pointAtDistance, pathBoundingBoxPoints } from "./Path";
 export {
   distributeOpenPath,
   distributeClosedPath,
+  distributePathPerVertex,
   closestIntervalCount,
   type ClosedDistribution,
 } from "./distribution";

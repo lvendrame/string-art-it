@@ -11,8 +11,8 @@ function toPath(vertices: Point[]): Path {
 }
 
 // Regular polygon (Pentagon=5, Hexagon=6, Octagon=8, ...) inscribed in a circle of the
-// given radius, one continuous edge path (docs/specs/07-pin-geometry-engine.md §20 —
-// spacing is not per-edge, it walks this whole path continuously).
+// given radius, one LineSegment per edge — pins are distributed per-vertex
+// (docs/specs/07-pin-geometry-engine.md §Vertex-Anchored Pin Distribution).
 export function regularPolygonShape(center: Point, radius: number, sides: number, rotation = 0): Path {
   if (sides < 3) throw new Error("a polygon needs at least 3 sides");
   const vertices = Array.from({ length: sides }, (_, i) =>

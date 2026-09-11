@@ -1,5 +1,5 @@
-import { distributeClosedPath, distributeOpenPath, pathLength } from "../../domain/paths";
-import { geometryToPath, type EditorMode, type PinPathGeometry, type PinTool } from "../../application/document";
+import { distributeClosedPath, distributeOpenPath, distributePathPerVertex, pathLength } from "../../domain/paths";
+import { geometryToPath, isVertexAnchoredGeometry, type EditorMode, type PinPathGeometry, type PinTool } from "../../application/document";
 
 export function StatusBar({
   mode,
@@ -21,6 +21,11 @@ export function StatusBar({
   const text = (() => {
     if (mode === "pin" && previewGeometry) {
       const path = geometryToPath(previewGeometry);
+      if (isVertexAnchoredGeometry(previewGeometry.type)) {
+        const { n, actualSpacing } = distributePathPerVertex(path, spacing);
+        const label = path.closed ? "Perimeter" : "Length";
+        return `${label}: ${pathLength(path).toFixed(1)} cm | Requested: ${spacing.toFixed(1)} cm | Actual: ${actualSpacing.toFixed(2)} cm | Pins: ${n}`;
+      }
       if (path.closed) {
         const { n, actualSpacing } = distributeClosedPath(path, spacing);
         return `Perimeter: ${pathLength(path).toFixed(1)} cm | Requested: ${spacing.toFixed(1)} cm | Actual: ${actualSpacing.toFixed(2)} cm | Pins: ${n}`;

@@ -6,7 +6,9 @@ Define the mathematically precise algorithms that turn a geometric path into a s
 
 ## Open-Path Pin Distribution
 
-For open paths (Line, Arc, non-closed compound paths):
+Applies to **Arc** and **Freehand** only. Line is vertex-anchored instead (see [Vertex-Anchored Pin Distribution](#vertex-anchored-pin-distribution)) — its two endpoints are always pinned, unlike the floor-division rule below.
+
+For open paths (Arc, Freehand, other non-closed compound paths):
 
 ```text
 L = path length
@@ -48,7 +50,9 @@ Result: 8 pins (last 0.5 cm remains empty)
 
 ## Closed-Path Pin Distribution
 
-Closed paths include: Circle, Ellipse, Rectangle, Square, Pentagon, Hexagon, Octagon, Stars, Polygrams, and any other closed path.
+Applies to **Circle** and **Ellipse** only. Rectangle, Square, and the whole regular-polygon/Star/Polygram family are vertex-anchored instead (see [Vertex-Anchored Pin Distribution](#vertex-anchored-pin-distribution)).
+
+Closed paths (Circle, Ellipse):
 
 Closed shapes require **uniform pin spacing around the complete perimeter** — there must never be a small residual closing gap.
 
@@ -89,7 +93,7 @@ The application must expose this result to the user (see live preview below and 
 
 ## Continuous Pin Spacing Through Corners
 
-Rectangles, polygons, stars, and other compound closed shapes are treated as **one continuous geometric path**. Spacing does not restart on each edge.
+Applies to **Circle** and **Ellipse** only (compound curved paths). These are treated as **one continuous geometric path** — spacing does not restart on each arc segment.
 
 ```text
 Edge 1
@@ -100,9 +104,42 @@ Edge 1
          │
 ```
 
-If the next pin falls 2 mm after a corner, it is positioned 2 mm into the next edge. Distance accumulation continues through every corner without resetting.
+If the next pin falls 2 mm after a corner, it is positioned 2 mm into the next segment. Distance accumulation continues through every corner without resetting.
 
-This applies identically to both the open-path algorithm (accumulate along the full compound path) and the closed-path algorithm (perimeter `P` is the sum of all edge/arc lengths, and pin placement walks continuously across corners).
+Rectangle, Square, and the regular-polygon/Star/Polygram family do **not** use continuous accumulation — every vertex is a hard reset point that always receives a pin (see [Vertex-Anchored Pin Distribution](#vertex-anchored-pin-distribution)).
+
+## Vertex-Anchored Pin Distribution
+
+Applies to **Line, Rectangle, Square, regular polygons (Pentagon/Hexagon/Octagon/...), Stars, and Polygrams** — every shape whose guide path *is* its vertices, where each segment of the path is a real edge between two real corners.
+
+Every vertex always receives a pin. The pins **between** two consecutive vertices are distributed independently along that one edge, using the same closest-integer-interval-count rule as [Closed-Path Pin Distribution](#closed-path-pin-distribution) (`N` chosen so `edgeLength / N` is closest to the requested spacing), scoped to that single edge instead of the whole path. Spacing does **not** carry over across a corner — each edge starts its own closest-N approximation fresh.
+
+For a closed shape (Rectangle, Square, regular polygon, Star, Polygram), the last edge's end vertex is the first edge's start vertex, so it is counted once — no duplicate seam pin, same guarantee as the closed-path algorithm.
+
+For the one open case (Line, a single edge with two vertices), **both** endpoints are always pinned — this differs from [Open-Path Pin Distribution](#open-path-pin-distribution)'s floor-division rule, which never forces the end pin.
+
+### Example (octagon, vertex-anchored)
+
+```text
+Regular octagon, 8 equal edges, requested spacing 2 cm, each edge length 3.5 cm
+
+Each edge: closestIntervalCount(3.5, 2) → N = 2 → actual spacing 1.75 cm
+Per edge: 1 vertex pin + 1 interior pin = 2 pins contributed
+Total: 8 vertices + 8 interior pins = 16 pins, actual spacing 1.75 cm
+```
+
+### Example (Line, vertex-anchored)
+
+```text
+Length = 7.5 cm, Requested spacing = 1 cm
+
+closestIntervalCount(7.5, 1) → N = 8 candidates: 7 (spacing 1.071) vs 8 (spacing 0.9375)
+  |1.071 - 1| = 0.071, |0.9375 - 1| = 0.0625 → N = 8 chosen
+Pins at 0, 0.9375, 1.875, ... , 7.5 (both endpoints included)
+Result: 9 pins, actual spacing 0.9375 cm
+
+(Contrast with the old floor-division rule: 8 pins at 0..7, 0.5 cm left empty, no pin at 7.5)
+```
 
 ## Live Preview Values
 
@@ -132,10 +169,10 @@ Geometry must use mathematical paths rather than screen-pixel approximation:
 - Circle → true circumference
 - Arc → true arc length
 - Ellipse → accurate numerical path length (no closed-form solution — approximate numerically, e.g. via elliptic integral approximation or adaptive numerical integration, to a defined error tolerance)
-- Rectangle → continuous perimeter
-- Polygon → continuous edge path
-- Stars → continuous geometric path
-- Polygrams → correct self-intersecting geometric path (perimeter follows the star-polygon's actual traversal, not its convex hull)
+- Rectangle → exact per-edge length (vertex-anchored, see [Vertex-Anchored Pin Distribution](#vertex-anchored-pin-distribution))
+- Polygon → exact per-edge length (vertex-anchored)
+- Stars → exact per-edge length (vertex-anchored)
+- Polygrams → correct self-intersecting per-edge geometric traversal (vertex-anchored; not the convex hull)
 
 ## Geometry Engine Responsibilities (Pin-Generation Scope)
 
@@ -153,40 +190,68 @@ Nearest-pin detection (used heavily by Thread mode, [12-thread-editor.md](./12-t
 ## Test Cases
 
 ```gherkin
-Feature: Open-path pin distribution
+Feature: Open-path pin distribution (Arc, Freehand only — Line is vertex-anchored)
 
   Scenario: Exact division produces pins including both endpoints
-    Given an open path of length 8 cm
+    Given an open Arc path of length 8 cm
     And requested spacing 1 cm
     When pins are distributed
     Then pins are placed at 0,1,2,3,4,5,6,7,8 cm
     And the pin count is 9
 
   Scenario: Non-exact division leaves a residual gap and does not force an endpoint pin
-    Given an open path of length 7.5 cm
+    Given an open Arc path of length 7.5 cm
     And requested spacing 1 cm
     When pins are distributed
     Then pins are placed at 0,1,2,3,4,5,6,7 cm
     And the pin count is 8
     And no pin is placed at 7.5 cm
+    (A Line of the same length and spacing behaves differently — see Vertex-Anchored Pin Distribution below)
 
   Scenario: Spacing larger than path length still places the start pin
-    Given an open path of length 0.5 cm
+    Given an open Arc path of length 0.5 cm
     And requested spacing 5 cm
     When pins are distributed
     Then exactly 1 pin is placed, at position 0
 
   Scenario: Very small path with very small spacing
-    Given an open path of length 0.01 cm
+    Given an open Arc path of length 0.01 cm
     And requested spacing 0.001 cm
     When pins are distributed
     Then the pin count equals floor(0.01/0.001) + 1 = 11
     And floating-point rounding does not produce 10 or 12 pins
 
-Feature: Closed-path uniform pin distribution
+Feature: Vertex-anchored pin distribution (Line, Rectangle, Square, regular polygons, Stars, Polygrams)
+
+  Scenario: Line forces both endpoints even on non-exact division
+    Given a Line of length 7.5 cm
+    And requested spacing 1 cm
+    When pins are distributed
+    Then interval count 8 is chosen for the single edge (closest to spacing 1 cm)
+    And pins are placed at 0, 0.9375, 1.875, ..., 7.5 cm
+    And the pin count is 9
+    And both endpoints (0 cm and 7.5 cm) are pinned
+
+  Scenario: Every vertex of a closed straight-edged shape gets a pin
+    Given a regular octagon Pin Path with 8 equal edges of length 3.5 cm
+    And requested spacing 2 cm
+    When pins are distributed
+    Then each edge independently chooses interval count 2 (actual spacing 1.75 cm)
+    And all 8 vertices are pinned
+    And each edge contributes exactly 1 interior pin
+    And the pin count is 16
+    And the seam vertex (shared by the last and first edge) is counted once, not twice
+
+  Scenario: An edge shorter than the requested spacing still gets both its vertex pins
+    Given a closed straight-edged shape with one edge of length 1 cm
+    And requested spacing 5 cm
+    When pins are distributed
+    Then that edge contributes its 2 vertex pins and 0 interior pins
+
+Feature: Closed-path uniform pin distribution (Circle, Ellipse only)
 
   Scenario: Perimeter divides the requested spacing to the closer candidate (31/2 example)
-    Given a closed path with perimeter 31 cm
+    Given a circle with perimeter 31 cm
     And requested spacing 2 cm
     When pins are distributed
     Then the interval count chosen is 16
@@ -194,7 +259,7 @@ Feature: Closed-path uniform pin distribution
     And the pin count is 16
 
   Scenario: Exact closed division produces no rounding artifact
-    Given a closed path with perimeter 30 cm
+    Given a circle with perimeter 30 cm
     And requested spacing 3 cm
     When pins are distributed
     Then the interval count chosen is 10
@@ -202,35 +267,35 @@ Feature: Closed-path uniform pin distribution
     And the pin count is 10
 
   Scenario: No duplicate pin at the start/end seam
-    Given any closed path with pins distributed
+    Given any Circle or Ellipse path with pins distributed
     Then the pin at cumulative distance 0 and the pin at cumulative distance P are the same single pin, not two coincident pins
 
   Scenario: Closed path chooses the closer of two candidate spacings deterministically
-    Given a closed path with perimeter 100 cm
+    Given a circle with perimeter 100 cm
     And requested spacing 7 cm
     When comparing interval counts 14 (spacing 7.143 cm) and 15 (spacing 6.667 cm)
     Then interval count 14 is chosen because |7.143-7| < |6.667-7|
 
   Scenario: Spacing request larger than perimeter still yields a minimum valid closed shape
-    Given a closed path with perimeter 5 cm
+    Given a circle with perimeter 5 cm
     And requested spacing 20 cm
     When pins are distributed
     Then the algorithm chooses interval count 1
     And the pin count is 1 (a single pin placed at the path start)
 
-Feature: Continuous spacing through corners
+Feature: Continuous spacing through corners (Circle, Ellipse only)
 
-  Scenario: Spacing carries over across a rectangle corner
-    Given a rectangle with edge 1 length 10 cm and edge 2 length 10 cm (adjacent, sharing a corner)
+  Scenario: Spacing carries over across an ellipse's internal arc-segment boundary
+    Given an ellipse approximated as adjacent arc segments, segment 1 length 10 cm and segment 2 length 10 cm (sharing a boundary)
     And requested spacing 3 cm
-    When the last pin on edge 1 falls 1 cm before the corner
-    Then the next pin is placed 2 cm into edge 2 (not reset to 0 cm from the corner)
+    When the last pin on segment 1 falls 1 cm before the boundary
+    Then the next pin is placed 2 cm into segment 2 (not reset to 0 cm from the boundary)
 
-  Scenario: Octagon treats all 8 edges as one continuous path
-    Given a regular octagon Pin Path
+  Scenario: Rectangle and Octagon do NOT use continuous accumulation
+    Given a rectangle or a regular octagon Pin Path
     When pins are distributed with a requested spacing
-    Then cumulative distance is tracked continuously across all 8 edges
-    And the closed-path algorithm's chosen interval count treats total perimeter as the sum of all 8 edge lengths
+    Then each edge is treated as an independent segment (see Vertex-Anchored Pin Distribution)
+    And every vertex receives a pin regardless of where continuous accumulation would have landed
 
 Feature: Geometry precision
 
@@ -254,7 +319,7 @@ Feature: Geometry precision
 Feature: Live preview updates
 
   Scenario: Open-path preview updates as spacing changes
-    Given an open path of length 12.7 cm being drawn
+    Given an Arc or Freehand path of length 12.7 cm being drawn
     When the requested gap is set to 1 cm
     Then the preview shows "Length: 12.7 cm | Gap: 1 cm | Pins: 13"
     When the requested gap is changed to 2 cm

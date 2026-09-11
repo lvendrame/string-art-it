@@ -10,7 +10,7 @@ import {
   squareShape,
   starShape,
 } from "../../domain/shapes";
-import { distributeClosedPath, distributeOpenPath } from "../../domain/paths";
+import { distributeClosedPath, distributeOpenPath, distributePathPerVertex } from "../../domain/paths";
 import type { Path, Point } from "../../domain/paths";
 import { NO_SYMMETRY, type SymmetryConfig } from "./symmetryConfig";
 import { nextId } from "./idCounter";
@@ -92,8 +92,24 @@ export function clonePinPath(path: PinPath): PinPath {
   return { ...path, id: nextPathId(), pins: path.pins.map((p) => ({ ...p, id: nextPinId() })) };
 }
 
+// docs/specs/07-pin-geometry-engine.md §Continuous Pin Spacing Through Corners —
+// carve-out: shapes whose guide *is* its vertices (a straight edge between two real
+// corners) get a pin at every corner instead, with each edge's interior pins
+// independently approximated to the requested spacing. Curved shapes (Arc/Circle/
+// Ellipse) and Freehand (whose "vertices" are arbitrary sampled cursor points, not
+// meaningful corners) keep the continuous whole-path distribution.
+export const VERTEX_ANCHORED_TYPES = new Set<PinPathGeometry["type"]>(["line", "rectangle", "square", "regular-polygon", "star", "polygram"]);
+
+export function isVertexAnchoredGeometry(type: PinPathGeometry["type"]): boolean {
+  return VERTEX_ANCHORED_TYPES.has(type);
+}
+
 export function distributePins(geometry: PinPathGeometry, requestedSpacing: number): { pins: Pin[]; actualSpacing: number } {
   const path = geometryToPath(geometry);
+  if (isVertexAnchoredGeometry(geometry.type)) {
+    const { points, actualSpacing } = distributePathPerVertex(path, requestedSpacing);
+    return { pins: points.map((p) => ({ id: nextPinId(), ...p })), actualSpacing };
+  }
   if (path.closed) {
     const { points, actualSpacing } = distributeClosedPath(path, requestedSpacing);
     return { pins: points.map((p) => ({ id: nextPinId(), ...p })), actualSpacing };

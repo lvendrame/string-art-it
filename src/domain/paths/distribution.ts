@@ -38,3 +38,29 @@ export function distributeClosedPath(path: Path, requestedSpacing: number): Clos
   const points = Array.from({ length: n }, (_, i) => pointAtDistance(path, i * actualSpacing));
   return { points, actualSpacing, n };
 }
+
+// Vertex-anchored distribution for straight-edged shapes (Line, Rectangle, Square, and
+// the Polygon/Star family — docs/specs/07-pin-geometry-engine.md) — every segment
+// boundary is a real corner of the shape, so every corner gets a pin, and each edge's
+// interior pins independently use the closest-N approximation (same rule as the
+// closed-path algorithm, scoped to one edge). Curved shapes and Freehand are excluded
+// by the caller: a curve has no discrete vertices, and Freehand's points are arbitrary
+// sampled cursor positions, not meaningful corners.
+export function distributePathPerVertex(path: Path, requestedSpacing: number): ClosedDistribution {
+  if (requestedSpacing <= 0) throw new Error("spacing must be positive");
+  const points: Point[] = [];
+  let representativeSpacing = requestedSpacing;
+  path.segments.forEach((segment, i) => {
+    const segLen = segment.length();
+    points.push(segment.pointAtDistance(0)); // the vertex — shared with the previous segment's end, never duplicated
+    const n = closestIntervalCount(segLen, requestedSpacing);
+    const segActualSpacing = segLen / n;
+    if (i === 0) representativeSpacing = segActualSpacing;
+    for (let k = 1; k < n; k += 1) points.push(segment.pointAtDistance(k * segActualSpacing));
+  });
+  if (!path.closed && path.segments.length > 0) {
+    const last = path.segments[path.segments.length - 1];
+    points.push(last.pointAtDistance(last.length())); // open paths have no next segment to own the final vertex
+  }
+  return { points, actualSpacing: representativeSpacing, n: points.length };
+}

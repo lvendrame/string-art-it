@@ -28,6 +28,7 @@ export {
   createPinPath,
   recomputePinPath,
   distributePins,
+  isVertexAnchoredGeometry,
   type PinPathGeometry,
   type Pin,
   type PinPath,

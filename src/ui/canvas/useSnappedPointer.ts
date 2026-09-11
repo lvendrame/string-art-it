@@ -1,6 +1,6 @@
 import { useMemo, useState, type MouseEvent as ReactMouseEvent } from "react";
 import type { EditorState } from "../../application/document";
-import { resolveSnapPosition, type SnapPin } from "../../domain/snapping";
+import { resolveSnapPosition, type SnapPin, type SnapResult } from "../../domain/snapping";
 import type { Point } from "../../domain/paths";
 import { toDocument, type Viewport } from "../../domain/transforms";
 
@@ -9,6 +9,7 @@ import { toDocument, type Viewport } from "../../domain/transforms";
 // status-bar/preview rendering.
 export function useSnappedPointer(state: EditorState, viewport: Viewport) {
   const [cursorDoc, setCursorDoc] = useState<Point | null>(null);
+  const [cursorSnapSource, setCursorSnapSource] = useState<SnapResult["source"] | null>(null);
 
   const allPins: SnapPin[] = useMemo(
     () => state.pinLayers.flatMap((l) => l.pinPaths.flatMap((p) => p.pins)),
@@ -20,8 +21,8 @@ export function useSnappedPointer(state: EditorState, viewport: Viewport) {
     return toDocument({ x: e.clientX - rect.left, y: e.clientY - rect.top }, viewport);
   }
 
-  function resolvePoint(raw: Point): Point {
-    const result = resolveSnapPosition(raw, {
+  function resolveSnap(raw: Point): SnapResult {
+    return resolveSnapPosition(raw, {
       pins: allPins,
       pinSnapEnabled: state.snap.pinSnapEnabled,
       snapRadiusPx: state.snap.radiusPx,
@@ -29,15 +30,19 @@ export function useSnappedPointer(state: EditorState, viewport: Viewport) {
       gridGap: { x: state.grid.gapX, y: state.grid.gapY },
       viewport,
     });
-    return result.point;
+  }
+
+  function resolvePoint(raw: Point): Point {
+    return resolveSnap(raw).point;
   }
 
   function updateCursor(e: ReactMouseEvent<SVGSVGElement>): { raw: Point; point: Point } {
     const raw = screenToDoc(e);
-    const point = resolvePoint(raw);
-    setCursorDoc(point);
-    return { raw, point };
+    const result = resolveSnap(raw);
+    setCursorDoc(result.point);
+    setCursorSnapSource(result.source);
+    return { raw, point: result.point };
   }
 
-  return { cursorDoc, screenToDoc, resolvePoint, updateCursor };
+  return { cursorDoc, cursorSnapSource, screenToDoc, resolvePoint, updateCursor };
 }

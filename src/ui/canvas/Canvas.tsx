@@ -14,10 +14,12 @@ import { CanvasToolbar } from "./CanvasToolbar";
 import { StatusBar } from "./StatusBar";
 import { BoardLayer } from "./BoardLayer";
 import { GridLayer } from "./GridLayer";
+import { GridSnapIndicator } from "./GridSnapIndicator";
 import { PinLayersView } from "./PinLayersView";
 import { SymmetryOverlay } from "./SymmetryOverlay";
 import { ThreadLayersView } from "./ThreadLayersView";
 import { ThreadDraftLayer } from "./ThreadDraftLayer";
+import { PinHighlightOverlay } from "./PinHighlightOverlay";
 import { nearestPinOrMirrorOwner, nearestPinOwner } from "./hitTesting";
 import { symmetryPreviewTransforms } from "./symmetryPreviewTransforms";
 import { useAltModifier } from "./useAltModifier";
@@ -42,7 +44,7 @@ export function Canvas({ store }: { store: EditorStore }) {
   const maxDist = state.snap.radiusPx / viewport.zoom;
 
   const altHeld = useAltModifier();
-  const { cursorDoc, screenToDoc, resolvePoint, updateCursor } =
+  const { cursorDoc, cursorSnapSource, screenToDoc, resolvePoint, updateCursor } =
     useSnappedPointer(state, viewport);
   const pan = usePanInteraction(store);
   const pinDrawing = usePinDrawing(store, layerId);
@@ -181,6 +183,16 @@ export function Canvas({ store }: { store: EditorStore }) {
             pinLayers={state.pinLayers}
           />
 
+          {/* The in-progress draft paints like a thread, so it stays under pins too. */}
+          {state.mode === "thread" && state.threadDraft && (
+            <ThreadDraftLayer
+              state={state}
+              threadDraft={state.threadDraft}
+              cursorDoc={cursorDoc}
+              threadCandidateId={threadDrawing.threadCandidateId}
+            />
+          )}
+
           <PinLayersView
             pinLayers={state.pinLayers}
             selectedPathId={selectedPathId}
@@ -188,6 +200,10 @@ export function Canvas({ store }: { store: EditorStore }) {
 
           {state.mode === "pin" && (
             <SymmetryOverlay config={activeSymmetry} />
+          )}
+
+          {state.mode === "pin" && cursorSnapSource === "grid" && cursorDoc && (
+            <GridSnapIndicator point={cursorDoc} />
           )}
 
           {previewGeometry && (
@@ -218,12 +234,12 @@ export function Canvas({ store }: { store: EditorStore }) {
             </>
           )}
 
-          {state.mode === "thread" && state.threadDraft && (
-            <ThreadDraftLayer
-              state={state}
-              threadDraft={state.threadDraft}
-              cursorDoc={cursorDoc}
+          {state.mode === "thread" && (
+            <PinHighlightOverlay
+              pinLayers={state.pinLayers}
+              lastPinId={state.threadDraft?.pinIds.at(-1) ?? null}
               threadCandidateId={threadDrawing.threadCandidateId}
+              usedPinIds={state.threadDraft?.pinIds.slice(0, -1) ?? []}
             />
           )}
         </svg>

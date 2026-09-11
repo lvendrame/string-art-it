@@ -8,7 +8,7 @@ describe("ExportMenu", () => {
     const store = new EditorStore();
     render(<ExportMenu store={store} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Export ▾" }));
+    fireEvent.click(screen.getByRole("button", { name: "Export" }));
 
     expect(screen.getByText("SVG (vector)")).toBeInTheDocument();
     expect(screen.getByText("PDF (vector)")).toBeInTheDocument();
@@ -33,7 +33,7 @@ describe("ExportMenu", () => {
     });
 
     render(<ExportMenu store={store} />);
-    fireEvent.click(screen.getByRole("button", { name: "Export ▾" }));
+    fireEvent.click(screen.getByRole("button", { name: "Export" }));
     fireEvent.click(screen.getByText("SVG (vector)"));
 
     expect(downloadedName).toBe("string-art-design.svg");
@@ -46,7 +46,7 @@ describe("ExportMenu", () => {
   it("changing DPI updates the displayed value for PNG/JPEG", () => {
     const store = new EditorStore();
     render(<ExportMenu store={store} />);
-    fireEvent.click(screen.getByRole("button", { name: "Export ▾" }));
+    fireEvent.click(screen.getByRole("button", { name: "Export" }));
 
     fireEvent.change(screen.getByLabelText("DPI"), { target: { value: "300" } });
 

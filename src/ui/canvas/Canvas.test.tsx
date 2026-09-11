@@ -47,6 +47,22 @@ describe("Canvas", () => {
     expect(children[children.length - 1].getAttribute("data-testid")).toBe("pin-path");
   });
 
+  it("an in-progress thread draft also renders below pins, not hidden underneath thread ink", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } });
+    const pins = store.getState().pinLayers[0].pinPaths[0].pins;
+    store.setMode("thread");
+    store.extendThreadDraft(pins[0].id);
+    store.extendThreadDraft(pins[1].id); // 2+ pins so the draft's confirmed segment renders
+
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+    const children = Array.from(svg.querySelectorAll("[data-testid='thread-path'], [data-testid='pin-path']"));
+
+    expect(children[children.length - 1].getAttribute("data-testid")).toBe("pin-path");
+  });
+
   it("grid dot is fully inset within its pattern tile, not clipped to a quarter-circle at the corner", () => {
     const store = new EditorStore();
     render(<Canvas store={store} />);
@@ -179,7 +195,7 @@ describe("Canvas", () => {
     const before = store.getState().board;
     render(<Canvas store={store} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "+" }));
+    fireEvent.click(screen.getByRole("button", { name: "Zoom in" }));
 
     expect(store.getState().board).toBe(before);
   });

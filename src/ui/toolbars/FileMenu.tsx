@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { FilePlus, FolderOpen, Save } from "lucide-react";
 import {
   createEmptyProject,
   migrateProjectFile,
@@ -49,13 +50,16 @@ export function FileMenu({ store, onNewProject }: { store: EditorStore; onNewPro
 
   return (
     <div style={{ display: "flex", gap: 6 }}>
-      <button className="btn" onClick={handleNew} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600 }}>
+      <button className="btn" onClick={handleNew} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
+        <FilePlus size={14} />
         New
       </button>
-      <button className="btn" onClick={handleSave} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600 }}>
+      <button className="btn" onClick={handleSave} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
+        <Save size={14} />
         Save
       </button>
-      <button className="btn" onClick={handleOpenClick} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600 }}>
+      <button className="btn" onClick={handleOpenClick} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
+        <FolderOpen size={14} />
         Open
       </button>
       <input ref={fileInputRef} type="file" accept="application/json" onChange={handleFileSelected} style={{ display: "none" }} />

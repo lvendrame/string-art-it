@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ChevronDown, ChevronUp, Copy, Plus, Trash2 } from "lucide-react";
 import type { EditorStore } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
 
@@ -165,24 +166,27 @@ export function LayersPanel({ store }: { store: EditorStore }) {
       </div>
 
       <div style={{ display: "flex", gap: 6, padding: 10, borderTop: "1px solid var(--border)" }}>
-        <button className="btn" onClick={actions.add} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 7, fontSize: 11.5 }}>
-          + New
+        <button className="btn" onClick={actions.add} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 7, fontSize: 11.5, gap: 4 }}>
+          <Plus size={13} />
+          New Layer
         </button>
-        <button className="btn" onClick={() => actions.duplicate(activeId)} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 7, fontSize: 11.5 }}>
+        <button className="btn" onClick={() => actions.duplicate(activeId)} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 7, fontSize: 11.5, gap: 4 }}>
+          <Copy size={13} />
           Duplicate
         </button>
-        <button className="btn" onClick={() => actions.reorder(activeId, -1)} style={{ borderRadius: "var(--radius-sm)", padding: "7px 10px", fontSize: 11.5 }}>
-          ↑
+        <button aria-label="Move layer up" className="btn" onClick={() => actions.reorder(activeId, -1)} style={{ borderRadius: "var(--radius-sm)", padding: "7px 10px", fontSize: 11.5 }}>
+          <ChevronUp size={14} />
         </button>
-        <button className="btn" onClick={() => actions.reorder(activeId, 1)} style={{ borderRadius: "var(--radius-sm)", padding: "7px 10px", fontSize: 11.5 }}>
-          ↓
+        <button aria-label="Move layer down" className="btn" onClick={() => actions.reorder(activeId, 1)} style={{ borderRadius: "var(--radius-sm)", padding: "7px 10px", fontSize: 11.5 }}>
+          <ChevronDown size={14} />
         </button>
         <button
           className="btn"
           onClick={() => rows.length > 1 && actions.remove(activeId)}
           disabled={rows.length <= 1}
-          style={{ borderRadius: "var(--radius-sm)", padding: "7px 10px", fontSize: 11.5, color: "var(--danger)" }}
+          style={{ borderRadius: "var(--radius-sm)", padding: "7px 10px", fontSize: 11.5, color: "var(--danger)", gap: 4 }}
         >
+          <Trash2 size={13} />
           Delete
         </button>
       </div>

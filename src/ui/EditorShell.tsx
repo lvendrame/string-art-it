@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { BarChart3, Printer, Redo2, Undo2 } from "lucide-react";
 import type { EditorStore } from "../application/document";
 import { Canvas } from "./canvas/Canvas";
 import { ModeSwitcher } from "./toolbars/ModeSwitcher";
@@ -47,16 +48,20 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
         <div style={{ flex: 1 }} />
         <ModeSwitcher mode={state.mode} onChange={store.setMode.bind(store)} />
         <div style={{ flex: 1 }} />
-        <button className="btn" disabled={!store.canUndo()} onClick={() => store.undo()} style={{ borderRadius: 8, padding: 8, background: "transparent", borderColor: "transparent" }}>
+        <button className="btn" disabled={!store.canUndo()} onClick={() => store.undo()} style={{ borderRadius: 8, padding: 8, background: "transparent", borderColor: "transparent", gap: 6 }}>
+          <Undo2 size={14} />
           Undo
         </button>
-        <button className="btn" disabled={!store.canRedo()} onClick={() => store.redo()} style={{ borderRadius: 8, padding: 8, background: "transparent", borderColor: "transparent" }}>
+        <button className="btn" disabled={!store.canRedo()} onClick={() => store.redo()} style={{ borderRadius: 8, padding: 8, background: "transparent", borderColor: "transparent", gap: 6 }}>
+          <Redo2 size={14} />
           Redo
         </button>
-        <button className="btn" onClick={() => setOverlay("stats")} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600 }}>
+        <button className="btn" onClick={() => setOverlay("stats")} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
+          <BarChart3 size={14} />
           Stats
         </button>
-        <button className="btn" onClick={() => setOverlay("print")} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600 }}>
+        <button className="btn" onClick={() => setOverlay("print")} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
+          <Printer size={14} />
           Print
         </button>
       </div>

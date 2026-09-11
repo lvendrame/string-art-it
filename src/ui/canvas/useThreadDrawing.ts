@@ -10,8 +10,11 @@ export function useThreadDrawing(store: EditorStore, state: EditorState, threadL
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape" && store.getState().mode === "thread") {
+      if (store.getState().mode !== "thread") return;
+      if (e.key === "Escape") {
         store.escapeThreadDraft(store.getState().activeThreadLayerId);
+      } else if (e.key === "ArrowLeft") {
+        store.retractThreadDraft();
       }
     }
     window.addEventListener("keydown", onKeyDown);

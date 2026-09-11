@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ChevronDown, Download, FileImage, FileType } from "lucide-react";
 import { boardPath, type EditorStore } from "../../application/document";
 import { pathBoundingBoxPoints } from "../../domain/paths";
 import { boundingBoxOf } from "../../domain/transforms";
@@ -68,8 +69,10 @@ export function ExportMenu({ store }: { store: EditorStore }) {
 
   return (
     <div style={{ position: "relative" }}>
-      <button className="btn" onClick={() => setOpen((o) => !o)} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600 }} disabled={busy}>
-        Export ▾
+      <button className="btn" onClick={() => setOpen((o) => !o)} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }} disabled={busy}>
+        <Download size={14} />
+        Export
+        <ChevronDown size={12} />
       </button>
       {open && (
         <div
@@ -89,16 +92,20 @@ export function ExportMenu({ store }: { store: EditorStore }) {
             boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
           }}
         >
-          <button className="btn" onClick={() => { handleSvg(); setOpen(false); }} style={{ justifyContent: "flex-start", borderRadius: 6, padding: 8, fontSize: 12 }}>
+          <button className="btn" onClick={() => { handleSvg(); setOpen(false); }} style={{ justifyContent: "flex-start", borderRadius: 6, padding: 8, fontSize: 12, gap: 6 }}>
+            <FileType size={14} />
             SVG (vector)
           </button>
-          <button className="btn" onClick={() => { handlePdf(); setOpen(false); }} style={{ justifyContent: "flex-start", borderRadius: 6, padding: 8, fontSize: 12 }}>
+          <button className="btn" onClick={() => { handlePdf(); setOpen(false); }} style={{ justifyContent: "flex-start", borderRadius: 6, padding: 8, fontSize: 12, gap: 6 }}>
+            <FileType size={14} />
             PDF (vector)
           </button>
-          <button className="btn" onClick={() => { handleRaster("png"); setOpen(false); }} style={{ justifyContent: "flex-start", borderRadius: 6, padding: 8, fontSize: 12 }}>
+          <button className="btn" onClick={() => { handleRaster("png"); setOpen(false); }} style={{ justifyContent: "flex-start", borderRadius: 6, padding: 8, fontSize: 12, gap: 6 }}>
+            <FileImage size={14} />
             PNG ({dpi} DPI)
           </button>
-          <button className="btn" onClick={() => { handleRaster("jpeg"); setOpen(false); }} style={{ justifyContent: "flex-start", borderRadius: 6, padding: 8, fontSize: 12 }}>
+          <button className="btn" onClick={() => { handleRaster("jpeg"); setOpen(false); }} style={{ justifyContent: "flex-start", borderRadius: 6, padding: 8, fontSize: 12, gap: 6 }}>
+            <FileImage size={14} />
             JPEG ({dpi} DPI)
           </button>
           <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11.5, color: "var(--text-secondary)", marginTop: 4 }}>

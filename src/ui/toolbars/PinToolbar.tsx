@@ -1,13 +1,15 @@
+import { Circle, Eraser, Minus, RectangleHorizontal, Shapes, Spline, Square } from "lucide-react";
+import type { ComponentType } from "react";
 import type { EditorStore, PinTool } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
 
-const BASIC_TOOLS: { id: PinTool; label: string }[] = [
-  { id: "line", label: "Line" },
-  { id: "arc", label: "Arc" },
-  { id: "ellipse", label: "Ellipse" },
-  { id: "circle", label: "Circle" },
-  { id: "rectangle", label: "Rect" },
-  { id: "square", label: "Square" },
+const BASIC_TOOLS: { id: PinTool; label: string; icon: ComponentType<{ size?: number }> }[] = [
+  { id: "line", label: "Line", icon: Minus },
+  { id: "arc", label: "Arc", icon: Spline },
+  { id: "ellipse", label: "Ellipse", icon: Circle },
+  { id: "circle", label: "Circle", icon: Circle },
+  { id: "rectangle", label: "Rect", icon: RectangleHorizontal },
+  { id: "square", label: "Square", icon: Square },
 ];
 
 const POLYGON_FAMILY: { id: PinTool; label: string }[] = [
@@ -48,19 +50,24 @@ export function PinToolbar({ store }: { store: EditorStore }) {
             onClick={() => store.setPinTool(t.id)}
             style={CHIP_STYLE}
           >
+            <t.icon size={16} />
             {t.label}
           </button>
         ))}
         <button className={`btn${state.pinTool === "eraser" ? " btn-active" : ""}`} onClick={() => store.setPinTool("eraser")} style={CHIP_STYLE}>
+          <Eraser size={16} />
           Eraser
         </button>
       </div>
 
       <label
         className={`btn${isPolygonFamilySelected ? " btn-active" : ""}`}
-        style={{ width: "100%", justifyContent: "space-between", borderRadius: "var(--radius-sm)", padding: "9px 10px" }}
+        style={{ width: "100%", justifyContent: "space-between", borderRadius: "var(--radius-sm)", padding: "9px 10px", gap: 6 }}
       >
-        <span style={{ fontSize: 12, fontWeight: 600 }}>Polygon / Star</span>
+        <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 600 }}>
+          <Shapes size={14} />
+          Polygon / Star
+        </span>
         <select
           aria-label="Polygon / Star"
           value={isPolygonFamilySelected ? state.pinTool : ""}

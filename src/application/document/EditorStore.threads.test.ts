@@ -120,4 +120,35 @@ describe("EditorStore cascading pin deletion into threads", () => {
     store.undo();
     expect(store.getState().threadLayers[0].threadPaths).toHaveLength(2);
   });
+
+  it("retractThreadDraft removes the last confirmed vertex", () => {
+    const store = new EditorStore();
+    const { pins } = seedPins(store, 3);
+    store.extendThreadDraft(pins[0].id);
+    store.extendThreadDraft(pins[1].id);
+    store.extendThreadDraft(pins[2].id);
+
+    store.retractThreadDraft();
+
+    expect(store.getState().threadDraft?.pinIds).toEqual([pins[0].id, pins[1].id]);
+  });
+
+  it("retractThreadDraft on the only confirmed vertex ends the insertion outright", () => {
+    const store = new EditorStore();
+    const { pins } = seedPins(store, 2);
+    store.extendThreadDraft(pins[0].id);
+
+    store.retractThreadDraft();
+
+    expect(store.getState().threadDraft).toBeNull();
+  });
+
+  it("retractThreadDraft is a no-op when no draft is in progress", () => {
+    const store = new EditorStore();
+    seedPins(store, 2);
+
+    store.retractThreadDraft();
+
+    expect(store.getState().threadDraft).toBeNull();
+  });
 });

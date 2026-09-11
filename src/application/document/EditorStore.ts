@@ -336,6 +336,16 @@ export class EditorStore {
     this.notify();
   }
 
+  // Left Arrow while drawing: undo the last confirmed vertex. Removing the only
+  // vertex ends the insertion outright, same as Esc with zero confirmed segments.
+  retractThreadDraft(): void {
+    const draft = this.state.threadDraft;
+    if (!draft) return;
+    const pinIds = draft.pinIds.slice(0, -1);
+    this.state = { ...this.state, threadDraft: pinIds.length > 0 ? { pinIds } : null };
+    this.notify();
+  }
+
   deleteThreadPath(layerId: string, pathId: string): void {
     if (isThreadLayerLocked(this.state.threadLayers, layerId)) return;
     const nextLayers = removeThreadPathFromLayers(this.state.threadLayers, layerId, pathId);

@@ -1,10 +1,12 @@
+import { Hand, MousePointer2, Pin as PinIcon, Spline } from "lucide-react";
+import type { ComponentType } from "react";
 import type { EditorMode } from "../../application/document";
 
-const MODES: { id: EditorMode; label: string }[] = [
-  { id: "select", label: "Select" },
-  { id: "pin", label: "Pin" },
-  { id: "thread", label: "Thread" },
-  { id: "pan", label: "Pan" },
+const MODES: { id: EditorMode; label: string; icon: ComponentType<{ size?: number }> }[] = [
+  { id: "select", label: "Select", icon: MousePointer2 },
+  { id: "pin", label: "Pin", icon: PinIcon },
+  { id: "thread", label: "Thread", icon: Spline },
+  { id: "pan", label: "Pan", icon: Hand },
 ];
 
 export function ModeSwitcher({ mode, onChange }: { mode: EditorMode; onChange: (mode: EditorMode) => void }) {
@@ -34,9 +36,11 @@ export function ModeSwitcher({ mode, onChange }: { mode: EditorMode; onChange: (
             padding: "7px 14px",
             fontSize: 12.5,
             fontWeight: 600,
+            gap: 6,
             ...(mode === m.id ? {} : { background: "transparent", borderColor: "transparent" }),
           }}
         >
+          <m.icon size={14} />
           {m.label}
         </button>
       ))}

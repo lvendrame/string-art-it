@@ -89,6 +89,31 @@ describe("Canvas — pin drawing interaction", () => {
     expect(mirrored.getAttribute("transform")).toBe("translate(40 0) scale(-1 1)");
   });
 
+  it("outlines the nearest grid point while grid-snap is on, even when the grid is hidden", () => {
+    const store = new EditorStore();
+    store.setGrid({ visible: false, snapEnabled: true });
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.mouseMove(svg, { clientX: 200, clientY: 200 }); // doc(10,10), a grid intersection at gap=1
+
+    const indicator = screen.getByTestId("grid-snap-indicator");
+    expect(indicator).toBeInTheDocument();
+  });
+
+  it("does not show the grid-snap indicator when a pin wins snap priority instead", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } });
+    store.setGrid({ visible: false, snapEnabled: true });
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.mouseMove(svg, { clientX: 200, clientY: 200 }); // doc(10,10) — also the line's start pin
+
+    expect(screen.queryByTestId("grid-snap-indicator")).not.toBeInTheDocument();
+  });
+
   it("select mode selects the Pin Path owning the clicked pin", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;

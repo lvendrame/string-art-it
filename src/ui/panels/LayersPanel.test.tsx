@@ -30,11 +30,11 @@ describe("LayersPanel", () => {
     expect(store.getState().activePinLayerId).toBe(layerId); // click didn't also select
   });
 
-  it("+ New creates a layer and Delete removes the active one", () => {
+  it("New Layer creates a layer and Delete removes the active one", () => {
     const store = new EditorStore();
     render(<LayersPanel store={store} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "+ New" }));
+    fireEvent.click(screen.getByRole("button", { name: "New Layer" }));
     expect(store.getState().pinLayers).toHaveLength(2);
 
     fireEvent.click(screen.getByRole("button", { name: "Delete" }));

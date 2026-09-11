@@ -47,11 +47,18 @@ export function useThreadDrawing(store: EditorStore, state: EditorState, threadL
   }
 
   const statusText = useMemo(() => {
-    if (!state.threadDraft) return null;
+    if (!state.threadDraft) {
+      // no insertion started yet — still surface the nearest pin under the cursor
+      // so its number is known before the user commits to starting the thread.
+      return threadCandidateId ? `Pin ${threadCandidateId} — click to start a Thread Path.` : null;
+    }
     const lastPinId = state.threadDraft.pinIds[state.threadDraft.pinIds.length - 1];
     const from = findPinById(state.pinLayers, lastPinId);
+    if (!from) return null;
+    // the origin pin number must show as soon as the draft starts, even before the
+    // cursor has moved (no candidate/cursorDoc yet) — see the "From Pin" line below.
     const to = threadCandidateId ? findPinById(state.pinLayers, threadCandidateId) : cursorDoc;
-    if (!from || !to) return null;
+    if (!to) return `From Pin ${lastPinId} — click the next pin to extend.`;
     const segment = Math.hypot(to.x - from.x, to.y - from.y);
     return `From Pin ${lastPinId} → ${threadCandidateId ?? "?"} | Segment: ${segment.toFixed(1)} cm`;
   }, [state.threadDraft, state.pinLayers, threadCandidateId, cursorDoc]);

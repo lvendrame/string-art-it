@@ -30,6 +30,29 @@ describe("Canvas — thread drawing interaction", () => {
     expect(screen.getByTestId("pin-candidate")).toBeInTheDocument();
   });
 
+  it("status bar shows the nearest pin number while hovering, before any insertion starts", () => {
+    const { store } = seedPinsAndEnterThreadMode();
+    const { container } = render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+    const nearPinId = store.getState().pinLayers[0].pinPaths[0].pins[0].id;
+
+    fireEvent.mouseMove(svg, { clientX: 200, clientY: 200 }); // hover pin at doc(10,10)
+
+    expect(store.getState().threadDraft).toBeNull();
+    expect(container.textContent).toContain(`Pin ${nearPinId}`);
+  });
+
+  it("status bar shows the origin pin number as soon as the thread insertion starts", () => {
+    const { store } = seedPinsAndEnterThreadMode();
+    const { container } = render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+    const originPinId = store.getState().pinLayers[0].pinPaths[0].pins[0].id;
+
+    fireEvent.mouseDown(svg, { clientX: 200, clientY: 200 }); // pin at doc(10,10), no mousemove yet
+
+    expect(container.textContent).toContain(`From Pin ${originPinId}`);
+  });
+
   it("clicking two pins commits a Thread Path via double-click", () => {
     const { store } = seedPinsAndEnterThreadMode();
     render(<Canvas store={store} />);

@@ -14,7 +14,7 @@ Define the drawing tools available in Pin mode, pin/guide properties, the shape 
 - Conventional Stars: 5-point star, 6-point star, 8-point star
 - Polygrams: Pentagram, Heptagram, Octagram
 
-**Other pin tools:** Eraser (see [11-erasers.md](./11-erasers.md)), Snap to nearest pin.
+**Other pin tools:** Eraser and Path Eraser (see [11-erasers.md](./11-erasers.md)), Snap to nearest pin.
 
 ## Pin Path Composition
 

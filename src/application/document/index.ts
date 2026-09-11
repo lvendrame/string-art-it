@@ -48,7 +48,7 @@ export {
 } from "./pinLayer";
 export { geometryFromDrag, curvatureFromCursor, DRAG_TOOLS } from "./pinToolGeometry";
 export { NO_SYMMETRY, allPinsWithMirrors, computeMirroredPinGroups, mirroredPinId, type SymmetryConfig } from "./symmetryConfig";
-export { createThreadPath, removePinFromThreadPath, type ThreadPath } from "./threadPath";
+export { createThreadPath, removePinFromThreadPath, splitThreadPathAtSegment, type ThreadPath } from "./threadPath";
 export {
   createThreadLayer,
   isThreadLayerLocked,
@@ -56,6 +56,7 @@ export {
   addThreadPathToLayers,
   removeThreadPathFromLayers,
   removePinFromAllThreadLayers,
+  splitThreadPathInLayer,
   duplicateThreadLayer,
   type ThreadLayer,
 } from "./threadLayer";

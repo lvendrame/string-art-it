@@ -27,6 +27,11 @@ export function useThreadDrawing(store: EditorStore, state: EditorState, threadL
       if (hit) store.deleteThreadPath(hit.layerId, hit.pathId);
       return;
     }
+    if (state.threadTool === "segment-eraser") {
+      const hit = nearestThreadPath(state.threadLayers, state.pinLayers, raw, maxDist);
+      if (hit) store.eraseThreadSegment(hit.layerId, hit.pathId, hit.segmentIndex);
+      return;
+    }
     const hit = nearestPinOrMirrorOwner(state.pinLayers, raw, maxDist);
     if (hit) store.extendThreadDraft(hit.pinId);
   }

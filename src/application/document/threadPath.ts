@@ -41,3 +41,15 @@ export function removePinFromThreadPath(path: ThreadPath, pinId: string): Thread
   if (current.length >= 2) fragments.push({ ...path, id: nextThreadId(), pinIds: current });
   return fragments;
 }
+
+// docs/specs/11-erasers.md Segment Eraser: cut one edge out of a Thread Path without
+// touching either endpoint pin. Splits pinIds at [0..i] and [i+1..end]; either side
+// dropped if it has fewer than 2 pins (a path needs >=2 pins to represent a segment).
+export function splitThreadPathAtSegment(path: ThreadPath, segmentIndex: number): ThreadPath[] {
+  const before = path.pinIds.slice(0, segmentIndex + 1);
+  const after = path.pinIds.slice(segmentIndex + 1);
+  const fragments: ThreadPath[] = [];
+  if (before.length >= 2) fragments.push({ ...path, id: nextThreadId(), pinIds: before });
+  if (after.length >= 2) fragments.push({ ...path, id: nextThreadId(), pinIds: after });
+  return fragments;
+}

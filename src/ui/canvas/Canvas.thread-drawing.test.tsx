@@ -198,4 +198,56 @@ describe("Canvas — thread drawing interaction", () => {
 
     expect(store.getState().threadLayers[0].threadPaths).toHaveLength(0);
   });
+
+  it("segment eraser splits a longer thread into two surviving fragments on a middle segment", () => {
+    const { store, pins } = seedPinsAndEnterThreadMode();
+    const threadLayerId = store.getState().threadLayers[0].id;
+    // A=pins[0] doc(10,10), B=pins[5] doc(15,10), C=pins[10] doc(20,10), D=pins[15] doc(25,10), E=pins[20] doc(30,10)
+    store.extendThreadDraft(pins[0].id);
+    store.extendThreadDraft(pins[5].id);
+    store.extendThreadDraft(pins[10].id);
+    store.extendThreadDraft(pins[15].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[20].id);
+    store.setThreadTool("segment-eraser");
+
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+    fireEvent.mouseDown(svg, { clientX: 230, clientY: 200 }); // midpoint of segment B-C, doc(17.5,10)
+
+    const threads = store.getState().threadLayers[0].threadPaths;
+    expect(threads).toHaveLength(2);
+    expect(threads[0].pinIds).toEqual([pins[0].id, pins[5].id]);
+    expect(threads[1].pinIds).toEqual([pins[10].id, pins[15].id, pins[20].id]);
+  });
+
+  it("segment eraser on an end segment leaves one shorter surviving fragment", () => {
+    const { store, pins } = seedPinsAndEnterThreadMode();
+    const threadLayerId = store.getState().threadLayers[0].id;
+    store.extendThreadDraft(pins[0].id);
+    store.extendThreadDraft(pins[5].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[10].id); // A-B-C
+    store.setThreadTool("segment-eraser");
+
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+    fireEvent.mouseDown(svg, { clientX: 210, clientY: 200 }); // midpoint of segment A-B, doc(12.5,10)
+
+    const threads = store.getState().threadLayers[0].threadPaths;
+    expect(threads).toHaveLength(1);
+    expect(threads[0].pinIds).toEqual([pins[5].id, pins[10].id]);
+  });
+
+  it("segment eraser on a 2-pin thread's only segment removes it entirely", () => {
+    const { store, pins } = seedPinsAndEnterThreadMode();
+    const threadLayerId = store.getState().threadLayers[0].id;
+    store.extendThreadDraft(pins[0].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[1].id); // A-B, doc(10,10)-(11,10)
+    store.setThreadTool("segment-eraser");
+
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+    fireEvent.mouseDown(svg, { clientX: 202, clientY: 200 }); // midpoint, doc(10.5,10)
+
+    expect(store.getState().threadLayers[0].threadPaths).toHaveLength(0);
+  });
 });

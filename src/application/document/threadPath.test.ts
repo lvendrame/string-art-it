@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { removePinFromThreadPath, type ThreadPath } from "./threadPath";
+import { removePinFromThreadPath, splitThreadPathAtSegment, type ThreadPath } from "./threadPath";
 
 function makeThread(pinIds: string[]): ThreadPath {
   return { id: "t1", colours: ["red"], width: 1, pinIds, twistPitch: 6 };
@@ -34,5 +34,32 @@ describe("removePinFromThreadPath", () => {
   it("reduced below 2 pins is removed entirely", () => {
     const fragments = removePinFromThreadPath(makeThread(["A", "B"]), "B");
     expect(fragments).toHaveLength(0);
+  });
+});
+
+describe("splitThreadPathAtSegment", () => {
+  it("removing a middle segment splits into two fragments, keeping both endpoint pins", () => {
+    const fragments = splitThreadPathAtSegment(makeThread(["A", "B", "C", "D", "E"]), 1); // segment B-C
+    expect(fragments).toHaveLength(2);
+    expect(fragments[0].pinIds).toEqual(["A", "B"]);
+    expect(fragments[1].pinIds).toEqual(["C", "D", "E"]);
+  });
+
+  it("removing an end segment leaves a single surviving fragment", () => {
+    const fragments = splitThreadPathAtSegment(makeThread(["A", "B", "C"]), 0); // segment A-B
+    expect(fragments).toHaveLength(1);
+    expect(fragments[0].pinIds).toEqual(["B", "C"]);
+  });
+
+  it("removing the only segment of a 2-pin path removes it entirely", () => {
+    const fragments = splitThreadPathAtSegment(makeThread(["A", "B"]), 0);
+    expect(fragments).toHaveLength(0);
+  });
+
+  it("fragments get fresh, distinct ids", () => {
+    const fragments = splitThreadPathAtSegment(makeThread(["A", "B", "C", "D"]), 1); // segment B-C
+    expect(fragments).toHaveLength(2);
+    expect(fragments[0].id).not.toBe(fragments[1].id);
+    expect(fragments[0].id).not.toBe("t1");
   });
 });

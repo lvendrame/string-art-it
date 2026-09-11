@@ -105,6 +105,19 @@ describe("Canvas — pin drawing interaction", () => {
     expect(remaining.find((p) => p.id === targetPin.id)).toBeUndefined();
   });
 
+  it("path eraser removes the whole Pin Path (and all its pins) on click", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } });
+    store.setPinTool("path-eraser");
+
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+    mouseDownAt(svg, 200, 200); // clicks a pin at (10,10), belonging to the path
+
+    expect(store.getState().pinLayers[0].pinPaths).toHaveLength(0);
+  });
+
   it("shows a mirrored preview while drawing, when symmetry is selected", () => {
     const store = new EditorStore();
     store.setPinTool("line");

@@ -151,4 +151,41 @@ describe("EditorStore cascading pin deletion into threads", () => {
 
     expect(store.getState().threadDraft).toBeNull();
   });
+
+  it("erasePinPath deletes every pin in the path and cascades into referencing threads, one undo step", () => {
+    const store = new EditorStore();
+    const { layerId, pathId, pins } = seedPins(store, 3); // A-B-C pins
+    const threadLayerId = store.getState().threadLayers[0].id;
+    store.extendThreadDraft(pins[0].id);
+    store.extendThreadDraft(pins[1].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[2].id); // one thread A-B-C
+
+    store.erasePinPath(layerId, pathId);
+
+    expect(store.getState().pinLayers[0].pinPaths).toHaveLength(0);
+    expect(store.getState().threadLayers[0].threadPaths).toHaveLength(0);
+
+    store.undo();
+    expect(store.getState().pinLayers[0].pinPaths).toHaveLength(1);
+    expect(store.getState().pinLayers[0].pinPaths[0].pins).toHaveLength(3);
+    expect(store.getState().threadLayers[0].threadPaths).toHaveLength(1);
+  });
+
+  it("eraseThreadSegment splits a longer thread into two surviving fragments", () => {
+    const store = new EditorStore();
+    const { pins } = seedPins(store, 5); // A-B-C-D-E pins
+    const threadLayerId = store.getState().threadLayers[0].id;
+    store.extendThreadDraft(pins[0].id);
+    store.extendThreadDraft(pins[1].id);
+    store.extendThreadDraft(pins[2].id);
+    store.extendThreadDraft(pins[3].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[4].id); // A-B-C-D-E
+
+    store.eraseThreadSegment(threadLayerId, store.getState().threadLayers[0].threadPaths[0].id, 1); // segment B-C
+
+    const threads = store.getState().threadLayers[0].threadPaths;
+    expect(threads).toHaveLength(2);
+    expect(threads[0].pinIds).toEqual([pins[0].id, pins[1].id]);
+    expect(threads[1].pinIds).toEqual([pins[2].id, pins[3].id, pins[4].id]);
+  });
 });

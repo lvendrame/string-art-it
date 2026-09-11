@@ -1,4 +1,4 @@
-import { Circle, Eraser, Minus, PenTool, RectangleHorizontal, Shapes, Spline, Square } from "lucide-react";
+import { Circle, Eraser, Minus, PenTool, RectangleHorizontal, Shapes, Spline, Square, Trash2 } from "lucide-react";
 import type { ComponentType } from "react";
 import type { EditorStore, PinTool } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
@@ -58,6 +58,10 @@ export function PinToolbar({ store }: { store: EditorStore }) {
         <button className={`btn${state.pinTool === "eraser" ? " btn-active" : ""}`} onClick={() => store.setPinTool("eraser")} style={CHIP_STYLE}>
           <Eraser size={16} />
           Eraser
+        </button>
+        <button className={`btn${state.pinTool === "path-eraser" ? " btn-active" : ""}`} onClick={() => store.setPinTool("path-eraser")} style={CHIP_STYLE}>
+          <Trash2 size={16} />
+          Path Eraser
         </button>
       </div>
 

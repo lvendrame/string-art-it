@@ -1,4 +1,4 @@
-import { createThreadPath, removePinFromThreadPath, type ThreadPath } from "./threadPath";
+import { createThreadPath, removePinFromThreadPath, splitThreadPathAtSegment, type ThreadPath } from "./threadPath";
 import { nextId } from "./idCounter";
 
 // docs/specs/13-layers.md — mirrors pinLayer.ts; full layer panel lands at M6.
@@ -50,4 +50,14 @@ export function removePinFromAllThreadLayers(layers: ThreadLayer[], pinId: strin
     ...l,
     threadPaths: l.threadPaths.flatMap((p) => removePinFromThreadPath(p, pinId)),
   }));
+}
+
+// docs/specs/11-erasers.md Segment Eraser — replaces one Thread Path with its split
+// fragments inside a single layer.
+export function splitThreadPathInLayer(layers: ThreadLayer[], layerId: string, pathId: string, segmentIndex: number): ThreadLayer[] {
+  return layers.map((l) =>
+    l.id === layerId
+      ? { ...l, threadPaths: l.threadPaths.flatMap((p) => (p.id === pathId ? splitThreadPathAtSegment(p, segmentIndex) : [p])) }
+      : l,
+  );
 }

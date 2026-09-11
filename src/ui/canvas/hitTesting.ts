@@ -47,10 +47,12 @@ function distanceToSegment(p: Point, a: Point, b: Point): number {
 export interface ThreadHit {
   layerId: string;
   pathId: string;
+  segmentIndex: number;
 }
 
-// docs/specs/31-erasers Thread Eraser: click near any segment removes that whole
-// Thread Path (segment-level splitting is a scope reduction — see orchestrator M5).
+// docs/specs/11-erasers.md — shared hit test for both the Path Eraser (deletes the
+// whole Thread Path) and the Segment Eraser (deletes just the clicked segment, which
+// needs the winning segmentIndex, not just the path).
 export function nearestThreadPath(threadLayers: ThreadLayer[], pinLayers: PinLayer[], point: Point, maxDocDistance: number): ThreadHit | null {
   let best: ThreadHit | null = null;
   let bestDist = Infinity;
@@ -63,7 +65,7 @@ export function nearestThreadPath(threadLayers: ThreadLayer[], pinLayers: PinLay
         const d = distanceToSegment(point, a, b);
         if (d <= maxDocDistance && d < bestDist) {
           bestDist = d;
-          best = { layerId: l.id, pathId: t.id };
+          best = { layerId: l.id, pathId: t.id, segmentIndex: i };
         }
       }
     }

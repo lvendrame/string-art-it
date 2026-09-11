@@ -23,6 +23,7 @@ import {
   isThreadLayerLocked,
   removePinFromAllThreadLayers,
   removeThreadPathFromLayers,
+  splitThreadPathInLayer,
   type ThreadLayer,
 } from "./threadLayer";
 import { createThreadPath } from "./threadPath";
@@ -280,6 +281,32 @@ export class EditorStore {
     this.history.run(command);
   }
 
+  // docs/specs/11-erasers.md Path Eraser — deletes every pin in a Pin Path, cascading
+  // into referencing thread segments, as ONE undoable operation (same pattern as
+  // deletePinLayer, scoped to one path instead of a whole layer).
+  erasePinPath(layerId: string, pathId: string): void {
+    if (isLayerLocked(this.state.pinLayers, layerId)) return;
+    const path = findPinPath(this.state.pinLayers, layerId, pathId);
+    if (!path) return;
+    const pinIds = path.pins.map((pin) => pin.id);
+    const nextPinLayers = removePinPathFromLayers(this.state.pinLayers, layerId, pathId);
+    const nextThreadLayers = pinIds.reduce((acc, pinId) => removePinFromAllThreadLayers(acc, pinId), this.state.threadLayers);
+    const prev = { pinLayers: this.state.pinLayers, threadLayers: this.state.threadLayers };
+    const next = { pinLayers: nextPinLayers, threadLayers: nextThreadLayers };
+    const command = new SetValueCommand<typeof next>(
+      (v) => {
+        this.state = { ...this.state, ...v };
+        this.notify();
+      },
+      prev,
+      next,
+    );
+    this.history.run(command);
+    if (this.state.selection.type === "pinPath" && this.state.selection.pathId === pathId) {
+      this.select({ type: "none" });
+    }
+  }
+
   getSelectedPinPath() {
     const { selection } = this.state;
     if (selection.type !== "pinPath") return undefined;
@@ -368,6 +395,15 @@ export class EditorStore {
   deleteThreadPath(layerId: string, pathId: string): void {
     if (isThreadLayerLocked(this.state.threadLayers, layerId)) return;
     const nextLayers = removeThreadPathFromLayers(this.state.threadLayers, layerId, pathId);
+    const command = new SetValueCommand<ThreadLayer[]>((l) => this.setThreadLayers(l), this.state.threadLayers, nextLayers);
+    this.history.run(command);
+  }
+
+  // docs/specs/11-erasers.md Segment Eraser — removes one segment from a Thread Path,
+  // splitting it into up to two fragments; unlike the Path Eraser, pins are untouched.
+  eraseThreadSegment(layerId: string, pathId: string, segmentIndex: number): void {
+    if (isThreadLayerLocked(this.state.threadLayers, layerId)) return;
+    const nextLayers = splitThreadPathInLayer(this.state.threadLayers, layerId, pathId, segmentIndex);
     const command = new SetValueCommand<ThreadLayer[]>((l) => this.setThreadLayers(l), this.state.threadLayers, nextLayers);
     this.history.run(command);
   }

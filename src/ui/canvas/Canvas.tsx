@@ -94,6 +94,12 @@ export function Canvas({ store }: { store: EditorStore }) {
       return;
     }
 
+    if (state.pinTool === "path-eraser") {
+      const hit = nearestPinOwner(state.pinLayers, raw, maxDist);
+      if (hit) store.erasePinPath(hit.layerId, hit.pathId);
+      return;
+    }
+
     if (state.pinTool === "freehand") {
       freehandDrawing.handleMouseDown(point);
       return;

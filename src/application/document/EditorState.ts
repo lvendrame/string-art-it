@@ -41,7 +41,8 @@ export type PinTool =
   | "heptagram"
   | "octagram"
   | "freehand"
-  | "eraser";
+  | "eraser"
+  | "path-eraser";
 
 export type Selection = { type: "none" } | { type: "pinPath"; layerId: string; pathId: string };
 
@@ -50,7 +51,7 @@ export interface PinDefaults extends PinStyle {
 }
 
 // docs/specs/24-thread-mode
-export type ThreadTool = "draw" | "eraser";
+export type ThreadTool = "draw" | "eraser" | "segment-eraser";
 
 export interface ThreadDefaults {
   colours: string[];

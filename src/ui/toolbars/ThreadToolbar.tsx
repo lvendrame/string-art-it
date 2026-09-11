@@ -1,4 +1,4 @@
-import { Eraser, PenLine } from "lucide-react";
+import { Eraser, PenLine, Scissors } from "lucide-react";
 import type { EditorStore } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
 
@@ -19,7 +19,7 @@ export function ThreadToolbar({ store }: { store: EditorStore }) {
       <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
         Thread
       </div>
-      <div style={{ display: "flex", gap: 6 }}>
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
         <button className={`btn${state.threadTool === "draw" ? " btn-active" : ""}`} onClick={() => store.setThreadTool("draw")} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}>
           <PenLine size={14} />
           Draw
@@ -27,6 +27,10 @@ export function ThreadToolbar({ store }: { store: EditorStore }) {
         <button className={`btn${state.threadTool === "eraser" ? " btn-active" : ""}`} onClick={() => store.setThreadTool("eraser")} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}>
           <Eraser size={14} />
           Eraser
+        </button>
+        <button className={`btn${state.threadTool === "segment-eraser" ? " btn-active" : ""}`} onClick={() => store.setThreadTool("segment-eraser")} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}>
+          <Scissors size={14} />
+          Segment
         </button>
       </div>
 

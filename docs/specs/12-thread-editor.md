@@ -13,7 +13,7 @@ Thread properties:
 - One, two, or three colours
 - Thread width
 - Draw
-- Eraser (see [11-erasers.md](./11-erasers.md))
+- Segment Eraser and Path Eraser (see [11-erasers.md](./11-erasers.md))
 
 ## Thread Colour Rendering
 

@@ -58,6 +58,38 @@ describe("Canvas — pin drawing interaction", () => {
     expect(paths[0].geometry.type).toBe("arc");
   });
 
+  it("drag with the Freehand tool creates a Pin Path following the captured points", () => {
+    const store = new EditorStore();
+    store.setPinTool("freehand");
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    mouseDownAt(svg, 200, 200); // doc(10,10)
+    fireEvent.mouseMove(svg, { clientX: 240, clientY: 200 }); // doc(20,10)
+    fireEvent.mouseMove(svg, { clientX: 280, clientY: 200 }); // doc(30,10)
+    fireEvent.mouseUp(svg, { clientX: 280, clientY: 200 });
+
+    const paths = store.getState().pinLayers[0].pinPaths;
+    expect(paths).toHaveLength(1);
+    expect(paths[0].geometry).toMatchObject({
+      type: "freehand",
+      points: [{ x: 10, y: 10 }, { x: 20, y: 10 }, { x: 30, y: 10 }],
+    });
+    expect(paths[0].pins.length).toBeGreaterThan(1);
+  });
+
+  it("Freehand drag with fewer than two points (a plain click) creates nothing", () => {
+    const store = new EditorStore();
+    store.setPinTool("freehand");
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    mouseDownAt(svg, 200, 200);
+    fireEvent.mouseUp(svg, { clientX: 200, clientY: 200 });
+
+    expect(store.getState().pinLayers[0].pinPaths).toHaveLength(0);
+  });
+
   it("eraser removes the nearest pin on click", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;

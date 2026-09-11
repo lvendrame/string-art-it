@@ -9,6 +9,18 @@ describe("createPinPath — open path", () => {
     expect(path.pins).toHaveLength(9);
     expect(path.actualSpacing).toBe(1);
   });
+
+  it("freehand distributes pins along the hand-drawn point sequence like any other open path", () => {
+    const path = createPinPath(
+      { type: "freehand", points: [{ x: 0, y: 0 }, { x: 5, y: 0 }, { x: 10, y: 0 }] },
+      1,
+      STYLE,
+    );
+    expect(path.pins).toHaveLength(11);
+    expect(path.actualSpacing).toBe(1);
+    expect(path.pins[0]).toMatchObject({ x: 0, y: 0 });
+    expect(path.pins.at(-1)).toMatchObject({ x: 10, y: 0 });
+  });
 });
 
 describe("createPinPath — closed path", () => {

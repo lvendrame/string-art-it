@@ -1,4 +1,4 @@
-import { Circle, Eraser, Minus, RectangleHorizontal, Shapes, Spline, Square } from "lucide-react";
+import { Circle, Eraser, Minus, PenTool, RectangleHorizontal, Shapes, Spline, Square } from "lucide-react";
 import type { ComponentType } from "react";
 import type { EditorStore, PinTool } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
@@ -10,6 +10,7 @@ const BASIC_TOOLS: { id: PinTool; label: string; icon: ComponentType<{ size?: nu
   { id: "circle", label: "Circle", icon: Circle },
   { id: "rectangle", label: "Rect", icon: RectangleHorizontal },
   { id: "square", label: "Square", icon: Square },
+  { id: "freehand", label: "Freehand", icon: PenTool },
 ];
 
 const POLYGON_FAMILY: { id: PinTool; label: string }[] = [

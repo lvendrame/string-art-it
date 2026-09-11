@@ -2,6 +2,7 @@ import {
   arcShape,
   circleShape,
   ellipseShape,
+  freehandShape,
   lineShape,
   polygramShape,
   rectangleShape,
@@ -24,7 +25,8 @@ export type PinPathGeometry =
   | { type: "square"; position: Point; side: number; rotation: number }
   | { type: "regular-polygon"; center: Point; radius: number; sides: number; rotation: number }
   | { type: "star"; center: Point; outerRadius: number; innerRadius: number; points: number; rotation: number }
-  | { type: "polygram"; center: Point; radius: number; points: number; skip: number; rotation: number };
+  | { type: "polygram"; center: Point; radius: number; points: number; skip: number; rotation: number }
+  | { type: "freehand"; points: Point[] };
 
 export function geometryToPath(geometry: PinPathGeometry): Path {
   switch (geometry.type) {
@@ -46,6 +48,8 @@ export function geometryToPath(geometry: PinPathGeometry): Path {
       return starShape(geometry.center, geometry.outerRadius, geometry.innerRadius, geometry.points, geometry.rotation);
     case "polygram":
       return polygramShape(geometry.center, geometry.radius, geometry.points, geometry.skip, geometry.rotation);
+    case "freehand":
+      return freehandShape(geometry.points);
   }
 }
 

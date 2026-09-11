@@ -40,6 +40,7 @@ export type PinTool =
   | "pentagram"
   | "heptagram"
   | "octagram"
+  | "freehand"
   | "eraser";
 
 export type Selection = { type: "none" } | { type: "pinPath"; layerId: string; pathId: string };

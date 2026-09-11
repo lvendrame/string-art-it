@@ -5,6 +5,7 @@ import {
   geometryToPath,
   type EditorMode,
   type EditorStore,
+  type PinPathGeometry,
 } from "../../application/document";
 import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
 import { zoomToPercent } from "../../domain/transforms";
@@ -26,6 +27,7 @@ import { useAltModifier } from "./useAltModifier";
 import { useSnappedPointer } from "./useSnappedPointer";
 import { usePanInteraction } from "./usePanInteraction";
 import { usePinDrawing } from "./usePinDrawing";
+import { useFreehandDrawing } from "./useFreehandDrawing";
 import { useThreadDrawing } from "./useThreadDrawing";
 
 const VIEWPORT_PX = CANVAS_VIEWPORT_PX;
@@ -48,6 +50,7 @@ export function Canvas({ store }: { store: EditorStore }) {
     useSnappedPointer(state, viewport);
   const pan = usePanInteraction(store);
   const pinDrawing = usePinDrawing(store, layerId);
+  const freehandDrawing = useFreehandDrawing(store, layerId);
   const threadDrawing = useThreadDrawing(
     store,
     state,
@@ -91,6 +94,11 @@ export function Canvas({ store }: { store: EditorStore }) {
       return;
     }
 
+    if (state.pinTool === "freehand") {
+      freehandDrawing.handleMouseDown(point);
+      return;
+    }
+
     pinDrawing.handleMouseDown(point, state.pinTool);
   }
 
@@ -102,11 +110,16 @@ export function Canvas({ store }: { store: EditorStore }) {
 
     const { raw } = updateCursor(e);
     if (state.mode === "thread") threadDrawing.handleMouseMove(raw, maxDist);
+    if (state.mode === "pin" && state.pinTool === "freehand") freehandDrawing.handleMouseMove(raw, viewport);
   }
 
   function handlePointerUp(e: ReactMouseEvent<SVGSVGElement>) {
     if (pan.isPanning) {
       pan.end();
+      return;
+    }
+    if (state.mode === "pin" && state.pinTool === "freehand") {
+      freehandDrawing.handleMouseUp();
       return;
     }
     if (state.mode !== "pin" || !DRAG_TOOLS.includes(state.pinTool)) return;
@@ -131,6 +144,11 @@ export function Canvas({ store }: { store: EditorStore }) {
     cursorDoc,
     altHeld,
   );
+  const freehandPreviewGeometry: PinPathGeometry | null =
+    state.pinTool === "freehand" && freehandDrawing.points.length >= 2
+      ? { type: "freehand", points: freehandDrawing.points }
+      : null;
+  const activePreviewGeometry = previewGeometry ?? freehandPreviewGeometry;
   const selectedPathId =
     state.selection.type === "pinPath" ? state.selection.pathId : null;
   const activeSymmetry = store.getSelectedPinPath()?.symmetry ?? state.symmetryDefaults;
@@ -206,10 +224,10 @@ export function Canvas({ store }: { store: EditorStore }) {
             <GridSnapIndicator point={cursorDoc} />
           )}
 
-          {previewGeometry && (
+          {activePreviewGeometry && (
             <>
               <path
-                d={pathToSvgD(geometryToPath(previewGeometry))}
+                d={pathToSvgD(geometryToPath(activePreviewGeometry))}
                 fill="none"
                 stroke="var(--accent)"
                 strokeWidth={0.1}
@@ -222,7 +240,7 @@ export function Canvas({ store }: { store: EditorStore }) {
                 <path
                   key={i}
                   transform={transform}
-                  d={pathToSvgD(geometryToPath(previewGeometry))}
+                  d={pathToSvgD(geometryToPath(activePreviewGeometry))}
                   fill="none"
                   stroke="var(--accent)"
                   strokeOpacity={0.55}
@@ -250,7 +268,7 @@ export function Canvas({ store }: { store: EditorStore }) {
         zoomPercent={Math.round(zoomToPercent(viewport.zoom))}
         cursor={cursorDoc}
         pinTool={state.pinTool}
-        previewGeometry={previewGeometry}
+        previewGeometry={activePreviewGeometry}
         spacing={state.pinDefaults.spacing}
         threadStatusText={threadDrawing.statusText}
       />

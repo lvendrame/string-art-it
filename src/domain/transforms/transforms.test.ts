@@ -4,6 +4,7 @@ import {
   toScreen,
   toDocument,
   screenDistanceToDocument,
+  zoomAtPoint,
   fitToViewport,
   zoomToPercent,
   percentToZoom,
@@ -45,6 +46,30 @@ describe("viewport transform", () => {
   it("screenDistanceToDocument scales inversely with zoom", () => {
     expect(screenDistanceToDocument(20, { zoom: 2, panOrigin: { x: 0, y: 0 } })).toBe(10);
     expect(screenDistanceToDocument(20, { zoom: 200, panOrigin: { x: 0, y: 0 } })).toBe(0.1);
+  });
+});
+
+describe("zoomAtPoint", () => {
+  it("keeps the document point under the anchor fixed on screen after zooming", () => {
+    const viewport: Viewport = { zoom: 2, panOrigin: { x: 5, y: 5 } };
+    const anchor = { x: 360, y: 320 }; // e.g. viewport centre
+    const docUnderAnchorBefore = toDocument(anchor, viewport);
+
+    const zoomed = zoomAtPoint(viewport, 4, anchor);
+    const docUnderAnchorAfter = toDocument(anchor, zoomed);
+
+    expect(docUnderAnchorAfter.x).toBeCloseTo(docUnderAnchorBefore.x, 6);
+    expect(docUnderAnchorAfter.y).toBeCloseTo(docUnderAnchorBefore.y, 6);
+    expect(zoomed.zoom).toBe(4);
+  });
+
+  it("does NOT anchor at document (0,0)/screen-origin — the plain top-left-drift bug", () => {
+    const viewport: Viewport = { zoom: 1, panOrigin: { x: 0, y: 0 } };
+    const anchor = { x: 100, y: 100 };
+    const zoomed = zoomAtPoint(viewport, 2, anchor);
+    // naive zoom-only change (panOrigin left at {0,0}) would put doc(100,100) at
+    // screen(200,200) instead of back at the anchor — assert the anchor stays put.
+    expect(toScreen({ x: 100, y: 100 }, zoomed)).toEqual(anchor);
   });
 });
 

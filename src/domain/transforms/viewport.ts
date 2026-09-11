@@ -45,6 +45,21 @@ export function percentToZoom(percent: number): number {
   return (percent / 100) * CSS_PIXELS_PER_CM;
 }
 
+// Changes zoom while keeping the document point currently under `screenAnchor` fixed
+// on screen — e.g. the viewport centre for the toolbar zoom buttons, or the cursor
+// position for a scroll-wheel zoom. Without this, changing `zoom` alone re-anchors
+// at document (0,0) (screen origin), which visibly drifts the content top-left.
+export function zoomAtPoint(viewport: Viewport, newZoom: number, screenAnchor: Point): Viewport {
+  const anchorDoc = toDocument(screenAnchor, viewport);
+  return {
+    zoom: newZoom,
+    panOrigin: {
+      x: anchorDoc.x - screenAnchor.x / newZoom,
+      y: anchorDoc.y - screenAnchor.y / newZoom,
+    },
+  };
+}
+
 export function fitToViewport(
   box: BoundingBox,
   viewportSize: { width: number; height: number },

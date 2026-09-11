@@ -3,6 +3,7 @@ export {
   toScreen,
   toDocument,
   screenDistanceToDocument,
+  zoomAtPoint,
   fitToViewport,
   zoomToPercent,
   percentToZoom,

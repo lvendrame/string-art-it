@@ -1,4 +1,5 @@
 import { createThreadPath, removePinFromThreadPath, type ThreadPath } from "./threadPath";
+import { nextId } from "./idCounter";
 
 // docs/specs/13-layers.md — mirrors pinLayer.ts; full layer panel lands at M6.
 export interface ThreadLayer {
@@ -9,10 +10,8 @@ export interface ThreadLayer {
   threadPaths: ThreadPath[];
 }
 
-let layerCounter = 0;
 export function createThreadLayer(name: string): ThreadLayer {
-  layerCounter += 1;
-  return { id: `threadlayer-${layerCounter}`, name, visible: true, locked: false, threadPaths: [] };
+  return { id: nextId("threadlayer"), name, visible: true, locked: false, threadPaths: [] };
 }
 
 function findLayer(layers: ThreadLayer[], layerId: string): ThreadLayer | undefined {
@@ -35,12 +34,10 @@ export function findThreadPath(layers: ThreadLayer[], layerId: string, pathId: s
   return findLayer(layers, layerId)?.threadPaths.find((p) => p.id === pathId);
 }
 
-let layerDuplicateCounter = 0;
 export function duplicateThreadLayer(layer: ThreadLayer): ThreadLayer {
-  layerDuplicateCounter += 1;
   return {
     ...layer,
-    id: `threadlayer-dup-${layerDuplicateCounter}`,
+    id: nextId("threadlayer-dup"),
     name: `${layer.name} copy`,
     threadPaths: layer.threadPaths.map((t) => createThreadPath([...t.pinIds], [...t.colours], t.width, t.twistPitch)),
   };

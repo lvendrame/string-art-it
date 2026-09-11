@@ -12,6 +12,7 @@ import {
 import { distributeClosedPath, distributeOpenPath } from "../../domain/paths";
 import type { Path, Point } from "../../domain/paths";
 import { NO_SYMMETRY, type SymmetryConfig } from "./symmetryConfig";
+import { nextId } from "./idCounter";
 
 // docs/specs/08-pin-tools-and-properties.md §Pin Drawing Tools
 export type PinPathGeometry =
@@ -72,16 +73,12 @@ export interface PinPath {
   symmetry: SymmetryConfig;
 }
 
-let pinCounter = 0;
 export function nextPinId(): string {
-  pinCounter += 1;
-  return `pin-${pinCounter}`;
+  return nextId("pin");
 }
 
-let pathCounter = 0;
 function nextPathId(): string {
-  pathCounter += 1;
-  return `pinpath-${pathCounter}`;
+  return nextId("pinpath");
 }
 
 // docs/specs/13-layers.md "Duplicated pins do not inherit existing thread

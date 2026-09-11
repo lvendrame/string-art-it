@@ -1,7 +1,42 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, Copy, Plus, Trash2 } from "lucide-react";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 import type { EditorStore } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
+
+const LAYERS_TOOLTIP_ID = "layers-panel-actions-tooltip";
+
+// Icon-only so the 5-button row always fits the fixed-width side panel — the full
+// label still reaches assistive tech via aria-label and sighted users via the
+// react-tooltip hover/focus tooltip (docs/specs/13-layers.md action bar).
+function IconActionButton({
+  icon: Icon,
+  label,
+  onClick,
+  disabled,
+  danger,
+}: {
+  icon: typeof Plus;
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+  danger?: boolean;
+}) {
+  return (
+    <button
+      className="btn"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={label}
+      data-tooltip-id={LAYERS_TOOLTIP_ID}
+      data-tooltip-content={label}
+      style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 8, ...(danger ? { color: "var(--danger)" } : {}) }}
+    >
+      <Icon size={15} />
+    </button>
+  );
+}
 
 function EyeIcon({ open }: { open: boolean }) {
   return open ? (
@@ -166,30 +201,19 @@ export function LayersPanel({ store }: { store: EditorStore }) {
       </div>
 
       <div style={{ display: "flex", gap: 6, padding: 10, borderTop: "1px solid var(--border)" }}>
-        <button className="btn" onClick={actions.add} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 7, fontSize: 11.5, gap: 4 }}>
-          <Plus size={13} />
-          New Layer
-        </button>
-        <button className="btn" onClick={() => actions.duplicate(activeId)} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 7, fontSize: 11.5, gap: 4 }}>
-          <Copy size={13} />
-          Duplicate
-        </button>
-        <button aria-label="Move layer up" className="btn" onClick={() => actions.reorder(activeId, -1)} style={{ borderRadius: "var(--radius-sm)", padding: "7px 10px", fontSize: 11.5 }}>
-          <ChevronUp size={14} />
-        </button>
-        <button aria-label="Move layer down" className="btn" onClick={() => actions.reorder(activeId, 1)} style={{ borderRadius: "var(--radius-sm)", padding: "7px 10px", fontSize: 11.5 }}>
-          <ChevronDown size={14} />
-        </button>
-        <button
-          className="btn"
+        <IconActionButton icon={Plus} label="New Layer" onClick={actions.add} />
+        <IconActionButton icon={Copy} label="Duplicate" onClick={() => actions.duplicate(activeId)} />
+        <IconActionButton icon={ChevronUp} label="Move layer up" onClick={() => actions.reorder(activeId, -1)} />
+        <IconActionButton icon={ChevronDown} label="Move layer down" onClick={() => actions.reorder(activeId, 1)} />
+        <IconActionButton
+          icon={Trash2}
+          label="Delete"
           onClick={() => rows.length > 1 && actions.remove(activeId)}
           disabled={rows.length <= 1}
-          style={{ borderRadius: "var(--radius-sm)", padding: "7px 10px", fontSize: 11.5, color: "var(--danger)", gap: 4 }}
-        >
-          <Trash2 size={13} />
-          Delete
-        </button>
+          danger
+        />
       </div>
+      <Tooltip id={LAYERS_TOOLTIP_ID} place="top" />
     </div>
   );
 }

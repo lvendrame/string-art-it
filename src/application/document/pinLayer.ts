@@ -1,5 +1,6 @@
 import { clonePinPath, type Pin, type PinPath } from "./pinPath";
 import { allPinsWithMirrors } from "./symmetryConfig";
+import { nextId } from "./idCounter";
 
 // docs/specs/13-layers.md — full layer panel UI lands at M6, but the shape exists from
 // M3 so Pin Paths always live inside a layer, never as an unrelated top-level list.
@@ -11,10 +12,8 @@ export interface PinLayer {
   pinPaths: PinPath[];
 }
 
-let layerCounter = 0;
 export function createPinLayer(name: string): PinLayer {
-  layerCounter += 1;
-  return { id: `pinlayer-${layerCounter}`, name, visible: true, locked: false, pinPaths: [] };
+  return { id: nextId("pinlayer"), name, visible: true, locked: false, pinPaths: [] };
 }
 
 function findLayer(layers: PinLayer[], layerId: string): PinLayer | undefined {
@@ -56,12 +55,10 @@ export function findPinPath(layers: PinLayer[], layerId: string, pathId: string)
   return findLayer(layers, layerId)?.pinPaths.find((p) => p.id === pathId);
 }
 
-let layerDuplicateCounter = 0;
 export function duplicatePinLayer(layer: PinLayer): PinLayer {
-  layerDuplicateCounter += 1;
   return {
     ...layer,
-    id: `pinlayer-dup-${layerDuplicateCounter}`,
+    id: nextId("pinlayer-dup"),
     name: `${layer.name} copy`,
     pinPaths: layer.pinPaths.map(clonePinPath),
   };

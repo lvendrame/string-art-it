@@ -1,3 +1,5 @@
+import { nextId } from "./idCounter";
+
 // docs/specs/30-thread-path-model / 12-thread-editor.md. `twistPitch` is the Phase 2
 // "configurable spiral pitch" (docs/specs §00) — a unitless multiplier of strand width
 // controlling how tightly a 2/3-colour thread's strands twist; higher = looser spiral.
@@ -9,10 +11,8 @@ export interface ThreadPath {
   twistPitch: number;
 }
 
-let threadCounter = 0;
 function nextThreadId(): string {
-  threadCounter += 1;
-  return `threadpath-${threadCounter}`;
+  return nextId("threadpath");
 }
 
 export const DEFAULT_TWIST_PITCH = 6;

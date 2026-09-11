@@ -28,6 +28,25 @@ import {
 import { createThreadPath } from "./threadPath";
 import { serializeProject, type ProjectFile, type SerializableDocument } from "./projectFile";
 import { defaultPrintSettings, type PrintSettings } from "./printSettings";
+import { seedCounterFrom } from "./idCounter";
+
+// A freshly loaded document (Open, autosave restore) may carry ids minted by a counter
+// that had already advanced further than this session's — bump every relevant counter
+// past what's already here so newly created layers/paths/pins/threads can never reuse
+// one of them (docs/specs/16-persistence.md).
+function seedIdCountersFrom(doc: SerializableDocument): void {
+  for (const layer of doc.pinLayers) {
+    seedCounterFrom(layer.id);
+    for (const path of layer.pinPaths) {
+      seedCounterFrom(path.id);
+      for (const pin of path.pins) seedCounterFrom(pin.id);
+    }
+  }
+  for (const layer of doc.threadLayers) {
+    seedCounterFrom(layer.id);
+    for (const threadPath of layer.threadPaths) seedCounterFrom(threadPath.id);
+  }
+}
 
 // The Document Engine's mutable root (docs/specs/01-architecture.md). Board mutations
 // route through HistoryStack (undoable, per docs/specs/03-board-configuration.md
@@ -491,6 +510,7 @@ export class EditorStore {
   // undoing past a load into the previous document's edits would be incoherent.
   loadProject(doc: SerializableDocument): void {
     this.history.clear();
+    seedIdCountersFrom(doc);
     this.state = {
       ...this.state,
       board: doc.board,

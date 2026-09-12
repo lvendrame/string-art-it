@@ -155,8 +155,12 @@ export class EditorStore {
 
   // --- transient, non-undoable state ---
 
+  // Switching into Pin or Thread mode also switches the Layers panel to the matching
+  // tab (if it isn't already showing it) — keeps the visible layer list consistent
+  // with which kind of layer the current tool actually edits.
   setMode(mode: EditorMode): void {
-    this.state = { ...this.state, mode };
+    const layerPanelTab = mode === "pin" || mode === "thread" ? mode : this.state.layerPanelTab;
+    this.state = { ...this.state, mode, layerPanelTab };
     this.notify();
   }
 

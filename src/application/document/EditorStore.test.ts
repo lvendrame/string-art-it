@@ -51,6 +51,30 @@ describe("EditorStore transient state (not undoable)", () => {
     expect(store.canUndo()).toBe(false);
   });
 
+  it("switching to Pin or Thread mode syncs the Layers panel tab to match", () => {
+    const store = new EditorStore();
+    expect(store.getState().layerPanelTab).toBe("pin");
+
+    store.setMode("thread");
+    expect(store.getState().layerPanelTab).toBe("thread");
+
+    store.setLayerPanelTab("pin");
+    store.setMode("pin");
+    expect(store.getState().layerPanelTab).toBe("pin");
+  });
+
+  it("switching to Select, Pan or Play mode leaves the Layers panel tab untouched", () => {
+    const store = new EditorStore();
+    store.setMode("thread");
+    expect(store.getState().layerPanelTab).toBe("thread");
+
+    store.setMode("pan");
+    expect(store.getState().layerPanelTab).toBe("thread");
+
+    store.setMode("select");
+    expect(store.getState().layerPanelTab).toBe("thread");
+  });
+
   it("grid visibility and snap-to-grid toggle independently", () => {
     const store = new EditorStore();
     store.setGrid({ visible: false });

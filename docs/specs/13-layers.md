@@ -46,6 +46,7 @@ Each layer supports:
 - **Locked layers cannot be modified.** No create/move/resize/rotate/erase/property-change operation succeeds against an object on a locked layer (see [09-selection-and-editing.md](./09-selection-and-editing.md), [11-erasers.md](./11-erasers.md)).
 - Deleting a layer deletes all objects it contains, as a single undoable operation (see [10-undo-redo.md](./10-undo-redo.md)).
 - Duplicating a layer duplicates its objects with new stable IDs; any Thread Path referencing a duplicated pin still references the original pin's ID, not the duplicate's — duplication does not rewire thread connections.
+- **Switching Editor mode keeps the Layers panel in sync.** Entering Pin mode switches the Layers panel to the Pin Layers tab (if it isn't already showing it); entering Thread mode switches it to the Thread Layers tab. Entering any other mode (Edit, Pan, Play) leaves the panel's current tab untouched — there's no matching layer kind to switch to.
 
 ## Test Cases
 
@@ -92,6 +93,23 @@ Feature: Layer CRUD operations
     Given Pin Layers in order [A, B, C]
     When the user moves layer C above layer A
     Then the layer order becomes [C, A, B]
+
+Feature: Layers panel tab follows Editor mode
+
+  Scenario: Entering Pin mode switches the Layers panel to Pin Layers
+    Given the Layers panel is showing Thread Layers
+    When the user switches to Pin mode
+    Then the Layers panel switches to Pin Layers
+
+  Scenario: Entering Thread mode switches the Layers panel to Thread Layers
+    Given the Layers panel is showing Pin Layers
+    When the user switches to Thread mode
+    Then the Layers panel switches to Thread Layers
+
+  Scenario: Entering Edit, Pan or Play mode leaves the Layers panel tab as-is
+    Given the Layers panel is showing Thread Layers
+    When the user switches to Pan mode
+    Then the Layers panel still shows Thread Layers
 
 Feature: Visibility and locking guarantees
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { EditorStore } from "../../application/document";
-import { buildExportSvg } from "./svgExport";
+import { buildExportSvg, exportBoundingBox } from "./svgExport";
 
 const ALL_ELEMENTS = { boardOutline: true, background: true, pins: true, pinGuides: true, pinNumbers: true, threads: true, grid: true };
 const NONE_ELEMENTS = { boardOutline: false, background: false, pins: false, pinGuides: false, pinNumbers: false, threads: false, grid: false };
@@ -57,5 +57,17 @@ describe("buildExportSvg", () => {
     const svg = buildExportSvg(store.getState(), { ...NONE_ELEMENTS, threads: true });
 
     expect(svg).toContain(`M ${pins[0].x} ${pins[0].y}`);
+  });
+});
+
+describe("exportBoundingBox", () => {
+  it("matches the width/height buildExportSvg derives from it (shared source of truth)", () => {
+    const store = new EditorStore();
+    const box = exportBoundingBox(store.getState().board);
+    const svg = buildExportSvg(store.getState(), ALL_ELEMENTS);
+
+    expect(svg).toContain(`width="${box.width}cm"`);
+    expect(svg).toContain(`height="${box.height}cm"`);
+    expect(svg).toContain(`viewBox="${box.minX} ${box.minY} ${box.width} ${box.height}"`);
   });
 });

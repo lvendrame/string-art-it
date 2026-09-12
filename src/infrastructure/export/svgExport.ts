@@ -19,18 +19,26 @@ export interface ExportDocument {
 
 const MARGIN_CM = 2;
 
+// Shared by static SVG/PDF/PNG export and the Play-mode video exporter (docs/specs/
+// 19-play-mode.md), so both size their output from the same board bounding box.
+export function exportBoundingBox(board: Board): { minX: number; minY: number; width: number; height: number } {
+  const path = boardPath(board);
+  const box = boundingBoxOf(pathBoundingBoxPoints(path));
+  return {
+    minX: box.minX - MARGIN_CM,
+    minY: box.minY - MARGIN_CM,
+    width: box.maxX - box.minX + MARGIN_CM * 2,
+    height: box.maxY - box.minY + MARGIN_CM * 2,
+  };
+}
+
 // docs/specs/15-export.md "SVG and PDF should preserve vector geometry wherever
 // possible" — every shape here is a real SVG path/circle element at true physical
 // size (1 user unit = 1 cm), never a rasterized approximation. This is the one place
 // document state becomes export markup; the Editor/Print renderers are separate
 // consumers of the same domain geometry (docs/specs/01-architecture.md).
 export function buildExportSvg(doc: ExportDocument, elements: PrintElements): string {
-  const path = boardPath(doc.board);
-  const box = boundingBoxOf(pathBoundingBoxPoints(path));
-  const minX = box.minX - MARGIN_CM;
-  const minY = box.minY - MARGIN_CM;
-  const width = box.maxX - box.minX + MARGIN_CM * 2;
-  const height = box.maxY - box.minY + MARGIN_CM * 2;
+  const { minX, minY, width, height } = exportBoundingBox(doc.board);
 
   const defs: string[] = [];
   const content: string[] = [];
@@ -40,7 +48,7 @@ export function buildExportSvg(doc: ExportDocument, elements: PrintElements): st
   }
   if (elements.boardOutline) {
     const fill = elements.background ? boardFillPaint("export-fill", doc.board.appearance) : "none";
-    content.push(`<path d="${pathToSvgD(path)}" fill="${fill}" stroke="black" stroke-width="0.05"/>`);
+    content.push(`<path d="${pathToSvgD(boardPath(doc.board))}" fill="${fill}" stroke="black" stroke-width="0.05"/>`);
   }
 
   for (const layer of doc.pinLayers) {

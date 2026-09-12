@@ -1,13 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BarChart3, Printer, Redo2, Undo2 } from "lucide-react";
-import type { EditorStore } from "../application/document";
+import { totalThreadFrames, type EditorStore } from "../application/document";
 import { Canvas } from "./canvas/Canvas";
+import { PlaybackCanvas } from "./canvas/PlaybackCanvas";
 import { ModeSwitcher } from "./toolbars/ModeSwitcher";
 import { FileMenu } from "./toolbars/FileMenu";
 import { ExportMenu } from "./toolbars/ExportMenu";
 import { PinToolbar } from "./toolbars/PinToolbar";
 import { ThreadToolbar } from "./toolbars/ThreadToolbar";
 import { SelectToolbar } from "./toolbars/SelectToolbar";
+import { PlayToolbar } from "./toolbars/PlayToolbar";
+import { usePlaybackTransport } from "./toolbars/usePlaybackTransport";
+import { useVideoExport } from "./toolbars/useVideoExport";
 import { PinPropertiesPanel } from "./panels/PinPropertiesPanel";
 import { SelectionPanel } from "./panels/SelectionPanel";
 import { SymmetryPanel } from "./panels/SymmetryPanel";
@@ -24,6 +28,10 @@ function isTextEntryTarget(target: EventTarget | null): boolean {
 export function EditorShell({ store, onNewProject }: { store: EditorStore; onNewProject: () => void }) {
   const state = useEditorState(store);
   const [overlay, setOverlay] = useState<"none" | "print" | "stats">("none");
+  const totalFrames = totalThreadFrames(state.threadLayers);
+  const transport = usePlaybackTransport(totalFrames, state.mode === "play");
+  const playSvgRef = useRef<SVGSVGElement>(null);
+  const videoExport = useVideoExport(playSvgRef, state.board, totalFrames, transport.intervalMs, transport.goToFrame);
 
   // docs/specs/10-undo-redo.md — Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z, except while a text
   // field has focus (renaming a layer, a numeric input) so the browser's own text-undo
@@ -88,7 +96,12 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
             <ThreadToolbar store={store} />
           </div>
         )}
-        <Canvas store={store} />
+        {state.mode === "play" && (
+          <div style={{ width: 248, flex: "0 0 auto", background: "var(--bg-panel)", borderRight: "1px solid var(--border)", overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 20 }}>
+            <PlayToolbar transport={transport} totalFrames={totalFrames} videoExport={videoExport} />
+          </div>
+        )}
+        {state.mode === "play" ? <PlaybackCanvas ref={playSvgRef} state={state} frame={transport.frame} /> : <Canvas store={store} />}
         <div style={{ width: 260, flex: "0 0 auto", background: "var(--bg-panel)", borderLeft: "1px solid var(--border)" }}>
           <LayersPanel store={store} />
         </div>

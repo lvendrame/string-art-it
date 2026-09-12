@@ -1,4 +1,4 @@
-import { Hand, MousePointer2, Pin as PinIcon, Spline } from "lucide-react";
+import { Hand, MousePointer2, Pin as PinIcon, Play, Spline } from "lucide-react";
 import type { ComponentType } from "react";
 import type { EditorMode } from "../../application/document";
 
@@ -7,6 +7,7 @@ const MODES: { id: EditorMode; label: string; icon: ComponentType<{ size?: numbe
   { id: "pin", label: "Pin", icon: PinIcon },
   { id: "thread", label: "Thread", icon: Spline },
   { id: "pan", label: "Pan", icon: Hand },
+  { id: "play", label: "Play", icon: Play },
 ];
 
 export function ModeSwitcher({ mode, onChange }: { mode: EditorMode; onChange: (mode: EditorMode) => void }) {

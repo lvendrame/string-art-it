@@ -68,6 +68,7 @@ The application must allow users to:
 | Persistence | [16-persistence.md](./16-persistence.md) |
 | Statistics | [17-statistics.md](./17-statistics.md) |
 | Design system | [18-design-system.md](./18-design-system.md) |
+| Play mode (thread-drawing animation replay + video export) | [19-play-mode.md](./19-play-mode.md) |
 
 ## MVP Scope
 

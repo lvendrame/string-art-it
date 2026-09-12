@@ -6,8 +6,8 @@ import type { SymmetryConfig } from "./symmetryConfig";
 import type { ThreadLayer } from "./threadLayer";
 import type { PrintSettings } from "./printSettings";
 
-// docs/specs/06-canvas-and-viewport.md §Editor Modes
-export type EditorMode = "select" | "pin" | "thread" | "pan";
+// docs/specs/06-canvas-and-viewport.md §Editor Modes; docs/specs/19-play-mode.md
+export type EditorMode = "select" | "pin" | "thread" | "pan" | "play";
 
 export interface GridSettings {
   gapX: number;

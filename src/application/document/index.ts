@@ -67,6 +67,7 @@ export {
   type ThreadLayer,
 } from "./threadLayer";
 export { renameLayer, toggleLayerVisible, toggleLayerLocked, deleteLayer, reorderLayer } from "./layerOps";
+export { totalThreadFrames, truncateThreadLayersAtFrame } from "./playback";
 export {
   defaultPrintSettings,
   paperDimensionsCm,

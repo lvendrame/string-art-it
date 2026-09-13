@@ -107,7 +107,7 @@ export const HELP_TABS: HelpTab[] = [
       {
         heading: "Tools",
         items: [
-          { label: "Draw", description: "Click a pin to start or extend a Thread Path (snaps to the nearest pin). Double-click finishes with a final segment; right-click finishes without adding one. Esc cancels/discards the in-progress draft; ArrowLeft retracts the draft's last point." },
+          { label: "Draw", description: "Click a pin to start or extend a Thread Path (snaps to the nearest pin). Double-click finishes with a final segment; right-click finishes without adding one. Esc cancels/discards the in-progress draft; ArrowLeft retracts the draft's last point. Once the draft has 4+ vertices, ArrowRight auto-adds the next one by following the numeric pin-position pattern of the vertices added so far." },
           { label: "Eraser", description: "Click a Thread Path to remove the whole path in one click." },
           { label: "Segment", description: "Click one segment to remove it, splitting the path into up to two surviving fragments (a fragment left with under 2 pins is dropped). Pins themselves are untouched." },
         ],
@@ -220,6 +220,7 @@ export const HELP_TABS: HelpTab[] = [
           { label: "Ctrl/Cmd+Shift+Z", description: "Redo. Same text-field exception as Undo." },
           { label: "Escape", description: "Cancels the active tool's in-progress action: an unfinished thread draft, an in-progress Move or Rotation drag, or a pending Merge selection — whichever applies to the current mode/tool." },
           { label: "ArrowLeft", description: "Thread Draw tool only — retracts the last point of the in-progress thread draft." },
+          { label: "ArrowRight", description: "Thread Draw tool only — once the draft has 4+ vertices, extends it by extrapolating the numeric pin-position pattern of the vertices added so far, wrapping around the pin count of the relevant Pin Path." },
           { label: "Alt (held while dragging)", description: "Pin mode Ellipse/Rectangle tools only — constrains the shape to a Circle/Square. Releasing Alt mid-drag reverts to unconstrained." },
         ],
       },

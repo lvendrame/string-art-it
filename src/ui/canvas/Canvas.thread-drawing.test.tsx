@@ -146,6 +146,36 @@ describe("Canvas — thread drawing interaction", () => {
     expect(store.getState().threadDraft).toBeNull();
   });
 
+  it("Right Arrow extrapolates the next vertex once the draft has 4+ vertices (docs/specs/22-thread-follow-pattern.md)", () => {
+    const { store, pins } = seedPinsAndEnterThreadMode(); // line, 1cm spacing -> 21 pins
+    render(<Canvas store={store} />);
+
+    // Pins 3, 6, 9, 12 (indices 2, 5, 8, 11) via direct store calls — the gesture
+    // under test is the ArrowRight key, not the seeding clicks.
+    store.extendThreadDraft(pins[2].id);
+    store.extendThreadDraft(pins[5].id);
+    store.extendThreadDraft(pins[8].id);
+    store.extendThreadDraft(pins[11].id);
+
+    fireEvent.keyDown(window, { key: "ArrowRight" }); // -> Pin 15
+    expect(store.getState().threadDraft?.pinIds.at(-1)).toBe(pins[14].id);
+
+    fireEvent.keyDown(window, { key: "ArrowRight" }); // -> Pin 18
+    expect(store.getState().threadDraft?.pinIds.at(-1)).toBe(pins[17].id);
+  });
+
+  it("Right Arrow is a no-op before the draft has 4 vertices", () => {
+    const { store, pins } = seedPinsAndEnterThreadMode();
+    render(<Canvas store={store} />);
+
+    store.extendThreadDraft(pins[0].id);
+    store.extendThreadDraft(pins[1].id);
+
+    fireEvent.keyDown(window, { key: "ArrowRight" });
+
+    expect(store.getState().threadDraft?.pinIds).toEqual([pins[0].id, pins[1].id]);
+  });
+
   it("a mirrored (symmetry-generated) pin is a real click target for a Thread endpoint", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;

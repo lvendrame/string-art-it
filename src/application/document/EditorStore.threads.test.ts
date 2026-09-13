@@ -152,6 +152,48 @@ describe("EditorStore cascading pin deletion into threads", () => {
     expect(store.getState().threadDraft).toBeNull();
   });
 
+  it("advanceThreadDraftByPattern extrapolates and wraps around a 16-pin path (docs/specs/22-thread-follow-pattern.md example 4)", () => {
+    const store = new EditorStore();
+    const { pins } = seedPins(store, 16); // pins[0] is "Pin 1" ... pins[15] is "Pin 16"
+    store.extendThreadDraft(pins[2].id); // Pin 3
+    store.extendThreadDraft(pins[5].id); // Pin 6
+    store.extendThreadDraft(pins[8].id); // Pin 9
+    store.extendThreadDraft(pins[11].id); // Pin 12
+
+    store.advanceThreadDraftByPattern();
+    expect(store.getState().threadDraft?.pinIds.at(-1)).toBe(pins[14].id); // Pin 15
+
+    store.advanceThreadDraftByPattern();
+    expect(store.getState().threadDraft?.pinIds.at(-1)).toBe(pins[1].id); // Pin 2 (wrapped)
+
+    store.advanceThreadDraftByPattern();
+    expect(store.getState().threadDraft?.pinIds.at(-1)).toBe(pins[4].id); // Pin 5
+
+    store.advanceThreadDraftByPattern();
+    expect(store.getState().threadDraft?.pinIds.at(-1)).toBe(pins[7].id); // Pin 8
+  });
+
+  it("advanceThreadDraftByPattern is a no-op with fewer than 4 vertices", () => {
+    const store = new EditorStore();
+    const { pins } = seedPins(store, 16);
+    store.extendThreadDraft(pins[2].id);
+    store.extendThreadDraft(pins[5].id);
+    store.extendThreadDraft(pins[8].id);
+
+    store.advanceThreadDraftByPattern();
+
+    expect(store.getState().threadDraft?.pinIds).toHaveLength(3);
+  });
+
+  it("advanceThreadDraftByPattern is a no-op when no draft is in progress", () => {
+    const store = new EditorStore();
+    seedPins(store, 16);
+
+    store.advanceThreadDraftByPattern();
+
+    expect(store.getState().threadDraft).toBeNull();
+  });
+
   it("erasePinPath deletes every pin in the path and cascades into referencing threads, one undo step", () => {
     const store = new EditorStore();
     const { layerId, pathId, pins } = seedPins(store, 3); // A-B-C pins

@@ -71,6 +71,7 @@ The application must allow users to:
 | Play mode (thread-drawing animation replay + video export) | [19-play-mode.md](./19-play-mode.md) |
 | In-app help | [20-help.md](./20-help.md) |
 | Scale tool & pin distance | [21-scale-and-pin-distance.md](./21-scale-and-pin-distance.md) |
+| Thread draft pattern-follow (Right Arrow) | [22-thread-follow-pattern.md](./22-thread-follow-pattern.md) |
 
 ## MVP Scope
 

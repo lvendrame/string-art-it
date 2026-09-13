@@ -15,6 +15,8 @@ export function useThreadDrawing(store: EditorStore, state: EditorState, threadL
         store.escapeThreadDraft(store.getState().activeThreadLayerId);
       } else if (e.key === "ArrowLeft") {
         store.retractThreadDraft();
+      } else if (e.key === "ArrowRight") {
+        store.advanceThreadDraftByPattern();
       }
     }
     window.addEventListener("keydown", onKeyDown);

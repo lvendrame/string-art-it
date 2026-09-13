@@ -75,6 +75,7 @@ Threads connect existing pins only — you can't drop a thread endpoint on empty
 - **Right-click**: finishes the thread at the last confirmed pin, without adding whatever segment was being previewed.
 - **Esc**: if no segment has been confirmed yet, cancels the thread outright; if at least one segment exists, finishes the thread where it is.
 - **Left Arrow**: removes the last vertex you added. If only one vertex is left, removing it cancels the thread.
+- **Right Arrow**: once you've added at least 4 vertices, auto-adds the next one by following the numeric pin-position pattern of the vertices added so far (e.g. 3, 6, 9, 12 → 15, 18, ...), wrapping around the pin count of whichever Pin Path the pattern lands on.
 - **Eraser tool**: click near any segment to delete that whole Thread Path.
 
 Thread appearance (1, 2, or 3 colours, width, twist pitch for multi-colour spirals) is set in the left panel and applies to new threads you draw; colours 2 and 3 twist around the first as one continuous strand, not separate parallel lines.

@@ -1,12 +1,35 @@
-import { useMemo, useState } from "react";
-import { EditorStore } from "./application/document";
+import { useEffect, useMemo, useState } from "react";
+import { EditorStore, recomputePinPath, rotateGeometry, scaleGeometry, translateGeometry } from "./application/document";
 import { fitViewportForBoard } from "./ui/canvas/boardViewport";
 import { EditorShell } from "./ui/EditorShell";
 import { BoardSetup } from "./ui/panels/BoardSetup";
 import { useAutosave } from "./ui/useAutosave";
 
+// Unstable debug/test hook — no compat guarantee, not part of the app's public
+// surface. Lets Playwright (or anyone in the console) drive the document directly via
+// EditorStore's own methods instead of simulating pixel-accurate mouse gestures for
+// every setup step. `Helpers` carries the pure geometry-transform functions the
+// Edit-mode tools (Move/Rotation/Scale) use to build their commit arguments, since
+// those are plain module exports otherwise unreachable from a page.evaluate() call.
+// See .claude/skills/test-with-debug-hook/SKILL.md.
+declare global {
+  interface Window {
+    stringArtItDebug?: EditorStore;
+    stringArtItDebugHelpers?: {
+      scaleGeometry: typeof scaleGeometry;
+      rotateGeometry: typeof rotateGeometry;
+      translateGeometry: typeof translateGeometry;
+      recomputePinPath: typeof recomputePinPath;
+    };
+  }
+}
+
 export function App() {
   const store = useMemo(() => new EditorStore(), []);
+  useEffect(() => {
+    window.stringArtItDebug = store;
+    window.stringArtItDebugHelpers = { scaleGeometry, rotateGeometry, translateGeometry, recomputePinPath };
+  }, [store]);
   const [entered, setEntered] = useState(false);
   const { pendingAutosave, restore, discard } = useAutosave(store);
 

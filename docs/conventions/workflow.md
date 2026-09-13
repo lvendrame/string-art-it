@@ -19,7 +19,9 @@ Start a milestone's Status Table row as `Not Started`. Flip it to `Done` **only 
 
 ## Before calling a UI change done
 
-Every UI-facing milestone or fix in this project's history has been verified live via the Playwright MCP tools against the actual dev server (`npm run dev`), not just unit tests — build/test/lint passing is necessary but not sufficient for a UI claim. The pattern used repeatedly:
+Every UI-facing milestone or fix in this project's history has been verified live via the Playwright MCP tools against the actual dev server (`npm run dev`), not just unit tests — build/test/lint passing is necessary but not sufficient for a UI claim. Load the `test-with-debug-hook` skill before doing this — it drives document state directly through `window.stringArtItDebug`/`window.stringArtItDebugHelpers` (the same `EditorStore` methods the UI and unit tests call) instead of simulating every precondition with pixel-perfect clicks/drags. Reserve real `page.mouse` interaction for the one gesture actually under test; use the hook for setup (draw shapes, connect threads, select, lock) and for reading back state to assert on (`store.getState()`) instead of parsing screenshots or accessibility snapshots for numbers.
+
+The pattern used repeatedly:
 
 1. Start the dev server in the background, navigate to it.
 2. Handle the autosave-restore prompt if one appears (an existing autosaved project is common in this dev environment — `Restore` keeps whatever pins/threads/layers were already there, useful for exercising features that need real data).

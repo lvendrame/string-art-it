@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { BarChart3, Printer, Redo2, Undo2 } from "lucide-react";
+import { BarChart3, HelpCircle, Printer, Redo2, Undo2 } from "lucide-react";
 import { totalThreadFrames, type EditorStore } from "../application/document";
 import { Canvas } from "./canvas/Canvas";
 import { PlaybackCanvas } from "./canvas/PlaybackCanvas";
@@ -18,6 +18,7 @@ import { SymmetryPanel } from "./panels/SymmetryPanel";
 import { LayersPanel } from "./panels/LayersPanel";
 import { PrintPreviewPanel } from "./panels/PrintPreviewPanel";
 import { StatisticsPanel } from "./panels/StatisticsPanel";
+import { HelpPanel } from "./panels/help/HelpPanel";
 import { useEditorState } from "./useEditorStore";
 
 function isTextEntryTarget(target: EventTarget | null): boolean {
@@ -27,7 +28,7 @@ function isTextEntryTarget(target: EventTarget | null): boolean {
 
 export function EditorShell({ store, onNewProject }: { store: EditorStore; onNewProject: () => void }) {
   const state = useEditorState(store);
-  const [overlay, setOverlay] = useState<"none" | "print" | "stats">("none");
+  const [overlay, setOverlay] = useState<"none" | "print" | "stats" | "help">("none");
   const totalFrames = totalThreadFrames(state.threadLayers);
   const transport = usePlaybackTransport(totalFrames, state.mode === "play");
   const playSvgRef = useRef<SVGSVGElement>(null);
@@ -69,6 +70,10 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
           <BarChart3 size={14} />
           Stats
         </button>
+        <button className="btn" onClick={() => setOverlay("help")} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
+          <HelpCircle size={14} />
+          Help
+        </button>
         <button className="btn" onClick={() => setOverlay("print")} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
           <Printer size={14} />
           Print
@@ -78,6 +83,7 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
       <div style={{ flex: 1, display: "flex", minHeight: 0, position: "relative" }}>
         {overlay === "print" && <PrintPreviewPanel store={store} onClose={() => setOverlay("none")} />}
         {overlay === "stats" && <StatisticsPanel store={store} onClose={() => setOverlay("none")} />}
+        {overlay === "help" && <HelpPanel currentMode={state.mode} onClose={() => setOverlay("none")} />}
         {state.mode === "pin" && (
           <div style={{ width: 248, flex: "0 0 auto", background: "var(--bg-panel)", borderRight: "1px solid var(--border)", overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 20 }}>
             <PinToolbar store={store} />

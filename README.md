@@ -30,7 +30,7 @@ You can return to this screen at any time with the **New** button (this replaces
 
 The editor is laid out as:
 
-- **Top bar** — File menu (New/Save/Open), Export, the mode switcher (Select/Pin/Thread/Pan), Undo/Redo, Stats, Print.
+- **Top bar** — File menu (New/Save/Open), Export, the mode switcher (Select/Pin/Thread/Pan/Play), Undo/Redo, Stats, Help, Print.
 - **Left panel** — tools and settings for whichever mode is active.
 - **Canvas (centre)** — the board. Left-click/drag to draw, per the active mode below.
 - **Right panel** — Layers (separate lists for pin layers and thread layers).
@@ -77,15 +77,28 @@ Threads connect existing pins only — you can't drop a thread endpoint on empty
 
 Thread appearance (1, 2, or 3 colours, width, twist pitch for multi-colour spirals) is set in the left panel and applies to new threads you draw; colours 2 and 3 twist around the first as one continuous strand, not separate parallel lines.
 
+## Play mode
+
+Replays how the current design's threads were drawn, one segment at a time, using the current Pin/Thread Layer order (there's no separate recorded history — replay order is reconstructed from the layers/paths as they exist now, so reordering Thread Layers changes replay order along with the on-screen stacking order).
+
+- **First / Previous / Play-Pause / Next / Last** — a single row of transport controls, same layout as any media player. Play auto-advances at the configured interval and stops (doesn't loop) at the last frame; pressing Play again once you're at the end restarts from the beginning.
+- **Frame** — type a number to jump straight to it. **Total** shows the frame count (read-only).
+- **Time between frames (ms)** — how long each frame is held during playback and in the exported video.
+- **Export to Video** — renders the animation to a `.webm` file at the configured pace. Needs a browser with `MediaRecorder` support; the button is disabled otherwise, or if there's nothing drawn yet.
+
 ## Layers
 
-The right panel has two tabs, Pin Layers and Thread Layers, each with the same controls:
+The right panel has two tabs, Pin Layers and Thread Layers, each with the same controls. The visible tab follows whichever mode you're in — switching to Pin mode shows Pin Layers, switching to Thread mode shows Thread Layers; Select/Pan/Play leave it as you last set it.
 
 - Click a row to make it the active layer (new pins/threads you draw go there).
 - Click the eye icon to show/hide a layer — hidden layers keep their contents, they just don't render or print.
 - Click the lock icon to lock/unlock — locked layers can't be edited, but stay visible and still print.
 - Double-click a layer's name to rename it (Enter to confirm).
 - **New Layer**, **Duplicate**, the up/down arrows to reorder, and **Delete** (disabled once only one layer is left).
+
+## Help
+
+Click **Help** in the top bar for an in-app reference: one tab per mode (Edit/Pin/Thread/Pan/Play), plus a Layers tab and a Keyboard & Mouse tab covering every shortcut and gesture. It opens on the tab matching whatever mode you're currently in.
 
 ## Undo / redo
 

@@ -69,6 +69,7 @@ The application must allow users to:
 | Statistics | [17-statistics.md](./17-statistics.md) |
 | Design system | [18-design-system.md](./18-design-system.md) |
 | Play mode (thread-drawing animation replay + video export) | [19-play-mode.md](./19-play-mode.md) |
+| In-app help | [20-help.md](./20-help.md) |
 
 ## MVP Scope
 

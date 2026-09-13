@@ -52,3 +52,14 @@ describe("EditorShell undo/redo shortcuts", () => {
     expect(store.getState().board.dimensions.diameter).not.toBe(90);
   });
 });
+
+describe("EditorShell Help overlay", () => {
+  it("Help button opens the Help overlay", () => {
+    const store = new EditorStore();
+    render(<EditorShell store={store} onNewProject={() => {}} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Help" }));
+
+    expect(screen.getByRole("tablist", { name: "Help topics" })).toBeInTheDocument();
+  });
+});

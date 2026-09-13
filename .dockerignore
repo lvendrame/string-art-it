@@ -1,0 +1,12 @@
+node_modules
+dist
+dist-ssr
+coverage
+*.tsbuildinfo
+.git
+.gitignore
+.DS_Store
+.playwright-mcp
+*.png
+docs
+design

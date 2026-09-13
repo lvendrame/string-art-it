@@ -214,6 +214,47 @@ describe("Canvas", () => {
     expect(screen.queryByTestId("pin-merge-candidate")).not.toBeInTheDocument();
   });
 
+  it("Pin Eraser highlights the hovered pin before it's erased", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } });
+    const [pinA] = store.getState().pinLayers[0].pinPaths[0].pins;
+    store.setMode("pin");
+    store.setPinTool("eraser");
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+    // Default viewport: zoom 4, panOrigin (-40,-40) — clientX/Y = (doc + 40) * 4.
+    const toScreen = (p: { x: number; y: number }) => ({ clientX: (p.x + 40) * 4, clientY: (p.y + 40) * 4 });
+
+    expect(screen.queryByTestId("pin-eraser-candidate")).not.toBeInTheDocument();
+
+    fireEvent.mouseMove(svg, toScreen(pinA));
+    expect(screen.getByTestId("pin-eraser-candidate")).toBeInTheDocument();
+
+    fireEvent.mouseMove(svg, { clientX: 0, clientY: 0 });
+    expect(screen.queryByTestId("pin-eraser-candidate")).not.toBeInTheDocument();
+  });
+
+  it("Path Eraser highlights every pin in the hovered Pin Path before it's erased", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } });
+    const pins = store.getState().pinLayers[0].pinPaths[0].pins;
+    store.setMode("pin");
+    store.setPinTool("path-eraser");
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+    const toScreen = (p: { x: number; y: number }) => ({ clientX: (p.x + 40) * 4, clientY: (p.y + 40) * 4 });
+
+    fireEvent.mouseMove(svg, toScreen(pins[0]));
+    const overlay = screen.getByTestId("path-eraser-candidate");
+    expect(overlay).toBeInTheDocument();
+    expect(overlay.querySelectorAll("circle")).toHaveLength(pins.length);
+
+    fireEvent.mouseMove(svg, { clientX: 0, clientY: 0 });
+    expect(screen.queryByTestId("path-eraser-candidate")).not.toBeInTheDocument();
+  });
+
   it("select mode: clicking a mirrored (symmetry-generated) pin selects its source Pin Path", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;

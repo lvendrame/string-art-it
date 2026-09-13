@@ -25,6 +25,7 @@ import { ThreadLayersView } from "./ThreadLayersView";
 import { ThreadDraftLayer } from "./ThreadDraftLayer";
 import { PinHighlightOverlay } from "./PinHighlightOverlay";
 import { MergeSelectionOverlay } from "./MergeSelectionOverlay";
+import { EraserHoverOverlay } from "./EraserHoverOverlay";
 import { nearestPinOrMirrorOwner, nearestPinOwner } from "./hitTesting";
 import { symmetryPreviewTransforms } from "./symmetryPreviewTransforms";
 import { useAltModifier } from "./useAltModifier";
@@ -37,6 +38,7 @@ import { useMoveTool } from "./useMoveTool";
 import { useRotateTool } from "./useRotateTool";
 import { useScaleTool } from "./useScaleTool";
 import { useMergeTool } from "./useMergeTool";
+import { useEraserHover } from "./useEraserHover";
 
 const VIEWPORT_PX = CANVAS_VIEWPORT_PX;
 
@@ -144,6 +146,7 @@ export function Canvas({ store }: { store: EditorStore }) {
   const rotateTool = useRotateTool(store, state);
   const scaleTool = useScaleTool(store, state);
   const mergeTool = useMergeTool(store, state);
+  const eraserHover = useEraserHover(state);
 
   const path = useMemo(() => boardPath(state.board), [state.board]);
   const pathD = useMemo(() => pathToSvgD(path), [path]);
@@ -224,6 +227,8 @@ export function Canvas({ store }: { store: EditorStore }) {
     if (state.mode === "select" && state.selectTool === "rotate") rotateTool.handleMouseMove(resolvePoint(raw), e.clientX);
     if (state.mode === "select" && state.selectTool === "scale") scaleTool.handleMouseMove(e.clientX);
     if (state.mode === "select" && state.selectTool === "merge") mergeTool.handleMouseMove(raw, maxDist);
+    if (state.mode === "pin") eraserHover.handlePinMouseMove(raw, maxDist, state.pinTool);
+    if (state.mode === "thread") eraserHover.handleThreadMouseMove(raw, maxDist, state.threadTool);
   }
 
   function handlePointerUp(e: ReactMouseEvent<SVGSVGElement>) {
@@ -393,6 +398,18 @@ export function Canvas({ store }: { store: EditorStore }) {
               pinLayers={state.pinLayers}
               selectedPinIds={state.mergeSelection.map((c) => c.pinId)}
               hoverPinId={mergeTool.hoverPinId}
+            />
+          )}
+
+          {((state.mode === "pin" && (state.pinTool === "eraser" || state.pinTool === "path-eraser")) ||
+            (state.mode === "thread" && (state.threadTool === "eraser" || state.threadTool === "segment-eraser"))) && (
+            <EraserHoverOverlay
+              pinLayers={state.pinLayers}
+              threadLayers={state.threadLayers}
+              pinEraserHit={state.mode === "pin" ? eraserHover.pinEraserHit : null}
+              pathEraserHit={state.mode === "pin" ? eraserHover.pathEraserHit : null}
+              threadEraserHit={state.mode === "thread" ? eraserHover.threadEraserHit : null}
+              segmentEraserHit={state.mode === "thread" ? eraserHover.segmentEraserHit : null}
             />
           )}
         </svg>

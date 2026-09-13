@@ -250,4 +250,43 @@ describe("Canvas — thread drawing interaction", () => {
 
     expect(store.getState().threadLayers[0].threadPaths).toHaveLength(0);
   });
+
+  it("Thread Eraser highlights the hovered Thread Path before it's erased", () => {
+    const { store, pins } = seedPinsAndEnterThreadMode();
+    const threadLayerId = store.getState().threadLayers[0].id;
+    store.extendThreadDraft(pins[0].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[5].id); // A-B, doc(10,10)-(15,10)
+    store.setThreadTool("eraser");
+
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    expect(screen.queryByTestId("thread-eraser-candidate")).not.toBeInTheDocument();
+
+    fireEvent.mouseMove(svg, { clientX: 210, clientY: 200 }); // midpoint of A-B, doc(12.5,10)
+    expect(screen.getByTestId("thread-eraser-candidate")).toBeInTheDocument();
+
+    fireEvent.mouseMove(svg, { clientX: 0, clientY: 0 });
+    expect(screen.queryByTestId("thread-eraser-candidate")).not.toBeInTheDocument();
+  });
+
+  it("Segment Eraser highlights only the hovered segment before it's erased", () => {
+    const { store, pins } = seedPinsAndEnterThreadMode();
+    const threadLayerId = store.getState().threadLayers[0].id;
+    store.extendThreadDraft(pins[0].id);
+    store.extendThreadDraft(pins[5].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[10].id); // A-B-C
+    store.setThreadTool("segment-eraser");
+
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.mouseMove(svg, { clientX: 210, clientY: 200 }); // midpoint of segment A-B, doc(12.5,10)
+    const overlay = screen.getByTestId("segment-eraser-candidate");
+    expect(overlay).toBeInTheDocument();
+    expect(overlay.tagName.toLowerCase()).toBe("line");
+
+    fireEvent.mouseMove(svg, { clientX: 0, clientY: 0 });
+    expect(screen.queryByTestId("segment-eraser-candidate")).not.toBeInTheDocument();
+  });
 });

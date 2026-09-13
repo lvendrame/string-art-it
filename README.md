@@ -45,6 +45,8 @@ The editor is laid out as:
 
 Click a pin to select the Pin Path it belongs to. The left panel then shows that shape's numeric properties (position, size, spacing, colour, diameter, guide visibility, symmetry) — edit the numbers directly rather than dragging handles on the canvas. Clicking empty space clears the selection.
 
+The left panel also has Move, Rotation, Scale, and Merge tools for a selected Pin Path: Move and Rotation drag it around or spin it in place; **Scale** drags it larger or smaller about its own centre, recalculating pin count and reattaching any connected threads to the nearest new pin; Merge collapses several pins (left-click to accumulate, right-click to commit) into one. Changing the **Pin distance** field in the property panel does the same recalculation-and-reattachment as Scale, without changing the shape's size.
+
 ## Pin mode
 
 Pick a tool in the left panel, then draw on the canvas:

@@ -70,6 +70,7 @@ The application must allow users to:
 | Design system | [18-design-system.md](./18-design-system.md) |
 | Play mode (thread-drawing animation replay + video export) | [19-play-mode.md](./19-play-mode.md) |
 | In-app help | [20-help.md](./20-help.md) |
+| Scale tool & pin distance | [21-scale-and-pin-distance.md](./21-scale-and-pin-distance.md) |
 
 ## MVP Scope
 
@@ -121,7 +122,7 @@ The application must allow users to:
 - SVG, PDF, PNG/JPEG export
 - Autosave
 - Statistics
-- Advanced transformations
+- ~~Advanced transformations~~ — see [21-scale-and-pin-distance.md](./21-scale-and-pin-distance.md)
 - Configurable spiral twist density
 
 ## Future Features (Out of Scope for Core)

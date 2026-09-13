@@ -61,7 +61,17 @@ export function splitThreadPathAtSegment(path: ThreadPath, segmentIndex: number)
 // splitThreadPathAtSegment, path.id is kept — this is the SAME conceptual thread,
 // contracted, not fragmented into new ones.
 export function remapPinsInThreadPath(path: ThreadPath, oldPinIds: Set<string>, newPinId: string): ThreadPath[] {
-  const remapped = path.pinIds.map((id) => (oldPinIds.has(id) ? newPinId : id));
+  const mapping = new Map<string, string>();
+  for (const id of oldPinIds) mapping.set(id, newPinId);
+  return remapPinsInThreadPathByMap(path, mapping);
+}
+
+// docs/specs/21-scale-and-pin-distance.md Nearest-Pin Reattachment — generalizes the
+// Merge remap above from "many old ids -> one shared new id" to an arbitrary
+// old-id -> new-id map (each old pin maps to its OWN nearest new pin, not a common
+// destination), reusing the same contract-and-collapse behaviour.
+export function remapPinsInThreadPathByMap(path: ThreadPath, mapping: Map<string, string>): ThreadPath[] {
+  const remapped = path.pinIds.map((id) => mapping.get(id) ?? id);
   const collapsed = remapped.filter((id, i) => i === 0 || id !== remapped[i - 1]);
   return collapsed.length >= 2 ? [{ ...path, pinIds: collapsed }] : [];
 }

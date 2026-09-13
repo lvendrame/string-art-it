@@ -44,12 +44,14 @@ export const HELP_TABS: HelpTab[] = [
           { label: "Select", description: "Click a pin to select its Pin Path, exposing its geometry for editing." },
           { label: "Move", description: "Press-drag-release to translate the selected Pin Path. Disabled unless a Pin Path is selected; commits as one undo step." },
           { label: "Rotation", description: "Press-drag-release to rotate the selected Pin Path about the point where the mouse was pressed, 0.3° per screen pixel (drag right to increase). Disabled unless a Pin Path is selected; commits as one undo step." },
-          { label: "Merge", description: "Left-click accumulates pins (from any Pin Path or layer) into a pending set; right-click commits them into one new pin at their average position. Esc cancels an in-progress Move, Rotation, or Merge." },
+          { label: "Scale", description: "Press-drag-release to resize the selected Pin Path about its own centre (drag right to grow, left to shrink). Recalculates pin count and reattaches any connected threads to the nearest new pin. Disabled unless a Pin Path is selected; commits as one undo step." },
+          { label: "Merge", description: "Left-click accumulates pins (from any Pin Path or layer) into a pending set; right-click commits them into one new pin at their average position. Esc cancels an in-progress Move, Rotation, Scale, or Merge." },
         ],
       },
       {
         heading: "Selection panel (shown when a Pin Path is selected)",
         items: [
+          { label: "Pin distance", description: "The requested spacing between pins on the selected Pin Path. Editing it recalculates pin count and reattaches any connected threads to the nearest new pin, as one undo step." },
           { label: "Geometry fields", description: "Live-editable numeric fields for the selected shape's geometry (position, radius, rotation, etc. — varies by shape type). Editing a field recalculates the generated pins immediately." },
           { label: "Symmetry", description: "The same Symmetry controls as Pin mode, scoped to the selected Pin Path." },
           { label: "Delete Pin Path", description: "Deletes the selected Pin Path along with its pins and any symmetry copies." },

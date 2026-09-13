@@ -1,4 +1,4 @@
-import { GitMerge, MousePointer2, Move, RotateCw } from "lucide-react";
+import { GitMerge, MousePointer2, Move, RotateCw, Scaling } from "lucide-react";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import type { ComponentType } from "react";
@@ -11,6 +11,7 @@ const TOOLS: { id: SelectTool; label: string; icon: ComponentType<{ size?: numbe
   { id: "select", label: "Select", icon: MousePointer2, tooltip: "Click a pin to select its Pin Path.", requiresSelection: false },
   { id: "move", label: "Move", icon: Move, tooltip: "Drag to translate the selected Pin Path.", requiresSelection: true },
   { id: "rotate", label: "Rotation", icon: RotateCw, tooltip: "Drag left or right from any point to rotate the selected Pin Path around that point.", requiresSelection: true },
+  { id: "scale", label: "Scale", icon: Scaling, tooltip: "Drag left or right to scale the selected Pin Path about its own centre.", requiresSelection: true },
   { id: "merge", label: "Merge", icon: GitMerge, tooltip: "Click pins to select them, then right-click to merge them into one pin at their midpoint.", requiresSelection: false },
 ];
 

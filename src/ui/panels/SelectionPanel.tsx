@@ -43,6 +43,11 @@ export function SelectionPanel({ store }: { store: EditorStore }) {
         Selection — {g.type}
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8, background: "var(--bg-app)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 12 }}>
+        <NumberField
+          label="Pin distance"
+          value={selected.requestedSpacing}
+          onChange={(v) => store.setPinProperty({ spacing: Math.max(v, 0.01) })}
+        />
         {g.type === "line" && (
           <>
             <NumberField label="Start X" value={g.start.x} onChange={(v) => set({ ...g, start: { ...g.start, x: v } })} />

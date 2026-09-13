@@ -33,6 +33,7 @@ import { useFreehandDrawing } from "./useFreehandDrawing";
 import { useThreadDrawing } from "./useThreadDrawing";
 import { useMoveTool } from "./useMoveTool";
 import { useRotateTool } from "./useRotateTool";
+import { useScaleTool } from "./useScaleTool";
 import { useMergeTool } from "./useMergeTool";
 
 const VIEWPORT_PX = CANVAS_VIEWPORT_PX;
@@ -42,6 +43,7 @@ function canvasCursor(mode: EditorMode, selectTool: SelectTool, isPanning: boole
   if (mode === "select") {
     if (selectTool === "move") return "move";
     if (selectTool === "rotate") return "crosshair";
+    if (selectTool === "scale") return "ew-resize";
     return "default";
   }
   return "crosshair";
@@ -68,6 +70,7 @@ export function Canvas({ store }: { store: EditorStore }) {
   );
   const moveTool = useMoveTool(store, state);
   const rotateTool = useRotateTool(store, state);
+  const scaleTool = useScaleTool(store, state);
   const mergeTool = useMergeTool(store, state);
 
   const path = useMemo(() => boardPath(state.board), [state.board]);
@@ -101,6 +104,8 @@ export function Canvas({ store }: { store: EditorStore }) {
         moveTool.handleMouseDown(point);
       } else if (state.selectTool === "rotate" && state.selection.type === "pinPath") {
         rotateTool.handleMouseDown(point, e.clientX);
+      } else if (state.selectTool === "scale" && state.selection.type === "pinPath") {
+        scaleTool.handleMouseDown(e.clientX);
       } else if (state.selectTool === "merge") {
         mergeTool.handleMouseDown(raw, maxDist);
       }
@@ -145,6 +150,7 @@ export function Canvas({ store }: { store: EditorStore }) {
     if (state.mode === "pin" && state.pinTool === "freehand") freehandDrawing.handleMouseMove(raw, viewport);
     if (state.mode === "select" && state.selectTool === "move") moveTool.handleMouseMove(resolvePoint(raw));
     if (state.mode === "select" && state.selectTool === "rotate") rotateTool.handleMouseMove(resolvePoint(raw), e.clientX);
+    if (state.mode === "select" && state.selectTool === "scale") scaleTool.handleMouseMove(e.clientX);
   }
 
   function handlePointerUp(e: ReactMouseEvent<SVGSVGElement>) {
@@ -162,6 +168,10 @@ export function Canvas({ store }: { store: EditorStore }) {
     }
     if (state.mode === "select" && state.selectTool === "rotate") {
       rotateTool.handleMouseUp(resolvePoint(screenToDoc(e)), e.clientX);
+      return;
+    }
+    if (state.mode === "select" && state.selectTool === "scale") {
+      scaleTool.handleMouseUp(e.clientX);
       return;
     }
     if (state.mode !== "pin" || !DRAG_TOOLS.includes(state.pinTool)) return;

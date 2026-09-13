@@ -12,7 +12,7 @@ import {
 } from "../../domain/shapes";
 import { distributeClosedPath, distributeOpenPath, distributePathPerVertex } from "../../domain/paths";
 import type { Path, Point } from "../../domain/paths";
-import { rotatePoint, translatePoint } from "../../domain/transforms";
+import { rotatePoint, scalePoint, translatePoint } from "../../domain/transforms";
 import { NO_SYMMETRY, type SymmetryConfig } from "./symmetryConfig";
 import { nextId } from "./idCounter";
 
@@ -112,6 +112,70 @@ export function rotateGeometry(geometry: PinPathGeometry, pivot: Point, theta: n
     }
     case "freehand":
       return { ...geometry, points: geometry.points.map((p) => rotatePoint(p, pivot, theta)) };
+  }
+}
+
+// docs/specs/21-scale-and-pin-distance.md Scale tool — the shape's own centroid,
+// invariant under scaling (the pivot IS the centre, so only size fields move).
+function geometryCenter(geometry: PinPathGeometry): Point {
+  switch (geometry.type) {
+    case "line":
+    case "arc":
+      return { x: (geometry.start.x + geometry.end.x) / 2, y: (geometry.start.y + geometry.end.y) / 2 };
+    case "ellipse":
+    case "circle":
+    case "regular-polygon":
+    case "star":
+    case "polygram":
+      return geometry.center;
+    case "rectangle":
+      return { x: geometry.position.x + geometry.width / 2, y: geometry.position.y + geometry.height / 2 };
+    case "square":
+      return { x: geometry.position.x + geometry.side / 2, y: geometry.position.y + geometry.side / 2 };
+    case "freehand": {
+      const pts = geometry.points;
+      return { x: pts.reduce((s, p) => s + p.x, 0) / pts.length, y: pts.reduce((s, p) => s + p.y, 0) / pts.length };
+    }
+  }
+}
+
+// docs/specs/21-scale-and-pin-distance.md Scale tool — resizes about the shape's own
+// centroid (never an external pivot like Rotation), so the centroid stays fixed and
+// only size fields change. Arc's `curvature` is a physical sagitta length (see
+// domain/shapes/arc.ts), so it scales with the shape like any other length field.
+export function scaleGeometry(geometry: PinPathGeometry, factor: number): PinPathGeometry {
+  const pivot = geometryCenter(geometry);
+  switch (geometry.type) {
+    case "line":
+      return { ...geometry, start: scalePoint(geometry.start, pivot, factor), end: scalePoint(geometry.end, pivot, factor) };
+    case "arc":
+      return {
+        ...geometry,
+        start: scalePoint(geometry.start, pivot, factor),
+        end: scalePoint(geometry.end, pivot, factor),
+        curvature: geometry.curvature * factor,
+      };
+    case "circle":
+      return { ...geometry, radius: geometry.radius * factor };
+    case "ellipse":
+      return { ...geometry, radiusX: geometry.radiusX * factor, radiusY: geometry.radiusY * factor };
+    case "rectangle": {
+      const width = geometry.width * factor;
+      const height = geometry.height * factor;
+      return { ...geometry, width, height, position: { x: pivot.x - width / 2, y: pivot.y - height / 2 } };
+    }
+    case "square": {
+      const side = geometry.side * factor;
+      return { ...geometry, side, position: { x: pivot.x - side / 2, y: pivot.y - side / 2 } };
+    }
+    case "regular-polygon":
+      return { ...geometry, radius: geometry.radius * factor };
+    case "star":
+      return { ...geometry, outerRadius: geometry.outerRadius * factor, innerRadius: geometry.innerRadius * factor };
+    case "polygram":
+      return { ...geometry, radius: geometry.radius * factor };
+    case "freehand":
+      return { ...geometry, points: geometry.points.map((p) => scalePoint(p, pivot, factor)) };
   }
 }
 

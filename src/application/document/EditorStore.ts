@@ -15,14 +15,15 @@ import {
   type PinLayer,
 } from "./pinLayer";
 import { deleteLayer, renameLayer, reorderLayer, toggleLayerLocked, toggleLayerVisible } from "./layerOps";
-import { createPinPath, nextPinId, recomputePinPath, type Pin, type PinPathGeometry } from "./pinPath";
-import { NO_SYMMETRY, type SymmetryConfig } from "./symmetryConfig";
+import { createPinPath, nextPinId, recomputePinPath, type Pin, type PinPath, type PinPathGeometry } from "./pinPath";
+import { NO_SYMMETRY, buildNearestPinRemap, type SymmetryConfig } from "./symmetryConfig";
 import {
   addThreadPathToLayers,
   createThreadLayer,
   duplicateThreadLayer as cloneThreadLayer,
   isThreadLayerLocked,
   remapPinsInAllThreadLayers,
+  remapPinsInAllThreadLayersByMap,
   removePinFromAllThreadLayers,
   removeThreadPathFromLayers,
   splitThreadPathInLayer,
@@ -257,22 +258,33 @@ export class EditorStore {
   // docs/specs/11-pin-properties + §11-existing-object-editing: with a Pin Path
   // selected, edits apply to it; otherwise they change the defaults used by the next
   // newly-created Pin Path. One method encodes both contexts, matching the spec.
+  //
+  // A spacing (Pin distance) change recomputes pins, per docs/specs/21-scale-and-pin-
+  // distance.md, and must reattach any Thread Path referencing the old pins to their
+  // nearest new pin — routed through commitPinPathWithReattach so that lands in the
+  // SAME undo step, unlike colour/diameter/guide changes which never touch pins.
   setPinProperty(patch: Partial<PinDefaults>): void {
     const { selection } = this.state;
     if (selection.type === "pinPath") {
-      if (isLayerLocked(this.state.pinLayers, selection.layerId)) return;
-      this.runLayersChange(
-        updatePinPathInLayers(this.state.pinLayers, selection.layerId, selection.pathId, (path) => {
-          const next = {
-            ...path,
-            requestedSpacing: patch.spacing ?? path.requestedSpacing,
-            colour: patch.colour ?? path.colour,
-            diameter: patch.diameter ?? path.diameter,
-            guideVisible: patch.guideVisible ?? path.guideVisible,
-          };
-          return patch.spacing !== undefined ? recomputePinPath(next) : next;
-        }),
-      );
+      const { layerId, pathId } = selection;
+      if (isLayerLocked(this.state.pinLayers, layerId)) return;
+      const path = findPinPath(this.state.pinLayers, layerId, pathId);
+      if (!path) return;
+      const withPatch: PinPath = {
+        ...path,
+        requestedSpacing: patch.spacing ?? path.requestedSpacing,
+        colour: patch.colour ?? path.colour,
+        diameter: patch.diameter ?? path.diameter,
+        guideVisible: patch.guideVisible ?? path.guideVisible,
+      };
+      if (patch.spacing !== undefined) {
+        this.commitPinPathWithReattach(layerId, pathId, recomputePinPath(withPatch), {
+          pinLayers: this.state.pinLayers,
+          threadLayers: this.state.threadLayers,
+        });
+        return;
+      }
+      this.runLayersChange(updatePinPathInLayers(this.state.pinLayers, layerId, pathId, () => withPatch));
       return;
     }
     this.state = { ...this.state, pinDefaults: { ...this.state.pinDefaults, ...patch } };
@@ -367,6 +379,55 @@ export class EditorStore {
   // pre-gesture pins with a plain, non-undoable write; nothing reaches history.
   restorePinLayers(previous: PinLayer[]): void {
     this.setPinLayers(previous);
+  }
+
+  // docs/specs/21-scale-and-pin-distance.md Nearest-Pin Reattachment — shared by the
+  // Scale tool commit and the Pin distance property change: both recompute pins (fresh
+  // ids, unlike Move/Rotation's in-place ones) and must reattach every Thread Path pin
+  // reference to whichever new pin sits nearest the corresponding old one, bundled into
+  // the SAME undo step as the pin change (same SetValueCommand<{pinLayers,
+  // threadLayers}> pattern as erasePin/erasePinPath/commitMergeSelection above).
+  private commitPinPathWithReattach(
+    layerId: string,
+    pathId: string,
+    newPinPath: PinPath,
+    previous: { pinLayers: PinLayer[]; threadLayers: ThreadLayer[] },
+  ): void {
+    const oldPath = findPinPath(previous.pinLayers, layerId, pathId);
+    if (!oldPath) return;
+    const remap = buildNearestPinRemap(oldPath, newPinPath);
+    const nextPinLayers = updatePinPathInLayers(previous.pinLayers, layerId, pathId, () => newPinPath);
+    const nextThreadLayers = remapPinsInAllThreadLayersByMap(previous.threadLayers, remap);
+    const prev = { pinLayers: previous.pinLayers, threadLayers: previous.threadLayers };
+    const next = { pinLayers: nextPinLayers, threadLayers: nextThreadLayers };
+    const command = new SetValueCommand<typeof next>(
+      (v) => {
+        this.state = { ...this.state, ...v };
+        this.notify();
+      },
+      prev,
+      next,
+    );
+    this.history.run(command);
+  }
+
+  // docs/specs/21-scale-and-pin-distance.md Scale tool commit. Same lock check and
+  // `previous` snapshot convention as commitPinPathTransform (the calling hook captures
+  // `previous` at gesture start, since this.state.pinLayers holds the last live-preview
+  // frame by commit time) — but unlike Move/Rotation, Scale changes the path's length
+  // and therefore its pin COUNT, so ids can't stay stable; it recomputes pins and
+  // reattaches threads via commitPinPathWithReattach instead of a plain pins swap.
+  commitPinPathScale(
+    layerId: string,
+    pathId: string,
+    newPinPath: PinPath,
+    previous: { pinLayers: PinLayer[]; threadLayers: ThreadLayer[] },
+  ): void {
+    if (isLayerLocked(this.state.pinLayers, layerId)) {
+      this.setPinLayers(previous.pinLayers);
+      return;
+    }
+    this.commitPinPathWithReattach(layerId, pathId, newPinPath, previous);
   }
 
   extendMergeSelection(candidate: MergeCandidate): void {

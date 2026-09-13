@@ -1,4 +1,11 @@
-import { createThreadPath, remapPinsInThreadPath, removePinFromThreadPath, splitThreadPathAtSegment, type ThreadPath } from "./threadPath";
+import {
+  createThreadPath,
+  remapPinsInThreadPath,
+  remapPinsInThreadPathByMap,
+  removePinFromThreadPath,
+  splitThreadPathAtSegment,
+  type ThreadPath,
+} from "./threadPath";
 import { nextId } from "./idCounter";
 
 // docs/specs/13-layers.md — mirrors pinLayer.ts; full layer panel lands at M6.
@@ -66,4 +73,11 @@ export function splitThreadPathInLayer(layers: ThreadLayer[], layerId: string, p
 // layer at once so the caller can fold it into the SAME undo step as the pin merge.
 export function remapPinsInAllThreadLayers(layers: ThreadLayer[], oldPinIds: Set<string>, newPinId: string): ThreadLayer[] {
   return layers.map((l) => ({ ...l, threadPaths: l.threadPaths.flatMap((p) => remapPinsInThreadPath(p, oldPinIds, newPinId)) }));
+}
+
+// docs/specs/21-scale-and-pin-distance.md Nearest-Pin Reattachment — applied across
+// every thread layer at once so the caller can fold it into the SAME undo step as the
+// pin recompute (Scale commit / Pin distance change).
+export function remapPinsInAllThreadLayersByMap(layers: ThreadLayer[], mapping: Map<string, string>): ThreadLayer[] {
+  return layers.map((l) => ({ ...l, threadPaths: l.threadPaths.flatMap((p) => remapPinsInThreadPathByMap(p, mapping)) }));
 }

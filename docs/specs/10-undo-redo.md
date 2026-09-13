@@ -19,7 +19,7 @@ Ctrl/Cmd + Shift + Z
 - Create Pin Path
 - Delete Pin Path
 - Move
-- Resize
+- Resize (Scale tool / Pin distance change — see [21-scale-and-pin-distance.md](./21-scale-and-pin-distance.md))
 - Rotate
 - Change spacing
 - Change colour

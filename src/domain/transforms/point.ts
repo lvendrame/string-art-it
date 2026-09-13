@@ -15,6 +15,13 @@ export function translatePoint(point: Point, delta: Point): Point {
   return { x: point.x + delta.x, y: point.y + delta.y };
 }
 
+export function scalePoint(point: Point, pivot: Point, factor: number): Point {
+  return {
+    x: pivot.x + (point.x - pivot.x) * factor,
+    y: pivot.y + (point.y - pivot.y) * factor,
+  };
+}
+
 export interface BoundingBox {
   minX: number;
   minY: number;

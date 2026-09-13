@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { remapPinsInThreadPath, removePinFromThreadPath, splitThreadPathAtSegment, type ThreadPath } from "./threadPath";
+import {
+  remapPinsInThreadPath,
+  remapPinsInThreadPathByMap,
+  removePinFromThreadPath,
+  splitThreadPathAtSegment,
+  type ThreadPath,
+} from "./threadPath";
 
 function makeThread(pinIds: string[]): ThreadPath {
   return { id: "t1", colours: ["red"], width: 1, pinIds, twistPitch: 6 };
@@ -86,5 +92,39 @@ describe("remapPinsInThreadPath", () => {
   it("no ids referenced by the merge leaves the thread unchanged in content", () => {
     const [result] = remapPinsInThreadPath(makeThread(["A", "B", "C"]), new Set(["Z"]), "M");
     expect(result.pinIds).toEqual(["A", "B", "C"]);
+  });
+});
+
+// docs/specs/21-scale-and-pin-distance.md Nearest-Pin Reattachment — each old id maps
+// to its OWN nearest new id, unlike Merge's single shared destination.
+describe("remapPinsInThreadPathByMap", () => {
+  it("remaps each id independently via the map", () => {
+    const map = new Map([["A", "A2"], ["B", "B2"], ["C", "C2"]]);
+    const [result] = remapPinsInThreadPathByMap(makeThread(["A", "B", "C"]), map);
+    expect(result.pinIds).toEqual(["A2", "B2", "C2"]);
+  });
+
+  it("ids not present in the map are left unchanged (pins belonging to another Pin Path)", () => {
+    const map = new Map([["B", "B2"]]);
+    const [result] = remapPinsInThreadPathByMap(makeThread(["A", "B", "C"]), map);
+    expect(result.pinIds).toEqual(["A", "B2", "C"]);
+  });
+
+  it("collapses adjacent duplicates created when two old ids map to the same new id", () => {
+    const map = new Map([["B", "M"], ["C", "M"]]);
+    const [result] = remapPinsInThreadPathByMap(makeThread(["A", "B", "C", "D"]), map);
+    expect(result.pinIds).toEqual(["A", "M", "D"]);
+  });
+
+  it("a thread reduced below 2 distinct ids after collapsing is dropped entirely", () => {
+    const map = new Map([["A", "M"], ["B", "M"]]);
+    const fragments = remapPinsInThreadPathByMap(makeThread(["A", "B"]), map);
+    expect(fragments).toHaveLength(0);
+  });
+
+  it("keeps the same path id — it's a contraction, not a fragment", () => {
+    const map = new Map([["B", "B2"]]);
+    const [result] = remapPinsInThreadPathByMap(makeThread(["A", "B", "C"]), map);
+    expect(result.id).toBe("t1");
   });
 });

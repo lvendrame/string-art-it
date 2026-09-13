@@ -47,7 +47,7 @@ export type PinTool =
 export type Selection = { type: "none" } | { type: "pinPath"; layerId: string; pathId: string };
 
 // docs/specs/09-selection-and-editing.md — the Edit-mode tool area.
-export type SelectTool = "select" | "move" | "rotate" | "merge";
+export type SelectTool = "select" | "move" | "rotate" | "merge" | "scale";
 
 // A candidate pin accumulated by the Merge tool before commit — transient,
 // non-undoable, same status as ThreadDraft. EditorState.ts can't import

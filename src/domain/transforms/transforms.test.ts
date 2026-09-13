@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { rotatePoint, boundingBoxOf } from "./point";
+import { rotatePoint, scalePoint, boundingBoxOf } from "./point";
 import {
   toScreen,
   toDocument,
@@ -17,6 +17,23 @@ describe("rotatePoint", () => {
     const result = rotatePoint({ x: 1, y: 0 }, { x: 0, y: 0 }, Math.PI / 2);
     expect(result.x).toBeCloseTo(0, 6);
     expect(result.y).toBeCloseTo(1, 6);
+  });
+});
+
+describe("scalePoint", () => {
+  it("scales a point's offset from the pivot by factor", () => {
+    const result = scalePoint({ x: 10, y: 0 }, { x: 0, y: 0 }, 2);
+    expect(result).toEqual({ x: 20, y: 0 });
+  });
+
+  it("leaves the pivot itself unchanged when the point IS the pivot", () => {
+    const result = scalePoint({ x: 5, y: 5 }, { x: 5, y: 5 }, 3);
+    expect(result).toEqual({ x: 5, y: 5 });
+  });
+
+  it("factor < 1 shrinks toward the pivot", () => {
+    const result = scalePoint({ x: 8, y: 8 }, { x: 4, y: 4 }, 0.5);
+    expect(result).toEqual({ x: 6, y: 6 });
   });
 });
 

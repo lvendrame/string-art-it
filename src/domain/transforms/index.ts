@@ -1,4 +1,4 @@
-export { rotatePoint, translatePoint, boundingBoxOf, type BoundingBox } from "./point";
+export { rotatePoint, translatePoint, scalePoint, boundingBoxOf, type BoundingBox } from "./point";
 export {
   toScreen,
   toDocument,

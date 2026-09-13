@@ -39,3 +39,28 @@ export function computeMirroredPinGroups(pinPath: PinPath): Pin[][] {
 export function allPinsWithMirrors(pinPath: PinPath): Pin[] {
   return [...pinPath.pins, ...computeMirroredPinGroups(pinPath).flat()];
 }
+
+// docs/specs/21-scale-and-pin-distance.md Nearest-Pin Reattachment — Scale and Pin
+// distance changes mint entirely fresh pin ids (recomputePinPath), so every old pin
+// (real or symmetry-mirrored, since a mirrored pin is a valid Thread endpoint too) is
+// mapped to whichever new pin (real or mirrored) sits closest to its old position.
+// O(oldPins * newPins) — accepted the same way the Thread nearest-pin lookup is
+// (docs/specs/07-pin-geometry-engine.md §Performance), typical pin counts are small.
+export function buildNearestPinRemap(oldPath: PinPath, newPath: PinPath): Map<string, string> {
+  const oldPins = allPinsWithMirrors(oldPath);
+  const newPins = allPinsWithMirrors(newPath);
+  const map = new Map<string, string>();
+  for (const oldPin of oldPins) {
+    let nearest: Pin | undefined;
+    let nearestDistSq = Infinity;
+    for (const newPin of newPins) {
+      const distSq = (newPin.x - oldPin.x) ** 2 + (newPin.y - oldPin.y) ** 2;
+      if (distSq < nearestDistSq) {
+        nearestDistSq = distSq;
+        nearest = newPin;
+      }
+    }
+    if (nearest) map.set(oldPin.id, nearest.id);
+  }
+  return map;
+}

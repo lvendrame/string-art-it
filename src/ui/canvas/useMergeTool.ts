@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { EditorState, EditorStore } from "../../application/document";
 import type { Point } from "../../domain/paths";
 import { nearestPinOwner } from "./hitTesting";
@@ -8,6 +8,8 @@ import { nearestPinOwner } from "./hitTesting";
 // pin. Only real, stored pins are targetable — a mirror's id doesn't exist in any
 // path's pins[], so it can't be merged (same rule as the Pin/Path Erasers).
 export function useMergeTool(store: EditorStore, state: EditorState) {
+  const [hoverPinId, setHoverPinId] = useState<string | null>(null);
+
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       const s = store.getState();
@@ -18,6 +20,13 @@ export function useMergeTool(store: EditorStore, state: EditorState) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [store]);
 
+  // Same targetable set as handleMouseDown (real, stored pins only) so the hover
+  // preview never highlights a pin the click itself would refuse to select.
+  function handleMouseMove(raw: Point, maxDist: number): void {
+    const hit = nearestPinOwner(state.pinLayers, raw, maxDist);
+    setHoverPinId(hit?.pinId ?? null);
+  }
+
   function handleMouseDown(raw: Point, maxDist: number): void {
     const hit = nearestPinOwner(state.pinLayers, raw, maxDist);
     if (hit) store.extendMergeSelection(hit);
@@ -27,5 +36,5 @@ export function useMergeTool(store: EditorStore, state: EditorState) {
     store.commitMergeSelection();
   }
 
-  return { handleMouseDown, handleContextMenu };
+  return { hoverPinId, handleMouseMove, handleMouseDown, handleContextMenu };
 }

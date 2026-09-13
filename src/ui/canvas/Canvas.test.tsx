@@ -152,6 +152,68 @@ describe("Canvas", () => {
     expect(svg.style.cursor).toBe("grabbing");
   });
 
+  it("cursor reflects the active tool within a mode", () => {
+    const store = new EditorStore();
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+    const svgCursorEndingIn = (fallback: string) =>
+      expect.stringMatching(new RegExp(`^url\\("data:image/svg\\+xml;base64,[^"]+"\\) 12 12, ${fallback}$`));
+
+    act(() => store.setMode("select"));
+    act(() => store.setSelectTool("merge"));
+    expect(svg.style.cursor).toBe("default");
+
+    act(() => store.setSelectTool("rotate"));
+    expect(svg.style.cursor).toEqual(svgCursorEndingIn("grab"));
+
+    act(() => store.setMode("pin"));
+    act(() => store.setPinTool("line"));
+    expect(svg.style.cursor).toBe("crosshair");
+
+    act(() => store.setPinTool("eraser"));
+    expect(svg.style.cursor).toEqual(svgCursorEndingIn("cell"));
+    const pinEraserCursor = svg.style.cursor;
+
+    act(() => store.setPinTool("path-eraser"));
+    expect(svg.style.cursor).toEqual(svgCursorEndingIn("cell"));
+    expect(svg.style.cursor).not.toBe(pinEraserCursor);
+
+    act(() => store.setMode("thread"));
+    act(() => store.setThreadTool("eraser"));
+    expect(svg.style.cursor).toBe(pinEraserCursor);
+
+    act(() => store.setThreadTool("segment-eraser"));
+    expect(svg.style.cursor).toEqual(svgCursorEndingIn("crosshair"));
+  });
+
+  it("Merge tool highlights the nearest pin as a click candidate before it's selected", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } });
+    const [pinA, pinB] = store.getState().pinLayers[0].pinPaths[0].pins;
+    store.setMode("select");
+    store.setSelectTool("merge");
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+    // Default viewport: zoom 4, panOrigin (-40,-40) — clientX/Y = (doc + 40) * 4.
+    const toScreen = (p: { x: number; y: number }) => ({ clientX: (p.x + 40) * 4, clientY: (p.y + 40) * 4 });
+
+    fireEvent.mouseMove(svg, toScreen(pinA));
+    expect(screen.getByTestId("pin-merge-candidate")).toBeInTheDocument();
+    expect(screen.queryByTestId("pin-merge-selected")).not.toBeInTheDocument();
+
+    fireEvent.mouseDown(svg, toScreen(pinA));
+    expect(screen.queryByTestId("pin-merge-candidate")).not.toBeInTheDocument();
+    expect(screen.getByTestId("pin-merge-selected")).toBeInTheDocument();
+
+    fireEvent.mouseMove(svg, toScreen(pinB));
+    expect(screen.getByTestId("pin-merge-candidate")).toBeInTheDocument();
+    expect(screen.getByTestId("pin-merge-selected")).toBeInTheDocument();
+
+    fireEvent.mouseMove(svg, { clientX: 0, clientY: 0 });
+    expect(screen.queryByTestId("pin-merge-candidate")).not.toBeInTheDocument();
+  });
+
   it("select mode: clicking a mirrored (symmetry-generated) pin selects its source Pin Path", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;

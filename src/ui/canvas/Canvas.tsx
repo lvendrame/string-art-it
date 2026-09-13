@@ -6,7 +6,9 @@ import {
   type EditorMode,
   type EditorStore,
   type PinPathGeometry,
+  type PinTool,
   type SelectTool,
+  type ThreadTool,
 } from "../../application/document";
 import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
 import { zoomToPercent } from "../../domain/transforms";
@@ -38,15 +40,85 @@ import { useMergeTool } from "./useMergeTool";
 
 const VIEWPORT_PX = CANVAS_VIEWPORT_PX;
 
-function canvasCursor(mode: EditorMode, selectTool: SelectTool, isPanning: boolean): string {
+// Data-URI cursors for tools with no matching built-in CSS cursor keyword. Each renders
+// the same lucide glyph used on that tool's own toolbar button, as a white-outlined black
+// icon for contrast against any board colour, hotspot centred, falling back to the closest
+// keyword if data-URI cursors are ever unsupported.
+function svgCursor(base64: string, fallback: string): string {
+  return `url("data:image/svg+xml;base64,${base64}") 12 12, ${fallback}`;
+}
+
+// RotateCw — src/ui/toolbars/SelectToolbar.tsx (Rotate button)
+const ROTATE_CURSOR = svgCursor(
+  "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KPHBhdGggZD0iTTIxIDEyYTkgOSAwIDEgMS05LTljMi41MiAwIDQuOTMgMSA2Ljc0IDIuNzRMMjEgOCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTIxIDN2NWgtNSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTIxIDEyYTkgOSAwIDEgMS05LTljMi41MiAwIDQuOTMgMSA2Ljc0IDIuNzRMMjEgOCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTIxIDN2NWgtNSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg==",
+  "grab",
+);
+
+// Eraser — src/ui/toolbars/PinToolbar.tsx (Eraser button) and ThreadToolbar.tsx (Eraser button)
+const ERASER_CURSOR = svgCursor(
+  "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KPHBhdGggZD0iTTIxIDIxSDhhMiAyIDAgMCAxLTEuNDItLjU4N2wtMy45OTQtMy45OTlhMiAyIDAgMCAxIDAtMi44MjhsMTAtMTBhMiAyIDAgMCAxIDIuODI5IDBsNS45OTkgNmEyIDIgMCAwIDEgMCAyLjgyOEwxMi44MzQgMjEiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI0Ii8+CjxwYXRoIGQ9Im01LjA4MiAxMS4wOSA4LjgyOCA4LjgyOCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjQiLz4KPHBhdGggZD0iTTIxIDIxSDhhMiAyIDAgMCAxLTEuNDItLjU4N2wtMy45OTQtMy45OTlhMiAyIDAgMCAxIDAtMi44MjhsMTAtMTBhMiAyIDAgMCAxIDIuODI5IDBsNS45OTkgNmEyIDIgMCAwIDEgMCAyLjgyOEwxMi44MzQgMjEiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxwYXRoIGQ9Im01LjA4MiAxMS4wOSA4LjgyOCA4LjgyOCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+",
+  "cell",
+);
+
+// Trash2 — src/ui/toolbars/PinToolbar.tsx (Path Eraser button)
+const TRASH_CURSOR = svgCursor(
+  "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KPHBhdGggZD0iTTEwIDExdjYiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI0Ii8+CjxwYXRoIGQ9Ik0xNCAxMXY2IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNCIvPgo8cGF0aCBkPSJNMTkgNnYxNGEyIDIgMCAwIDEtMiAySDdhMiAyIDAgMCAxLTItMlY2IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNCIvPgo8cGF0aCBkPSJNMyA2aDE4IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNCIvPgo8cGF0aCBkPSJNOCA2VjRhMiAyIDAgMCAxIDItMmg0YTIgMiAwIDAgMSAyIDJ2MiIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjQiLz4KPHBhdGggZD0iTTEwIDExdjYiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxwYXRoIGQ9Ik0xNCAxMXY2IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIvPgo8cGF0aCBkPSJNMTkgNnYxNGEyIDIgMCAwIDEtMiAySDdhMiAyIDAgMCAxLTItMlY2IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIvPgo8cGF0aCBkPSJNMyA2aDE4IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIvPgo8cGF0aCBkPSJNOCA2VjRhMiAyIDAgMCAxIDItMmg0YTIgMiAwIDAgMSAyIDJ2MiIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+",
+  "cell",
+);
+
+// Scissors — src/ui/toolbars/ThreadToolbar.tsx (Segment Eraser button)
+const SCISSORS_CURSOR = svgCursor(
+  "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KPGNpcmNsZSBjeD0iNiIgY3k9IjYiIHI9IjMiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI0Ii8+CjxwYXRoIGQ9Ik04LjEyIDguMTIgMTIgMTIiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI0Ii8+CjxwYXRoIGQ9Ik0yMCA0IDguMTIgMTUuODgiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI0Ii8+CjxjaXJjbGUgY3g9IjYiIGN5PSIxOCIgcj0iMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjQiLz4KPHBhdGggZD0iTTE0LjggMTQuOCAyMCAyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjQiLz4KPGNpcmNsZSBjeD0iNiIgY3k9IjYiIHI9IjMiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxwYXRoIGQ9Ik04LjEyIDguMTIgMTIgMTIiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxwYXRoIGQ9Ik0yMCA0IDguMTIgMTUuODgiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxjaXJjbGUgY3g9IjYiIGN5PSIxOCIgcj0iMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjIiLz4KPHBhdGggZD0iTTE0LjggMTQuOCAyMCAyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+",
+  "crosshair",
+);
+
+const SELECT_TOOL_CURSORS: Record<SelectTool, string> = {
+  select: "default",
+  move: "move",
+  rotate: ROTATE_CURSOR,
+  scale: "ew-resize",
+  merge: "default",
+};
+
+const PIN_TOOL_CURSORS: Record<PinTool, string> = {
+  line: "crosshair",
+  arc: "crosshair",
+  ellipse: "crosshair",
+  circle: "crosshair",
+  rectangle: "crosshair",
+  square: "crosshair",
+  pentagon: "crosshair",
+  hexagon: "crosshair",
+  octagon: "crosshair",
+  "star-5": "crosshair",
+  "star-6": "crosshair",
+  "star-8": "crosshair",
+  pentagram: "crosshair",
+  heptagram: "crosshair",
+  octagram: "crosshair",
+  freehand: "crosshair",
+  eraser: ERASER_CURSOR,
+  "path-eraser": TRASH_CURSOR,
+};
+
+const THREAD_TOOL_CURSORS: Record<ThreadTool, string> = {
+  draw: "crosshair",
+  eraser: ERASER_CURSOR,
+  "segment-eraser": SCISSORS_CURSOR,
+};
+
+function canvasCursor(
+  mode: EditorMode,
+  selectTool: SelectTool,
+  pinTool: PinTool,
+  threadTool: ThreadTool,
+  isPanning: boolean,
+): string {
   if (mode === "pan") return isPanning ? "grabbing" : "grab";
-  if (mode === "select") {
-    if (selectTool === "move") return "move";
-    if (selectTool === "rotate") return "crosshair";
-    if (selectTool === "scale") return "ew-resize";
-    return "default";
-  }
-  return "crosshair";
+  if (mode === "select") return SELECT_TOOL_CURSORS[selectTool];
+  if (mode === "pin") return PIN_TOOL_CURSORS[pinTool];
+  if (mode === "thread") return THREAD_TOOL_CURSORS[threadTool];
+  return "default";
 }
 
 export function Canvas({ store }: { store: EditorStore }) {
@@ -151,6 +223,7 @@ export function Canvas({ store }: { store: EditorStore }) {
     if (state.mode === "select" && state.selectTool === "move") moveTool.handleMouseMove(resolvePoint(raw));
     if (state.mode === "select" && state.selectTool === "rotate") rotateTool.handleMouseMove(resolvePoint(raw), e.clientX);
     if (state.mode === "select" && state.selectTool === "scale") scaleTool.handleMouseMove(e.clientX);
+    if (state.mode === "select" && state.selectTool === "merge") mergeTool.handleMouseMove(raw, maxDist);
   }
 
   function handlePointerUp(e: ReactMouseEvent<SVGSVGElement>) {
@@ -231,7 +304,9 @@ export function Canvas({ store }: { store: EditorStore }) {
           width={VIEWPORT_PX.width}
           height={VIEWPORT_PX.height}
           viewBox={viewBox}
-          style={{ cursor: canvasCursor(state.mode, state.selectTool, pan.isPanning) }}
+          style={{
+            cursor: canvasCursor(state.mode, state.selectTool, state.pinTool, state.threadTool, pan.isPanning),
+          }}
           onMouseDown={handlePointerDown}
           onMouseMove={handlePointerMove}
           onMouseUp={handlePointerUp}
@@ -314,7 +389,11 @@ export function Canvas({ store }: { store: EditorStore }) {
           )}
 
           {state.mode === "select" && state.selectTool === "merge" && (
-            <MergeSelectionOverlay pinLayers={state.pinLayers} selectedPinIds={state.mergeSelection.map((c) => c.pinId)} />
+            <MergeSelectionOverlay
+              pinLayers={state.pinLayers}
+              selectedPinIds={state.mergeSelection.map((c) => c.pinId)}
+              hoverPinId={mergeTool.hoverPinId}
+            />
           )}
         </svg>
       </div>

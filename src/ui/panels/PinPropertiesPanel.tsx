@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { EditorStore } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
 
@@ -5,6 +6,7 @@ import { useEditorState } from "../useEditorStore";
 // defaults for new objects; with one selected, edits change only that object. Both
 // contexts are served by store.setPinProperty — this panel just shows the right values.
 export function PinPropertiesPanel({ store }: { store: EditorStore }) {
+  const { t } = useTranslation("panels");
   const state = useEditorState(store);
   const selected = store.getSelectedPinPath();
   const values = selected
@@ -14,11 +16,11 @@ export function PinPropertiesPanel({ store }: { store: EditorStore }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-        Pin Properties {selected ? "(selected)" : "(defaults)"}
+        {selected ? t("pinPropertiesPanel.titleSelected") : t("pinPropertiesPanel.titleDefaults")}
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8, background: "var(--bg-app)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 12 }}>
         <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
-          Spacing (cm)
+          {t("pinPropertiesPanel.spacing")}
           <input
             type="number"
             className="mono"
@@ -31,12 +33,12 @@ export function PinPropertiesPanel({ store }: { store: EditorStore }) {
         </label>
         {selected && (
           <div className="mono" style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--accent)" }}>
-            <span>Actual gap</span>
+            <span>{t("pinPropertiesPanel.actualGap")}</span>
             <span>{selected.actualSpacing.toFixed(2)} cm</span>
           </div>
         )}
         <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
-          Diameter (mm)
+          {t("pinPropertiesPanel.diameter")}
           <input
             type="number"
             className="mono"
@@ -48,7 +50,7 @@ export function PinPropertiesPanel({ store }: { store: EditorStore }) {
           />
         </label>
         <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
-          Colour
+          {t("pinPropertiesPanel.colour")}
           <input
             type="color"
             value={values.colour}
@@ -57,7 +59,7 @@ export function PinPropertiesPanel({ store }: { store: EditorStore }) {
           />
         </label>
         <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
-          Guide visible
+          {t("pinPropertiesPanel.guideVisible")}
           <input type="checkbox" checked={values.guideVisible} onChange={(e) => store.setPinProperty({ guideVisible: e.target.checked })} />
         </label>
       </div>

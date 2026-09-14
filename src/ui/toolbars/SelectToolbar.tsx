@@ -2,45 +2,51 @@ import { GitMerge, MousePointer2, Move, RotateCw, Scaling } from "lucide-react";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import type { ComponentType } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import type { EditorStore, SelectTool } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
 
 const SELECT_TOOLBAR_TOOLTIP_ID = "select-toolbar-tooltip";
 
-const TOOLS: { id: SelectTool; label: string; icon: ComponentType<{ size?: number }>; tooltip: string; requiresSelection: boolean }[] = [
-  { id: "select", label: "Select", icon: MousePointer2, tooltip: "Click a pin to select its Pin Path.", requiresSelection: false },
-  { id: "move", label: "Move", icon: Move, tooltip: "Drag to translate the selected Pin Path.", requiresSelection: true },
-  { id: "rotate", label: "Rotation", icon: RotateCw, tooltip: "Drag left or right from any point to rotate the selected Pin Path around that point.", requiresSelection: true },
-  { id: "scale", label: "Scale", icon: Scaling, tooltip: "Drag left or right to scale the selected Pin Path about its own centre.", requiresSelection: true },
-  { id: "merge", label: "Merge", icon: GitMerge, tooltip: "Click pins to select them, then right-click to merge them into one pin at their midpoint.", requiresSelection: false },
-];
+function tools(t: TFunction<"toolbars">): { id: SelectTool; label: string; icon: ComponentType<{ size?: number }>; tooltip: string; requiresSelection: boolean }[] {
+  return [
+    { id: "select", label: t("selectToolbar.tools.select.label"), icon: MousePointer2, tooltip: t("selectToolbar.tools.select.tooltip"), requiresSelection: false },
+    { id: "move", label: t("selectToolbar.tools.move.label"), icon: Move, tooltip: t("selectToolbar.tools.move.tooltip"), requiresSelection: true },
+    { id: "rotate", label: t("selectToolbar.tools.rotate.label"), icon: RotateCw, tooltip: t("selectToolbar.tools.rotate.tooltip"), requiresSelection: true },
+    { id: "scale", label: t("selectToolbar.tools.scale.label"), icon: Scaling, tooltip: t("selectToolbar.tools.scale.tooltip"), requiresSelection: true },
+    { id: "merge", label: t("selectToolbar.tools.merge.label"), icon: GitMerge, tooltip: t("selectToolbar.tools.merge.tooltip"), requiresSelection: false },
+  ];
+}
 
 // docs/specs/09-selection-and-editing.md — the Edit-mode tool area.
 export function SelectToolbar({ store }: { store: EditorStore }) {
+  const { t } = useTranslation("toolbars");
   const state = useEditorState(store);
   const hasSelection = state.selection.type === "pinPath";
+  const TOOLS = tools(t);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-        Edit Tools
+        {t("selectToolbar.sectionTitle")}
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 6 }}>
-        {TOOLS.map((t) => {
-          const disabled = t.requiresSelection && !hasSelection;
+        {TOOLS.map((tool) => {
+          const disabled = tool.requiresSelection && !hasSelection;
           return (
             <button
-              key={t.id}
-              className={`btn${state.selectTool === t.id ? " btn-active" : ""}`}
+              key={tool.id}
+              className={`btn${state.selectTool === tool.id ? " btn-active" : ""}`}
               disabled={disabled}
-              onClick={() => store.setSelectTool(t.id)}
-              aria-label={t.label}
+              onClick={() => store.setSelectTool(tool.id)}
+              aria-label={tool.label}
               data-tooltip-id={SELECT_TOOLBAR_TOOLTIP_ID}
-              data-tooltip-content={t.tooltip}
+              data-tooltip-content={tool.tooltip}
               style={{ flexDirection: "column", borderRadius: "var(--radius-sm)", padding: "10px 4px 7px", gap: 5, fontSize: 11, fontWeight: 600 }}
             >
-              <t.icon size={16} />
-              {t.label}
+              <tool.icon size={16} />
+              {tool.label}
             </button>
           );
         })}

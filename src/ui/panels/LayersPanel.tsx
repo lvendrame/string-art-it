@@ -2,6 +2,8 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp, Copy, Plus, Trash2 } from "lucide-react";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import type { EditorStore } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
 
@@ -79,6 +81,7 @@ function LayerRow({
   onToggleVisible,
   onToggleLocked,
   onRename,
+  t,
 }: {
   layer: Row;
   active: boolean;
@@ -86,6 +89,7 @@ function LayerRow({
   onToggleVisible: () => void;
   onToggleLocked: () => void;
   onRename: (name: string) => void;
+  t: TFunction<"panels">;
 }) {
   const [editing, setEditing] = useState(false);
   const [draftName, setDraftName] = useState(layer.name);
@@ -106,14 +110,14 @@ function LayerRow({
       <button
         onClick={(e) => { e.stopPropagation(); onToggleVisible(); }}
         style={{ border: "none", background: "transparent", padding: 2, color: layer.visible ? "var(--text-secondary)" : "var(--text-tertiary)", cursor: "pointer" }}
-        aria-label={layer.visible ? `Hide ${layer.name}` : `Show ${layer.name}`}
+        aria-label={layer.visible ? t("layersPanel.hideLayer", { name: layer.name }) : t("layersPanel.showLayer", { name: layer.name })}
       >
         <EyeIcon open={layer.visible} />
       </button>
       <button
         onClick={(e) => { e.stopPropagation(); onToggleLocked(); }}
         style={{ border: "none", background: "transparent", padding: 2, color: layer.locked ? "var(--accent)" : "var(--text-tertiary)", cursor: "pointer" }}
-        aria-label={layer.locked ? `Unlock ${layer.name}` : `Lock ${layer.name}`}
+        aria-label={layer.locked ? t("layersPanel.unlockLayer", { name: layer.name }) : t("layersPanel.lockLayer", { name: layer.name })}
       >
         <LockIcon locked={layer.locked} />
       </button>
@@ -141,6 +145,7 @@ function LayerRow({
 
 // docs/specs/13-layers.md + 32/33 — two independent layer systems, same row anatomy.
 export function LayersPanel({ store }: { store: EditorStore }) {
+  const { t } = useTranslation("panels");
   const state = useEditorState(store);
   const isPin = state.layerPanelTab === "pin";
 
@@ -176,13 +181,13 @@ export function LayersPanel({ store }: { store: EditorStore }) {
           onClick={() => store.setLayerPanelTab("pin")}
           style={{ flex: 1, justifyContent: "center", border: "none", borderBottom: `2px solid ${isPin ? "var(--accent)" : "transparent"}`, borderRadius: 0, padding: "9px 0", fontSize: 12, fontWeight: 700, background: "transparent", color: isPin ? "var(--text-primary)" : "var(--text-tertiary)", cursor: "pointer" }}
         >
-          Pin Layers
+          {t("layersPanel.pinLayersTab")}
         </button>
         <button
           onClick={() => store.setLayerPanelTab("thread")}
           style={{ flex: 1, justifyContent: "center", border: "none", borderBottom: `2px solid ${!isPin ? "var(--accent)" : "transparent"}`, borderRadius: 0, padding: "9px 0", fontSize: 12, fontWeight: 700, background: "transparent", color: !isPin ? "var(--text-primary)" : "var(--text-tertiary)", cursor: "pointer" }}
         >
-          Thread Layers
+          {t("layersPanel.threadLayersTab")}
         </button>
       </div>
 
@@ -196,18 +201,19 @@ export function LayersPanel({ store }: { store: EditorStore }) {
             onToggleVisible={() => actions.toggleVisible(layer.id)}
             onToggleLocked={() => actions.toggleLocked(layer.id)}
             onRename={(name) => actions.rename(layer.id, name.trim() || layer.name)}
+            t={t}
           />
         ))}
       </div>
 
       <div style={{ display: "flex", gap: 6, padding: 10, borderTop: "1px solid var(--border)" }}>
-        <IconActionButton icon={Plus} label="New Layer" onClick={actions.add} />
-        <IconActionButton icon={Copy} label="Duplicate" onClick={() => actions.duplicate(activeId)} />
-        <IconActionButton icon={ChevronUp} label="Move layer up" onClick={() => actions.reorder(activeId, -1)} />
-        <IconActionButton icon={ChevronDown} label="Move layer down" onClick={() => actions.reorder(activeId, 1)} />
+        <IconActionButton icon={Plus} label={t("layersPanel.newLayer")} onClick={actions.add} />
+        <IconActionButton icon={Copy} label={t("layersPanel.duplicate")} onClick={() => actions.duplicate(activeId)} />
+        <IconActionButton icon={ChevronUp} label={t("layersPanel.moveUp")} onClick={() => actions.reorder(activeId, -1)} />
+        <IconActionButton icon={ChevronDown} label={t("layersPanel.moveDown")} onClick={() => actions.reorder(activeId, 1)} />
         <IconActionButton
           icon={Trash2}
-          label="Delete"
+          label={t("layersPanel.delete")}
           onClick={() => rows.length > 1 && actions.remove(activeId)}
           disabled={rows.length <= 1}
           danger

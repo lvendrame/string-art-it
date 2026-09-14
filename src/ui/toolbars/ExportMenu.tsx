@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ChevronDown, Download, FileImage, FileType } from "lucide-react";
 import { boardPath, type EditorStore } from "../../application/document";
 import { pathBoundingBoxPoints } from "../../domain/paths";
@@ -19,6 +20,7 @@ function downloadBlob(blob: Blob, filename: string) {
 // docs/specs/15-export.md — SVG/PDF preserve vector geometry; PNG/JPEG are rasterized
 // at a chosen DPI. Native project export is already covered by FileMenu's Save.
 export function ExportMenu({ store }: { store: EditorStore }) {
+  const { t } = useTranslation(["menus", "errors"]);
   const state = useEditorState(store);
   const [open, setOpen] = useState(false);
   const [dpi, setDpi] = useState(150);
@@ -43,7 +45,7 @@ export function ExportMenu({ store }: { store: EditorStore }) {
       const blob = await exportToRaster(svg, { widthCm: size.width, heightCm: size.height, dpi, format });
       downloadBlob(blob, `string-art-design.${format === "jpeg" ? "jpg" : "png"}`);
     } catch (err) {
-      window.alert(err instanceof Error ? err.message : "Export failed.");
+      window.alert(err instanceof Error ? err.message : t("export.rasterFailed", { ns: "errors" }));
     } finally {
       setBusy(false);
     }
@@ -61,7 +63,7 @@ export function ExportMenu({ store }: { store: EditorStore }) {
       const blob = await exportToPdf(svg, size.width, size.height);
       downloadBlob(blob, "string-art-design.pdf");
     } catch (err) {
-      window.alert(err instanceof Error ? err.message : "PDF export failed.");
+      window.alert(err instanceof Error ? err.message : t("export.pdfFailed", { ns: "errors" }));
     } finally {
       setBusy(false);
     }
@@ -71,7 +73,7 @@ export function ExportMenu({ store }: { store: EditorStore }) {
     <div style={{ position: "relative" }}>
       <button className="btn" onClick={() => setOpen((o) => !o)} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }} disabled={busy}>
         <Download size={14} />
-        Export
+        {t("export.trigger")}
         <ChevronDown size={12} />
       </button>
       {open && (
@@ -94,22 +96,22 @@ export function ExportMenu({ store }: { store: EditorStore }) {
         >
           <button className="btn" onClick={() => { handleSvg(); setOpen(false); }} style={{ justifyContent: "flex-start", borderRadius: 6, padding: 8, fontSize: 12, gap: 6 }}>
             <FileType size={14} />
-            SVG (vector)
+            {t("export.svg")}
           </button>
           <button className="btn" onClick={() => { handlePdf(); setOpen(false); }} style={{ justifyContent: "flex-start", borderRadius: 6, padding: 8, fontSize: 12, gap: 6 }}>
             <FileType size={14} />
-            PDF (vector)
+            {t("export.pdf")}
           </button>
           <button className="btn" onClick={() => { handleRaster("png"); setOpen(false); }} style={{ justifyContent: "flex-start", borderRadius: 6, padding: 8, fontSize: 12, gap: 6 }}>
             <FileImage size={14} />
-            PNG ({dpi} DPI)
+            {t("export.png", { dpi })}
           </button>
           <button className="btn" onClick={() => { handleRaster("jpeg"); setOpen(false); }} style={{ justifyContent: "flex-start", borderRadius: 6, padding: 8, fontSize: 12, gap: 6 }}>
             <FileImage size={14} />
-            JPEG ({dpi} DPI)
+            {t("export.jpeg", { dpi })}
           </button>
           <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11.5, color: "var(--text-secondary)", marginTop: 4 }}>
-            DPI
+            {t("export.dpi")}
             <input
               type="number"
               className="mono"

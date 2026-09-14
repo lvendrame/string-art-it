@@ -1,0 +1,140 @@
+{
+  "topicsAriaLabel": "Help topics",
+  "tabs": { "layers": "Layers", "keyboardMouse": "Keyboard & Mouse" },
+  "edit": {
+    "tools": {
+      "heading": "Tools",
+      "select": { "label": "Select", "description": "Click a pin to select its Pin Path, exposing its geometry for editing." },
+      "move": { "label": "Move", "description": "Press-drag-release to translate the selected Pin Path. Disabled unless a Pin Path is selected; commits as one undo step. Arrow keys also nudge it: 1 screen-pixel of movement per press, 10x with Shift held." },
+      "rotation": { "label": "Rotation", "description": "Press-drag-release to rotate the selected Pin Path about the point where the mouse was pressed, 0.3° per screen pixel (drag right to increase). Disabled unless a Pin Path is selected; commits as one undo step. Arrow keys also rotate it about the shape's own centre: 1°/10° (Shift) per press, Up/Left anticlockwise, Down/Right clockwise." },
+      "scale": { "label": "Scale", "description": "Press-drag-release to resize the selected Pin Path about its own centre (drag right to grow, left to shrink). Recalculates pin count and reattaches any connected threads to the nearest new pin. Disabled unless a Pin Path is selected; commits as one undo step. Arrow keys also scale it: 1%/10% (Shift) per press, Up/Right grows, Down/Left shrinks." },
+      "merge": { "label": "Merge", "description": "Left-click accumulates pins (from any Pin Path or layer) into a pending set; right-click commits them into one new pin at their average position. Esc cancels an in-progress Move, Rotation, Scale, or Merge." }
+    },
+    "selectionPanel": {
+      "heading": "Selection panel (shown when a Pin Path is selected)",
+      "pinDistance": { "label": "Pin distance", "description": "The requested spacing between pins on the selected Pin Path. Editing it recalculates pin count and reattaches any connected threads to the nearest new pin, as one undo step." },
+      "geometryFields": { "label": "Geometry fields", "description": "Live-editable numeric fields for the selected shape's geometry (position, radius, rotation, etc. — varies by shape type). Editing a field recalculates the generated pins immediately." },
+      "symmetry": { "label": "Symmetry", "description": "The same Symmetry controls as Pin mode, scoped to the selected Pin Path." },
+      "deletePinPath": { "label": "Delete Pin Path", "description": "Deletes the selected Pin Path along with its pins and any symmetry copies." }
+    }
+  },
+  "pin": {
+    "drawingTools": {
+      "heading": "Drawing tools",
+      "line": { "label": "Line", "description": "Click a start point, then an end point, to draw a straight Line Pin Path." },
+      "arc": { "label": "Arc", "description": "Click a start point, then an end point, then drag to shape the curvature and click again to confirm." },
+      "ellipse": { "label": "Ellipse", "description": "Press-drag-release a bounding box. Hold Alt while dragging to constrain it to a Circle." },
+      "circle": { "label": "Circle", "description": "Press-drag-release to size a Circle Pin Path." },
+      "rect": { "label": "Rect", "description": "Press-drag-release a bounding box. Hold Alt while dragging to constrain it to a Square." },
+      "square": { "label": "Square", "description": "Press-drag-release to size a Square Pin Path." },
+      "freehand": { "label": "Freehand", "description": "Drag to sample a freehand path of pins as you move." },
+      "eraser": { "label": "Eraser", "description": "Click a pin to remove that one pin." },
+      "pathEraser": { "label": "Path Eraser", "description": "Click a Pin Path to remove the whole path, cascading into any thread segments that referenced its pins. One undo step." },
+      "polygonStar": { "label": "Polygon / Star", "description": "A dropdown activating a regular polygon (Pentagon, Hexagon, Octagon), conventional star (5/6/8-point), or polygram (Pentagram, Heptagram, Octagram) drawing tool." }
+    },
+    "pinProperties": {
+      "heading": "Pin Properties (defaults, or the selected Pin Path's own values)",
+      "spacing": { "label": "Spacing (cm)", "description": "The requested distance between generated pins." },
+      "actualGap": { "label": "Actual gap", "description": "Read-only — the real computed spacing after distribution. Only shown when a Pin Path is selected." },
+      "diameter": { "label": "Diameter (mm)", "description": "Pin diameter." },
+      "colour": { "label": "Colour", "description": "Pin colour." },
+      "guideVisible": { "label": "Guide visible", "description": "Shows or hides the underlying guide geometry line, independent of pin visibility." }
+    },
+    "symmetry": {
+      "heading": "Symmetry",
+      "modes": { "label": "None / Horiz / Vert / Both / Radial", "description": "Selects the symmetry mode. Copies are generated live and stay logically linked to the source pins." },
+      "interval": { "label": "Interval (°)", "description": "Radial symmetry only — angular spacing between copies. Accepts custom, non-preset values." },
+      "centre": { "label": "Centre X / Centre Y", "description": "Radial symmetry only — the symmetry centre position. Also draggable directly on the canvas; snaps to the grid while dragging." }
+    }
+  },
+  "thread": {
+    "tools": {
+      "heading": "Tools",
+      "draw": { "label": "Draw", "description": "Click a pin to start or extend a Thread Path (snaps to the nearest pin). Double-click finishes with a final segment; right-click finishes without adding one. Esc cancels/discards the in-progress draft; ArrowLeft retracts the draft's last point. Once the draft has 4+ vertices, ArrowRight auto-adds the next one by following the numeric pin-position pattern of the vertices added so far." },
+      "eraser": { "label": "Eraser", "description": "Click a Thread Path to remove the whole path in one click." },
+      "segment": { "label": "Segment", "description": "Click one segment to remove it, splitting the path into up to two surviving fragments (a fragment left with under 2 pins is dropped). Pins themselves are untouched." }
+    },
+    "properties": {
+      "heading": "Thread properties",
+      "colourCount": { "label": "Colour count (1 / 2 / 3)", "description": "How many strands the thread renders as — a single strand, or a two/three-colour spiral. Geometry is unaffected." },
+      "swatches": { "label": "Colour swatches", "description": "One colour picker per active strand." },
+      "width": { "label": "Width", "description": "Thread stroke width." },
+      "twistPitch": { "label": "Twist pitch", "description": "Only shown with 2+ colours — controls how tightly the spiral twists." },
+      "pinStateLegend": { "label": "Pin state legend", "description": "Read-only reference showing the four pin highlight states: Normal, Nearest candidate, Active origin, and Used in this thread." }
+    }
+  },
+  "pan": {
+    "canvas": {
+      "heading": "Canvas",
+      "leftClickDrag": { "label": "Left-click-drag", "description": "Pans the viewport anywhere on the canvas while in Pan mode." }
+    },
+    "grid": {
+      "heading": "Grid",
+      "gridToggle": { "label": "Grid ON/OFF", "description": "Toggles grid line visibility." },
+      "snapToggle": { "label": "Snap ON/OFF", "description": "Toggles snap-to-grid while drawing or dragging." },
+      "gapXY": { "label": "Gap X / Gap Y", "description": "Grid cell spacing, in cm." },
+      "gridColour": { "label": "Grid colour", "description": "Colour of the grid lines." },
+      "gridOpacity": { "label": "Grid opacity", "description": "Grid line opacity, 0–1." }
+    },
+    "zoom": {
+      "heading": "Zoom",
+      "zoomInOut": { "label": "Zoom out / Zoom in", "description": "Steps the zoom level by ÷1.25 / ×1.25, centred on the viewport centre." },
+      "fit": { "label": "Fit", "description": "Resets the viewport to fit the whole board in view." }
+    }
+  },
+  "play": {
+    "transport": {
+      "heading": "Transport",
+      "firstPrevNextLast": { "label": "First / Previous / Next / Last", "description": "Jump to frame 0, one frame back, one frame forward, or the last frame. Any of these pauses playback if it was running." },
+      "playPause": { "label": "Play / Pause", "description": "Auto-advances one frame per interval tick; stops (does not loop) at the last frame. Pressing Play again while already at the last frame restarts from frame 0." },
+      "frame": { "label": "Frame", "description": "An editable field — typing a value jumps to that frame (clamped) and pauses playback." },
+      "total": { "label": "Total", "description": "Read-only total frame count." },
+      "interval": { "label": "Time between frames (ms)", "description": "Controls the auto-advance interval." }
+    },
+    "export": {
+      "heading": "Export",
+      "exportToVideo": { "label": "Export to Video", "description": "Records the animation to a .webm file, showing live \"Exporting… N/total\" progress. Disabled if the browser doesn't support video recording, or there are zero frames to play." }
+    }
+  },
+  "layers": {
+    "tabSwitchSection": {
+      "heading": "Pin Layers / Thread Layers",
+      "tabSwitch": { "label": "Tab switch", "description": "Two fully independent lists — a Pin Layer never contains Thread Paths and vice versa. The visible tab automatically follows the current Editor mode (Pin mode shows Pin Layers, Thread mode shows Thread Layers); Edit/Pan/Play leave it as you last set it." }
+    },
+    "row": {
+      "heading": "Per-layer row",
+      "eyeIcon": { "label": "Eye icon", "description": "Shows or hides the layer. Purely visual — hidden contents are retained and still function (e.g. still referenceable by threads)." },
+      "lockIcon": { "label": "Lock icon", "description": "Locks or unlocks the layer. A locked layer blocks all create/move/resize/rotate/erase/property-change operations on its contents; visibility can still be toggled." },
+      "nameRename": { "label": "Name (double-click)", "description": "Double-click a layer's name to rename it inline." },
+      "clickRow": { "label": "Click row", "description": "Selects that layer as the active layer for new objects and layer actions." }
+    },
+    "actions": {
+      "heading": "Layer actions",
+      "newLayer": { "label": "New Layer", "description": "Creates a new, empty, visible, unlocked layer of the active kind." },
+      "duplicate": { "label": "Duplicate", "description": "Duplicates the active layer and its objects with new stable IDs. Thread references to duplicated pins still point at the originals, not the copies." },
+      "moveLayer": { "label": "Move layer up / down", "description": "Moves the active layer up or down in stacking/render order." },
+      "delete": { "label": "Delete", "description": "Deletes the active layer and all its contents in one undo step. Disabled when only one layer remains." }
+    }
+  },
+  "keyboardMouse": {
+    "keyboard": {
+      "heading": "Keyboard",
+      "undo": { "label": "Ctrl/Cmd+Z", "description": "Undo. Ignored while a text field (an input, textarea, or editable text) has focus." },
+      "redo": { "label": "Ctrl/Cmd+Shift+Z", "description": "Redo. Same text-field exception as Undo." },
+      "escape": { "label": "Escape", "description": "Cancels the active tool's in-progress action: an unfinished thread draft, an in-progress Move or Rotation drag, or a pending Merge selection — whichever applies to the current mode/tool." },
+      "arrowLeft": { "label": "ArrowLeft", "description": "Thread Draw tool: retracts the last point of the in-progress thread draft. Edit mode with Move/Rotation/Scale active and a Pin Path selected: nudges/rotates/scales it (see the Edit tab)." },
+      "arrowRight": { "label": "ArrowRight", "description": "Thread Draw tool: once the draft has 4+ vertices, extends it by extrapolating the numeric pin-position pattern of the vertices added so far, wrapping around the pin count of the relevant Pin Path. Edit mode with Move/Rotation/Scale active and a Pin Path selected: nudges/rotates/scales it (see the Edit tab)." },
+      "arrowUpDown": { "label": "ArrowUp / ArrowDown", "description": "Edit mode with Move/Rotation/Scale active and a Pin Path selected: nudges/rotates/scales it. No effect elsewhere." },
+      "shift": { "label": "Shift (held with an Edit-mode arrow key)", "description": "Multiplies the arrow key's Move/Rotation/Scale step by 10." },
+      "holdArrow": { "label": "Holding an Edit-mode arrow key", "description": "Repeats the Move/Rotation/Scale step automatically after a 500ms delay, then every 100ms until released." },
+      "alt": { "label": "Alt (held while dragging)", "description": "Pin mode Ellipse/Rectangle tools only — constrains the shape to a Circle/Square. Releasing Alt mid-drag reverts to unconstrained." }
+    },
+    "mouse": {
+      "heading": "Mouse",
+      "leftButton": { "label": "Left button", "description": "Drives every draw, select, and drag gesture across every mode." },
+      "rightClick": { "label": "Right-click", "description": "Reserved for specific per-tool actions only — committing a Merge (Edit mode), or finishing a thread draft without adding a final segment (Thread mode). It is never a generic context menu." },
+      "doubleClick": { "label": "Double-click", "description": "Thread Draw tool — finishes the in-progress draft, adding one final segment to the clicked pin." },
+      "leftDrag": { "label": "Left-drag", "description": "Pans the viewport in Pan mode; press-drag-release also drives Move/Rotation in Edit mode and most shape tools in Pin mode." }
+    }
+  }
+}

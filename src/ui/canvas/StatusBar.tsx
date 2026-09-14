@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { distributeClosedPath, distributeOpenPath, distributePathPerVertex, pathLength } from "../../domain/paths";
 import { geometryToPath, isVertexAnchoredGeometry, type EditorMode, type PinPathGeometry, type PinTool } from "../../application/document";
 
@@ -18,27 +19,32 @@ export function StatusBar({
   spacing: number;
   threadStatusText?: string | null;
 }) {
+  const { t } = useTranslation("canvas");
   const text = (() => {
     if (mode === "pin" && previewGeometry) {
       const path = geometryToPath(previewGeometry);
       if (isVertexAnchoredGeometry(previewGeometry.type)) {
         const { n, actualSpacing } = distributePathPerVertex(path, spacing);
-        const label = path.closed ? "Perimeter" : "Length";
-        return `${label}: ${pathLength(path).toFixed(1)} cm | Requested: ${spacing.toFixed(1)} cm | Actual: ${actualSpacing.toFixed(2)} cm | Pins: ${n}`;
+        const label = path.closed ? t("status.perimeter") : t("status.length");
+        return t("status.geometryPreview", { label, length: pathLength(path).toFixed(1), requested: spacing.toFixed(1), actual: actualSpacing.toFixed(2), pins: n });
       }
       if (path.closed) {
         const { n, actualSpacing } = distributeClosedPath(path, spacing);
-        return `Perimeter: ${pathLength(path).toFixed(1)} cm | Requested: ${spacing.toFixed(1)} cm | Actual: ${actualSpacing.toFixed(2)} cm | Pins: ${n}`;
+        return t("status.geometryPreview", { label: t("status.perimeter"), length: pathLength(path).toFixed(1), requested: spacing.toFixed(1), actual: actualSpacing.toFixed(2), pins: n });
       }
       const pins = distributeOpenPath(path, spacing);
-      return `Length: ${pathLength(path).toFixed(1)} cm | Pins: ${pins.length} | Gap: ${spacing.toFixed(1)} cm`;
+      return t("status.openPathPreview", { label: t("status.length"), length: pathLength(path).toFixed(1), pins: pins.length, gap: spacing.toFixed(1) });
     }
-    if (mode === "pin") return `Tool: ${pinTool} — click${["ellipse", "circle", "rectangle", "square"].includes(pinTool) ? "-drag" : ""} on the board to draw.`;
+    if (mode === "pin")
+      return t("status.pinToolHint", {
+        tool: pinTool,
+        action: ["ellipse", "circle", "rectangle", "square"].includes(pinTool) ? t("status.clickDragAction") : t("status.clickAction"),
+      });
     if (mode === "select" || mode === "pan") {
-      if (!cursor) return `Zoom: ${zoomPercent}%`;
-      return `X: ${cursor.x.toFixed(1)} cm | Y: ${cursor.y.toFixed(1)} cm | Zoom: ${zoomPercent}%`;
+      if (!cursor) return t("status.zoom", { zoom: zoomPercent });
+      return t("status.cursor", { x: cursor.x.toFixed(1), y: cursor.y.toFixed(1), zoom: zoomPercent });
     }
-    return threadStatusText ?? "Thread mode: click a pin to start a Thread Path.";
+    return threadStatusText ?? t("status.threadDefault");
   })();
 
   return (

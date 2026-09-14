@@ -116,6 +116,8 @@ export {
   createEmptyProject,
   projectFileToDocument,
   IncompatibleProjectVersionError,
+  InvalidProjectFileError,
+  NoMigrationPathError,
   type ProjectFile,
   type SerializableDocument,
 } from "./projectFile";

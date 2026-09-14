@@ -1,4 +1,5 @@
 import { Eraser, PenLine, Scissors } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { EditorStore } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
 
@@ -6,6 +7,7 @@ const PALETTE = ["#5b8def", "#edeff7", "#e8b449", "#d96c6c", "#8fd6c8"];
 
 // docs/specs/24-thread-mode + 25-thread-colour-rendering
 export function ThreadToolbar({ store }: { store: EditorStore }) {
+  const { t } = useTranslation("toolbars");
   const state = useEditorState(store);
   const colours = state.threadDefaults.colours;
 
@@ -17,25 +19,25 @@ export function ThreadToolbar({ store }: { store: EditorStore }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-        Thread
+        {t("threadToolbar.sectionTitle")}
       </div>
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
         <button className={`btn${state.threadTool === "draw" ? " btn-active" : ""}`} onClick={() => store.setThreadTool("draw")} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}>
           <PenLine size={14} />
-          Draw
+          {t("threadToolbar.draw")}
         </button>
         <button className={`btn${state.threadTool === "eraser" ? " btn-active" : ""}`} onClick={() => store.setThreadTool("eraser")} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}>
           <Eraser size={14} />
-          Eraser
+          {t("threadToolbar.eraser")}
         </button>
         <button className={`btn${state.threadTool === "segment-eraser" ? " btn-active" : ""}`} onClick={() => store.setThreadTool("segment-eraser")} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}>
           <Scissors size={14} />
-          Segment
+          {t("threadToolbar.segment")}
         </button>
       </div>
 
       <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase", marginTop: 4 }}>
-        Colours
+        {t("threadToolbar.coloursSectionTitle")}
       </div>
       <div style={{ display: "flex", gap: 6 }}>
         {[1, 2, 3].map((n) => (
@@ -62,7 +64,7 @@ export function ThreadToolbar({ store }: { store: EditorStore }) {
       </div>
 
       <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)", marginTop: 4 }}>
-        Width
+        {t("threadToolbar.width")}
         <input
           type="number"
           className="mono"
@@ -76,7 +78,7 @@ export function ThreadToolbar({ store }: { store: EditorStore }) {
 
       {colours.length > 1 && (
         <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
-          Twist pitch
+          {t("threadToolbar.twistPitch")}
           <input
             type="number"
             className="mono"
@@ -91,7 +93,7 @@ export function ThreadToolbar({ store }: { store: EditorStore }) {
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8, background: "var(--bg-app)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: "10px 12px", marginTop: 4 }}>
-        <PinStateLegend swatch={<span style={{ width: 10, height: 10, borderRadius: "50%", background: "#c7cad3", display: "inline-block" }} />} label="Normal" />
+        <PinStateLegend swatch={<span style={{ width: 10, height: 10, borderRadius: "50%", background: "#c7cad3", display: "inline-block" }} />} label={t("threadToolbar.legend.normal")} />
         <PinStateLegend
           swatch={
             <span style={{ position: "relative", width: 14, height: 14, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
@@ -99,10 +101,10 @@ export function ThreadToolbar({ store }: { store: EditorStore }) {
               <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#e8b449" }} />
             </span>
           }
-          label="Nearest candidate"
+          label={t("threadToolbar.legend.nearestCandidate")}
         />
-        <PinStateLegend swatch={<span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--accent)", display: "inline-block" }} />} label="Active origin" />
-        <PinStateLegend swatch={<span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--accent)", opacity: 0.5, display: "inline-block" }} />} label="Used in this thread" />
+        <PinStateLegend swatch={<span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--accent)", display: "inline-block" }} />} label={t("threadToolbar.legend.activeOrigin")} />
+        <PinStateLegend swatch={<span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--accent)", opacity: 0.5, display: "inline-block" }} />} label={t("threadToolbar.legend.usedInThisThread")} />
       </div>
     </div>
   );

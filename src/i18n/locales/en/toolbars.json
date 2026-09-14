@@ -1,0 +1,86 @@
+{
+  "modeSwitcher": {
+    "ariaLabel": "Editor mode"
+  },
+  "selectToolbar": {
+    "sectionTitle": "Edit Tools",
+    "tools": {
+      "select": { "label": "Select", "tooltip": "Click a pin to select its Pin Path." },
+      "move": { "label": "Move", "tooltip": "Drag to translate the selected Pin Path." },
+      "rotate": { "label": "Rotation", "tooltip": "Drag left or right from any point to rotate the selected Pin Path around that point." },
+      "scale": { "label": "Scale", "tooltip": "Drag left or right to scale the selected Pin Path about its own centre." },
+      "merge": { "label": "Merge", "tooltip": "Click pins to select them, then right-click to merge them into one pin at their midpoint." }
+    }
+  },
+  "pinToolbar": {
+    "sectionTitle": "Pin Tools",
+    "basicTools": {
+      "line": "Line",
+      "arc": "Arc",
+      "ellipse": "Ellipse",
+      "circle": "Circle",
+      "rectangle": "Rect",
+      "square": "Square",
+      "freehand": "Freehand"
+    },
+    "eraser": "Eraser",
+    "pathEraser": "Path Eraser",
+    "polygonStarLabel": "Polygon / Star",
+    "choosePlaceholder": "Choose…",
+    "polygonFamily": {
+      "pentagon": "Pentagon",
+      "hexagon": "Hexagon",
+      "octagon": "Octagon",
+      "star-5": "5-point star",
+      "star-6": "6-point star",
+      "star-8": "8-point star",
+      "pentagram": "Pentagram",
+      "heptagram": "Heptagram",
+      "octagram": "Octagram"
+    }
+  },
+  "threadToolbar": {
+    "sectionTitle": "Thread",
+    "draw": "Draw",
+    "eraser": "Eraser",
+    "segment": "Segment",
+    "coloursSectionTitle": "Colours",
+    "width": "Width",
+    "twistPitch": "Twist pitch",
+    "legend": {
+      "normal": "Normal",
+      "nearestCandidate": "Nearest candidate",
+      "activeOrigin": "Active origin",
+      "usedInThisThread": "Used in this thread"
+    }
+  },
+  "playToolbar": {
+    "sectionTitle": "Play",
+    "firstFrame": "First frame",
+    "previousFrame": "Previous frame",
+    "pause": "Pause",
+    "play": "Play",
+    "playRestart": "Play (restarts from the beginning)",
+    "nextFrame": "Next frame",
+    "lastFrame": "Last frame",
+    "frame": "Frame",
+    "total": "Total",
+    "timeBetweenFrames": "Time between frames (ms)",
+    "exportToVideo": "Export to Video",
+    "exporting": "Exporting… {{progress}}/{{total}}",
+    "videoNotSupported": "Video export isn't supported in this browser."
+  },
+  "canvasToolbar": {
+    "gridOn": "Grid ON",
+    "gridOff": "Grid OFF",
+    "snapOn": "Snap ON",
+    "snapOff": "Snap OFF",
+    "gapX": "Gap X",
+    "gapY": "Gap Y",
+    "gridColour": "Grid colour",
+    "gridOpacity": "Grid opacity",
+    "zoomOut": "Zoom out",
+    "zoomIn": "Zoom in",
+    "fit": "Fit"
+  }
+}

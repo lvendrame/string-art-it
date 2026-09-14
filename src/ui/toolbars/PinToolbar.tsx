@@ -1,29 +1,35 @@
 import { Circle, Eraser, Minus, PenTool, RectangleHorizontal, Shapes, Spline, Square, Trash2 } from "lucide-react";
 import type { ComponentType } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import type { EditorStore, PinTool } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
 
-const BASIC_TOOLS: { id: PinTool; label: string; icon: ComponentType<{ size?: number }> }[] = [
-  { id: "line", label: "Line", icon: Minus },
-  { id: "arc", label: "Arc", icon: Spline },
-  { id: "ellipse", label: "Ellipse", icon: Circle },
-  { id: "circle", label: "Circle", icon: Circle },
-  { id: "rectangle", label: "Rect", icon: RectangleHorizontal },
-  { id: "square", label: "Square", icon: Square },
-  { id: "freehand", label: "Freehand", icon: PenTool },
-];
+function basicTools(t: TFunction<"toolbars">): { id: PinTool; label: string; icon: ComponentType<{ size?: number }> }[] {
+  return [
+    { id: "line", label: t("pinToolbar.basicTools.line"), icon: Minus },
+    { id: "arc", label: t("pinToolbar.basicTools.arc"), icon: Spline },
+    { id: "ellipse", label: t("pinToolbar.basicTools.ellipse"), icon: Circle },
+    { id: "circle", label: t("pinToolbar.basicTools.circle"), icon: Circle },
+    { id: "rectangle", label: t("pinToolbar.basicTools.rectangle"), icon: RectangleHorizontal },
+    { id: "square", label: t("pinToolbar.basicTools.square"), icon: Square },
+    { id: "freehand", label: t("pinToolbar.basicTools.freehand"), icon: PenTool },
+  ];
+}
 
-const POLYGON_FAMILY: { id: PinTool; label: string }[] = [
-  { id: "pentagon", label: "Pentagon" },
-  { id: "hexagon", label: "Hexagon" },
-  { id: "octagon", label: "Octagon" },
-  { id: "star-5", label: "5-point star" },
-  { id: "star-6", label: "6-point star" },
-  { id: "star-8", label: "8-point star" },
-  { id: "pentagram", label: "Pentagram" },
-  { id: "heptagram", label: "Heptagram" },
-  { id: "octagram", label: "Octagram" },
-];
+function polygonFamily(t: TFunction<"toolbars">): { id: PinTool; label: string }[] {
+  return [
+    { id: "pentagon", label: t("pinToolbar.polygonFamily.pentagon") },
+    { id: "hexagon", label: t("pinToolbar.polygonFamily.hexagon") },
+    { id: "octagon", label: t("pinToolbar.polygonFamily.octagon") },
+    { id: "star-5", label: t("pinToolbar.polygonFamily.star-5") },
+    { id: "star-6", label: t("pinToolbar.polygonFamily.star-6") },
+    { id: "star-8", label: t("pinToolbar.polygonFamily.star-8") },
+    { id: "pentagram", label: t("pinToolbar.polygonFamily.pentagram") },
+    { id: "heptagram", label: t("pinToolbar.polygonFamily.heptagram") },
+    { id: "octagram", label: t("pinToolbar.polygonFamily.octagram") },
+  ];
+}
 
 const CHIP_STYLE = {
   flexDirection: "column" as const,
@@ -35,33 +41,36 @@ const CHIP_STYLE = {
 };
 
 export function PinToolbar({ store }: { store: EditorStore }) {
+  const { t } = useTranslation("toolbars");
   const state = useEditorState(store);
-  const isPolygonFamilySelected = POLYGON_FAMILY.some((t) => t.id === state.pinTool);
+  const BASIC_TOOLS = basicTools(t);
+  const POLYGON_FAMILY = polygonFamily(t);
+  const isPolygonFamilySelected = POLYGON_FAMILY.some((tool) => tool.id === state.pinTool);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-        Pin Tools
+        {t("pinToolbar.sectionTitle")}
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
-        {BASIC_TOOLS.map((t) => (
+        {BASIC_TOOLS.map((tool) => (
           <button
-            key={t.id}
-            className={`btn${state.pinTool === t.id ? " btn-active" : ""}`}
-            onClick={() => store.setPinTool(t.id)}
+            key={tool.id}
+            className={`btn${state.pinTool === tool.id ? " btn-active" : ""}`}
+            onClick={() => store.setPinTool(tool.id)}
             style={CHIP_STYLE}
           >
-            <t.icon size={16} />
-            {t.label}
+            <tool.icon size={16} />
+            {tool.label}
           </button>
         ))}
         <button className={`btn${state.pinTool === "eraser" ? " btn-active" : ""}`} onClick={() => store.setPinTool("eraser")} style={CHIP_STYLE}>
           <Eraser size={16} />
-          Eraser
+          {t("pinToolbar.eraser")}
         </button>
         <button className={`btn${state.pinTool === "path-eraser" ? " btn-active" : ""}`} onClick={() => store.setPinTool("path-eraser")} style={CHIP_STYLE}>
           <Trash2 size={16} />
-          Path Eraser
+          {t("pinToolbar.pathEraser")}
         </button>
       </div>
 
@@ -71,20 +80,20 @@ export function PinToolbar({ store }: { store: EditorStore }) {
       >
         <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 600 }}>
           <Shapes size={14} />
-          Polygon / Star
+          {t("pinToolbar.polygonStarLabel")}
         </span>
         <select
-          aria-label="Polygon / Star"
+          aria-label={t("pinToolbar.polygonStarLabel")}
           value={isPolygonFamilySelected ? state.pinTool : ""}
           onChange={(e) => store.setPinTool(e.target.value as PinTool)}
           style={{ background: "transparent", color: "inherit", border: "none", fontSize: 12 }}
         >
           <option value="" disabled>
-            Choose…
+            {t("pinToolbar.choosePlaceholder")}
           </option>
-          {POLYGON_FAMILY.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.label}
+          {POLYGON_FAMILY.map((tool) => (
+            <option key={tool.id} value={tool.id}>
+              {tool.label}
             </option>
           ))}
         </select>

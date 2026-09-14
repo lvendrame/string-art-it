@@ -1,0 +1,86 @@
+{
+  "modeSwitcher": {
+    "ariaLabel": "Modo do editor"
+  },
+  "selectToolbar": {
+    "sectionTitle": "Ferramentas de Edição",
+    "tools": {
+      "select": { "label": "Selecionar", "tooltip": "Clique em um pino para selecionar seu Caminho de Pinos." },
+      "move": { "label": "Mover", "tooltip": "Arraste para transladar o Caminho de Pinos selecionado." },
+      "rotate": { "label": "Rotação", "tooltip": "Arraste para a esquerda ou direita a partir de qualquer ponto para girar o Caminho de Pinos selecionado em torno desse ponto." },
+      "scale": { "label": "Escala", "tooltip": "Arraste para a esquerda ou direita para redimensionar o Caminho de Pinos selecionado em torno de seu próprio centro." },
+      "merge": { "label": "Mesclar", "tooltip": "Clique nos pinos para selecioná-los e clique com o botão direito para mesclá-los em um único pino no ponto médio entre eles." }
+    }
+  },
+  "pinToolbar": {
+    "sectionTitle": "Ferramentas de Pino",
+    "basicTools": {
+      "line": "Linha",
+      "arc": "Arco",
+      "ellipse": "Elipse",
+      "circle": "Círculo",
+      "rectangle": "Ret.",
+      "square": "Quadrado",
+      "freehand": "Livre"
+    },
+    "eraser": "Borracha",
+    "pathEraser": "Borracha de Caminho",
+    "polygonStarLabel": "Polígono / Estrela",
+    "choosePlaceholder": "Escolher…",
+    "polygonFamily": {
+      "pentagon": "Pentágono",
+      "hexagon": "Hexágono",
+      "octagon": "Octógono",
+      "star-5": "Estrela de 5 pontas",
+      "star-6": "Estrela de 6 pontas",
+      "star-8": "Estrela de 8 pontas",
+      "pentagram": "Pentagrama",
+      "heptagram": "Heptagrama",
+      "octagram": "Octagrama"
+    }
+  },
+  "threadToolbar": {
+    "sectionTitle": "Linha",
+    "draw": "Desenhar",
+    "eraser": "Borracha",
+    "segment": "Segmento",
+    "coloursSectionTitle": "Cores",
+    "width": "Espessura",
+    "twistPitch": "Passo da torção",
+    "legend": {
+      "normal": "Normal",
+      "nearestCandidate": "Candidato mais próximo",
+      "activeOrigin": "Origem ativa",
+      "usedInThisThread": "Usado nesta linha"
+    }
+  },
+  "playToolbar": {
+    "sectionTitle": "Reproduzir",
+    "firstFrame": "Primeiro quadro",
+    "previousFrame": "Quadro anterior",
+    "pause": "Pausar",
+    "play": "Reproduzir",
+    "playRestart": "Reproduzir (reinicia do começo)",
+    "nextFrame": "Próximo quadro",
+    "lastFrame": "Último quadro",
+    "frame": "Quadro",
+    "total": "Total",
+    "timeBetweenFrames": "Tempo entre quadros (ms)",
+    "exportToVideo": "Exportar Vídeo",
+    "exporting": "Exportando… {{progress}}/{{total}}",
+    "videoNotSupported": "A exportação de vídeo não é compatível com este navegador."
+  },
+  "canvasToolbar": {
+    "gridOn": "Grade LIGADA",
+    "gridOff": "Grade DESLIGADA",
+    "snapOn": "Ajuste LIGADO",
+    "snapOff": "Ajuste DESLIGADO",
+    "gapX": "Espaço X",
+    "gapY": "Espaço Y",
+    "gridColour": "Cor da grade",
+    "gridOpacity": "Opacidade da grade",
+    "zoomOut": "Diminuir zoom",
+    "zoomIn": "Aumentar zoom",
+    "fit": "Ajustar"
+  }
+}

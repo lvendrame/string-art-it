@@ -44,14 +44,30 @@ export function createEmptyProject(): SerializableDocument {
 const MIGRATIONS: Record<number, (raw: Record<string, unknown>) => Record<string, unknown>> = {};
 
 export class IncompatibleProjectVersionError extends Error {
-  constructor(foundVersion: unknown) {
+  constructor(public readonly foundVersion: unknown) {
     super(`Project file version ${String(foundVersion)} is newer than this app supports (max ${CURRENT_PROJECT_VERSION}).`);
+  }
+}
+
+// Named alongside IncompatibleProjectVersionError so the UI layer (src/ui/toolbars/
+// openFileErrors.ts) can map each to translated, interpolated copy via `instanceof`
+// rather than matching against this English `.message` text — these messages stay
+// English/internal-diagnostic, never shown directly (docs/specs/24-internationalization.md).
+export class InvalidProjectFileError extends Error {
+  constructor() {
+    super("Not a valid StringArtIt project file.");
+  }
+}
+
+export class NoMigrationPathError extends Error {
+  constructor(public readonly version: number) {
+    super(`No migration path from project version ${version}.`);
   }
 }
 
 export function migrateProjectFile(raw: unknown): ProjectFile {
   if (typeof raw !== "object" || raw === null || !("version" in raw)) {
-    throw new Error("Not a valid StringArtIt project file.");
+    throw new InvalidProjectFileError();
   }
   let data = raw as Record<string, unknown>;
   let version = Number(data.version);
@@ -60,7 +76,7 @@ export function migrateProjectFile(raw: unknown): ProjectFile {
 
   while (version < CURRENT_PROJECT_VERSION) {
     const step = MIGRATIONS[version];
-    if (!step) throw new Error(`No migration path from project version ${version}.`);
+    if (!step) throw new NoMigrationPathError(version);
     data = step(data);
     version += 1;
   }

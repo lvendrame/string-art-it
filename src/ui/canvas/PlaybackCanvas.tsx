@@ -1,4 +1,5 @@
 import { forwardRef, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { boardPath, truncateThreadLayersAtFrame, type EditorState } from "../../application/document";
 import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
 import { CANVAS_VIEWPORT_PX, fitViewportForBoard } from "./boardViewport";
@@ -14,6 +15,7 @@ export const PlaybackCanvas = forwardRef<SVGSVGElement, { state: EditorState; fr
   { state, frame },
   svgRef,
 ) {
+  const { t } = useTranslation("canvas");
   const viewport = useMemo(() => fitViewportForBoard(state.board), [state.board]);
   const path = useMemo(() => boardPath(state.board), [state.board]);
   const pathD = useMemo(() => pathToSvgD(path), [path]);
@@ -25,7 +27,7 @@ export const PlaybackCanvas = forwardRef<SVGSVGElement, { state: EditorState; fr
 
   return (
     <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-canvas)" }}>
-      <svg ref={svgRef} width={CANVAS_VIEWPORT_PX.width} height={CANVAS_VIEWPORT_PX.height} viewBox={viewBox} role="img" aria-label="Play mode canvas">
+      <svg ref={svgRef} width={CANVAS_VIEWPORT_PX.width} height={CANVAS_VIEWPORT_PX.height} viewBox={viewBox} role="img" aria-label={t("playModeCanvasAriaLabel")}>
         <BoardLayer board={state.board} pathD={pathD} />
         <GridLayer grid={state.grid} viewport={viewport} viewportPx={CANVAS_VIEWPORT_PX} />
         <ThreadLayersView threadLayers={visibleThreadLayers} pinLayers={state.pinLayers} />

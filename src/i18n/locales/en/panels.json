@@ -1,0 +1,86 @@
+{
+  "pinPropertiesPanel": {
+    "titleSelected": "Pin Properties (selected)",
+    "titleDefaults": "Pin Properties (defaults)",
+    "spacing": "Spacing (cm)",
+    "actualGap": "Actual gap",
+    "diameter": "Diameter (mm)",
+    "colour": "Colour",
+    "guideVisible": "Guide visible"
+  },
+  "selectionPanel": {
+    "emptyMessage": "Click a pin to select its Pin Path.",
+    "title": "Selection — {{type}}",
+    "shapeTypes": {
+      "line": "line",
+      "circle": "circle",
+      "ellipse": "ellipse",
+      "rectangle": "rectangle",
+      "square": "square",
+      "regular-polygon": "regular-polygon",
+      "star": "star",
+      "polygram": "polygram"
+    },
+    "pinDistance": "Pin distance",
+    "fields": {
+      "startX": "Start X",
+      "startY": "Start Y",
+      "endX": "End X",
+      "endY": "End Y",
+      "centreX": "Centre X",
+      "centreY": "Centre Y",
+      "radius": "Radius",
+      "radiusX": "Radius X",
+      "radiusY": "Radius Y",
+      "rotation": "Rotation",
+      "positionX": "Position X",
+      "positionY": "Position Y",
+      "width": "Width",
+      "height": "Height",
+      "side": "Side",
+      "outerRadius": "Outer radius",
+      "innerRadius": "Inner radius"
+    },
+    "deletePinPath": "Delete Pin Path"
+  },
+  "symmetryPanel": {
+    "sectionTitle": "Symmetry",
+    "options": {
+      "none": "None",
+      "horizontal": "Horiz",
+      "vertical": "Vert",
+      "both": "Both",
+      "radial": "Radial"
+    },
+    "interval": "Interval (°)",
+    "centreX": "Centre X",
+    "centreY": "Centre Y"
+  },
+  "layersPanel": {
+    "pinLayersTab": "Pin Layers",
+    "threadLayersTab": "Thread Layers",
+    "hideLayer": "Hide {{name}}",
+    "showLayer": "Show {{name}}",
+    "unlockLayer": "Unlock {{name}}",
+    "lockLayer": "Lock {{name}}",
+    "newLayer": "New Layer",
+    "duplicate": "Duplicate",
+    "moveUp": "Move layer up",
+    "moveDown": "Move layer down",
+    "delete": "Delete"
+  },
+  "statisticsPanel": {
+    "title": "Statistics",
+    "totalPins": "Total pins",
+    "pathTitle": "{{layerName}} — Path {{index}}",
+    "pins": "Pins",
+    "requestedGap": "Requested gap",
+    "actualGap": "Actual gap",
+    "pinDiameter": "Pin diameter",
+    "threadTitle": "{{layerName}} — Thread {{index}}",
+    "segments": "Segments",
+    "threadLength": "Thread length",
+    "pinsVisited": "Pins visited",
+    "colours": "Colours"
+  }
+}

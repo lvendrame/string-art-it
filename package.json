@@ -15,10 +15,12 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "i18next": "^26.4.2",
     "jspdf": "^4.2.1",
     "lucide-react": "^1.44.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-i18next": "^17.0.14",
     "react-tooltip": "^6.0.8",
     "svg2pdf.js": "^2.8.1"
   },

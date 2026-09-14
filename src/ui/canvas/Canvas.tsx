@@ -1,4 +1,5 @@
 import { useMemo, type MouseEvent as ReactMouseEvent } from "react";
+import { useTranslation } from "react-i18next";
 import {
   boardPath,
   DRAG_TOOLS,
@@ -125,6 +126,7 @@ function canvasCursor(
 }
 
 export function Canvas({ store }: { store: EditorStore }) {
+  const { t } = useTranslation("canvas");
   const state = useEditorState(store);
   const { viewport } = state;
   const layerId = state.activePinLayerId;
@@ -320,7 +322,7 @@ export function Canvas({ store }: { store: EditorStore }) {
           onDoubleClick={handleDoubleClick}
           onContextMenu={handleContextMenu}
           role="img"
-          aria-label="Board canvas"
+          aria-label={t("boardCanvasAriaLabel")}
         >
           <BoardLayer board={state.board} pathD={pathD} />
 

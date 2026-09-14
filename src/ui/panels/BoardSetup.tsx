@@ -1,15 +1,20 @@
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import type { Board, BoardShape, EditorStore, TriangleType } from "../../application/document";
 import { boardHypotenuse } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
+import { LanguageSwitcher } from "../LanguageSwitcher";
 import { BoardAppearancePanel } from "./BoardAppearancePanel";
 
-const SHAPES: { id: BoardShape; label: string }[] = [
-  { id: "circle", label: "Circle" },
-  { id: "oval", label: "Oval" },
-  { id: "rectangle", label: "Rectangle" },
-  { id: "square", label: "Square" },
-  { id: "triangle", label: "Triangle" },
-];
+function shapeOptions(t: TFunction<"boardSetup">): { id: BoardShape; label: string }[] {
+  return [
+    { id: "circle", label: t("shapes.circle") },
+    { id: "oval", label: t("shapes.oval") },
+    { id: "rectangle", label: t("shapes.rectangle") },
+    { id: "square", label: t("shapes.square") },
+    { id: "triangle", label: t("shapes.triangle") },
+  ];
+}
 
 function DimensionField({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void }) {
   return (
@@ -35,46 +40,48 @@ function DimensionField({ label, value, onChange }: { label: string; value: numb
   );
 }
 
-function DimensionFields({ board, store }: { board: Board; store: EditorStore }) {
+function DimensionFields({ board, store, t }: { board: Board; store: EditorStore; t: TFunction<"boardSetup"> }) {
   const d = board.dimensions;
   switch (board.shape) {
     case "circle":
-      return <DimensionField label="Diameter (cm)" value={d.diameter ?? 60} onChange={(v) => store.setBoardDimensions({ diameter: v })} />;
+      return <DimensionField label={t("fields.diameter")} value={d.diameter ?? 60} onChange={(v) => store.setBoardDimensions({ diameter: v })} />;
     case "oval":
       return (
         <>
-          <DimensionField label="Width (cm)" value={d.width ?? 60} onChange={(v) => store.setBoardDimensions({ width: v })} />
-          <DimensionField label="Height (cm)" value={d.height ?? 40} onChange={(v) => store.setBoardDimensions({ height: v })} />
+          <DimensionField label={t("fields.width")} value={d.width ?? 60} onChange={(v) => store.setBoardDimensions({ width: v })} />
+          <DimensionField label={t("fields.height")} value={d.height ?? 40} onChange={(v) => store.setBoardDimensions({ height: v })} />
         </>
       );
     case "rectangle":
       return (
         <>
-          <DimensionField label="Width (cm)" value={d.width ?? 60} onChange={(v) => store.setBoardDimensions({ width: v })} />
-          <DimensionField label="Height (cm)" value={d.height ?? 40} onChange={(v) => store.setBoardDimensions({ height: v })} />
+          <DimensionField label={t("fields.width")} value={d.width ?? 60} onChange={(v) => store.setBoardDimensions({ width: v })} />
+          <DimensionField label={t("fields.height")} value={d.height ?? 40} onChange={(v) => store.setBoardDimensions({ height: v })} />
         </>
       );
     case "square":
-      return <DimensionField label="Side (cm)" value={d.side ?? 50} onChange={(v) => store.setBoardDimensions({ side: v })} />;
+      return <DimensionField label={t("fields.side")} value={d.side ?? 50} onChange={(v) => store.setBoardDimensions({ side: v })} />;
     case "triangle":
       if (board.triangleType === "right-angled") {
         return (
           <>
-            <DimensionField label="Base (cm)" value={d.base ?? 40} onChange={(v) => store.setBoardDimensions({ base: v })} />
-            <DimensionField label="Height (cm)" value={d.height ?? 30} onChange={(v) => store.setBoardDimensions({ height: v })} />
+            <DimensionField label={t("fields.base")} value={d.base ?? 40} onChange={(v) => store.setBoardDimensions({ base: v })} />
+            <DimensionField label={t("fields.height")} value={d.height ?? 30} onChange={(v) => store.setBoardDimensions({ height: v })} />
             <div className="mono" style={{ fontSize: 12, color: "var(--text-secondary)" }}>
-              Hypotenuse: {boardHypotenuse(board)?.toFixed(1)} cm
+              {t("hypotenuse", { value: boardHypotenuse(board)?.toFixed(1) })}
             </div>
           </>
         );
       }
-      return <DimensionField label="Side (cm)" value={d.side ?? 50} onChange={(v) => store.setBoardDimensions({ side: v })} />;
+      return <DimensionField label={t("fields.side")} value={d.side ?? 50} onChange={(v) => store.setBoardDimensions({ side: v })} />;
   }
 }
 
 export function BoardSetup({ store, onContinue }: { store: EditorStore; onContinue: () => void }) {
+  const { t } = useTranslation("boardSetup");
   const state = useEditorState(store);
   const { board } = state;
+  const shapes = shapeOptions(t);
 
   return (
     <div
@@ -90,14 +97,17 @@ export function BoardSetup({ store, onContinue }: { store: EditorStore; onContin
         borderRadius: "var(--radius-md)",
       }}
     >
-      <h1 style={{ margin: 0, fontSize: 18 }}>New Board</h1>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h1 style={{ margin: 0, fontSize: 18 }}>{t("title")}</h1>
+        <LanguageSwitcher />
+      </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-          Shape
+          {t("sections.shape")}
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
-          {SHAPES.map((s) => (
+          {shapes.map((s) => (
             <button
               key={s.id}
               className={`btn${board.shape === s.id ? " btn-active" : ""}`}
@@ -112,14 +122,14 @@ export function BoardSetup({ store, onContinue }: { store: EditorStore; onContin
 
       {board.shape === "triangle" && (
         <div style={{ display: "flex", gap: 6 }}>
-          {(["equilateral", "right-angled"] as TriangleType[]).map((t) => (
+          {(["equilateral", "right-angled"] as TriangleType[]).map((tri) => (
             <button
-              key={t}
-              className={`btn${board.triangleType === t ? " btn-active" : ""}`}
-              onClick={() => store.setTriangleType(t)}
+              key={tri}
+              className={`btn${board.triangleType === tri ? " btn-active" : ""}`}
+              onClick={() => store.setTriangleType(tri)}
               style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600 }}
             >
-              {t === "equilateral" ? "Equilateral" : "Right-angled"}
+              {t(tri === "equilateral" ? "triangleTypes.equilateral" : "triangleTypes.rightAngled")}
             </button>
           ))}
         </div>
@@ -127,9 +137,9 @@ export function BoardSetup({ store, onContinue }: { store: EditorStore; onContin
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-          Dimensions
+          {t("sections.dimensions")}
         </div>
-        <DimensionFields board={board} store={store} />
+        <DimensionFields board={board} store={store} t={t} />
       </div>
 
       <BoardAppearancePanel store={store} />
@@ -148,7 +158,7 @@ export function BoardSetup({ store, onContinue }: { store: EditorStore; onContin
           borderColor: "transparent",
         }}
       >
-        Continue to Editor
+        {t("continueButton")}
       </button>
     </div>
   );

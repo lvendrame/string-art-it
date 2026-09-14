@@ -1,4 +1,5 @@
 import { Grid3x3, Magnet, Maximize, ZoomIn, ZoomOut } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { EditorStore } from "../../application/document";
 import { percentToZoom, zoomAtPoint, zoomToPercent } from "../../domain/transforms";
 import { useEditorState } from "../useEditorStore";
@@ -24,16 +25,17 @@ function ToggleChip({ label, active, onClick, icon: Icon }: { label: string; act
 // docs/specs/05-canvas-and-viewport.md §Grid + §Zoom and Pan — grid appearance/gap
 // controls and viewport zoom, both scoped to the canvas (not document content).
 export function CanvasToolbar({ store }: { store: EditorStore }) {
+  const { t } = useTranslation("toolbars");
   const state = useEditorState(store);
   const { viewport, grid } = state;
 
   return (
     <div style={{ flex: "0 0 auto", display: "flex", alignItems: "center", gap: 10, padding: "10px 16px", borderBottom: "1px solid var(--border)" }}>
-      <ToggleChip label={`Grid ${grid.visible ? "ON" : "OFF"}`} active={grid.visible} onClick={() => store.setGrid({ visible: !grid.visible })} icon={Grid3x3} />
-      <ToggleChip label={`Snap ${grid.snapEnabled ? "ON" : "OFF"}`} active={grid.snapEnabled} onClick={() => store.setGrid({ snapEnabled: !grid.snapEnabled })} icon={Magnet} />
+      <ToggleChip label={grid.visible ? t("canvasToolbar.gridOn") : t("canvasToolbar.gridOff")} active={grid.visible} onClick={() => store.setGrid({ visible: !grid.visible })} icon={Grid3x3} />
+      <ToggleChip label={grid.snapEnabled ? t("canvasToolbar.snapOn") : t("canvasToolbar.snapOff")} active={grid.snapEnabled} onClick={() => store.setGrid({ snapEnabled: !grid.snapEnabled })} icon={Magnet} />
 
       <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--text-secondary)" }}>
-        Gap X
+        {t("canvasToolbar.gapX")}
         <input
           type="number"
           className="mono"
@@ -45,7 +47,7 @@ export function CanvasToolbar({ store }: { store: EditorStore }) {
         />
       </label>
       <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--text-secondary)" }}>
-        Gap Y
+        {t("canvasToolbar.gapY")}
         <input
           type="number"
           className="mono"
@@ -57,7 +59,7 @@ export function CanvasToolbar({ store }: { store: EditorStore }) {
         />
       </label>
       <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--text-secondary)" }}>
-        Grid colour
+        {t("canvasToolbar.gridColour")}
         <input
           type="color"
           value={grid.colour}
@@ -66,7 +68,7 @@ export function CanvasToolbar({ store }: { store: EditorStore }) {
         />
       </label>
       <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--text-secondary)" }}>
-        Grid opacity
+        {t("canvasToolbar.gridOpacity")}
         <input
           type="number"
           className="mono"
@@ -81,16 +83,16 @@ export function CanvasToolbar({ store }: { store: EditorStore }) {
 
       <div style={{ flex: 1 }} />
 
-      <button aria-label="Zoom out" className="btn mono" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={() => store.setViewport(zoomAtPoint(viewport, Math.max(percentToZoom(MIN_ZOOM_PERCENT), viewport.zoom / 1.25), VIEWPORT_CENTER))}>
+      <button aria-label={t("canvasToolbar.zoomOut")} className="btn mono" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={() => store.setViewport(zoomAtPoint(viewport, Math.max(percentToZoom(MIN_ZOOM_PERCENT), viewport.zoom / 1.25), VIEWPORT_CENTER))}>
         <ZoomOut size={14} />
       </button>
       <span className="mono" style={{ fontSize: 12, width: 46, textAlign: "center" }}>{Math.round(zoomToPercent(viewport.zoom))}%</span>
-      <button aria-label="Zoom in" className="btn mono" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={() => store.setViewport(zoomAtPoint(viewport, Math.min(percentToZoom(MAX_ZOOM_PERCENT), viewport.zoom * 1.25), VIEWPORT_CENTER))}>
+      <button aria-label={t("canvasToolbar.zoomIn")} className="btn mono" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={() => store.setViewport(zoomAtPoint(viewport, Math.min(percentToZoom(MAX_ZOOM_PERCENT), viewport.zoom * 1.25), VIEWPORT_CENTER))}>
         <ZoomIn size={14} />
       </button>
       <button className="btn" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12, gap: 6 }} onClick={() => store.setViewport(fitViewportForBoard(state.board))}>
         <Maximize size={14} />
-        Fit
+        {t("canvasToolbar.fit")}
       </button>
     </div>
   );

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { EditorStore, recomputePinPath, rotateGeometry, scaleGeometry, translateGeometry } from "./application/document";
 import { fitViewportForBoard } from "./ui/canvas/boardViewport";
 import { EditorShell } from "./ui/EditorShell";
@@ -25,6 +26,7 @@ declare global {
 }
 
 export function App() {
+  const { t } = useTranslation("common");
   const store = useMemo(() => new EditorStore(), []);
   useEffect(() => {
     window.stringArtItDebug = store;
@@ -60,16 +62,16 @@ export function App() {
             boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
           }}
         >
-          <span>An autosaved project was found.</span>
+          <span>{t("autosave.found")}</span>
           <button
             className="btn"
             onClick={() => { restore(); enterEditor(); }}
             style={{ borderRadius: 6, padding: "5px 10px", fontSize: 12, fontWeight: 600, background: "var(--accent)", color: "white", borderColor: "transparent" }}
           >
-            Restore
+            {t("autosave.restore")}
           </button>
           <button className="btn" onClick={discard} style={{ borderRadius: 6, padding: "5px 10px", fontSize: 12 }}>
-            Discard
+            {t("autosave.discard")}
           </button>
         </div>
       )}

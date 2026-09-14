@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { FilePlus, FolderOpen, Save } from "lucide-react";
 import {
   createEmptyProject,
@@ -7,11 +8,13 @@ import {
   type EditorStore,
 } from "../../application/document";
 import { fitViewportForBoard } from "../canvas/boardViewport";
+import { mapOpenFileError } from "./openFileErrors";
 
 // docs/specs/16-persistence.md — New/Save/Open. This MVP stands the real file system
 // in with a browser download (Save) and a file picker (Open); a File System Access
 // API / IndexedDB autosave adapter is Phase 2 (docs/specs §00-overview-and-scope).
 export function FileMenu({ store, onNewProject }: { store: EditorStore; onNewProject: () => void }) {
+  const { t } = useTranslation(["menus", "errors"]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleNew() {
@@ -44,7 +47,7 @@ export function FileMenu({ store, onNewProject }: { store: EditorStore; onNewPro
       store.loadProject(projectFileToDocument(parsed));
       store.setViewport(fitViewportForBoard(store.getState().board));
     } catch (err) {
-      window.alert(err instanceof Error ? err.message : "Could not open that project file.");
+      window.alert(mapOpenFileError(err, t));
     }
   }
 
@@ -52,15 +55,15 @@ export function FileMenu({ store, onNewProject }: { store: EditorStore; onNewPro
     <div style={{ display: "flex", gap: 6 }}>
       <button className="btn" onClick={handleNew} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
         <FilePlus size={14} />
-        New
+        {t("file.new")}
       </button>
       <button className="btn" onClick={handleSave} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
         <Save size={14} />
-        Save
+        {t("file.save")}
       </button>
       <button className="btn" onClick={handleOpenClick} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
         <FolderOpen size={14} />
-        Open
+        {t("file.open")}
       </button>
       <input ref={fileInputRef} type="file" accept="application/json" onChange={handleFileSelected} style={{ display: "none" }} />
     </div>

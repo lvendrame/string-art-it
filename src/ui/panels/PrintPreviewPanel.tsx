@@ -1,5 +1,7 @@
 import { useEffect, useId, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import {
   boardPath,
   computeCorrectionFactor,
@@ -29,15 +31,17 @@ import {
 import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
 import { useEditorState } from "../useEditorStore";
 
-const ELEMENT_LABELS: { key: keyof PrintElements; label: string }[] = [
-  { key: "boardOutline", label: "Board outline" },
-  { key: "background", label: "Background" },
-  { key: "pins", label: "Pins" },
-  { key: "pinGuides", label: "Pin guide lines" },
-  { key: "pinNumbers", label: "Pin numbers" },
-  { key: "threads", label: "Threads" },
-  { key: "grid", label: "Grid" },
-];
+function elementLabels(t: TFunction<"printPreview">): { key: keyof PrintElements; label: string }[] {
+  return [
+    { key: "boardOutline", label: t("elements.boardOutline") },
+    { key: "background", label: t("elements.background") },
+    { key: "pins", label: t("elements.pins") },
+    { key: "pinGuides", label: t("elements.pinGuides") },
+    { key: "pinNumbers", label: t("elements.pinNumbers") },
+    { key: "threads", label: t("elements.threads") },
+    { key: "grid", label: t("elements.grid") },
+  ];
+}
 
 // docs/specs/14-printing.md — printed/on-screen-preview pages both use the CSS
 // reference-pixel/cm ratio (96dpi ÷ 2.54, same anchor as the editor zoom baseline) so
@@ -60,10 +64,12 @@ export function PrintPreviewPanel({
   store: EditorStore;
   onClose: () => void;
 }) {
+  const { t } = useTranslation(["printPreview", "common"]);
   const state = useEditorState(store);
   const { elements, scale, paper, calibration, tiling } = state.printSettings;
   const [calibrating, setCalibrating] = useState(false);
   const [measuredCm, setMeasuredCm] = useState(CALIBRATION_LENGTH_CM);
+  const labels = elementLabels(t);
 
   const path = useMemo(() => boardPath(state.board), [state.board]);
   const box = useMemo(() => boundingBoxOf(pathBoundingBoxPoints(path)), [path]);
@@ -130,18 +136,18 @@ export function PrintPreviewPanel({
             alignItems: "center",
           }}
         >
-          <span style={{ fontWeight: 700, fontSize: 13 }}>Print Preview</span>
+          <span style={{ fontWeight: 700, fontSize: 13 }}>{t("panelTitle")}</span>
           <button
             className="btn"
             onClick={onClose}
             style={{ borderRadius: 6, padding: "4px 8px", fontSize: 12 }}
           >
-            Close
+            {t("actions.close", { ns: "common" })}
           </button>
         </div>
 
-        <Section title="Print Elements">
-          {ELEMENT_LABELS.map(({ key, label }) => (
+        <Section title={t("sections.printElements")}>
+          {labels.map(({ key, label }) => (
             <label
               key={key}
               style={{
@@ -166,7 +172,7 @@ export function PrintPreviewPanel({
           ))}
         </Section>
 
-        <Section title="Scale">
+        <Section title={t("sections.scale")}>
           {(["1:1", "fit", "custom"] as PrintScaleMode[]).map((mode) => (
             <label
               key={mode}
@@ -187,10 +193,10 @@ export function PrintPreviewPanel({
                 }
               />
               {mode === "1:1"
-                ? "Actual size / 1:1"
+                ? t("scaleModes.actualSize")
                 : mode === "fit"
-                  ? "Fit to page"
-                  : "Custom scale"}
+                  ? t("scaleModes.fit")
+                  : t("scaleModes.custom")}
             </label>
           ))}
           {scale.mode === "custom" && (
@@ -218,11 +224,11 @@ export function PrintPreviewPanel({
             className="mono"
             style={{ fontSize: 11, color: "var(--accent)" }}
           >
-            Effective: {effectiveScale.toFixed(3)}x
+            {t("effective", { value: effectiveScale.toFixed(3) })}
           </div>
         </Section>
 
-        <Section title="Paper">
+        <Section title={t("sections.paper")}>
           <select
             value={paper.size}
             onChange={(e) =>
@@ -239,10 +245,10 @@ export function PrintPreviewPanel({
               fontSize: 12,
             }}
           >
-            <option value="A4">A4</option>
-            <option value="A3">A3</option>
-            <option value="Letter">Letter</option>
-            <option value="custom">Custom</option>
+            <option value="A4">{t("paperSizes.A4")}</option>
+            <option value="A3">{t("paperSizes.A3")}</option>
+            <option value="Letter">{t("paperSizes.Letter")}</option>
+            <option value="custom">{t("paperSizes.custom")}</option>
           </select>
           <div style={{ display: "flex", gap: 6 }}>
             {(["portrait", "landscape"] as PaperOrientation[]).map((o) => (
@@ -262,18 +268,18 @@ export function PrintPreviewPanel({
                   fontSize: 11.5,
                 }}
               >
-                {o}
+                {t(`orientation.${o}`)}
               </button>
             ))}
           </div>
         </Section>
 
-        <Section title="Calibration">
+        <Section title={t("sections.calibration")}>
           <div
             className="mono"
             style={{ fontSize: 11, color: "var(--text-secondary)" }}
           >
-            Correction factor:{" "}
+            {t("calibration.correctionFactor")}{" "}
             <span style={{ color: "var(--accent)" }}>
               {calibration.correctionFactor.toFixed(4)}
             </span>
@@ -289,7 +295,7 @@ export function PrintPreviewPanel({
                 fontSize: 12,
               }}
             >
-              Print calibration test
+              {t("calibration.testButton")}
             </button>
           ) : (
             <div
@@ -304,8 +310,7 @@ export function PrintPreviewPanel({
               }}
             >
               <span style={{ fontSize: 11.5, color: "var(--text-secondary)" }}>
-                Print the {CALIBRATION_LENGTH_CM} cm reference line, measure the
-                printed result, then enter it below.
+                {t("calibration.instructions", { length: CALIBRATION_LENGTH_CM })}
               </span>
               <button
                 className="btn"
@@ -317,7 +322,7 @@ export function PrintPreviewPanel({
                   fontSize: 12,
                 }}
               >
-                Print reference
+                {t("calibration.printReference")}
               </button>
               <label
                 style={{
@@ -328,7 +333,7 @@ export function PrintPreviewPanel({
                   color: "var(--text-secondary)",
                 }}
               >
-                Measured (cm)
+                {t("calibration.measuredLabel")}
                 <input
                   type="number"
                   className="mono"
@@ -358,7 +363,7 @@ export function PrintPreviewPanel({
                     fontWeight: 600,
                   }}
                 >
-                  Apply
+                  {t("calibration.apply")}
                 </button>
                 <button
                   className="btn"
@@ -371,14 +376,14 @@ export function PrintPreviewPanel({
                     fontSize: 12,
                   }}
                 >
-                  Cancel
+                  {t("calibration.cancel")}
                 </button>
               </div>
             </div>
           )}
         </Section>
 
-        <Section title="Tiling">
+        <Section title={t("sections.tiling")}>
           <label
             style={{
               display: "flex",
@@ -397,7 +402,7 @@ export function PrintPreviewPanel({
                 })
               }
             />
-            Enable tiling across multiple pages
+            {t("tiling.enableLabel")}
           </label>
           {tiling.enabled && (
             <>
@@ -410,7 +415,7 @@ export function PrintPreviewPanel({
                   color: "var(--text-secondary)",
                 }}
               >
-                Overlap (cm)
+                {t("tiling.overlapLabel")}
                 <input
                   type="number"
                   className="mono"
@@ -460,12 +465,12 @@ export function PrintPreviewPanel({
                     }
                   />
                   {key === "trimMarks"
-                    ? "Trim marks"
+                    ? t("tiling.trimMarks")
                     : key === "alignmentMarks"
-                      ? "Alignment marks"
+                      ? t("tiling.alignmentMarks")
                       : key === "pageNumbers"
-                        ? "Page numbers"
-                        : "Page coordinates"}
+                        ? t("tiling.pageNumbers")
+                        : t("tiling.pageCoordinates")}
                 </label>
               ))}
               {grid && (
@@ -473,7 +478,7 @@ export function PrintPreviewPanel({
                   className="mono"
                   style={{ fontSize: 11, color: "var(--accent)" }}
                 >
-                  {grid.cols * grid.rows} pages ({grid.cols} × {grid.rows})
+                  {t("tiling.pagesCount", { count: grid.cols * grid.rows, cols: grid.cols, rows: grid.rows })}
                 </div>
               )}
             </>
@@ -494,7 +499,7 @@ export function PrintPreviewPanel({
             borderColor: "transparent",
           }}
         >
-          Print
+          {t("printButton")}
         </button>
       </div>
 
@@ -651,6 +656,7 @@ function CalibrationPage({
 }: {
   paperSize: { width: number; height: number };
 }) {
+  const { t } = useTranslation("printPreview");
   const paperPx = {
     width: paperSize.width * PRINT_PX_PER_CM,
     height: paperSize.height * PRINT_PX_PER_CM,
@@ -696,7 +702,7 @@ function CalibrationPage({
         fontSize={14}
         fill="black"
       >
-        {CALIBRATION_LENGTH_CM} cm
+        {t("calibration.lineLabel", { length: CALIBRATION_LENGTH_CM })}
       </text>
     </svg>
   );

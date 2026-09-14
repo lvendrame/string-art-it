@@ -1,15 +1,19 @@
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import type { BoardAppearance, EditorStore } from "../../application/document";
 import { PAINT_PRESET_IDS, WOOD_PRESET_IDS } from "../../infrastructure/rendering/boardFill";
 import { useEditorState } from "../useEditorStore";
 
-const TYPES: { id: BoardAppearance["type"]; label: string }[] = [
-  { id: "solid", label: "Solid" },
-  { id: "linear-gradient", label: "Linear" },
-  { id: "radial-gradient", label: "Radial" },
-  { id: "wood-texture", label: "Wood" },
-  { id: "painted-wood", label: "Painted" },
-  { id: "custom-texture", label: "Custom" },
-];
+function typeOptions(t: TFunction<"boardSetup">): { id: BoardAppearance["type"]; label: string }[] {
+  return [
+    { id: "solid", label: t("appearance.types.solid") },
+    { id: "linear-gradient", label: t("appearance.types.linearGradient") },
+    { id: "radial-gradient", label: t("appearance.types.radialGradient") },
+    { id: "wood-texture", label: t("appearance.types.woodTexture") },
+    { id: "painted-wood", label: t("appearance.types.paintedWood") },
+    { id: "custom-texture", label: t("appearance.types.customTexture") },
+  ];
+}
 
 function defaultFor(type: BoardAppearance["type"]): BoardAppearance {
   switch (type) {
@@ -39,30 +43,32 @@ async function readFileAsDataUrl(file: File): Promise<string> {
 
 // docs/specs/04-board-appearance.md + Phase 2 "rich/uploaded board textures".
 export function BoardAppearancePanel({ store }: { store: EditorStore }) {
+  const { t } = useTranslation("boardSetup");
   const state = useEditorState(store);
   const appearance = state.board.appearance;
+  const types = typeOptions(t);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-        Appearance
+        {t("appearance.section")}
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
-        {TYPES.map((t) => (
+        {types.map((ty) => (
           <button
-            key={t.id}
-            className={`btn${appearance.type === t.id ? " btn-active" : ""}`}
-            onClick={() => store.setBoardAppearance(defaultFor(t.id))}
+            key={ty.id}
+            className={`btn${appearance.type === ty.id ? " btn-active" : ""}`}
+            onClick={() => store.setBoardAppearance(defaultFor(ty.id))}
             style={{ justifyContent: "center", borderRadius: "var(--radius-sm)", padding: "9px 4px", fontSize: 11.5, fontWeight: 600 }}
           >
-            {t.label}
+            {ty.label}
           </button>
         ))}
       </div>
 
       {appearance.type === "solid" && (
         <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
-          Colour
+          {t("appearance.colour")}
           <input type="color" value={appearance.colour} onChange={(e) => store.setBoardAppearance({ type: "solid", colour: e.target.value })} style={{ width: 32, height: 22, border: "1px solid var(--border)", borderRadius: 4, background: "none" }} />
         </label>
       )}
@@ -85,7 +91,7 @@ export function BoardAppearancePanel({ store }: { store: EditorStore }) {
           </div>
           {appearance.type === "linear-gradient" ? (
             <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
-              Direction (°)
+              {t("appearance.direction")}
               <input
                 type="number"
                 className="mono"
@@ -97,7 +103,7 @@ export function BoardAppearancePanel({ store }: { store: EditorStore }) {
           ) : (
             <div style={{ display: "flex", gap: 6 }}>
               <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 11.5, color: "var(--text-secondary)", flex: 1 }}>
-                Centre X %
+                {t("appearance.centreX")}
                 <input
                   type="number"
                   className="mono"
@@ -107,7 +113,7 @@ export function BoardAppearancePanel({ store }: { store: EditorStore }) {
                 />
               </label>
               <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 11.5, color: "var(--text-secondary)", flex: 1 }}>
-                Centre Y %
+                {t("appearance.centreY")}
                 <input
                   type="number"
                   className="mono"
@@ -129,7 +135,7 @@ export function BoardAppearancePanel({ store }: { store: EditorStore }) {
         >
           {(appearance.type === "wood-texture" ? WOOD_PRESET_IDS : PAINT_PRESET_IDS).map((id) => (
             <option key={id} value={id}>
-              {id[0].toUpperCase() + id.slice(1)}
+              {t(`appearance.presets.${id}`, { defaultValue: id[0].toUpperCase() + id.slice(1) })}
             </option>
           ))}
         </select>
@@ -149,7 +155,7 @@ export function BoardAppearancePanel({ store }: { store: EditorStore }) {
             style={{ fontSize: 12, color: "var(--text-secondary)" }}
           />
           {appearance.imageDataUrl && (
-            <img src={appearance.imageDataUrl} alt="Board texture preview" style={{ width: "100%", height: 60, objectFit: "cover", borderRadius: 6, border: "1px solid var(--border)" }} />
+            <img src={appearance.imageDataUrl} alt={t("appearance.texturePreviewAlt")} style={{ width: "100%", height: 60, objectFit: "cover", borderRadius: 6, border: "1px solid var(--border)" }} />
           )}
         </div>
       )}

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { BarChart3, HelpCircle, Printer, Redo2, Undo2 } from "lucide-react";
 import { totalThreadFrames, type EditorStore } from "../application/document";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Canvas } from "./canvas/Canvas";
 import { PlaybackCanvas } from "./canvas/PlaybackCanvas";
 import { ModeSwitcher } from "./toolbars/ModeSwitcher";
@@ -23,6 +25,7 @@ import { useEditorState } from "./useEditorStore";
 import { isTextEntryTarget } from "./keyboard";
 
 export function EditorShell({ store, onNewProject }: { store: EditorStore; onNewProject: () => void }) {
+  const { t } = useTranslation("editorShell");
   const state = useEditorState(store);
   const [overlay, setOverlay] = useState<"none" | "print" | "stats" | "help">("none");
   const totalFrames = totalThreadFrames(state.threadLayers);
@@ -56,24 +59,25 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
         <div style={{ flex: 1 }} />
         <button className="btn" disabled={!store.canUndo()} onClick={() => store.undo()} style={{ borderRadius: 8, padding: 8, background: "transparent", borderColor: "transparent", gap: 6 }}>
           <Undo2 size={14} />
-          Undo
+          {t("undo")}
         </button>
         <button className="btn" disabled={!store.canRedo()} onClick={() => store.redo()} style={{ borderRadius: 8, padding: 8, background: "transparent", borderColor: "transparent", gap: 6 }}>
           <Redo2 size={14} />
-          Redo
+          {t("redo")}
         </button>
         <button className="btn" onClick={() => setOverlay("stats")} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
           <BarChart3 size={14} />
-          Stats
+          {t("stats")}
         </button>
         <button className="btn" onClick={() => setOverlay("help")} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
           <HelpCircle size={14} />
-          Help
+          {t("help")}
         </button>
         <button className="btn" onClick={() => setOverlay("print")} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
           <Printer size={14} />
-          Print
+          {t("print")}
         </button>
+        <LanguageSwitcher />
       </div>
 
       <div style={{ flex: 1, display: "flex", minHeight: 0, position: "relative" }}>

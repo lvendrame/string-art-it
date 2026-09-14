@@ -1,16 +1,22 @@
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import type { EditorStore, SymmetryConfig } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
 
-const OPTIONS: { id: SymmetryConfig["type"]; label: string }[] = [
-  { id: "none", label: "None" },
-  { id: "horizontal", label: "Horiz" },
-  { id: "vertical", label: "Vert" },
-  { id: "both", label: "Both" },
-  { id: "radial", label: "Radial" },
-];
+function options(t: TFunction<"panels">): { id: SymmetryConfig["type"]; label: string }[] {
+  return [
+    { id: "none", label: t("symmetryPanel.options.none") },
+    { id: "horizontal", label: t("symmetryPanel.options.horizontal") },
+    { id: "vertical", label: t("symmetryPanel.options.vertical") },
+    { id: "both", label: t("symmetryPanel.options.both") },
+    { id: "radial", label: t("symmetryPanel.options.radial") },
+  ];
+}
 
 // docs/specs/06-symmetry.md — mode selector + (for radial) movable centre and interval.
 export function SymmetryPanel({ store }: { store: EditorStore }) {
+  const { t } = useTranslation("panels");
+  const OPTIONS = options(t);
   const state = useEditorState(store);
   const selected = store.getSelectedPinPath();
   const config = selected ? selected.symmetry : state.symmetryDefaults;
@@ -24,7 +30,7 @@ export function SymmetryPanel({ store }: { store: EditorStore }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-        Symmetry
+        {t("symmetryPanel.sectionTitle")}
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
         {OPTIONS.map((o) => (
@@ -42,7 +48,7 @@ export function SymmetryPanel({ store }: { store: EditorStore }) {
       {config.type === "radial" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 8, background: "var(--bg-app)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 10 }}>
           <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11.5, color: "var(--text-secondary)" }}>
-            Interval (°)
+            {t("symmetryPanel.interval")}
             <input
               type="number"
               className="mono"
@@ -54,7 +60,7 @@ export function SymmetryPanel({ store }: { store: EditorStore }) {
             />
           </label>
           <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11.5, color: "var(--text-secondary)" }}>
-            Centre X
+            {t("symmetryPanel.centreX")}
             <input
               type="number"
               className="mono"
@@ -64,7 +70,7 @@ export function SymmetryPanel({ store }: { store: EditorStore }) {
             />
           </label>
           <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11.5, color: "var(--text-secondary)" }}>
-            Centre Y
+            {t("symmetryPanel.centreY")}
             <input
               type="number"
               className="mono"

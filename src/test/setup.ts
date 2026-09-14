@@ -1,4 +1,5 @@
 import "@testing-library/jest-dom/vitest";
+import "../i18n";
 import { Blob as NodeBlob, File as NodeFile } from "node:buffer";
 
 // jsdom's Blob/File implement neither .text() nor .arrayBuffer() (checked against

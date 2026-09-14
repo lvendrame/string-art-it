@@ -1,20 +1,26 @@
 import { Hand, MousePointer2, Pin as PinIcon, Play, Spline } from "lucide-react";
 import type { ComponentType } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import type { EditorMode } from "../../application/document";
 
-const MODES: { id: EditorMode; label: string; icon: ComponentType<{ size?: number }> }[] = [
-  { id: "select", label: "Edit", icon: MousePointer2 },
-  { id: "pin", label: "Pin", icon: PinIcon },
-  { id: "thread", label: "Thread", icon: Spline },
-  { id: "pan", label: "Pan", icon: Hand },
-  { id: "play", label: "Play", icon: Play },
-];
+function modes(t: TFunction<["common", "toolbars"]>): { id: EditorMode; label: string; icon: ComponentType<{ size?: number }> }[] {
+  return [
+    { id: "select", label: t("modes.select", { ns: "common" }), icon: MousePointer2 },
+    { id: "pin", label: t("modes.pin", { ns: "common" }), icon: PinIcon },
+    { id: "thread", label: t("modes.thread", { ns: "common" }), icon: Spline },
+    { id: "pan", label: t("modes.pan", { ns: "common" }), icon: Hand },
+    { id: "play", label: t("modes.play", { ns: "common" }), icon: Play },
+  ];
+}
 
 export function ModeSwitcher({ mode, onChange }: { mode: EditorMode; onChange: (mode: EditorMode) => void }) {
+  const { t } = useTranslation(["toolbars", "common"]);
+  const MODES = modes(t);
   return (
     <div
       role="tablist"
-      aria-label="Editor mode"
+      aria-label={t("modeSwitcher.ariaLabel", { ns: "toolbars" })}
       style={{
         display: "flex",
         background: "var(--bg-app)",

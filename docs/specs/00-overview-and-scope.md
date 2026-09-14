@@ -73,6 +73,7 @@ The application must allow users to:
 | Scale tool & pin distance | [21-scale-and-pin-distance.md](./21-scale-and-pin-distance.md) |
 | Thread draft pattern-follow (Right Arrow) | [22-thread-follow-pattern.md](./22-thread-follow-pattern.md) |
 | Keyboard Move/Rotate/Scale | [23-keyboard-transform.md](./23-keyboard-transform.md) |
+| Internationalization (i18n) | [24-internationalization.md](./24-internationalization.md) |
 
 ## MVP Scope
 

@@ -1,0 +1,86 @@
+{
+  "pinPropertiesPanel": {
+    "titleSelected": "Propriedades do Pino (selecionado)",
+    "titleDefaults": "Propriedades do Pino (padrões)",
+    "spacing": "Espaçamento (cm)",
+    "actualGap": "Espaçamento real",
+    "diameter": "Diâmetro (mm)",
+    "colour": "Cor",
+    "guideVisible": "Guia visível"
+  },
+  "selectionPanel": {
+    "emptyMessage": "Clique em um pino para selecionar seu Caminho de Pinos.",
+    "title": "Seleção — {{type}}",
+    "shapeTypes": {
+      "line": "linha",
+      "circle": "círculo",
+      "ellipse": "elipse",
+      "rectangle": "retângulo",
+      "square": "quadrado",
+      "regular-polygon": "polígono regular",
+      "star": "estrela",
+      "polygram": "polígrama"
+    },
+    "pinDistance": "Distância entre pinos",
+    "fields": {
+      "startX": "Início X",
+      "startY": "Início Y",
+      "endX": "Fim X",
+      "endY": "Fim Y",
+      "centreX": "Centro X",
+      "centreY": "Centro Y",
+      "radius": "Raio",
+      "radiusX": "Raio X",
+      "radiusY": "Raio Y",
+      "rotation": "Rotação",
+      "positionX": "Posição X",
+      "positionY": "Posição Y",
+      "width": "Largura",
+      "height": "Altura",
+      "side": "Lado",
+      "outerRadius": "Raio externo",
+      "innerRadius": "Raio interno"
+    },
+    "deletePinPath": "Excluir Caminho de Pinos"
+  },
+  "symmetryPanel": {
+    "sectionTitle": "Simetria",
+    "options": {
+      "none": "Nenhuma",
+      "horizontal": "Horiz",
+      "vertical": "Vert",
+      "both": "Ambas",
+      "radial": "Radial"
+    },
+    "interval": "Intervalo (°)",
+    "centreX": "Centro X",
+    "centreY": "Centro Y"
+  },
+  "layersPanel": {
+    "pinLayersTab": "Camadas de Pinos",
+    "threadLayersTab": "Camadas de Linhas",
+    "hideLayer": "Ocultar {{name}}",
+    "showLayer": "Mostrar {{name}}",
+    "unlockLayer": "Desbloquear {{name}}",
+    "lockLayer": "Bloquear {{name}}",
+    "newLayer": "Nova Camada",
+    "duplicate": "Duplicar",
+    "moveUp": "Mover camada para cima",
+    "moveDown": "Mover camada para baixo",
+    "delete": "Excluir"
+  },
+  "statisticsPanel": {
+    "title": "Estatísticas",
+    "totalPins": "Total de pinos",
+    "pathTitle": "{{layerName}} — Caminho {{index}}",
+    "pins": "Pinos",
+    "requestedGap": "Espaçamento solicitado",
+    "actualGap": "Espaçamento real",
+    "pinDiameter": "Diâmetro do pino",
+    "threadTitle": "{{layerName}} — Linha {{index}}",
+    "segments": "Segmentos",
+    "threadLength": "Comprimento da linha",
+    "pinsVisited": "Pinos visitados",
+    "colours": "Cores"
+  }
+}

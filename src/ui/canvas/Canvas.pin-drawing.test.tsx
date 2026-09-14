@@ -95,6 +95,7 @@ describe("Canvas — pin drawing interaction", () => {
     const layerId = store.getState().pinLayers[0].id;
     const pathId = store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } })!;
     const targetPin = store.getState().pinLayers[0].pinPaths[0].pins[0]; // (10,10) -> screen(200,200)
+    store.setMode("pin"); // addPinPath hands off to Edit mode; switch back to erase
     store.setPinTool("eraser");
 
     render(<Canvas store={store} />);
@@ -109,6 +110,7 @@ describe("Canvas — pin drawing interaction", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;
     store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } });
+    store.setMode("pin"); // addPinPath hands off to Edit mode; switch back to erase
     store.setPinTool("path-eraser");
 
     render(<Canvas store={store} />);

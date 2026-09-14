@@ -212,10 +212,18 @@ export class EditorStore {
 
   // docs/specs/12-pin-drawing-tools + §22 snapping: geometry arrives already resolved
   // (snap pipeline runs in the UI layer, which owns pointer/viewport concerns).
+  //
+  // Finishing a new Pin Path hands off to Edit mode with that path selected, so the
+  // just-drawn shape is immediately ready for Move/Rotate/Scale/property editing
+  // instead of leaving the user back in the same draw tool — same "sync belongs in
+  // the store method that changes the driving state" template as setMode's
+  // layerPanelTab sync (docs/conventions/ui-patterns.md).
   addPinPath(layerId: string, geometry: PinPathGeometry): string | null {
     if (isLayerLocked(this.state.pinLayers, layerId)) return null;
     const pinPath = createPinPath(geometry, this.state.pinDefaults.spacing, this.state.pinDefaults, this.state.symmetryDefaults);
     this.runLayersChange(addPinPathToLayers(this.state.pinLayers, layerId, pinPath));
+    this.setMode("select");
+    this.select({ type: "pinPath", layerId, pathId: pinPath.id });
     return pinPath.id;
   }
 

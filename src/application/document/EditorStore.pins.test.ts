@@ -13,6 +13,17 @@ describe("EditorStore pin path mutations", () => {
     expect(store.getState().pinLayers[0].pinPaths).toHaveLength(0);
   });
 
+  it("adding a pin path switches to Edit mode and selects the new path", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.setMode("pin");
+
+    const pathId = store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: 10 })!;
+
+    expect(store.getState().mode).toBe("select");
+    expect(store.getState().selection).toEqual({ type: "pinPath", layerId, pathId });
+  });
+
   it("deleting a pin path removes it and clears selection if it was selected", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;

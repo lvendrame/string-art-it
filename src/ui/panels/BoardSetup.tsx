@@ -1,10 +1,14 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import type { Board, BoardShape, EditorStore, TriangleType } from "../../application/document";
-import { boardHypotenuse } from "../../application/document";
+import { boardHypotenuse, migrateProjectFile, projectFileToDocument } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
 import { LanguageSwitcher } from "../LanguageSwitcher";
+import { fitViewportForBoard } from "../canvas/boardViewport";
+import { mapOpenFileError } from "../toolbars/openFileErrors";
 import { BoardAppearancePanel } from "./BoardAppearancePanel";
+import { BOARD_TEMPLATES, type BoardTemplate } from "./boardTemplates/boardTemplates";
 
 function shapeOptions(t: TFunction<"boardSetup">): { id: BoardShape; label: string }[] {
   return [
@@ -78,10 +82,27 @@ function DimensionFields({ board, store, t }: { board: Board; store: EditorStore
 }
 
 export function BoardSetup({ store, onContinue }: { store: EditorStore; onContinue: () => void }) {
-  const { t } = useTranslation("boardSetup");
+  const { t } = useTranslation(["boardSetup", "errors"]);
   const state = useEditorState(store);
   const { board } = state;
   const shapes = shapeOptions(t);
+  const [loadingTemplateId, setLoadingTemplateId] = useState<string | null>(null);
+
+  async function handleUseTemplate(template: BoardTemplate) {
+    setLoadingTemplateId(template.id);
+    try {
+      const response = await fetch(template.url);
+      if (!response.ok) throw new Error(`failed to fetch ${template.url}: ${response.status}`);
+      const migrated = migrateProjectFile(await response.json());
+      store.loadProject(projectFileToDocument(migrated));
+      store.setViewport(fitViewportForBoard(store.getState().board));
+      onContinue();
+    } catch (err) {
+      window.alert(mapOpenFileError(err, t));
+    } finally {
+      setLoadingTemplateId(null);
+    }
+  }
 
   return (
     <div
@@ -100,6 +121,25 @@ export function BoardSetup({ store, onContinue }: { store: EditorStore; onContin
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h1 style={{ margin: 0, fontSize: 18 }}>{t("title")}</h1>
         <LanguageSwitcher />
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
+          {t("sections.templates")}
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
+          {BOARD_TEMPLATES.map((template) => (
+            <button
+              key={template.id}
+              className="btn"
+              disabled={loadingTemplateId !== null}
+              onClick={() => handleUseTemplate(template)}
+              style={{ justifyContent: "center", borderRadius: "var(--radius-sm)", padding: "10px 4px", fontSize: 12, fontWeight: 600 }}
+            >
+              {loadingTemplateId === template.id ? t("templates.loading") : t(`templates.${template.nameKey}`)}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

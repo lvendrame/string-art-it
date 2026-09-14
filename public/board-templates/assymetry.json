@@ -1,0 +1,1743 @@
+{
+  "version": 1,
+  "board": {
+    "shape": "circle",
+    "dimensions": {
+      "diameter": 40
+    },
+    "appearance": {
+      "type": "solid",
+      "colour": "#101010"
+    }
+  },
+  "grid": {
+    "gapX": 1,
+    "gapY": 1,
+    "colour": "#6d5ef7",
+    "opacity": 0.6
+  },
+  "pinLayers": [
+    {
+      "id": "pinlayer-assymetry-1",
+      "name": "Layer 1",
+      "visible": true,
+      "locked": false,
+      "pinPaths": [
+        {
+          "id": "pinpath-assymetry-1",
+          "geometry": {
+            "type": "freehand",
+            "points": [
+              {
+                "x": -20.473,
+                "y": 1.682
+              },
+              {
+                "x": -20.362,
+                "y": 2.497
+              },
+              {
+                "x": -20.251,
+                "y": 3.349
+              },
+              {
+                "x": -20.065,
+                "y": 4.163
+              },
+              {
+                "x": -19.88,
+                "y": 4.978
+              },
+              {
+                "x": -19.621,
+                "y": 5.793
+              },
+              {
+                "x": -19.362,
+                "y": 6.571
+              },
+              {
+                "x": -19.065,
+                "y": 7.349
+              },
+              {
+                "x": -18.732,
+                "y": 8.126
+              },
+              {
+                "x": -18.362,
+                "y": 8.904
+              },
+              {
+                "x": -17.954,
+                "y": 9.645
+              },
+              {
+                "x": -17.51,
+                "y": 10.349
+              },
+              {
+                "x": -17.028,
+                "y": 11.052
+              },
+              {
+                "x": -16.547,
+                "y": 11.719
+              },
+              {
+                "x": -16.028,
+                "y": 12.386
+              },
+              {
+                "x": -15.473,
+                "y": 13.015
+              },
+              {
+                "x": -14.88,
+                "y": 13.608
+              },
+              {
+                "x": -14.288,
+                "y": 14.2
+              },
+              {
+                "x": -13.658,
+                "y": 14.756
+              },
+              {
+                "x": -12.991,
+                "y": 15.275
+              },
+              {
+                "x": -12.325,
+                "y": 15.756
+              },
+              {
+                "x": -11.621,
+                "y": 16.238
+              },
+              {
+                "x": -10.917,
+                "y": 16.682
+              },
+              {
+                "x": -10.177,
+                "y": 17.089
+              },
+              {
+                "x": -9.399,
+                "y": 17.46
+              },
+              {
+                "x": -8.621,
+                "y": 17.793
+              },
+              {
+                "x": -7.843,
+                "y": 18.089
+              },
+              {
+                "x": -7.065,
+                "y": 18.349
+              },
+              {
+                "x": -6.251,
+                "y": 18.608
+              },
+              {
+                "x": -5.436,
+                "y": 18.793
+              },
+              {
+                "x": -4.621,
+                "y": 18.978
+              },
+              {
+                "x": -3.769,
+                "y": 19.089
+              },
+              {
+                "x": -2.954,
+                "y": 19.2
+              },
+              {
+                "x": -2.102,
+                "y": 19.238
+              },
+              {
+                "x": -1.288,
+                "y": 19.275
+              },
+              {
+                "x": -0.436,
+                "y": 19.238
+              },
+              {
+                "x": 0.416,
+                "y": 19.2
+              },
+              {
+                "x": 1.231,
+                "y": 19.089
+              },
+              {
+                "x": 2.083,
+                "y": 18.978
+              },
+              {
+                "x": 2.898,
+                "y": 18.793
+              },
+              {
+                "x": 3.712,
+                "y": 18.608
+              },
+              {
+                "x": 4.527,
+                "y": 18.349
+              },
+              {
+                "x": 5.305,
+                "y": 18.089
+              },
+              {
+                "x": 6.083,
+                "y": 17.793
+              },
+              {
+                "x": 6.861,
+                "y": 17.46
+              },
+              {
+                "x": 7.638,
+                "y": 17.089
+              },
+              {
+                "x": 8.379,
+                "y": 16.682
+              },
+              {
+                "x": 9.083,
+                "y": 16.238
+              },
+              {
+                "x": 9.786,
+                "y": 15.756
+              },
+              {
+                "x": 10.453,
+                "y": 15.275
+              },
+              {
+                "x": 11.12,
+                "y": 14.756
+              },
+              {
+                "x": 11.749,
+                "y": 14.2
+              },
+              {
+                "x": 12.342,
+                "y": 13.608
+              },
+              {
+                "x": 12.935,
+                "y": 13.015
+              },
+              {
+                "x": 13.49,
+                "y": 12.386
+              },
+              {
+                "x": 14.009,
+                "y": 11.719
+              },
+              {
+                "x": 14.49,
+                "y": 11.052
+              },
+              {
+                "x": 14.972,
+                "y": 10.349
+              },
+              {
+                "x": 15.416,
+                "y": 9.645
+              },
+              {
+                "x": 15.823,
+                "y": 8.904
+              },
+              {
+                "x": 16.194,
+                "y": 8.126
+              },
+              {
+                "x": 16.527,
+                "y": 7.349
+              },
+              {
+                "x": 16.823,
+                "y": 6.571
+              },
+              {
+                "x": 17.083,
+                "y": 5.793
+              },
+              {
+                "x": 17.342,
+                "y": 4.978
+              },
+              {
+                "x": 17.527,
+                "y": 4.163
+              },
+              {
+                "x": 17.712,
+                "y": 3.349
+              },
+              {
+                "x": 17.823,
+                "y": 2.497
+              },
+              {
+                "x": 17.935,
+                "y": 1.682
+              },
+              {
+                "x": 17.972,
+                "y": 0.83
+              },
+              {
+                "x": 18.009,
+                "y": 0.015
+              },
+              {
+                "x": 17.157,
+                "y": 0.015
+              },
+              {
+                "x": 16.305,
+                "y": 0.015
+              },
+              {
+                "x": 15.49,
+                "y": 0.015
+              },
+              {
+                "x": 14.638,
+                "y": 0.015
+              },
+              {
+                "x": 13.786,
+                "y": 0.015
+              },
+              {
+                "x": 12.972,
+                "y": 0.015
+              },
+              {
+                "x": 12.12,
+                "y": 0.015
+              },
+              {
+                "x": 11.305,
+                "y": 0.015
+              },
+              {
+                "x": 10.453,
+                "y": 0.015
+              },
+              {
+                "x": 9.601,
+                "y": 0.015
+              },
+              {
+                "x": 8.786,
+                "y": 0.015
+              },
+              {
+                "x": 7.935,
+                "y": 0.015
+              },
+              {
+                "x": 7.12,
+                "y": 0.015
+              },
+              {
+                "x": 6.268,
+                "y": 0.015
+              },
+              {
+                "x": 5.416,
+                "y": 0.015
+              },
+              {
+                "x": 4.601,
+                "y": 0.015
+              },
+              {
+                "x": 3.749,
+                "y": 0.015
+              },
+              {
+                "x": 2.935,
+                "y": 0.015
+              },
+              {
+                "x": 2.083,
+                "y": 0.015
+              },
+              {
+                "x": 1.231,
+                "y": 0.015
+              },
+              {
+                "x": 0.416,
+                "y": 0.015
+              },
+              {
+                "x": -0.436,
+                "y": 0.015
+              },
+              {
+                "x": -1.251,
+                "y": 0.015
+              },
+              {
+                "x": -20.51,
+                "y": 0.83
+              }
+            ]
+          },
+          "requestedSpacing": 1.025,
+          "actualSpacing": 1.025,
+          "pins": [
+            {
+              "id": "pin-assymetry-1",
+              "x": -20.473,
+              "y": 1.682
+            },
+            {
+              "id": "pin-assymetry-2",
+              "x": -20.336,
+              "y": 2.697
+            },
+            {
+              "id": "pin-assymetry-3",
+              "x": -20.169,
+              "y": 3.707
+            },
+            {
+              "id": "pin-assymetry-4",
+              "x": -19.942,
+              "y": 4.707
+            },
+            {
+              "id": "pin-assymetry-5",
+              "x": -19.654,
+              "y": 5.689
+            },
+            {
+              "id": "pin-assymetry-6",
+              "x": -19.328,
+              "y": 6.661
+            },
+            {
+              "id": "pin-assymetry-7",
+              "x": -18.952,
+              "y": 7.614
+            },
+            {
+              "id": "pin-assymetry-8",
+              "x": -18.531,
+              "y": 8.548
+            },
+            {
+              "id": "pin-assymetry-9",
+              "x": -18.058,
+              "y": 9.456
+            },
+            {
+              "id": "pin-assymetry-10",
+              "x": -17.522,
+              "y": 10.329
+            },
+            {
+              "id": "pin-assymetry-11",
+              "x": -16.941,
+              "y": 11.173
+            },
+            {
+              "id": "pin-assymetry-12",
+              "x": -16.331,
+              "y": 11.997
+            },
+            {
+              "id": "pin-assymetry-13",
+              "x": -15.677,
+              "y": 12.784
+            },
+            {
+              "id": "pin-assymetry-14",
+              "x": -14.966,
+              "y": 13.522
+            },
+            {
+              "id": "pin-assymetry-15",
+              "x": -14.239,
+              "y": 14.244
+            },
+            {
+              "id": "pin-assymetry-16",
+              "x": -13.46,
+              "y": 14.91
+            },
+            {
+              "id": "pin-assymetry-17",
+              "x": -12.642,
+              "y": 15.527
+            },
+            {
+              "id": "pin-assymetry-18",
+              "x": -11.802,
+              "y": 16.113
+            },
+            {
+              "id": "pin-assymetry-19",
+              "x": -10.94,
+              "y": 16.667
+            },
+            {
+              "id": "pin-assymetry-20",
+              "x": -10.039,
+              "y": 17.155
+            },
+            {
+              "id": "pin-assymetry-21",
+              "x": -9.109,
+              "y": 17.584
+            },
+            {
+              "id": "pin-assymetry-22",
+              "x": -8.16,
+              "y": 17.969
+            },
+            {
+              "id": "pin-assymetry-23",
+              "x": -7.192,
+              "y": 18.306
+            },
+            {
+              "id": "pin-assymetry-24",
+              "x": -6.216,
+              "y": 18.616
+            },
+            {
+              "id": "pin-assymetry-25",
+              "x": -5.216,
+              "y": 18.843
+            },
+            {
+              "id": "pin-assymetry-26",
+              "x": -4.21,
+              "y": 19.032
+            },
+            {
+              "id": "pin-assymetry-27",
+              "x": -3.195,
+              "y": 19.168
+            },
+            {
+              "id": "pin-assymetry-28",
+              "x": -2.173,
+              "y": 19.234
+            },
+            {
+              "id": "pin-assymetry-29",
+              "x": -1.149,
+              "y": 19.269
+            },
+            {
+              "id": "pin-assymetry-30",
+              "x": -0.125,
+              "y": 19.224
+            },
+            {
+              "id": "pin-assymetry-31",
+              "x": 0.894,
+              "y": 19.135
+            },
+            {
+              "id": "pin-assymetry-32",
+              "x": 1.91,
+              "y": 19.001
+            },
+            {
+              "id": "pin-assymetry-33",
+              "x": 2.912,
+              "y": 18.79
+            },
+            {
+              "id": "pin-assymetry-34",
+              "x": 3.907,
+              "y": 18.546
+            },
+            {
+              "id": "pin-assymetry-35",
+              "x": 4.882,
+              "y": 18.23
+            },
+            {
+              "id": "pin-assymetry-36",
+              "x": 5.846,
+              "y": 17.883
+            },
+            {
+              "id": "pin-assymetry-37",
+              "x": 6.792,
+              "y": 17.489
+            },
+            {
+              "id": "pin-assymetry-38",
+              "x": 7.716,
+              "y": 17.047
+            },
+            {
+              "id": "pin-assymetry-39",
+              "x": 8.605,
+              "y": 16.539
+            },
+            {
+              "id": "pin-assymetry-40",
+              "x": 9.462,
+              "y": 15.978
+            },
+            {
+              "id": "pin-assymetry-41",
+              "x": 10.299,
+              "y": 15.386
+            },
+            {
+              "id": "pin-assymetry-42",
+              "x": 11.112,
+              "y": 14.762
+            },
+            {
+              "id": "pin-assymetry-43",
+              "x": 11.873,
+              "y": 14.077
+            },
+            {
+              "id": "pin-assymetry-44",
+              "x": 12.598,
+              "y": 13.352
+            },
+            {
+              "id": "pin-assymetry-45",
+              "x": 13.297,
+              "y": 12.604
+            },
+            {
+              "id": "pin-assymetry-46",
+              "x": 13.94,
+              "y": 11.807
+            },
+            {
+              "id": "pin-assymetry-47",
+              "x": 14.542,
+              "y": 10.977
+            },
+            {
+              "id": "pin-assymetry-48",
+              "x": 15.112,
+              "y": 10.126
+            },
+            {
+              "id": "pin-assymetry-49",
+              "x": 15.636,
+              "y": 9.246
+            },
+            {
+              "id": "pin-assymetry-50",
+              "x": 16.096,
+              "y": 8.331
+            },
+            {
+              "id": "pin-assymetry-51",
+              "x": 16.508,
+              "y": 7.393
+            },
+            {
+              "id": "pin-assymetry-52",
+              "x": 16.869,
+              "y": 6.434
+            },
+            {
+              "id": "pin-assymetry-53",
+              "x": 17.189,
+              "y": 5.46
+            },
+            {
+              "id": "pin-assymetry-54",
+              "x": 17.457,
+              "y": 4.472
+            },
+            {
+              "id": "pin-assymetry-55",
+              "x": 17.684,
+              "y": 3.473
+            },
+            {
+              "id": "pin-assymetry-56",
+              "x": 17.829,
+              "y": 2.459
+            },
+            {
+              "id": "pin-assymetry-57",
+              "x": 17.945,
+              "y": 1.442
+            },
+            {
+              "id": "pin-assymetry-58",
+              "x": 17.99,
+              "y": 0.418
+            },
+            {
+              "id": "pin-assymetry-59",
+              "x": 17.387,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-60",
+              "x": 16.363,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-61",
+              "x": 15.338,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-62",
+              "x": 14.313,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-63",
+              "x": 13.288,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-64",
+              "x": 12.264,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-65",
+              "x": 11.239,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-66",
+              "x": 10.214,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-67",
+              "x": 9.19,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-68",
+              "x": 8.165,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-69",
+              "x": 7.14,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-70",
+              "x": 6.115,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-71",
+              "x": 5.091,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-72",
+              "x": 4.066,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-73",
+              "x": 3.041,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-74",
+              "x": 2.017,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-75",
+              "x": 0.992,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-76",
+              "x": -0.033,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-77",
+              "x": -1.058,
+              "y": 0.015
+            },
+            {
+              "id": "pin-assymetry-78",
+              "x": -2.082,
+              "y": 0.05
+            },
+            {
+              "id": "pin-assymetry-79",
+              "x": -3.105,
+              "y": 0.094
+            },
+            {
+              "id": "pin-assymetry-80",
+              "x": -4.129,
+              "y": 0.137
+            },
+            {
+              "id": "pin-assymetry-81",
+              "x": -5.153,
+              "y": 0.18
+            },
+            {
+              "id": "pin-assymetry-82",
+              "x": -6.177,
+              "y": 0.224
+            },
+            {
+              "id": "pin-assymetry-83",
+              "x": -7.201,
+              "y": 0.267
+            },
+            {
+              "id": "pin-assymetry-84",
+              "x": -8.224,
+              "y": 0.31
+            },
+            {
+              "id": "pin-assymetry-85",
+              "x": -9.248,
+              "y": 0.354
+            },
+            {
+              "id": "pin-assymetry-86",
+              "x": -10.272,
+              "y": 0.397
+            },
+            {
+              "id": "pin-assymetry-87",
+              "x": -11.296,
+              "y": 0.44
+            },
+            {
+              "id": "pin-assymetry-88",
+              "x": -12.319,
+              "y": 0.484
+            },
+            {
+              "id": "pin-assymetry-89",
+              "x": -13.343,
+              "y": 0.527
+            },
+            {
+              "id": "pin-assymetry-90",
+              "x": -14.367,
+              "y": 0.57
+            },
+            {
+              "id": "pin-assymetry-91",
+              "x": -15.391,
+              "y": 0.614
+            },
+            {
+              "id": "pin-assymetry-92",
+              "x": -16.415,
+              "y": 0.657
+            },
+            {
+              "id": "pin-assymetry-93",
+              "x": -17.438,
+              "y": 0.7
+            },
+            {
+              "id": "pin-assymetry-94",
+              "x": -18.462,
+              "y": 0.743
+            },
+            {
+              "id": "pin-assymetry-95",
+              "x": -19.486,
+              "y": 0.787
+            },
+            {
+              "id": "pin-assymetry-96",
+              "x": -20.51,
+              "y": 0.83
+            }
+          ],
+          "guideVisible": true,
+          "colour": "#ffffff",
+          "diameter": 0.25,
+          "symmetry": {
+            "type": "horizontal",
+            "axis": {
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "threadLayers": [
+    {
+      "id": "threadlayer-assymetry-1",
+      "name": "Layer 1",
+      "visible": true,
+      "locked": false,
+      "threadPaths": [
+        {
+          "id": "threadpath-assymetry-1",
+          "colours": [
+            "#a94fb0"
+          ],
+          "width": 0.15,
+          "pinIds": [
+            "pin-assymetry-77",
+            "pin-assymetry-29~mirror-0",
+            "pin-assymetry-28~mirror-0",
+            "pin-assymetry-76",
+            "pin-assymetry-76",
+            "pin-assymetry-27~mirror-0",
+            "pin-assymetry-26~mirror-0",
+            "pin-assymetry-75",
+            "pin-assymetry-74",
+            "pin-assymetry-26~mirror-0",
+            "pin-assymetry-25~mirror-0",
+            "pin-assymetry-73",
+            "pin-assymetry-72",
+            "pin-assymetry-24~mirror-0",
+            "pin-assymetry-23~mirror-0",
+            "pin-assymetry-71",
+            "pin-assymetry-71",
+            "pin-assymetry-22~mirror-0",
+            "pin-assymetry-22~mirror-0",
+            "pin-assymetry-70",
+            "pin-assymetry-69",
+            "pin-assymetry-21~mirror-0",
+            "pin-assymetry-20~mirror-0",
+            "pin-assymetry-68",
+            "pin-assymetry-67",
+            "pin-assymetry-19~mirror-0",
+            "pin-assymetry-18~mirror-0",
+            "pin-assymetry-67",
+            "pin-assymetry-66",
+            "pin-assymetry-17~mirror-0",
+            "pin-assymetry-17~mirror-0",
+            "pin-assymetry-65",
+            "pin-assymetry-64",
+            "pin-assymetry-16~mirror-0",
+            "pin-assymetry-15~mirror-0",
+            "pin-assymetry-63",
+            "pin-assymetry-63",
+            "pin-assymetry-14~mirror-0",
+            "pin-assymetry-13~mirror-0",
+            "pin-assymetry-62",
+            "pin-assymetry-61",
+            "pin-assymetry-12~mirror-0",
+            "pin-assymetry-12~mirror-0",
+            "pin-assymetry-60",
+            "pin-assymetry-59",
+            "pin-assymetry-11~mirror-0",
+            "pin-assymetry-10~mirror-0",
+            "pin-assymetry-58",
+            "pin-assymetry-58~mirror-0",
+            "pin-assymetry-9~mirror-0",
+            "pin-assymetry-8~mirror-0",
+            "pin-assymetry-57~mirror-0",
+            "pin-assymetry-56~mirror-0",
+            "pin-assymetry-8~mirror-0",
+            "pin-assymetry-7~mirror-0",
+            "pin-assymetry-55~mirror-0",
+            "pin-assymetry-54~mirror-0",
+            "pin-assymetry-6~mirror-0",
+            "pin-assymetry-5~mirror-0",
+            "pin-assymetry-53~mirror-0",
+            "pin-assymetry-53~mirror-0",
+            "pin-assymetry-4~mirror-0",
+            "pin-assymetry-3~mirror-0",
+            "pin-assymetry-52~mirror-0",
+            "pin-assymetry-51~mirror-0",
+            "pin-assymetry-3~mirror-0",
+            "pin-assymetry-2~mirror-0",
+            "pin-assymetry-50~mirror-0",
+            "pin-assymetry-49~mirror-0",
+            "pin-assymetry-1~mirror-0",
+            "pin-assymetry-96~mirror-0",
+            "pin-assymetry-49~mirror-0",
+            "pin-assymetry-48~mirror-0",
+            "pin-assymetry-96~mirror-0",
+            "pin-assymetry-96",
+            "pin-assymetry-47~mirror-0",
+            "pin-assymetry-46~mirror-0",
+            "pin-assymetry-1",
+            "pin-assymetry-2",
+            "pin-assymetry-45~mirror-0",
+            "pin-assymetry-44~mirror-0",
+            "pin-assymetry-3",
+            "pin-assymetry-3",
+            "pin-assymetry-44~mirror-0",
+            "pin-assymetry-43~mirror-0",
+            "pin-assymetry-4",
+            "pin-assymetry-5",
+            "pin-assymetry-42~mirror-0",
+            "pin-assymetry-41~mirror-0",
+            "pin-assymetry-6",
+            "pin-assymetry-7",
+            "pin-assymetry-40~mirror-0",
+            "pin-assymetry-40~mirror-0",
+            "pin-assymetry-8",
+            "pin-assymetry-8",
+            "pin-assymetry-39~mirror-0",
+            "pin-assymetry-38~mirror-0",
+            "pin-assymetry-9",
+            "pin-assymetry-10",
+            "pin-assymetry-37~mirror-0",
+            "pin-assymetry-36~mirror-0",
+            "pin-assymetry-11",
+            "pin-assymetry-12",
+            "pin-assymetry-35~mirror-0",
+            "pin-assymetry-35~mirror-0",
+            "pin-assymetry-12",
+            "pin-assymetry-13",
+            "pin-assymetry-34~mirror-0",
+            "pin-assymetry-33~mirror-0",
+            "pin-assymetry-14",
+            "pin-assymetry-15",
+            "pin-assymetry-32~mirror-0",
+            "pin-assymetry-31~mirror-0",
+            "pin-assymetry-16",
+            "pin-assymetry-17",
+            "pin-assymetry-31~mirror-0",
+            "pin-assymetry-30~mirror-0",
+            "pin-assymetry-17",
+            "pin-assymetry-18",
+            "pin-assymetry-29~mirror-0",
+            "pin-assymetry-28~mirror-0",
+            "pin-assymetry-19",
+            "pin-assymetry-20",
+            "pin-assymetry-27~mirror-0",
+            "pin-assymetry-26~mirror-0",
+            "pin-assymetry-21",
+            "pin-assymetry-22",
+            "pin-assymetry-26~mirror-0",
+            "pin-assymetry-25~mirror-0",
+            "pin-assymetry-22",
+            "pin-assymetry-23",
+            "pin-assymetry-24~mirror-0",
+            "pin-assymetry-23~mirror-0",
+            "pin-assymetry-24",
+            "pin-assymetry-25",
+            "pin-assymetry-22~mirror-0",
+            "pin-assymetry-22~mirror-0",
+            "pin-assymetry-26",
+            "pin-assymetry-26",
+            "pin-assymetry-21~mirror-0",
+            "pin-assymetry-20~mirror-0",
+            "pin-assymetry-27",
+            "pin-assymetry-28",
+            "pin-assymetry-19~mirror-0",
+            "pin-assymetry-18~mirror-0",
+            "pin-assymetry-29",
+            "pin-assymetry-30",
+            "pin-assymetry-17~mirror-0",
+            "pin-assymetry-17~mirror-0",
+            "pin-assymetry-31",
+            "pin-assymetry-31",
+            "pin-assymetry-16~mirror-0",
+            "pin-assymetry-15~mirror-0",
+            "pin-assymetry-32",
+            "pin-assymetry-33",
+            "pin-assymetry-14~mirror-0",
+            "pin-assymetry-13~mirror-0",
+            "pin-assymetry-34",
+            "pin-assymetry-35",
+            "pin-assymetry-12~mirror-0",
+            "pin-assymetry-12~mirror-0",
+            "pin-assymetry-35",
+            "pin-assymetry-36",
+            "pin-assymetry-11~mirror-0",
+            "pin-assymetry-10~mirror-0",
+            "pin-assymetry-37",
+            "pin-assymetry-38",
+            "pin-assymetry-9~mirror-0",
+            "pin-assymetry-8~mirror-0",
+            "pin-assymetry-39",
+            "pin-assymetry-40",
+            "pin-assymetry-8~mirror-0",
+            "pin-assymetry-7~mirror-0",
+            "pin-assymetry-40",
+            "pin-assymetry-41",
+            "pin-assymetry-6~mirror-0",
+            "pin-assymetry-5~mirror-0",
+            "pin-assymetry-42",
+            "pin-assymetry-43",
+            "pin-assymetry-4~mirror-0",
+            "pin-assymetry-3~mirror-0",
+            "pin-assymetry-44",
+            "pin-assymetry-44",
+            "pin-assymetry-3~mirror-0",
+            "pin-assymetry-2~mirror-0",
+            "pin-assymetry-45",
+            "pin-assymetry-46",
+            "pin-assymetry-1~mirror-0",
+            "pin-assymetry-96~mirror-0",
+            "pin-assymetry-47",
+            "pin-assymetry-48",
+            "pin-assymetry-96~mirror-0",
+            "pin-assymetry-96",
+            "pin-assymetry-49",
+            "pin-assymetry-49",
+            "pin-assymetry-1",
+            "pin-assymetry-2",
+            "pin-assymetry-50",
+            "pin-assymetry-51",
+            "pin-assymetry-3",
+            "pin-assymetry-3",
+            "pin-assymetry-52",
+            "pin-assymetry-53",
+            "pin-assymetry-4",
+            "pin-assymetry-5",
+            "pin-assymetry-53",
+            "pin-assymetry-54",
+            "pin-assymetry-6",
+            "pin-assymetry-7",
+            "pin-assymetry-55",
+            "pin-assymetry-56",
+            "pin-assymetry-8",
+            "pin-assymetry-8",
+            "pin-assymetry-57",
+            "pin-assymetry-58",
+            "pin-assymetry-9",
+            "pin-assymetry-10",
+            "pin-assymetry-58",
+            "pin-assymetry-59",
+            "pin-assymetry-11",
+            "pin-assymetry-12",
+            "pin-assymetry-60",
+            "pin-assymetry-61",
+            "pin-assymetry-12",
+            "pin-assymetry-13",
+            "pin-assymetry-62",
+            "pin-assymetry-63",
+            "pin-assymetry-14",
+            "pin-assymetry-15",
+            "pin-assymetry-63",
+            "pin-assymetry-64",
+            "pin-assymetry-16",
+            "pin-assymetry-17",
+            "pin-assymetry-65",
+            "pin-assymetry-66",
+            "pin-assymetry-17",
+            "pin-assymetry-18",
+            "pin-assymetry-67",
+            "pin-assymetry-67",
+            "pin-assymetry-19",
+            "pin-assymetry-20",
+            "pin-assymetry-68",
+            "pin-assymetry-69",
+            "pin-assymetry-21",
+            "pin-assymetry-22",
+            "pin-assymetry-70",
+            "pin-assymetry-71",
+            "pin-assymetry-22",
+            "pin-assymetry-23",
+            "pin-assymetry-71",
+            "pin-assymetry-72",
+            "pin-assymetry-24",
+            "pin-assymetry-25",
+            "pin-assymetry-73",
+            "pin-assymetry-74",
+            "pin-assymetry-26",
+            "pin-assymetry-26",
+            "pin-assymetry-75",
+            "pin-assymetry-76",
+            "pin-assymetry-27",
+            "pin-assymetry-28",
+            "pin-assymetry-76",
+            "pin-assymetry-77",
+            "pin-assymetry-29"
+          ],
+          "twistPitch": 6
+        },
+        {
+          "id": "threadpath-assymetry-2",
+          "colours": [
+            "#ec6ad0"
+          ],
+          "width": 0.15,
+          "pinIds": [
+            "pin-assymetry-77",
+            "pin-assymetry-44~mirror-0",
+            "pin-assymetry-43~mirror-0",
+            "pin-assymetry-76",
+            "pin-assymetry-76",
+            "pin-assymetry-42~mirror-0",
+            "pin-assymetry-41~mirror-0",
+            "pin-assymetry-75",
+            "pin-assymetry-74",
+            "pin-assymetry-40~mirror-0",
+            "pin-assymetry-40~mirror-0",
+            "pin-assymetry-73",
+            "pin-assymetry-72",
+            "pin-assymetry-39~mirror-0",
+            "pin-assymetry-38~mirror-0",
+            "pin-assymetry-71",
+            "pin-assymetry-71",
+            "pin-assymetry-37~mirror-0",
+            "pin-assymetry-36~mirror-0",
+            "pin-assymetry-70",
+            "pin-assymetry-69",
+            "pin-assymetry-35~mirror-0",
+            "pin-assymetry-35~mirror-0",
+            "pin-assymetry-68",
+            "pin-assymetry-67",
+            "pin-assymetry-34~mirror-0",
+            "pin-assymetry-33~mirror-0",
+            "pin-assymetry-67",
+            "pin-assymetry-66",
+            "pin-assymetry-32~mirror-0",
+            "pin-assymetry-31~mirror-0",
+            "pin-assymetry-65",
+            "pin-assymetry-64",
+            "pin-assymetry-31~mirror-0",
+            "pin-assymetry-30~mirror-0",
+            "pin-assymetry-63",
+            "pin-assymetry-63",
+            "pin-assymetry-29~mirror-0",
+            "pin-assymetry-28~mirror-0",
+            "pin-assymetry-62",
+            "pin-assymetry-61",
+            "pin-assymetry-27~mirror-0",
+            "pin-assymetry-26~mirror-0",
+            "pin-assymetry-60",
+            "pin-assymetry-59",
+            "pin-assymetry-26~mirror-0",
+            "pin-assymetry-25~mirror-0",
+            "pin-assymetry-58",
+            "pin-assymetry-58~mirror-0",
+            "pin-assymetry-24~mirror-0",
+            "pin-assymetry-23~mirror-0",
+            "pin-assymetry-57~mirror-0",
+            "pin-assymetry-56~mirror-0",
+            "pin-assymetry-22~mirror-0",
+            "pin-assymetry-22~mirror-0",
+            "pin-assymetry-55~mirror-0",
+            "pin-assymetry-54~mirror-0",
+            "pin-assymetry-21~mirror-0",
+            "pin-assymetry-20~mirror-0",
+            "pin-assymetry-53~mirror-0",
+            "pin-assymetry-53~mirror-0",
+            "pin-assymetry-19~mirror-0",
+            "pin-assymetry-18~mirror-0",
+            "pin-assymetry-52~mirror-0",
+            "pin-assymetry-51~mirror-0",
+            "pin-assymetry-17~mirror-0",
+            "pin-assymetry-17~mirror-0",
+            "pin-assymetry-50~mirror-0",
+            "pin-assymetry-49~mirror-0",
+            "pin-assymetry-16~mirror-0",
+            "pin-assymetry-15~mirror-0",
+            "pin-assymetry-49~mirror-0",
+            "pin-assymetry-48~mirror-0",
+            "pin-assymetry-14~mirror-0",
+            "pin-assymetry-13~mirror-0",
+            "pin-assymetry-47~mirror-0",
+            "pin-assymetry-46~mirror-0",
+            "pin-assymetry-12~mirror-0",
+            "pin-assymetry-12~mirror-0",
+            "pin-assymetry-45~mirror-0",
+            "pin-assymetry-44~mirror-0",
+            "pin-assymetry-11~mirror-0",
+            "pin-assymetry-10~mirror-0",
+            "pin-assymetry-44~mirror-0",
+            "pin-assymetry-43~mirror-0",
+            "pin-assymetry-9~mirror-0",
+            "pin-assymetry-8~mirror-0",
+            "pin-assymetry-42~mirror-0",
+            "pin-assymetry-41~mirror-0",
+            "pin-assymetry-8~mirror-0",
+            "pin-assymetry-7~mirror-0",
+            "pin-assymetry-40~mirror-0",
+            "pin-assymetry-40~mirror-0",
+            "pin-assymetry-6~mirror-0",
+            "pin-assymetry-5~mirror-0",
+            "pin-assymetry-39~mirror-0",
+            "pin-assymetry-38~mirror-0",
+            "pin-assymetry-4~mirror-0",
+            "pin-assymetry-3~mirror-0",
+            "pin-assymetry-37~mirror-0",
+            "pin-assymetry-36~mirror-0",
+            "pin-assymetry-3~mirror-0",
+            "pin-assymetry-2~mirror-0",
+            "pin-assymetry-35~mirror-0",
+            "pin-assymetry-35~mirror-0",
+            "pin-assymetry-1~mirror-0",
+            "pin-assymetry-96~mirror-0",
+            "pin-assymetry-34~mirror-0",
+            "pin-assymetry-33~mirror-0",
+            "pin-assymetry-96~mirror-0",
+            "pin-assymetry-96",
+            "pin-assymetry-32~mirror-0",
+            "pin-assymetry-31~mirror-0",
+            "pin-assymetry-1",
+            "pin-assymetry-2",
+            "pin-assymetry-31~mirror-0",
+            "pin-assymetry-30~mirror-0",
+            "pin-assymetry-3",
+            "pin-assymetry-3",
+            "pin-assymetry-29~mirror-0",
+            "pin-assymetry-28~mirror-0",
+            "pin-assymetry-4",
+            "pin-assymetry-5",
+            "pin-assymetry-27~mirror-0",
+            "pin-assymetry-26~mirror-0",
+            "pin-assymetry-6",
+            "pin-assymetry-7",
+            "pin-assymetry-26~mirror-0",
+            "pin-assymetry-25~mirror-0",
+            "pin-assymetry-8",
+            "pin-assymetry-8",
+            "pin-assymetry-24~mirror-0",
+            "pin-assymetry-23~mirror-0",
+            "pin-assymetry-9",
+            "pin-assymetry-10",
+            "pin-assymetry-22~mirror-0",
+            "pin-assymetry-22~mirror-0",
+            "pin-assymetry-11",
+            "pin-assymetry-12",
+            "pin-assymetry-21~mirror-0",
+            "pin-assymetry-20~mirror-0",
+            "pin-assymetry-12",
+            "pin-assymetry-13",
+            "pin-assymetry-19~mirror-0",
+            "pin-assymetry-18~mirror-0",
+            "pin-assymetry-14",
+            "pin-assymetry-15",
+            "pin-assymetry-17~mirror-0",
+            "pin-assymetry-17~mirror-0",
+            "pin-assymetry-16",
+            "pin-assymetry-17",
+            "pin-assymetry-16~mirror-0",
+            "pin-assymetry-15~mirror-0",
+            "pin-assymetry-17",
+            "pin-assymetry-18",
+            "pin-assymetry-14~mirror-0",
+            "pin-assymetry-13~mirror-0",
+            "pin-assymetry-19",
+            "pin-assymetry-20",
+            "pin-assymetry-12~mirror-0",
+            "pin-assymetry-12~mirror-0",
+            "pin-assymetry-21",
+            "pin-assymetry-22",
+            "pin-assymetry-11~mirror-0",
+            "pin-assymetry-10~mirror-0",
+            "pin-assymetry-22",
+            "pin-assymetry-23",
+            "pin-assymetry-9~mirror-0",
+            "pin-assymetry-8~mirror-0",
+            "pin-assymetry-24",
+            "pin-assymetry-25",
+            "pin-assymetry-8~mirror-0",
+            "pin-assymetry-7~mirror-0",
+            "pin-assymetry-26",
+            "pin-assymetry-26",
+            "pin-assymetry-6~mirror-0",
+            "pin-assymetry-5~mirror-0",
+            "pin-assymetry-27",
+            "pin-assymetry-28",
+            "pin-assymetry-4~mirror-0",
+            "pin-assymetry-3~mirror-0",
+            "pin-assymetry-29",
+            "pin-assymetry-30",
+            "pin-assymetry-3~mirror-0",
+            "pin-assymetry-2~mirror-0",
+            "pin-assymetry-31",
+            "pin-assymetry-31",
+            "pin-assymetry-1~mirror-0",
+            "pin-assymetry-96~mirror-0",
+            "pin-assymetry-32",
+            "pin-assymetry-33",
+            "pin-assymetry-96~mirror-0",
+            "pin-assymetry-96",
+            "pin-assymetry-34",
+            "pin-assymetry-35",
+            "pin-assymetry-1",
+            "pin-assymetry-2",
+            "pin-assymetry-35",
+            "pin-assymetry-36",
+            "pin-assymetry-3",
+            "pin-assymetry-3",
+            "pin-assymetry-37",
+            "pin-assymetry-38",
+            "pin-assymetry-4",
+            "pin-assymetry-5",
+            "pin-assymetry-39",
+            "pin-assymetry-40",
+            "pin-assymetry-6",
+            "pin-assymetry-7",
+            "pin-assymetry-40",
+            "pin-assymetry-41",
+            "pin-assymetry-8",
+            "pin-assymetry-8",
+            "pin-assymetry-42",
+            "pin-assymetry-43",
+            "pin-assymetry-9",
+            "pin-assymetry-10",
+            "pin-assymetry-44",
+            "pin-assymetry-44",
+            "pin-assymetry-11",
+            "pin-assymetry-12",
+            "pin-assymetry-45",
+            "pin-assymetry-46",
+            "pin-assymetry-12",
+            "pin-assymetry-13",
+            "pin-assymetry-47",
+            "pin-assymetry-48",
+            "pin-assymetry-14",
+            "pin-assymetry-15",
+            "pin-assymetry-49",
+            "pin-assymetry-49",
+            "pin-assymetry-16",
+            "pin-assymetry-17",
+            "pin-assymetry-50",
+            "pin-assymetry-51",
+            "pin-assymetry-17",
+            "pin-assymetry-18",
+            "pin-assymetry-52",
+            "pin-assymetry-53",
+            "pin-assymetry-19",
+            "pin-assymetry-20",
+            "pin-assymetry-53",
+            "pin-assymetry-54",
+            "pin-assymetry-21",
+            "pin-assymetry-22",
+            "pin-assymetry-55",
+            "pin-assymetry-56",
+            "pin-assymetry-22",
+            "pin-assymetry-23",
+            "pin-assymetry-57",
+            "pin-assymetry-58",
+            "pin-assymetry-24",
+            "pin-assymetry-25",
+            "pin-assymetry-58",
+            "pin-assymetry-59",
+            "pin-assymetry-26",
+            "pin-assymetry-26",
+            "pin-assymetry-60"
+          ],
+          "twistPitch": 6
+        },
+        {
+          "id": "threadpath-assymetry-3",
+          "colours": [
+            "#f08ad5"
+          ],
+          "width": 0.15,
+          "pinIds": [
+            "pin-assymetry-77",
+            "pin-assymetry-58",
+            "pin-assymetry-58",
+            "pin-assymetry-76",
+            "pin-assymetry-76",
+            "pin-assymetry-57",
+            "pin-assymetry-56",
+            "pin-assymetry-75",
+            "pin-assymetry-74",
+            "pin-assymetry-55",
+            "pin-assymetry-54",
+            "pin-assymetry-73",
+            "pin-assymetry-72",
+            "pin-assymetry-53",
+            "pin-assymetry-53",
+            "pin-assymetry-71",
+            "pin-assymetry-71",
+            "pin-assymetry-52",
+            "pin-assymetry-51",
+            "pin-assymetry-70",
+            "pin-assymetry-69",
+            "pin-assymetry-50",
+            "pin-assymetry-49",
+            "pin-assymetry-68",
+            "pin-assymetry-67",
+            "pin-assymetry-49",
+            "pin-assymetry-48",
+            "pin-assymetry-67",
+            "pin-assymetry-66",
+            "pin-assymetry-47",
+            "pin-assymetry-46",
+            "pin-assymetry-65",
+            "pin-assymetry-64",
+            "pin-assymetry-45",
+            "pin-assymetry-44",
+            "pin-assymetry-63",
+            "pin-assymetry-63",
+            "pin-assymetry-44",
+            "pin-assymetry-43",
+            "pin-assymetry-62",
+            "pin-assymetry-61",
+            "pin-assymetry-42",
+            "pin-assymetry-41",
+            "pin-assymetry-60",
+            "pin-assymetry-59",
+            "pin-assymetry-40",
+            "pin-assymetry-40",
+            "pin-assymetry-58",
+            "pin-assymetry-58",
+            "pin-assymetry-39",
+            "pin-assymetry-38",
+            "pin-assymetry-57",
+            "pin-assymetry-56",
+            "pin-assymetry-37",
+            "pin-assymetry-36",
+            "pin-assymetry-55",
+            "pin-assymetry-54",
+            "pin-assymetry-35",
+            "pin-assymetry-35",
+            "pin-assymetry-53",
+            "pin-assymetry-53",
+            "pin-assymetry-34",
+            "pin-assymetry-33",
+            "pin-assymetry-52",
+            "pin-assymetry-51",
+            "pin-assymetry-32",
+            "pin-assymetry-31",
+            "pin-assymetry-50",
+            "pin-assymetry-49",
+            "pin-assymetry-31",
+            "pin-assymetry-30",
+            "pin-assymetry-49",
+            "pin-assymetry-48",
+            "pin-assymetry-29",
+            "pin-assymetry-28",
+            "pin-assymetry-47",
+            "pin-assymetry-46",
+            "pin-assymetry-27",
+            "pin-assymetry-26",
+            "pin-assymetry-45",
+            "pin-assymetry-44",
+            "pin-assymetry-26",
+            "pin-assymetry-25",
+            "pin-assymetry-44",
+            "pin-assymetry-43",
+            "pin-assymetry-24",
+            "pin-assymetry-23",
+            "pin-assymetry-42",
+            "pin-assymetry-41",
+            "pin-assymetry-22",
+            "pin-assymetry-22",
+            "pin-assymetry-40",
+            "pin-assymetry-40",
+            "pin-assymetry-21",
+            "pin-assymetry-20",
+            "pin-assymetry-39",
+            "pin-assymetry-38",
+            "pin-assymetry-19",
+            "pin-assymetry-18",
+            "pin-assymetry-37",
+            "pin-assymetry-36",
+            "pin-assymetry-17",
+            "pin-assymetry-17",
+            "pin-assymetry-35",
+            "pin-assymetry-35",
+            "pin-assymetry-16",
+            "pin-assymetry-15",
+            "pin-assymetry-34",
+            "pin-assymetry-33",
+            "pin-assymetry-14",
+            "pin-assymetry-13",
+            "pin-assymetry-32",
+            "pin-assymetry-31",
+            "pin-assymetry-12",
+            "pin-assymetry-12",
+            "pin-assymetry-31",
+            "pin-assymetry-30",
+            "pin-assymetry-11",
+            "pin-assymetry-10",
+            "pin-assymetry-29",
+            "pin-assymetry-28",
+            "pin-assymetry-9",
+            "pin-assymetry-8",
+            "pin-assymetry-27",
+            "pin-assymetry-26",
+            "pin-assymetry-8",
+            "pin-assymetry-7",
+            "pin-assymetry-26",
+            "pin-assymetry-25",
+            "pin-assymetry-6",
+            "pin-assymetry-5",
+            "pin-assymetry-24",
+            "pin-assymetry-23",
+            "pin-assymetry-4",
+            "pin-assymetry-3",
+            "pin-assymetry-22",
+            "pin-assymetry-22",
+            "pin-assymetry-3",
+            "pin-assymetry-2",
+            "pin-assymetry-21",
+            "pin-assymetry-20",
+            "pin-assymetry-1",
+            "pin-assymetry-96",
+            "pin-assymetry-19",
+            "pin-assymetry-18",
+            "pin-assymetry-96~mirror-0",
+            "pin-assymetry-96~mirror-0",
+            "pin-assymetry-17",
+            "pin-assymetry-17",
+            "pin-assymetry-1~mirror-0",
+            "pin-assymetry-2~mirror-0",
+            "pin-assymetry-16",
+            "pin-assymetry-15",
+            "pin-assymetry-3~mirror-0",
+            "pin-assymetry-3~mirror-0",
+            "pin-assymetry-14",
+            "pin-assymetry-13",
+            "pin-assymetry-4~mirror-0",
+            "pin-assymetry-5~mirror-0",
+            "pin-assymetry-12",
+            "pin-assymetry-12",
+            "pin-assymetry-6~mirror-0",
+            "pin-assymetry-7~mirror-0",
+            "pin-assymetry-11",
+            "pin-assymetry-10",
+            "pin-assymetry-8~mirror-0",
+            "pin-assymetry-8~mirror-0",
+            "pin-assymetry-9",
+            "pin-assymetry-8",
+            "pin-assymetry-9~mirror-0",
+            "pin-assymetry-10~mirror-0",
+            "pin-assymetry-8",
+            "pin-assymetry-7",
+            "pin-assymetry-11~mirror-0",
+            "pin-assymetry-12~mirror-0",
+            "pin-assymetry-6",
+            "pin-assymetry-5",
+            "pin-assymetry-12~mirror-0",
+            "pin-assymetry-13~mirror-0",
+            "pin-assymetry-4",
+            "pin-assymetry-3",
+            "pin-assymetry-14~mirror-0",
+            "pin-assymetry-15~mirror-0",
+            "pin-assymetry-3",
+            "pin-assymetry-2",
+            "pin-assymetry-16~mirror-0",
+            "pin-assymetry-17~mirror-0",
+            "pin-assymetry-1",
+            "pin-assymetry-96",
+            "pin-assymetry-17~mirror-0",
+            "pin-assymetry-18~mirror-0",
+            "pin-assymetry-96~mirror-0",
+            "pin-assymetry-96~mirror-0",
+            "pin-assymetry-19~mirror-0",
+            "pin-assymetry-20~mirror-0",
+            "pin-assymetry-1~mirror-0",
+            "pin-assymetry-2~mirror-0",
+            "pin-assymetry-21~mirror-0",
+            "pin-assymetry-22~mirror-0",
+            "pin-assymetry-3~mirror-0",
+            "pin-assymetry-3~mirror-0",
+            "pin-assymetry-22~mirror-0",
+            "pin-assymetry-23~mirror-0",
+            "pin-assymetry-4~mirror-0",
+            "pin-assymetry-5~mirror-0",
+            "pin-assymetry-24~mirror-0",
+            "pin-assymetry-25~mirror-0",
+            "pin-assymetry-6~mirror-0",
+            "pin-assymetry-7~mirror-0",
+            "pin-assymetry-26~mirror-0",
+            "pin-assymetry-26~mirror-0",
+            "pin-assymetry-8~mirror-0",
+            "pin-assymetry-8~mirror-0",
+            "pin-assymetry-27~mirror-0",
+            "pin-assymetry-28~mirror-0",
+            "pin-assymetry-9~mirror-0",
+            "pin-assymetry-10~mirror-0",
+            "pin-assymetry-29~mirror-0",
+            "pin-assymetry-30~mirror-0",
+            "pin-assymetry-11~mirror-0",
+            "pin-assymetry-12~mirror-0",
+            "pin-assymetry-31~mirror-0",
+            "pin-assymetry-31~mirror-0",
+            "pin-assymetry-12~mirror-0",
+            "pin-assymetry-13~mirror-0",
+            "pin-assymetry-32~mirror-0",
+            "pin-assymetry-33~mirror-0",
+            "pin-assymetry-14~mirror-0",
+            "pin-assymetry-15~mirror-0",
+            "pin-assymetry-34~mirror-0",
+            "pin-assymetry-35~mirror-0",
+            "pin-assymetry-16~mirror-0",
+            "pin-assymetry-17~mirror-0",
+            "pin-assymetry-35~mirror-0",
+            "pin-assymetry-36~mirror-0",
+            "pin-assymetry-17~mirror-0",
+            "pin-assymetry-18~mirror-0",
+            "pin-assymetry-37~mirror-0",
+            "pin-assymetry-38~mirror-0",
+            "pin-assymetry-19~mirror-0",
+            "pin-assymetry-20~mirror-0",
+            "pin-assymetry-39~mirror-0",
+            "pin-assymetry-40~mirror-0",
+            "pin-assymetry-21~mirror-0",
+            "pin-assymetry-22~mirror-0",
+            "pin-assymetry-40~mirror-0",
+            "pin-assymetry-41~mirror-0",
+            "pin-assymetry-22~mirror-0",
+            "pin-assymetry-23~mirror-0",
+            "pin-assymetry-42~mirror-0",
+            "pin-assymetry-43~mirror-0",
+            "pin-assymetry-24~mirror-0",
+            "pin-assymetry-25~mirror-0",
+            "pin-assymetry-44~mirror-0",
+            "pin-assymetry-44~mirror-0",
+            "pin-assymetry-26~mirror-0",
+            "pin-assymetry-26~mirror-0",
+            "pin-assymetry-45~mirror-0",
+            "pin-assymetry-46~mirror-0",
+            "pin-assymetry-27~mirror-0",
+            "pin-assymetry-28~mirror-0",
+            "pin-assymetry-47~mirror-0",
+            "pin-assymetry-48~mirror-0",
+            "pin-assymetry-29~mirror-0",
+            "pin-assymetry-30~mirror-0",
+            "pin-assymetry-49~mirror-0",
+            "pin-assymetry-49~mirror-0",
+            "pin-assymetry-31~mirror-0",
+            "pin-assymetry-31~mirror-0",
+            "pin-assymetry-50~mirror-0"
+          ],
+          "twistPitch": 6
+        }
+      ]
+    }
+  ]
+}

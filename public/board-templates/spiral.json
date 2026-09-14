@@ -1,0 +1,2137 @@
+{
+  "version": 1,
+  "board": {
+    "shape": "circle",
+    "dimensions": {
+      "diameter": 40
+    },
+    "appearance": {
+      "type": "solid",
+      "colour": "#101010"
+    }
+  },
+  "grid": {
+    "gapX": 1,
+    "gapY": 1,
+    "colour": "#6d5ef7",
+    "opacity": 0.6
+  },
+  "pinLayers": [
+    {
+      "id": "pinlayer-spiral-1",
+      "name": "Layer 1",
+      "visible": true,
+      "locked": false,
+      "pinPaths": [
+        {
+          "id": "pinpath-spiral-1",
+          "geometry": {
+            "type": "circle",
+            "center": {
+              "x": 0,
+              "y": 0
+            },
+            "radius": 19.255
+          },
+          "requestedSpacing": 0.605,
+          "actualSpacing": 0.605,
+          "pins": [
+            {
+              "id": "pin-spiral-1",
+              "x": 19.255,
+              "y": 0
+            },
+            {
+              "id": "pin-spiral-2",
+              "x": 19.246,
+              "y": 0.605
+            },
+            {
+              "id": "pin-spiral-3",
+              "x": 19.217,
+              "y": 1.209
+            },
+            {
+              "id": "pin-spiral-4",
+              "x": 19.17,
+              "y": 1.812
+            },
+            {
+              "id": "pin-spiral-5",
+              "x": 19.103,
+              "y": 2.413
+            },
+            {
+              "id": "pin-spiral-6",
+              "x": 19.018,
+              "y": 3.012
+            },
+            {
+              "id": "pin-spiral-7",
+              "x": 18.914,
+              "y": 3.608
+            },
+            {
+              "id": "pin-spiral-8",
+              "x": 18.791,
+              "y": 4.2
+            },
+            {
+              "id": "pin-spiral-9",
+              "x": 18.65,
+              "y": 4.789
+            },
+            {
+              "id": "pin-spiral-10",
+              "x": 18.491,
+              "y": 5.372
+            },
+            {
+              "id": "pin-spiral-11",
+              "x": 18.313,
+              "y": 5.95
+            },
+            {
+              "id": "pin-spiral-12",
+              "x": 18.117,
+              "y": 6.522
+            },
+            {
+              "id": "pin-spiral-13",
+              "x": 17.903,
+              "y": 7.088
+            },
+            {
+              "id": "pin-spiral-14",
+              "x": 17.671,
+              "y": 7.647
+            },
+            {
+              "id": "pin-spiral-15",
+              "x": 17.423,
+              "y": 8.198
+            },
+            {
+              "id": "pin-spiral-16",
+              "x": 17.156,
+              "y": 8.742
+            },
+            {
+              "id": "pin-spiral-17",
+              "x": 16.873,
+              "y": 9.276
+            },
+            {
+              "id": "pin-spiral-18",
+              "x": 16.574,
+              "y": 9.802
+            },
+            {
+              "id": "pin-spiral-19",
+              "x": 16.258,
+              "y": 10.317
+            },
+            {
+              "id": "pin-spiral-20",
+              "x": 15.926,
+              "y": 10.823
+            },
+            {
+              "id": "pin-spiral-21",
+              "x": 15.578,
+              "y": 11.318
+            },
+            {
+              "id": "pin-spiral-22",
+              "x": 15.215,
+              "y": 11.802
+            },
+            {
+              "id": "pin-spiral-23",
+              "x": 14.836,
+              "y": 12.274
+            },
+            {
+              "id": "pin-spiral-24",
+              "x": 14.443,
+              "y": 12.734
+            },
+            {
+              "id": "pin-spiral-25",
+              "x": 14.036,
+              "y": 13.181
+            },
+            {
+              "id": "pin-spiral-26",
+              "x": 13.615,
+              "y": 13.615
+            },
+            {
+              "id": "pin-spiral-27",
+              "x": 13.181,
+              "y": 14.036
+            },
+            {
+              "id": "pin-spiral-28",
+              "x": 12.734,
+              "y": 14.443
+            },
+            {
+              "id": "pin-spiral-29",
+              "x": 12.274,
+              "y": 14.836
+            },
+            {
+              "id": "pin-spiral-30",
+              "x": 11.802,
+              "y": 15.215
+            },
+            {
+              "id": "pin-spiral-31",
+              "x": 11.318,
+              "y": 15.578
+            },
+            {
+              "id": "pin-spiral-32",
+              "x": 10.823,
+              "y": 15.926
+            },
+            {
+              "id": "pin-spiral-33",
+              "x": 10.317,
+              "y": 16.258
+            },
+            {
+              "id": "pin-spiral-34",
+              "x": 9.802,
+              "y": 16.574
+            },
+            {
+              "id": "pin-spiral-35",
+              "x": 9.276,
+              "y": 16.873
+            },
+            {
+              "id": "pin-spiral-36",
+              "x": 8.742,
+              "y": 17.156
+            },
+            {
+              "id": "pin-spiral-37",
+              "x": 8.198,
+              "y": 17.423
+            },
+            {
+              "id": "pin-spiral-38",
+              "x": 7.647,
+              "y": 17.671
+            },
+            {
+              "id": "pin-spiral-39",
+              "x": 7.088,
+              "y": 17.903
+            },
+            {
+              "id": "pin-spiral-40",
+              "x": 6.522,
+              "y": 18.117
+            },
+            {
+              "id": "pin-spiral-41",
+              "x": 5.95,
+              "y": 18.313
+            },
+            {
+              "id": "pin-spiral-42",
+              "x": 5.372,
+              "y": 18.491
+            },
+            {
+              "id": "pin-spiral-43",
+              "x": 4.789,
+              "y": 18.65
+            },
+            {
+              "id": "pin-spiral-44",
+              "x": 4.2,
+              "y": 18.791
+            },
+            {
+              "id": "pin-spiral-45",
+              "x": 3.608,
+              "y": 18.914
+            },
+            {
+              "id": "pin-spiral-46",
+              "x": 3.012,
+              "y": 19.018
+            },
+            {
+              "id": "pin-spiral-47",
+              "x": 2.413,
+              "y": 19.103
+            },
+            {
+              "id": "pin-spiral-48",
+              "x": 1.812,
+              "y": 19.17
+            },
+            {
+              "id": "pin-spiral-49",
+              "x": 1.209,
+              "y": 19.217
+            },
+            {
+              "id": "pin-spiral-50",
+              "x": 0.605,
+              "y": 19.246
+            },
+            {
+              "id": "pin-spiral-51",
+              "x": 0,
+              "y": 19.255
+            },
+            {
+              "id": "pin-spiral-52",
+              "x": -0.605,
+              "y": 19.246
+            },
+            {
+              "id": "pin-spiral-53",
+              "x": -1.209,
+              "y": 19.217
+            },
+            {
+              "id": "pin-spiral-54",
+              "x": -1.812,
+              "y": 19.17
+            },
+            {
+              "id": "pin-spiral-55",
+              "x": -2.413,
+              "y": 19.103
+            },
+            {
+              "id": "pin-spiral-56",
+              "x": -3.012,
+              "y": 19.018
+            },
+            {
+              "id": "pin-spiral-57",
+              "x": -3.608,
+              "y": 18.914
+            },
+            {
+              "id": "pin-spiral-58",
+              "x": -4.2,
+              "y": 18.791
+            },
+            {
+              "id": "pin-spiral-59",
+              "x": -4.789,
+              "y": 18.65
+            },
+            {
+              "id": "pin-spiral-60",
+              "x": -5.372,
+              "y": 18.491
+            },
+            {
+              "id": "pin-spiral-61",
+              "x": -5.95,
+              "y": 18.313
+            },
+            {
+              "id": "pin-spiral-62",
+              "x": -6.522,
+              "y": 18.117
+            },
+            {
+              "id": "pin-spiral-63",
+              "x": -7.088,
+              "y": 17.903
+            },
+            {
+              "id": "pin-spiral-64",
+              "x": -7.647,
+              "y": 17.671
+            },
+            {
+              "id": "pin-spiral-65",
+              "x": -8.198,
+              "y": 17.423
+            },
+            {
+              "id": "pin-spiral-66",
+              "x": -8.742,
+              "y": 17.156
+            },
+            {
+              "id": "pin-spiral-67",
+              "x": -9.276,
+              "y": 16.873
+            },
+            {
+              "id": "pin-spiral-68",
+              "x": -9.802,
+              "y": 16.574
+            },
+            {
+              "id": "pin-spiral-69",
+              "x": -10.317,
+              "y": 16.258
+            },
+            {
+              "id": "pin-spiral-70",
+              "x": -10.823,
+              "y": 15.926
+            },
+            {
+              "id": "pin-spiral-71",
+              "x": -11.318,
+              "y": 15.578
+            },
+            {
+              "id": "pin-spiral-72",
+              "x": -11.802,
+              "y": 15.215
+            },
+            {
+              "id": "pin-spiral-73",
+              "x": -12.274,
+              "y": 14.836
+            },
+            {
+              "id": "pin-spiral-74",
+              "x": -12.734,
+              "y": 14.443
+            },
+            {
+              "id": "pin-spiral-75",
+              "x": -13.181,
+              "y": 14.036
+            },
+            {
+              "id": "pin-spiral-76",
+              "x": -13.615,
+              "y": 13.615
+            },
+            {
+              "id": "pin-spiral-77",
+              "x": -14.036,
+              "y": 13.181
+            },
+            {
+              "id": "pin-spiral-78",
+              "x": -14.443,
+              "y": 12.734
+            },
+            {
+              "id": "pin-spiral-79",
+              "x": -14.836,
+              "y": 12.274
+            },
+            {
+              "id": "pin-spiral-80",
+              "x": -15.215,
+              "y": 11.802
+            },
+            {
+              "id": "pin-spiral-81",
+              "x": -15.578,
+              "y": 11.318
+            },
+            {
+              "id": "pin-spiral-82",
+              "x": -15.926,
+              "y": 10.823
+            },
+            {
+              "id": "pin-spiral-83",
+              "x": -16.258,
+              "y": 10.317
+            },
+            {
+              "id": "pin-spiral-84",
+              "x": -16.574,
+              "y": 9.802
+            },
+            {
+              "id": "pin-spiral-85",
+              "x": -16.873,
+              "y": 9.276
+            },
+            {
+              "id": "pin-spiral-86",
+              "x": -17.156,
+              "y": 8.742
+            },
+            {
+              "id": "pin-spiral-87",
+              "x": -17.423,
+              "y": 8.198
+            },
+            {
+              "id": "pin-spiral-88",
+              "x": -17.671,
+              "y": 7.647
+            },
+            {
+              "id": "pin-spiral-89",
+              "x": -17.903,
+              "y": 7.088
+            },
+            {
+              "id": "pin-spiral-90",
+              "x": -18.117,
+              "y": 6.522
+            },
+            {
+              "id": "pin-spiral-91",
+              "x": -18.313,
+              "y": 5.95
+            },
+            {
+              "id": "pin-spiral-92",
+              "x": -18.491,
+              "y": 5.372
+            },
+            {
+              "id": "pin-spiral-93",
+              "x": -18.65,
+              "y": 4.789
+            },
+            {
+              "id": "pin-spiral-94",
+              "x": -18.791,
+              "y": 4.2
+            },
+            {
+              "id": "pin-spiral-95",
+              "x": -18.914,
+              "y": 3.608
+            },
+            {
+              "id": "pin-spiral-96",
+              "x": -19.018,
+              "y": 3.012
+            },
+            {
+              "id": "pin-spiral-97",
+              "x": -19.103,
+              "y": 2.413
+            },
+            {
+              "id": "pin-spiral-98",
+              "x": -19.17,
+              "y": 1.812
+            },
+            {
+              "id": "pin-spiral-99",
+              "x": -19.217,
+              "y": 1.209
+            },
+            {
+              "id": "pin-spiral-100",
+              "x": -19.246,
+              "y": 0.605
+            },
+            {
+              "id": "pin-spiral-101",
+              "x": -19.255,
+              "y": 0
+            },
+            {
+              "id": "pin-spiral-102",
+              "x": -19.246,
+              "y": -0.605
+            },
+            {
+              "id": "pin-spiral-103",
+              "x": -19.217,
+              "y": -1.209
+            },
+            {
+              "id": "pin-spiral-104",
+              "x": -19.17,
+              "y": -1.812
+            },
+            {
+              "id": "pin-spiral-105",
+              "x": -19.103,
+              "y": -2.413
+            },
+            {
+              "id": "pin-spiral-106",
+              "x": -19.018,
+              "y": -3.012
+            },
+            {
+              "id": "pin-spiral-107",
+              "x": -18.914,
+              "y": -3.608
+            },
+            {
+              "id": "pin-spiral-108",
+              "x": -18.791,
+              "y": -4.2
+            },
+            {
+              "id": "pin-spiral-109",
+              "x": -18.65,
+              "y": -4.789
+            },
+            {
+              "id": "pin-spiral-110",
+              "x": -18.491,
+              "y": -5.372
+            },
+            {
+              "id": "pin-spiral-111",
+              "x": -18.313,
+              "y": -5.95
+            },
+            {
+              "id": "pin-spiral-112",
+              "x": -18.117,
+              "y": -6.522
+            },
+            {
+              "id": "pin-spiral-113",
+              "x": -17.903,
+              "y": -7.088
+            },
+            {
+              "id": "pin-spiral-114",
+              "x": -17.671,
+              "y": -7.647
+            },
+            {
+              "id": "pin-spiral-115",
+              "x": -17.423,
+              "y": -8.198
+            },
+            {
+              "id": "pin-spiral-116",
+              "x": -17.156,
+              "y": -8.742
+            },
+            {
+              "id": "pin-spiral-117",
+              "x": -16.873,
+              "y": -9.276
+            },
+            {
+              "id": "pin-spiral-118",
+              "x": -16.574,
+              "y": -9.802
+            },
+            {
+              "id": "pin-spiral-119",
+              "x": -16.258,
+              "y": -10.317
+            },
+            {
+              "id": "pin-spiral-120",
+              "x": -15.926,
+              "y": -10.823
+            },
+            {
+              "id": "pin-spiral-121",
+              "x": -15.578,
+              "y": -11.318
+            },
+            {
+              "id": "pin-spiral-122",
+              "x": -15.215,
+              "y": -11.802
+            },
+            {
+              "id": "pin-spiral-123",
+              "x": -14.836,
+              "y": -12.274
+            },
+            {
+              "id": "pin-spiral-124",
+              "x": -14.443,
+              "y": -12.734
+            },
+            {
+              "id": "pin-spiral-125",
+              "x": -14.036,
+              "y": -13.181
+            },
+            {
+              "id": "pin-spiral-126",
+              "x": -13.615,
+              "y": -13.615
+            },
+            {
+              "id": "pin-spiral-127",
+              "x": -13.181,
+              "y": -14.036
+            },
+            {
+              "id": "pin-spiral-128",
+              "x": -12.734,
+              "y": -14.443
+            },
+            {
+              "id": "pin-spiral-129",
+              "x": -12.274,
+              "y": -14.836
+            },
+            {
+              "id": "pin-spiral-130",
+              "x": -11.802,
+              "y": -15.215
+            },
+            {
+              "id": "pin-spiral-131",
+              "x": -11.318,
+              "y": -15.578
+            },
+            {
+              "id": "pin-spiral-132",
+              "x": -10.823,
+              "y": -15.926
+            },
+            {
+              "id": "pin-spiral-133",
+              "x": -10.317,
+              "y": -16.258
+            },
+            {
+              "id": "pin-spiral-134",
+              "x": -9.802,
+              "y": -16.574
+            },
+            {
+              "id": "pin-spiral-135",
+              "x": -9.276,
+              "y": -16.873
+            },
+            {
+              "id": "pin-spiral-136",
+              "x": -8.742,
+              "y": -17.156
+            },
+            {
+              "id": "pin-spiral-137",
+              "x": -8.198,
+              "y": -17.423
+            },
+            {
+              "id": "pin-spiral-138",
+              "x": -7.647,
+              "y": -17.671
+            },
+            {
+              "id": "pin-spiral-139",
+              "x": -7.088,
+              "y": -17.903
+            },
+            {
+              "id": "pin-spiral-140",
+              "x": -6.522,
+              "y": -18.117
+            },
+            {
+              "id": "pin-spiral-141",
+              "x": -5.95,
+              "y": -18.313
+            },
+            {
+              "id": "pin-spiral-142",
+              "x": -5.372,
+              "y": -18.491
+            },
+            {
+              "id": "pin-spiral-143",
+              "x": -4.789,
+              "y": -18.65
+            },
+            {
+              "id": "pin-spiral-144",
+              "x": -4.2,
+              "y": -18.791
+            },
+            {
+              "id": "pin-spiral-145",
+              "x": -3.608,
+              "y": -18.914
+            },
+            {
+              "id": "pin-spiral-146",
+              "x": -3.012,
+              "y": -19.018
+            },
+            {
+              "id": "pin-spiral-147",
+              "x": -2.413,
+              "y": -19.103
+            },
+            {
+              "id": "pin-spiral-148",
+              "x": -1.812,
+              "y": -19.17
+            },
+            {
+              "id": "pin-spiral-149",
+              "x": -1.209,
+              "y": -19.217
+            },
+            {
+              "id": "pin-spiral-150",
+              "x": -0.605,
+              "y": -19.246
+            },
+            {
+              "id": "pin-spiral-151",
+              "x": 0,
+              "y": -19.255
+            },
+            {
+              "id": "pin-spiral-152",
+              "x": 0.605,
+              "y": -19.246
+            },
+            {
+              "id": "pin-spiral-153",
+              "x": 1.209,
+              "y": -19.217
+            },
+            {
+              "id": "pin-spiral-154",
+              "x": 1.812,
+              "y": -19.17
+            },
+            {
+              "id": "pin-spiral-155",
+              "x": 2.413,
+              "y": -19.103
+            },
+            {
+              "id": "pin-spiral-156",
+              "x": 3.012,
+              "y": -19.018
+            },
+            {
+              "id": "pin-spiral-157",
+              "x": 3.608,
+              "y": -18.914
+            },
+            {
+              "id": "pin-spiral-158",
+              "x": 4.2,
+              "y": -18.791
+            },
+            {
+              "id": "pin-spiral-159",
+              "x": 4.789,
+              "y": -18.65
+            },
+            {
+              "id": "pin-spiral-160",
+              "x": 5.372,
+              "y": -18.491
+            },
+            {
+              "id": "pin-spiral-161",
+              "x": 5.95,
+              "y": -18.313
+            },
+            {
+              "id": "pin-spiral-162",
+              "x": 6.522,
+              "y": -18.117
+            },
+            {
+              "id": "pin-spiral-163",
+              "x": 7.088,
+              "y": -17.903
+            },
+            {
+              "id": "pin-spiral-164",
+              "x": 7.647,
+              "y": -17.671
+            },
+            {
+              "id": "pin-spiral-165",
+              "x": 8.198,
+              "y": -17.423
+            },
+            {
+              "id": "pin-spiral-166",
+              "x": 8.742,
+              "y": -17.156
+            },
+            {
+              "id": "pin-spiral-167",
+              "x": 9.276,
+              "y": -16.873
+            },
+            {
+              "id": "pin-spiral-168",
+              "x": 9.802,
+              "y": -16.574
+            },
+            {
+              "id": "pin-spiral-169",
+              "x": 10.317,
+              "y": -16.258
+            },
+            {
+              "id": "pin-spiral-170",
+              "x": 10.823,
+              "y": -15.926
+            },
+            {
+              "id": "pin-spiral-171",
+              "x": 11.318,
+              "y": -15.578
+            },
+            {
+              "id": "pin-spiral-172",
+              "x": 11.802,
+              "y": -15.215
+            },
+            {
+              "id": "pin-spiral-173",
+              "x": 12.274,
+              "y": -14.836
+            },
+            {
+              "id": "pin-spiral-174",
+              "x": 12.734,
+              "y": -14.443
+            },
+            {
+              "id": "pin-spiral-175",
+              "x": 13.181,
+              "y": -14.036
+            },
+            {
+              "id": "pin-spiral-176",
+              "x": 13.615,
+              "y": -13.615
+            },
+            {
+              "id": "pin-spiral-177",
+              "x": 14.036,
+              "y": -13.181
+            },
+            {
+              "id": "pin-spiral-178",
+              "x": 14.443,
+              "y": -12.734
+            },
+            {
+              "id": "pin-spiral-179",
+              "x": 14.836,
+              "y": -12.274
+            },
+            {
+              "id": "pin-spiral-180",
+              "x": 15.215,
+              "y": -11.802
+            },
+            {
+              "id": "pin-spiral-181",
+              "x": 15.578,
+              "y": -11.318
+            },
+            {
+              "id": "pin-spiral-182",
+              "x": 15.926,
+              "y": -10.823
+            },
+            {
+              "id": "pin-spiral-183",
+              "x": 16.258,
+              "y": -10.317
+            },
+            {
+              "id": "pin-spiral-184",
+              "x": 16.574,
+              "y": -9.802
+            },
+            {
+              "id": "pin-spiral-185",
+              "x": 16.873,
+              "y": -9.276
+            },
+            {
+              "id": "pin-spiral-186",
+              "x": 17.156,
+              "y": -8.742
+            },
+            {
+              "id": "pin-spiral-187",
+              "x": 17.423,
+              "y": -8.198
+            },
+            {
+              "id": "pin-spiral-188",
+              "x": 17.671,
+              "y": -7.647
+            },
+            {
+              "id": "pin-spiral-189",
+              "x": 17.903,
+              "y": -7.088
+            },
+            {
+              "id": "pin-spiral-190",
+              "x": 18.117,
+              "y": -6.522
+            },
+            {
+              "id": "pin-spiral-191",
+              "x": 18.313,
+              "y": -5.95
+            },
+            {
+              "id": "pin-spiral-192",
+              "x": 18.491,
+              "y": -5.372
+            },
+            {
+              "id": "pin-spiral-193",
+              "x": 18.65,
+              "y": -4.789
+            },
+            {
+              "id": "pin-spiral-194",
+              "x": 18.791,
+              "y": -4.2
+            },
+            {
+              "id": "pin-spiral-195",
+              "x": 18.914,
+              "y": -3.608
+            },
+            {
+              "id": "pin-spiral-196",
+              "x": 19.018,
+              "y": -3.012
+            },
+            {
+              "id": "pin-spiral-197",
+              "x": 19.103,
+              "y": -2.413
+            },
+            {
+              "id": "pin-spiral-198",
+              "x": 19.17,
+              "y": -1.812
+            },
+            {
+              "id": "pin-spiral-199",
+              "x": 19.217,
+              "y": -1.209
+            },
+            {
+              "id": "pin-spiral-200",
+              "x": 19.246,
+              "y": -0.605
+            }
+          ],
+          "guideVisible": true,
+          "colour": "#ffffff",
+          "diameter": 0.25,
+          "symmetry": {
+            "type": "none"
+          }
+        }
+      ]
+    }
+  ],
+  "threadLayers": [
+    {
+      "id": "threadlayer-spiral-1",
+      "name": "Layer 1",
+      "visible": true,
+      "locked": false,
+      "threadPaths": [
+        {
+          "id": "threadpath-spiral-1",
+          "colours": [
+            "#b86200"
+          ],
+          "width": 0.15,
+          "pinIds": [
+            "pin-spiral-1",
+            "pin-spiral-101",
+            "pin-spiral-200",
+            "pin-spiral-100",
+            "pin-spiral-199",
+            "pin-spiral-99",
+            "pin-spiral-198",
+            "pin-spiral-98",
+            "pin-spiral-197",
+            "pin-spiral-97",
+            "pin-spiral-195",
+            "pin-spiral-96",
+            "pin-spiral-194",
+            "pin-spiral-95",
+            "pin-spiral-193",
+            "pin-spiral-94",
+            "pin-spiral-192",
+            "pin-spiral-93",
+            "pin-spiral-191",
+            "pin-spiral-92",
+            "pin-spiral-189",
+            "pin-spiral-91",
+            "pin-spiral-188",
+            "pin-spiral-90",
+            "pin-spiral-187",
+            "pin-spiral-89",
+            "pin-spiral-186",
+            "pin-spiral-88",
+            "pin-spiral-185",
+            "pin-spiral-87",
+            "pin-spiral-183",
+            "pin-spiral-86",
+            "pin-spiral-182",
+            "pin-spiral-85",
+            "pin-spiral-181",
+            "pin-spiral-84",
+            "pin-spiral-180",
+            "pin-spiral-83",
+            "pin-spiral-179",
+            "pin-spiral-82",
+            "pin-spiral-177",
+            "pin-spiral-81",
+            "pin-spiral-176",
+            "pin-spiral-80",
+            "pin-spiral-175",
+            "pin-spiral-79",
+            "pin-spiral-174",
+            "pin-spiral-78",
+            "pin-spiral-173",
+            "pin-spiral-77",
+            "pin-spiral-171",
+            "pin-spiral-76",
+            "pin-spiral-170",
+            "pin-spiral-75",
+            "pin-spiral-169",
+            "pin-spiral-74",
+            "pin-spiral-168",
+            "pin-spiral-73",
+            "pin-spiral-167",
+            "pin-spiral-72",
+            "pin-spiral-165",
+            "pin-spiral-71",
+            "pin-spiral-164",
+            "pin-spiral-70",
+            "pin-spiral-163",
+            "pin-spiral-69",
+            "pin-spiral-162",
+            "pin-spiral-68",
+            "pin-spiral-161",
+            "pin-spiral-67",
+            "pin-spiral-159",
+            "pin-spiral-66",
+            "pin-spiral-158",
+            "pin-spiral-65",
+            "pin-spiral-157",
+            "pin-spiral-64",
+            "pin-spiral-156",
+            "pin-spiral-63",
+            "pin-spiral-155",
+            "pin-spiral-62",
+            "pin-spiral-153",
+            "pin-spiral-61",
+            "pin-spiral-152",
+            "pin-spiral-60",
+            "pin-spiral-151",
+            "pin-spiral-59",
+            "pin-spiral-150",
+            "pin-spiral-58",
+            "pin-spiral-149",
+            "pin-spiral-57",
+            "pin-spiral-147",
+            "pin-spiral-56",
+            "pin-spiral-146",
+            "pin-spiral-55",
+            "pin-spiral-145",
+            "pin-spiral-54",
+            "pin-spiral-144",
+            "pin-spiral-53",
+            "pin-spiral-143",
+            "pin-spiral-52",
+            "pin-spiral-141",
+            "pin-spiral-51",
+            "pin-spiral-140",
+            "pin-spiral-50",
+            "pin-spiral-139",
+            "pin-spiral-49",
+            "pin-spiral-138",
+            "pin-spiral-48",
+            "pin-spiral-137",
+            "pin-spiral-47",
+            "pin-spiral-135",
+            "pin-spiral-46",
+            "pin-spiral-134",
+            "pin-spiral-45",
+            "pin-spiral-133",
+            "pin-spiral-44",
+            "pin-spiral-132",
+            "pin-spiral-43",
+            "pin-spiral-131",
+            "pin-spiral-42",
+            "pin-spiral-129",
+            "pin-spiral-41",
+            "pin-spiral-128",
+            "pin-spiral-40",
+            "pin-spiral-127",
+            "pin-spiral-39",
+            "pin-spiral-126",
+            "pin-spiral-38",
+            "pin-spiral-125",
+            "pin-spiral-37",
+            "pin-spiral-123",
+            "pin-spiral-36",
+            "pin-spiral-122",
+            "pin-spiral-35",
+            "pin-spiral-121",
+            "pin-spiral-34",
+            "pin-spiral-120",
+            "pin-spiral-33",
+            "pin-spiral-119",
+            "pin-spiral-32",
+            "pin-spiral-117",
+            "pin-spiral-31",
+            "pin-spiral-116"
+          ],
+          "twistPitch": 6
+        },
+        {
+          "id": "threadpath-spiral-2",
+          "colours": [
+            "#ec8c00"
+          ],
+          "width": 0.15,
+          "pinIds": [
+            "pin-spiral-116",
+            "pin-spiral-30",
+            "pin-spiral-115",
+            "pin-spiral-29",
+            "pin-spiral-114",
+            "pin-spiral-28",
+            "pin-spiral-113",
+            "pin-spiral-27",
+            "pin-spiral-111",
+            "pin-spiral-26",
+            "pin-spiral-110",
+            "pin-spiral-25",
+            "pin-spiral-109",
+            "pin-spiral-24",
+            "pin-spiral-108",
+            "pin-spiral-23",
+            "pin-spiral-107",
+            "pin-spiral-22",
+            "pin-spiral-105",
+            "pin-spiral-21",
+            "pin-spiral-104",
+            "pin-spiral-20",
+            "pin-spiral-103",
+            "pin-spiral-19",
+            "pin-spiral-102",
+            "pin-spiral-18",
+            "pin-spiral-101",
+            "pin-spiral-17",
+            "pin-spiral-99",
+            "pin-spiral-16",
+            "pin-spiral-98",
+            "pin-spiral-15",
+            "pin-spiral-97",
+            "pin-spiral-14",
+            "pin-spiral-96",
+            "pin-spiral-13",
+            "pin-spiral-95",
+            "pin-spiral-12",
+            "pin-spiral-93",
+            "pin-spiral-11",
+            "pin-spiral-92",
+            "pin-spiral-10",
+            "pin-spiral-91",
+            "pin-spiral-9",
+            "pin-spiral-90",
+            "pin-spiral-8",
+            "pin-spiral-89",
+            "pin-spiral-7",
+            "pin-spiral-87",
+            "pin-spiral-6",
+            "pin-spiral-86",
+            "pin-spiral-5",
+            "pin-spiral-85",
+            "pin-spiral-4",
+            "pin-spiral-84",
+            "pin-spiral-3",
+            "pin-spiral-83",
+            "pin-spiral-2",
+            "pin-spiral-81",
+            "pin-spiral-1",
+            "pin-spiral-80",
+            "pin-spiral-200",
+            "pin-spiral-79",
+            "pin-spiral-199",
+            "pin-spiral-78",
+            "pin-spiral-198",
+            "pin-spiral-77",
+            "pin-spiral-197",
+            "pin-spiral-75",
+            "pin-spiral-196",
+            "pin-spiral-74",
+            "pin-spiral-195",
+            "pin-spiral-73",
+            "pin-spiral-194",
+            "pin-spiral-72",
+            "pin-spiral-193",
+            "pin-spiral-71",
+            "pin-spiral-192",
+            "pin-spiral-69",
+            "pin-spiral-191",
+            "pin-spiral-68",
+            "pin-spiral-190",
+            "pin-spiral-67",
+            "pin-spiral-189",
+            "pin-spiral-66",
+            "pin-spiral-188",
+            "pin-spiral-65",
+            "pin-spiral-187",
+            "pin-spiral-63",
+            "pin-spiral-186",
+            "pin-spiral-62",
+            "pin-spiral-185",
+            "pin-spiral-61",
+            "pin-spiral-184",
+            "pin-spiral-60",
+            "pin-spiral-183",
+            "pin-spiral-59",
+            "pin-spiral-182",
+            "pin-spiral-57",
+            "pin-spiral-181",
+            "pin-spiral-56",
+            "pin-spiral-180",
+            "pin-spiral-55",
+            "pin-spiral-179",
+            "pin-spiral-54",
+            "pin-spiral-178",
+            "pin-spiral-53",
+            "pin-spiral-177",
+            "pin-spiral-51",
+            "pin-spiral-176",
+            "pin-spiral-50",
+            "pin-spiral-175",
+            "pin-spiral-49",
+            "pin-spiral-174",
+            "pin-spiral-48",
+            "pin-spiral-173",
+            "pin-spiral-47",
+            "pin-spiral-172",
+            "pin-spiral-45",
+            "pin-spiral-171",
+            "pin-spiral-44",
+            "pin-spiral-170",
+            "pin-spiral-43",
+            "pin-spiral-169",
+            "pin-spiral-42",
+            "pin-spiral-168",
+            "pin-spiral-41",
+            "pin-spiral-167",
+            "pin-spiral-39",
+            "pin-spiral-166",
+            "pin-spiral-38",
+            "pin-spiral-165",
+            "pin-spiral-37",
+            "pin-spiral-164",
+            "pin-spiral-36",
+            "pin-spiral-163",
+            "pin-spiral-35",
+            "pin-spiral-162",
+            "pin-spiral-33",
+            "pin-spiral-161",
+            "pin-spiral-32",
+            "pin-spiral-160",
+            "pin-spiral-31"
+          ],
+          "twistPitch": 6
+        },
+        {
+          "id": "threadpath-spiral-3",
+          "colours": [
+            "#ffb222"
+          ],
+          "width": 0.15,
+          "pinIds": [
+            "pin-spiral-31",
+            "pin-spiral-159",
+            "pin-spiral-30",
+            "pin-spiral-158",
+            "pin-spiral-29",
+            "pin-spiral-157",
+            "pin-spiral-27",
+            "pin-spiral-156",
+            "pin-spiral-26",
+            "pin-spiral-155",
+            "pin-spiral-25",
+            "pin-spiral-154",
+            "pin-spiral-24",
+            "pin-spiral-153",
+            "pin-spiral-23",
+            "pin-spiral-152",
+            "pin-spiral-21",
+            "pin-spiral-151",
+            "pin-spiral-20",
+            "pin-spiral-150",
+            "pin-spiral-19",
+            "pin-spiral-149",
+            "pin-spiral-18",
+            "pin-spiral-148",
+            "pin-spiral-17",
+            "pin-spiral-147",
+            "pin-spiral-15",
+            "pin-spiral-146",
+            "pin-spiral-14",
+            "pin-spiral-145",
+            "pin-spiral-13",
+            "pin-spiral-144",
+            "pin-spiral-12",
+            "pin-spiral-143",
+            "pin-spiral-11",
+            "pin-spiral-142",
+            "pin-spiral-9",
+            "pin-spiral-141",
+            "pin-spiral-8",
+            "pin-spiral-140",
+            "pin-spiral-7",
+            "pin-spiral-139",
+            "pin-spiral-6",
+            "pin-spiral-138",
+            "pin-spiral-5",
+            "pin-spiral-137",
+            "pin-spiral-3",
+            "pin-spiral-136",
+            "pin-spiral-2",
+            "pin-spiral-135",
+            "pin-spiral-1",
+            "pin-spiral-134",
+            "pin-spiral-200",
+            "pin-spiral-133",
+            "pin-spiral-199",
+            "pin-spiral-132",
+            "pin-spiral-197",
+            "pin-spiral-131",
+            "pin-spiral-196",
+            "pin-spiral-130",
+            "pin-spiral-195",
+            "pin-spiral-129",
+            "pin-spiral-194",
+            "pin-spiral-128",
+            "pin-spiral-193",
+            "pin-spiral-127",
+            "pin-spiral-191",
+            "pin-spiral-126",
+            "pin-spiral-190",
+            "pin-spiral-125",
+            "pin-spiral-189",
+            "pin-spiral-124",
+            "pin-spiral-188",
+            "pin-spiral-123",
+            "pin-spiral-187",
+            "pin-spiral-122",
+            "pin-spiral-185",
+            "pin-spiral-121",
+            "pin-spiral-184",
+            "pin-spiral-120",
+            "pin-spiral-183",
+            "pin-spiral-119",
+            "pin-spiral-182",
+            "pin-spiral-118",
+            "pin-spiral-181",
+            "pin-spiral-117",
+            "pin-spiral-179",
+            "pin-spiral-116",
+            "pin-spiral-178",
+            "pin-spiral-115",
+            "pin-spiral-177",
+            "pin-spiral-114",
+            "pin-spiral-176",
+            "pin-spiral-113",
+            "pin-spiral-175",
+            "pin-spiral-112",
+            "pin-spiral-173",
+            "pin-spiral-111",
+            "pin-spiral-172",
+            "pin-spiral-110",
+            "pin-spiral-171",
+            "pin-spiral-109",
+            "pin-spiral-170",
+            "pin-spiral-108",
+            "pin-spiral-169",
+            "pin-spiral-107",
+            "pin-spiral-167",
+            "pin-spiral-106",
+            "pin-spiral-166",
+            "pin-spiral-105",
+            "pin-spiral-165",
+            "pin-spiral-104",
+            "pin-spiral-164",
+            "pin-spiral-103",
+            "pin-spiral-163",
+            "pin-spiral-102",
+            "pin-spiral-161",
+            "pin-spiral-101",
+            "pin-spiral-160",
+            "pin-spiral-100",
+            "pin-spiral-159",
+            "pin-spiral-99",
+            "pin-spiral-158",
+            "pin-spiral-98",
+            "pin-spiral-157",
+            "pin-spiral-97",
+            "pin-spiral-155",
+            "pin-spiral-96",
+            "pin-spiral-154",
+            "pin-spiral-95",
+            "pin-spiral-153",
+            "pin-spiral-94",
+            "pin-spiral-152",
+            "pin-spiral-93",
+            "pin-spiral-151",
+            "pin-spiral-92",
+            "pin-spiral-149",
+            "pin-spiral-91",
+            "pin-spiral-148",
+            "pin-spiral-90",
+            "pin-spiral-147",
+            "pin-spiral-89",
+            "pin-spiral-146"
+          ],
+          "twistPitch": 6
+        },
+        {
+          "id": "threadpath-spiral-4",
+          "colours": [
+            "#ffce57"
+          ],
+          "width": 0.15,
+          "pinIds": [
+            "pin-spiral-146",
+            "pin-spiral-88",
+            "pin-spiral-145",
+            "pin-spiral-87",
+            "pin-spiral-143",
+            "pin-spiral-86",
+            "pin-spiral-142",
+            "pin-spiral-85",
+            "pin-spiral-141",
+            "pin-spiral-84",
+            "pin-spiral-140",
+            "pin-spiral-83",
+            "pin-spiral-139",
+            "pin-spiral-82",
+            "pin-spiral-137",
+            "pin-spiral-81",
+            "pin-spiral-136",
+            "pin-spiral-80",
+            "pin-spiral-135",
+            "pin-spiral-79",
+            "pin-spiral-134",
+            "pin-spiral-78",
+            "pin-spiral-133",
+            "pin-spiral-77",
+            "pin-spiral-131",
+            "pin-spiral-76",
+            "pin-spiral-130",
+            "pin-spiral-75",
+            "pin-spiral-129",
+            "pin-spiral-74",
+            "pin-spiral-128",
+            "pin-spiral-73",
+            "pin-spiral-127",
+            "pin-spiral-72",
+            "pin-spiral-125",
+            "pin-spiral-71",
+            "pin-spiral-124",
+            "pin-spiral-70",
+            "pin-spiral-123",
+            "pin-spiral-69",
+            "pin-spiral-122",
+            "pin-spiral-68",
+            "pin-spiral-121",
+            "pin-spiral-67",
+            "pin-spiral-119",
+            "pin-spiral-66",
+            "pin-spiral-118",
+            "pin-spiral-65",
+            "pin-spiral-117",
+            "pin-spiral-64",
+            "pin-spiral-116",
+            "pin-spiral-63",
+            "pin-spiral-115",
+            "pin-spiral-62",
+            "pin-spiral-113",
+            "pin-spiral-61",
+            "pin-spiral-112",
+            "pin-spiral-60",
+            "pin-spiral-111",
+            "pin-spiral-59",
+            "pin-spiral-110",
+            "pin-spiral-58",
+            "pin-spiral-109",
+            "pin-spiral-57",
+            "pin-spiral-107",
+            "pin-spiral-56",
+            "pin-spiral-106",
+            "pin-spiral-55",
+            "pin-spiral-105",
+            "pin-spiral-54",
+            "pin-spiral-104",
+            "pin-spiral-53",
+            "pin-spiral-103",
+            "pin-spiral-52",
+            "pin-spiral-101",
+            "pin-spiral-51",
+            "pin-spiral-100",
+            "pin-spiral-50",
+            "pin-spiral-99",
+            "pin-spiral-49",
+            "pin-spiral-98",
+            "pin-spiral-48",
+            "pin-spiral-97",
+            "pin-spiral-47",
+            "pin-spiral-95",
+            "pin-spiral-46",
+            "pin-spiral-94",
+            "pin-spiral-45",
+            "pin-spiral-93",
+            "pin-spiral-44",
+            "pin-spiral-92",
+            "pin-spiral-43",
+            "pin-spiral-91",
+            "pin-spiral-42",
+            "pin-spiral-89",
+            "pin-spiral-41",
+            "pin-spiral-88",
+            "pin-spiral-40",
+            "pin-spiral-87",
+            "pin-spiral-39",
+            "pin-spiral-86",
+            "pin-spiral-38",
+            "pin-spiral-85",
+            "pin-spiral-37",
+            "pin-spiral-83",
+            "pin-spiral-36",
+            "pin-spiral-82",
+            "pin-spiral-35",
+            "pin-spiral-81",
+            "pin-spiral-34",
+            "pin-spiral-80",
+            "pin-spiral-33",
+            "pin-spiral-79",
+            "pin-spiral-32",
+            "pin-spiral-77",
+            "pin-spiral-31",
+            "pin-spiral-76",
+            "pin-spiral-30",
+            "pin-spiral-75",
+            "pin-spiral-29",
+            "pin-spiral-74",
+            "pin-spiral-28",
+            "pin-spiral-73",
+            "pin-spiral-27",
+            "pin-spiral-71",
+            "pin-spiral-26",
+            "pin-spiral-70",
+            "pin-spiral-25",
+            "pin-spiral-69",
+            "pin-spiral-24",
+            "pin-spiral-68",
+            "pin-spiral-23",
+            "pin-spiral-67",
+            "pin-spiral-22",
+            "pin-spiral-65",
+            "pin-spiral-21",
+            "pin-spiral-64",
+            "pin-spiral-20",
+            "pin-spiral-63",
+            "pin-spiral-19",
+            "pin-spiral-62",
+            "pin-spiral-18",
+            "pin-spiral-61"
+          ],
+          "twistPitch": 6
+        },
+        {
+          "id": "threadpath-spiral-5",
+          "colours": [
+            "#ffe48b"
+          ],
+          "width": 0.15,
+          "pinIds": [
+            "pin-spiral-61",
+            "pin-spiral-17",
+            "pin-spiral-59",
+            "pin-spiral-16",
+            "pin-spiral-58",
+            "pin-spiral-15",
+            "pin-spiral-57",
+            "pin-spiral-14",
+            "pin-spiral-56",
+            "pin-spiral-13",
+            "pin-spiral-55",
+            "pin-spiral-12",
+            "pin-spiral-53",
+            "pin-spiral-11",
+            "pin-spiral-52",
+            "pin-spiral-10",
+            "pin-spiral-51",
+            "pin-spiral-9",
+            "pin-spiral-50",
+            "pin-spiral-8",
+            "pin-spiral-49",
+            "pin-spiral-7",
+            "pin-spiral-47",
+            "pin-spiral-6",
+            "pin-spiral-46",
+            "pin-spiral-5",
+            "pin-spiral-45",
+            "pin-spiral-4",
+            "pin-spiral-44",
+            "pin-spiral-3",
+            "pin-spiral-43",
+            "pin-spiral-2",
+            "pin-spiral-41",
+            "pin-spiral-1",
+            "pin-spiral-40",
+            "pin-spiral-200",
+            "pin-spiral-39",
+            "pin-spiral-199",
+            "pin-spiral-38",
+            "pin-spiral-198",
+            "pin-spiral-37",
+            "pin-spiral-197",
+            "pin-spiral-35",
+            "pin-spiral-196",
+            "pin-spiral-34",
+            "pin-spiral-195",
+            "pin-spiral-33",
+            "pin-spiral-194",
+            "pin-spiral-32",
+            "pin-spiral-193",
+            "pin-spiral-31",
+            "pin-spiral-192",
+            "pin-spiral-29",
+            "pin-spiral-191",
+            "pin-spiral-28",
+            "pin-spiral-190",
+            "pin-spiral-27",
+            "pin-spiral-189",
+            "pin-spiral-26",
+            "pin-spiral-188",
+            "pin-spiral-25",
+            "pin-spiral-187",
+            "pin-spiral-23",
+            "pin-spiral-186",
+            "pin-spiral-22",
+            "pin-spiral-185",
+            "pin-spiral-21",
+            "pin-spiral-184",
+            "pin-spiral-20",
+            "pin-spiral-183",
+            "pin-spiral-19",
+            "pin-spiral-182",
+            "pin-spiral-17",
+            "pin-spiral-181",
+            "pin-spiral-16",
+            "pin-spiral-180",
+            "pin-spiral-15",
+            "pin-spiral-179",
+            "pin-spiral-14",
+            "pin-spiral-178",
+            "pin-spiral-13",
+            "pin-spiral-177",
+            "pin-spiral-11",
+            "pin-spiral-176",
+            "pin-spiral-10",
+            "pin-spiral-175",
+            "pin-spiral-9",
+            "pin-spiral-174",
+            "pin-spiral-8",
+            "pin-spiral-173",
+            "pin-spiral-7",
+            "pin-spiral-172",
+            "pin-spiral-5",
+            "pin-spiral-171",
+            "pin-spiral-4",
+            "pin-spiral-170",
+            "pin-spiral-3",
+            "pin-spiral-169",
+            "pin-spiral-2",
+            "pin-spiral-168",
+            "pin-spiral-1",
+            "pin-spiral-167",
+            "pin-spiral-199",
+            "pin-spiral-166",
+            "pin-spiral-198",
+            "pin-spiral-165",
+            "pin-spiral-197",
+            "pin-spiral-164",
+            "pin-spiral-196",
+            "pin-spiral-163",
+            "pin-spiral-195",
+            "pin-spiral-162",
+            "pin-spiral-193",
+            "pin-spiral-161",
+            "pin-spiral-192",
+            "pin-spiral-160",
+            "pin-spiral-191",
+            "pin-spiral-159",
+            "pin-spiral-190",
+            "pin-spiral-158",
+            "pin-spiral-189",
+            "pin-spiral-157",
+            "pin-spiral-187",
+            "pin-spiral-156",
+            "pin-spiral-186",
+            "pin-spiral-155",
+            "pin-spiral-185",
+            "pin-spiral-154",
+            "pin-spiral-184",
+            "pin-spiral-153",
+            "pin-spiral-183",
+            "pin-spiral-152",
+            "pin-spiral-181",
+            "pin-spiral-151",
+            "pin-spiral-180",
+            "pin-spiral-150",
+            "pin-spiral-179",
+            "pin-spiral-149",
+            "pin-spiral-178",
+            "pin-spiral-148",
+            "pin-spiral-177",
+            "pin-spiral-147",
+            "pin-spiral-175"
+          ],
+          "twistPitch": 6
+        },
+        {
+          "id": "threadpath-spiral-6",
+          "colours": [
+            "#fff4c0"
+          ],
+          "width": 0.15,
+          "pinIds": [
+            "pin-spiral-175",
+            "pin-spiral-146",
+            "pin-spiral-174",
+            "pin-spiral-145",
+            "pin-spiral-173",
+            "pin-spiral-144",
+            "pin-spiral-172",
+            "pin-spiral-143",
+            "pin-spiral-171",
+            "pin-spiral-142",
+            "pin-spiral-169",
+            "pin-spiral-141",
+            "pin-spiral-168",
+            "pin-spiral-140",
+            "pin-spiral-167",
+            "pin-spiral-139",
+            "pin-spiral-166",
+            "pin-spiral-138",
+            "pin-spiral-165",
+            "pin-spiral-137",
+            "pin-spiral-163",
+            "pin-spiral-136",
+            "pin-spiral-162",
+            "pin-spiral-135",
+            "pin-spiral-161",
+            "pin-spiral-134",
+            "pin-spiral-160",
+            "pin-spiral-133",
+            "pin-spiral-159",
+            "pin-spiral-132",
+            "pin-spiral-157",
+            "pin-spiral-131",
+            "pin-spiral-156",
+            "pin-spiral-130",
+            "pin-spiral-155",
+            "pin-spiral-129",
+            "pin-spiral-154",
+            "pin-spiral-128",
+            "pin-spiral-153",
+            "pin-spiral-127",
+            "pin-spiral-151",
+            "pin-spiral-126",
+            "pin-spiral-150",
+            "pin-spiral-125",
+            "pin-spiral-149",
+            "pin-spiral-124",
+            "pin-spiral-148",
+            "pin-spiral-123",
+            "pin-spiral-147",
+            "pin-spiral-122",
+            "pin-spiral-145",
+            "pin-spiral-121",
+            "pin-spiral-144",
+            "pin-spiral-120",
+            "pin-spiral-143",
+            "pin-spiral-119",
+            "pin-spiral-142",
+            "pin-spiral-118",
+            "pin-spiral-141",
+            "pin-spiral-117",
+            "pin-spiral-139",
+            "pin-spiral-116",
+            "pin-spiral-138",
+            "pin-spiral-115",
+            "pin-spiral-137",
+            "pin-spiral-114",
+            "pin-spiral-136",
+            "pin-spiral-113",
+            "pin-spiral-135",
+            "pin-spiral-112",
+            "pin-spiral-133",
+            "pin-spiral-111",
+            "pin-spiral-132",
+            "pin-spiral-110",
+            "pin-spiral-131",
+            "pin-spiral-109",
+            "pin-spiral-130",
+            "pin-spiral-108",
+            "pin-spiral-129",
+            "pin-spiral-107",
+            "pin-spiral-127",
+            "pin-spiral-106",
+            "pin-spiral-126",
+            "pin-spiral-105",
+            "pin-spiral-125",
+            "pin-spiral-104",
+            "pin-spiral-124",
+            "pin-spiral-103",
+            "pin-spiral-123",
+            "pin-spiral-102",
+            "pin-spiral-121",
+            "pin-spiral-101",
+            "pin-spiral-120",
+            "pin-spiral-100",
+            "pin-spiral-119",
+            "pin-spiral-99",
+            "pin-spiral-118",
+            "pin-spiral-98",
+            "pin-spiral-117",
+            "pin-spiral-97",
+            "pin-spiral-115",
+            "pin-spiral-96",
+            "pin-spiral-114",
+            "pin-spiral-95",
+            "pin-spiral-113",
+            "pin-spiral-94",
+            "pin-spiral-112",
+            "pin-spiral-93",
+            "pin-spiral-111",
+            "pin-spiral-92",
+            "pin-spiral-109",
+            "pin-spiral-91",
+            "pin-spiral-108",
+            "pin-spiral-90",
+            "pin-spiral-107",
+            "pin-spiral-89",
+            "pin-spiral-106",
+            "pin-spiral-88",
+            "pin-spiral-105",
+            "pin-spiral-87",
+            "pin-spiral-103",
+            "pin-spiral-86",
+            "pin-spiral-102",
+            "pin-spiral-85",
+            "pin-spiral-101",
+            "pin-spiral-84",
+            "pin-spiral-100",
+            "pin-spiral-83",
+            "pin-spiral-99",
+            "pin-spiral-82",
+            "pin-spiral-97",
+            "pin-spiral-81",
+            "pin-spiral-96",
+            "pin-spiral-80",
+            "pin-spiral-95",
+            "pin-spiral-79",
+            "pin-spiral-94",
+            "pin-spiral-78",
+            "pin-spiral-93",
+            "pin-spiral-77",
+            "pin-spiral-91",
+            "pin-spiral-76",
+            "pin-spiral-90"
+          ],
+          "twistPitch": 6
+        },
+        {
+          "id": "threadpath-spiral-7",
+          "colours": [
+            "#fffef5"
+          ],
+          "width": 0.15,
+          "pinIds": [
+            "pin-spiral-90",
+            "pin-spiral-75",
+            "pin-spiral-89",
+            "pin-spiral-74",
+            "pin-spiral-88",
+            "pin-spiral-73",
+            "pin-spiral-87",
+            "pin-spiral-72",
+            "pin-spiral-85",
+            "pin-spiral-71",
+            "pin-spiral-84",
+            "pin-spiral-70",
+            "pin-spiral-83",
+            "pin-spiral-69",
+            "pin-spiral-82",
+            "pin-spiral-68",
+            "pin-spiral-81",
+            "pin-spiral-67",
+            "pin-spiral-79",
+            "pin-spiral-66",
+            "pin-spiral-78",
+            "pin-spiral-65",
+            "pin-spiral-77",
+            "pin-spiral-64",
+            "pin-spiral-76",
+            "pin-spiral-63",
+            "pin-spiral-75",
+            "pin-spiral-62",
+            "pin-spiral-73",
+            "pin-spiral-61",
+            "pin-spiral-72",
+            "pin-spiral-60",
+            "pin-spiral-71",
+            "pin-spiral-59",
+            "pin-spiral-70",
+            "pin-spiral-58",
+            "pin-spiral-69",
+            "pin-spiral-57",
+            "pin-spiral-67",
+            "pin-spiral-56",
+            "pin-spiral-66",
+            "pin-spiral-55",
+            "pin-spiral-65",
+            "pin-spiral-54",
+            "pin-spiral-64",
+            "pin-spiral-53",
+            "pin-spiral-63",
+            "pin-spiral-52",
+            "pin-spiral-61",
+            "pin-spiral-51",
+            "pin-spiral-60",
+            "pin-spiral-50",
+            "pin-spiral-59",
+            "pin-spiral-49",
+            "pin-spiral-58",
+            "pin-spiral-48",
+            "pin-spiral-57",
+            "pin-spiral-47",
+            "pin-spiral-55",
+            "pin-spiral-46",
+            "pin-spiral-54",
+            "pin-spiral-45",
+            "pin-spiral-53",
+            "pin-spiral-44",
+            "pin-spiral-52",
+            "pin-spiral-43",
+            "pin-spiral-51",
+            "pin-spiral-42",
+            "pin-spiral-49",
+            "pin-spiral-41",
+            "pin-spiral-48",
+            "pin-spiral-40",
+            "pin-spiral-47",
+            "pin-spiral-39",
+            "pin-spiral-46",
+            "pin-spiral-38",
+            "pin-spiral-45",
+            "pin-spiral-37",
+            "pin-spiral-43",
+            "pin-spiral-36",
+            "pin-spiral-42",
+            "pin-spiral-35",
+            "pin-spiral-41",
+            "pin-spiral-34",
+            "pin-spiral-40",
+            "pin-spiral-33",
+            "pin-spiral-39",
+            "pin-spiral-32",
+            "pin-spiral-37",
+            "pin-spiral-31",
+            "pin-spiral-36",
+            "pin-spiral-30",
+            "pin-spiral-35",
+            "pin-spiral-29",
+            "pin-spiral-34",
+            "pin-spiral-28",
+            "pin-spiral-33",
+            "pin-spiral-27",
+            "pin-spiral-31",
+            "pin-spiral-26",
+            "pin-spiral-30",
+            "pin-spiral-25",
+            "pin-spiral-29",
+            "pin-spiral-24",
+            "pin-spiral-28",
+            "pin-spiral-23",
+            "pin-spiral-27",
+            "pin-spiral-22",
+            "pin-spiral-25",
+            "pin-spiral-21",
+            "pin-spiral-24",
+            "pin-spiral-20",
+            "pin-spiral-23",
+            "pin-spiral-19",
+            "pin-spiral-22",
+            "pin-spiral-18",
+            "pin-spiral-21",
+            "pin-spiral-17",
+            "pin-spiral-19",
+            "pin-spiral-16",
+            "pin-spiral-18",
+            "pin-spiral-15",
+            "pin-spiral-17",
+            "pin-spiral-14",
+            "pin-spiral-16",
+            "pin-spiral-13",
+            "pin-spiral-15",
+            "pin-spiral-12",
+            "pin-spiral-13",
+            "pin-spiral-11",
+            "pin-spiral-12",
+            "pin-spiral-10",
+            "pin-spiral-11",
+            "pin-spiral-9",
+            "pin-spiral-10",
+            "pin-spiral-8",
+            "pin-spiral-9",
+            "pin-spiral-7",
+            "pin-spiral-7",
+            "pin-spiral-6",
+            "pin-spiral-6",
+            "pin-spiral-5",
+            "pin-spiral-5",
+            "pin-spiral-4",
+            "pin-spiral-4",
+            "pin-spiral-3",
+            "pin-spiral-3",
+            "pin-spiral-2",
+            "pin-spiral-1"
+          ],
+          "twistPitch": 6
+        }
+      ]
+    }
+  ]
+}

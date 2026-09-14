@@ -1,8 +1,21 @@
 {
   "title": "New Board",
   "sections": {
+    "templates": "Templates",
     "shape": "Shape",
     "dimensions": "Dimensions"
+  },
+  "templates": {
+    "loading": "Loading…",
+    "spiral": "Spiral",
+    "comet": "Comet",
+    "flower": "Flower",
+    "lotus": "Lotus",
+    "sun": "Sun",
+    "starOfDavid": "Star of David",
+    "spirals": "Spirals",
+    "assymetry": "Assymetry",
+    "polygon": "Polygon"
   },
   "shapes": {
     "circle": "Circle",

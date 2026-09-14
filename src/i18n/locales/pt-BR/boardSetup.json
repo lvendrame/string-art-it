@@ -1,8 +1,21 @@
 {
   "title": "Novo Quadro",
   "sections": {
+    "templates": "Modelos",
     "shape": "Forma",
     "dimensions": "Dimensões"
+  },
+  "templates": {
+    "loading": "Carregando…",
+    "spiral": "Espiral",
+    "comet": "Cometa",
+    "flower": "Flor",
+    "lotus": "Lótus",
+    "sun": "Sol",
+    "starOfDavid": "Estrela de Davi",
+    "spirals": "Espirais",
+    "assymetry": "Assimetria",
+    "polygon": "Polígono"
   },
   "shapes": {
     "circle": "Círculo",

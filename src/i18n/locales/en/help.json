@@ -132,7 +132,7 @@
     "mouse": {
       "heading": "Mouse",
       "leftButton": { "label": "Left button", "description": "Drives every draw, select, and drag gesture across every mode." },
-      "rightClick": { "label": "Right-click", "description": "Reserved for specific per-tool actions only — committing a Merge (Edit mode), or finishing a thread draft without adding a final segment (Thread mode). It is never a generic context menu." },
+      "rightClick": { "label": "Right-click", "description": "Opens a radial context menu with icon slices matching the current Editor mode — Select/Move/Rotate/Scale/Merge (plus Commit Merge once 2+ pins are accumulated) in Edit mode, the Pin drawing tools in Pin mode, Draw/Eraser/Segment in Thread mode (or Cut/Back/Next while a thread draft is in progress), Fit/Zoom In/Zoom Out in Pan mode, and the playback transport in Play mode. Escape or clicking outside the menu closes it without acting." },
       "doubleClick": { "label": "Double-click", "description": "Thread Draw tool — finishes the in-progress draft, adding one final segment to the clicked pin." },
       "leftDrag": { "label": "Left-drag", "description": "Pans the viewport in Pan mode; press-drag-release also drives Move/Rotation in Edit mode and most shape tools in Pin mode." }
     }

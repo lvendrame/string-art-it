@@ -74,6 +74,7 @@ The application must allow users to:
 | Thread draft pattern-follow (Right Arrow) | [22-thread-follow-pattern.md](./22-thread-follow-pattern.md) |
 | Keyboard Move/Rotate/Scale | [23-keyboard-transform.md](./23-keyboard-transform.md) |
 | Internationalization (i18n) | [24-internationalization.md](./24-internationalization.md) |
+| Radial context menu | [25-radial-context-menu.md](./25-radial-context-menu.md) |
 
 ## MVP Scope
 

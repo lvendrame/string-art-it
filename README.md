@@ -40,12 +40,13 @@ The editor is laid out as:
 - **Zoom**: `−`/`+` buttons in the canvas toolbar, or **Fit** to frame the whole board.
 - **Grid**: toggle visibility and snapping independently (a hidden grid can still snap). Configure gap X/Y, colour, and opacity.
 - **Snap**: with grid-snap on, the canvas shows a small ring at the grid point your cursor will land on. With pin-snap on (default), the nearest pin always wins over the grid.
+- **Right-click**: opens a radial context menu, icon-only with tooltips, whose slices match the current mode — Select/Move/Rotate/Scale/Merge in Select mode, the Pin drawing tools in Pin mode, Draw/Eraser/Segment in Thread mode (or Cut/Back/Next while a thread draft is in progress), Fit/Zoom In/Zoom Out in Pan mode, and the playback transport in Play mode. Escape or a click outside the menu closes it without acting.
 
 ## Select mode
 
 Click a pin to select the Pin Path it belongs to. The left panel then shows that shape's numeric properties (position, size, spacing, colour, diameter, guide visibility, symmetry) — edit the numbers directly rather than dragging handles on the canvas. Clicking empty space clears the selection.
 
-The left panel also has Move, Rotation, Scale, and Merge tools for a selected Pin Path: Move and Rotation drag it around or spin it in place; **Scale** drags it larger or smaller about its own centre, recalculating pin count and reattaching any connected threads to the nearest new pin; Merge collapses several pins (left-click to accumulate, right-click to commit) into one. Changing the **Pin distance** field in the property panel does the same recalculation-and-reattachment as Scale, without changing the shape's size.
+The left panel also has Move, Rotation, Scale, and Merge tools for a selected Pin Path: Move and Rotation drag it around or spin it in place; **Scale** drags it larger or smaller about its own centre, recalculating pin count and reattaching any connected threads to the nearest new pin; Merge collapses several pins (left-click to accumulate, right-click and choose Commit Merge from the radial menu) into one. Changing the **Pin distance** field in the property panel does the same recalculation-and-reattachment as Scale, without changing the shape's size.
 
 With a Pin Path selected, the arrow keys also drive whichever of Move/Rotation/Scale is active — 1 unit per press (1 screen-pixel of movement, 1°, or 1%), 10x with Shift held. Holding a key down repeats it automatically after a 500ms delay, then every 100ms, same as native "hold to repeat" controls. Rotation and Scale always pivot on the shape's own centre when driven from the keyboard, even though the mouse Rotation tool pivots on wherever you pressed down.
 
@@ -74,7 +75,7 @@ Threads connect existing pins only — you can't drop a thread endpoint on empty
 - **Hover** near a pin: it's outlined as the nearest candidate.
 - **Left-click** a candidate pin: starts (or extends) the thread. The pin you just clicked becomes the new "active origin," shown filled; every pin already used earlier in this thread is shown dimmed so you can see the path so far.
 - **Double-click** a pin: adds a final segment to it and finishes the thread.
-- **Right-click**: finishes the thread at the last confirmed pin, without adding whatever segment was being previewed.
+- **Right-click**: opens the radial menu; choose **Cut** to finish the thread at the last confirmed pin without adding whatever segment was being previewed, **Back** (same as Left Arrow) or **Next** (same as Right Arrow, below).
 - **Esc**: if no segment has been confirmed yet, cancels the thread outright; if at least one segment exists, finishes the thread where it is.
 - **Left Arrow**: removes the last vertex you added. If only one vertex is left, removing it cancels the thread.
 - **Right Arrow**: once you've added at least 4 vertices, auto-adds the next one by following the numeric pin-position pattern of the vertices added so far (e.g. 3, 6, 9, 12 → 15, 18, ...), wrapping around the pin count of whichever Pin Path the pattern lands on.

@@ -9,7 +9,7 @@
       "move": { "label": "Move", "tooltip": "Drag to translate the selected Pin Path." },
       "rotate": { "label": "Rotation", "tooltip": "Drag left or right from any point to rotate the selected Pin Path around that point." },
       "scale": { "label": "Scale", "tooltip": "Drag left or right to scale the selected Pin Path about its own centre." },
-      "merge": { "label": "Merge", "tooltip": "Click pins to select them, then right-click to merge them into one pin at their midpoint." }
+      "merge": { "label": "Merge", "tooltip": "Click pins to select them, then right-click and choose Commit Merge to merge them into one pin at their midpoint." }
     }
   },
   "pinToolbar": {
@@ -82,5 +82,11 @@
     "zoomOut": "Zoom out",
     "zoomIn": "Zoom in",
     "fit": "Fit"
+  },
+  "radialMenu": {
+    "commitMerge": "Commit Merge",
+    "cut": "Cut",
+    "back": "Back",
+    "next": "Next"
   }
 }

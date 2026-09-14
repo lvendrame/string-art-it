@@ -132,7 +132,7 @@
     "mouse": {
       "heading": "Mouse",
       "leftButton": { "label": "Botão esquerdo", "description": "Controla todo gesto de desenho, seleção e arraste em todos os modos." },
-      "rightClick": { "label": "Clique direito", "description": "Reservado apenas para ações específicas por ferramenta — confirmar uma Mesclagem (modo Editar), ou finalizar um rascunho de linha sem adicionar um segmento final (modo Linha). Nunca é um menu de contexto genérico." },
+      "rightClick": { "label": "Clique direito", "description": "Abre um menu de contexto radial com ícones de acordo com o modo atual do editor — Selecionar/Mover/Rotação/Escala/Mesclar (mais Confirmar Mesclagem quando 2 ou mais pinos estiverem acumulados) no modo Editar, as ferramentas de desenho de pino no modo Pino, Desenhar/Borracha/Segmento no modo Linha (ou Cortar/Voltar/Avançar durante um rascunho de linha em andamento), Ajustar/Aumentar zoom/Diminuir zoom no modo Mover, e os controles de reprodução no modo Reproduzir. Esc ou clicar fora do menu o fecha sem executar nenhuma ação." },
       "doubleClick": { "label": "Duplo clique", "description": "Ferramenta Desenhar Linha — finaliza o rascunho em andamento, adicionando um segmento final ao pino clicado." },
       "leftDrag": { "label": "Arrastar com botão esquerdo", "description": "Move a área de visualização no modo Mover; pressionar-arrastar-soltar também controla Mover/Rotação no modo Editar e a maioria das ferramentas de forma no modo Pino." }
     }

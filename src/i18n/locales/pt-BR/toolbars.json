@@ -9,7 +9,7 @@
       "move": { "label": "Mover", "tooltip": "Arraste para transladar o Caminho de Pinos selecionado." },
       "rotate": { "label": "Rotação", "tooltip": "Arraste para a esquerda ou direita a partir de qualquer ponto para girar o Caminho de Pinos selecionado em torno desse ponto." },
       "scale": { "label": "Escala", "tooltip": "Arraste para a esquerda ou direita para redimensionar o Caminho de Pinos selecionado em torno de seu próprio centro." },
-      "merge": { "label": "Mesclar", "tooltip": "Clique nos pinos para selecioná-los e clique com o botão direito para mesclá-los em um único pino no ponto médio entre eles." }
+      "merge": { "label": "Mesclar", "tooltip": "Clique nos pinos para selecioná-los, depois clique com o botão direito e escolha Confirmar Mesclagem para mesclá-los em um único pino no ponto médio entre eles." }
     }
   },
   "pinToolbar": {
@@ -82,5 +82,11 @@
     "zoomOut": "Diminuir zoom",
     "zoomIn": "Aumentar zoom",
     "fit": "Ajustar"
+  },
+  "radialMenu": {
+    "commitMerge": "Confirmar Mesclagem",
+    "cut": "Cortar",
+    "back": "Voltar",
+    "next": "Avançar"
   }
 }

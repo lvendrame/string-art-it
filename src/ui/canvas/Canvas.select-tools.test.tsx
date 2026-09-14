@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { act, render, screen, fireEvent } from "@testing-library/react";
 import { beforeAll, describe, expect, it } from "vitest";
 import { EditorStore } from "../../application/document";
 import { rotatePoint } from "../../domain/transforms";
@@ -113,7 +113,12 @@ describe("Canvas — Edit mode: Merge", () => {
     return { layerId, pathIdA, pathIdB };
   }
 
-  it("left-click accumulates pins across two Pin Paths, right-click merges them into one pin in the first-clicked path", () => {
+  it("left-click accumulates pins across two Pin Paths; committing merges them into one pin in the first-clicked path", () => {
+    // Committing (docs/specs/25-radial-context-menu.md "Commit Merge") is a radial-
+    // menu action wired in EditorShell.tsx, not something Canvas.tsx does on right-
+    // click by itself anymore — see EditorShell.test.tsx for the end-to-end wiring.
+    // This test stays at the Canvas level to cover accumulation + the store call's
+    // effect on pin geometry.
     const store = new EditorStore();
     const { layerId, pathIdA, pathIdB } = seedTwoPaths(store);
     render(<Canvas store={store} />);
@@ -121,7 +126,7 @@ describe("Canvas — Edit mode: Merge", () => {
 
     fireEvent.mouseDown(svg, { clientX: 200, clientY: 200 }); // pinsA[0] at doc(10,10)
     fireEvent.mouseDown(svg, { clientX: 200, clientY: 240 }); // pinsB[0] at doc(10,20)
-    fireEvent.contextMenu(svg);
+    act(() => store.commitMergeSelection());
 
     const pathA = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathIdA)!;
     const pathB = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathIdB)!;
@@ -133,11 +138,12 @@ describe("Canvas — Edit mode: Merge", () => {
     expect(store.getState().mergeSelection).toEqual([]);
   });
 
-  it("right-clicking directly on an already-selected pin still commits (a real right-click also fires mousedown)", () => {
+  it("right-clicking directly on an already-selected pin does not toggle it off (a real right-click also fires mousedown)", () => {
     // Regression test: handlePointerDown must ignore non-primary buttons — otherwise
-    // the right-click's own mousedown re-toggles the pin OFF via the merge tool's
-    // left-click handler a moment before the contextmenu tries to commit, silently
-    // dropping it below the 2-candidate minimum.
+    // the right-click's own mousedown would re-toggle the pin OFF via the merge
+    // tool's left-click handler a moment before the radial menu's Commit Merge
+    // action (EditorShell.test.tsx) tries to commit, silently dropping it below the
+    // 2-candidate minimum.
     const store = new EditorStore();
     const { pathIdA, pathIdB } = seedTwoPaths(store);
     render(<Canvas store={store} />);
@@ -147,9 +153,11 @@ describe("Canvas — Edit mode: Merge", () => {
     fireEvent.mouseDown(svg, { clientX: 200, clientY: 240 }); // pinsB[0] at doc(10,20)
     expect(store.getState().mergeSelection).toHaveLength(2);
 
-    // A real right-click on pinsA[0] fires a (button=2) mousedown, then contextmenu.
+    // A real right-click on pinsA[0] fires a (button=2) mousedown first.
     fireEvent.mouseDown(svg, { clientX: 200, clientY: 200, button: 2 });
-    fireEvent.contextMenu(svg, { clientX: 200, clientY: 200 });
+    expect(store.getState().mergeSelection).toHaveLength(2); // still 2 — not toggled off
+
+    act(() => store.commitMergeSelection());
 
     const pathA = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathIdA)!;
     const pathB = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathIdB)!;

@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { BarChart3, HelpCircle, Printer, Redo2, Undo2 } from "lucide-react";
 import { totalThreadFrames, type EditorStore } from "../application/document";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Canvas } from "./canvas/Canvas";
 import { PlaybackCanvas } from "./canvas/PlaybackCanvas";
+import { RadialContextMenu, type RadialMenuPosition } from "./canvas/radialMenu/RadialContextMenu";
 import { ModeSwitcher } from "./toolbars/ModeSwitcher";
 import { FileMenu } from "./toolbars/FileMenu";
 import { ExportMenu } from "./toolbars/ExportMenu";
@@ -32,6 +33,37 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
   const transport = usePlaybackTransport(totalFrames, state.mode === "play");
   const playSvgRef = useRef<SVGSVGElement>(null);
   const videoExport = useVideoExport(playSvgRef, state.board, totalFrames, transport.intervalMs, transport.goToFrame);
+  const canvasAreaRef = useRef<HTMLDivElement>(null);
+  const [radialMenuPosition, setRadialMenuPosition] = useState<RadialMenuPosition | null>(null);
+
+  // "Adjusting state when a prop changes" (react.dev), same technique as
+  // usePlaybackTransport.ts's prevTotalFrames/prevActive: a mode switch invalidates
+  // whichever slice set the open menu was showing, so close it in the SAME render
+  // rather than via a setState-in-effect (which would cascade an extra render).
+  const [prevMode, setPrevMode] = useState(state.mode);
+  if (state.mode !== prevMode) {
+    setPrevMode(state.mode);
+    setRadialMenuPosition(null);
+  }
+
+  // docs/specs/25-radial-context-menu.md — right-click anywhere on the canvas area
+  // (the interactive Canvas in every mode but Play, PlaybackCanvas in Play mode)
+  // opens the radial menu instead of the browser's own context menu. Mounted here,
+  // not inside Canvas.tsx, since it must cover both canvas components identically.
+  function handleCanvasAreaContextMenu(e: ReactMouseEvent<HTMLDivElement>) {
+    e.preventDefault();
+    const wrapperRect = canvasAreaRef.current?.getBoundingClientRect();
+    if (!wrapperRect) return;
+    // The zoom-anchor point (Pan mode's Zoom In/Out) must be in the interactive
+    // Canvas svg's own pixel space, same as CanvasToolbar's zoom buttons use — not
+    // the outer wrapper's, which may letterbox around the fixed-size svg.
+    const svgRect = (e.target as Element).closest("svg")?.getBoundingClientRect() ?? wrapperRect;
+    setRadialMenuPosition({
+      x: e.clientX - wrapperRect.left,
+      y: e.clientY - wrapperRect.top,
+      anchorPoint: { x: e.clientX - svgRect.left, y: e.clientY - svgRect.top },
+    });
+  }
 
   // docs/specs/10-undo-redo.md — Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z, except while a text
   // field has focus (renaming a layer, a numeric input) so the browser's own text-undo
@@ -107,7 +139,18 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
             <PlayToolbar transport={transport} totalFrames={totalFrames} videoExport={videoExport} />
           </div>
         )}
-        {state.mode === "play" ? <PlaybackCanvas ref={playSvgRef} state={state} frame={transport.frame} /> : <Canvas store={store} />}
+        <div ref={canvasAreaRef} style={{ flex: 1, minWidth: 0, display: "flex", position: "relative" }} onContextMenu={handleCanvasAreaContextMenu}>
+          {state.mode === "play" ? <PlaybackCanvas ref={playSvgRef} state={state} frame={transport.frame} /> : <Canvas store={store} />}
+          {radialMenuPosition && (
+            <RadialContextMenu
+              store={store}
+              state={state}
+              transport={transport}
+              position={radialMenuPosition}
+              onClose={() => setRadialMenuPosition(null)}
+            />
+          )}
+        </div>
         <div style={{ width: 260, flex: "0 0 auto", background: "var(--bg-panel)", borderLeft: "1px solid var(--border)" }}>
           <LayersPanel store={store} />
         </div>

@@ -158,10 +158,10 @@ export function Canvas({ store }: { store: EditorStore }) {
 
   function handlePointerDown(e: ReactMouseEvent<SVGSVGElement>) {
     // Only the primary (left) button starts a drawing/drag/select/accumulate gesture —
-    // a right-click is exclusively for the context-menu actions below (Thread finish,
-    // Merge commit). Without this guard, right-clicking directly on an already-
-    // selected Merge candidate would toggle it off via this handler a moment before
-    // handleContextMenu commits, silently dropping it from the merge.
+    // a right-click opens the radial context menu instead (docs/specs/25-radial-
+    // context-menu.md, wired in EditorShell.tsx). Without this guard, right-clicking
+    // directly on an already-selected Merge candidate would toggle it off via this
+    // handler a moment before the menu's Commit Merge action fires.
     if (e.button !== 0) return;
     if (state.mode === "pan") {
       pan.begin(e, viewport);
@@ -267,12 +267,6 @@ export function Canvas({ store }: { store: EditorStore }) {
     threadDrawing.handleDoubleClick(screenToDoc(e), maxDist);
   }
 
-  function handleContextMenu(e: ReactMouseEvent<SVGSVGElement>) {
-    e.preventDefault();
-    if (state.mode === "thread") threadDrawing.handleContextMenu();
-    else if (state.mode === "select" && state.selectTool === "merge") mergeTool.handleContextMenu();
-  }
-
   const previewGeometry = pinDrawing.previewGeometry(
     state.pinTool,
     cursorDoc,
@@ -320,7 +314,6 @@ export function Canvas({ store }: { store: EditorStore }) {
           onMouseMove={handlePointerMove}
           onMouseUp={handlePointerUp}
           onDoubleClick={handleDoubleClick}
-          onContextMenu={handleContextMenu}
           role="img"
           aria-label={t("boardCanvasAriaLabel")}
         >

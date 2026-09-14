@@ -4,9 +4,11 @@ import type { Point } from "../../domain/paths";
 import { nearestPinOwner } from "./hitTesting";
 
 // docs/specs/09-selection-and-editing.md Merge tool: left-click accumulates real
-// pins (toggle to deselect on repeat click), right-click commits >=2 into one new
-// pin. Only real, stored pins are targetable — a mirror's id doesn't exist in any
-// path's pins[], so it can't be merged (same rule as the Pin/Path Erasers).
+// pins (toggle to deselect on repeat click); committing >=2 into one new pin is a
+// radial-menu action (docs/specs/25-radial-context-menu.md "Commit Merge") rather
+// than an instant right-click, so it isn't handled here. Only real, stored pins are
+// targetable — a mirror's id doesn't exist in any path's pins[], so it can't be
+// merged (same rule as the Pin/Path Erasers).
 export function useMergeTool(store: EditorStore, state: EditorState) {
   const [hoverPinId, setHoverPinId] = useState<string | null>(null);
 
@@ -32,9 +34,5 @@ export function useMergeTool(store: EditorStore, state: EditorState) {
     if (hit) store.extendMergeSelection(hit);
   }
 
-  function handleContextMenu(): void {
-    store.commitMergeSelection();
-  }
-
-  return { hoverPinId, handleMouseMove, handleMouseDown, handleContextMenu };
+  return { hoverPinId, handleMouseMove, handleMouseDown };
 }

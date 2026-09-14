@@ -34,6 +34,7 @@ Defined as CSS custom properties (`oklch()`), computed once at the app shell roo
 | `--accent-soft-2` | `color-mix(in oklch, var(--accent) 28%, transparent)` | Stronger active fill (toggles) |
 | `--danger` | `oklch(66% 0.18 22)` | Destructive actions, lock/error indicators |
 | `--danger-soft` | `color-mix(in oklch, var(--danger) 16%, transparent)` | Destructive hover/fill |
+| `--shadow-float` | `0 8px 24px oklch(0% 0 0 / 0.4)` | Drop shadow for components that float above the canvas/chrome rather than sitting in panel document flow — see [Radial context menu](#radial-context-menu). Not used by panels/sidebars/toolbars, which read elevation from background-lightness alone per the Rules below. |
 
 Rules:
 - Only **one** accent hue is used across the entire app. It marks active tool, active mode, selected layer/object, primary buttons, focus rings, and links. It is never used for two unrelated meanings on the same screen (e.g. don't also use it for a "warning" state — that's `--danger`).
@@ -79,6 +80,11 @@ A label/value pair inside a bordered card (`--bg-app`, `--border`, `--radius-md`
 
 ### Layer row
 Full-width row: eye icon button, lock icon button, name (flex-grow), 9px vertical / 16px horizontal padding. Selected row: `--accent-soft` background + 2px `--accent` left border. Hidden layer: name text drops to `--text-tertiary` (still fully legible, never below ~50% lightness, per "hidden layers retain their contents" — dimming signals state, it never implies removal). Locked layer: lock icon rendered in `--accent`; unlocked in `--text-tertiary`. See [13-layers.md](./13-layers.md).
+
+### Radial context menu
+A cursor-anchored ring of icon-only slices, opened by right-click ([25-radial-context-menu.md](./25-radial-context-menu.md)) — the app's only floating/overlaid component (it doesn't sit in normal panel document flow the way every other component here does). Slice surface: `--bg-panel-2` fill, `--border` stroke between slices. Hover/active slice: `--accent-soft` fill, `--accent` icon colour — same single-accent-hue rule as every other active-state treatment, no new colour. Icons: 16px (`--icon`), same as everywhere else — no special-cased size for menu slices. Ring inner/outer radius are pixel constants on the component itself, not a new CSS custom property — nothing else in the app needs a "ring radius" token, so it isn't generalized into one. Open/close motion reuses the existing 150ms ease timing (matching the zoom-transition precedent under [Motion](#motion)) — no new easing curve.
+
+Being the first floating component in the app, it's also the first (and, deliberately, only) consumer of `--shadow-float` (see [Colour](#colour)) — every other component's elevation still reads from background-lightness stepping alone.
 
 ### Icons
 All icons are inline SVG, stroke-based (`stroke="currentColor"`, ~1.5px weight, round caps/joins), on a 24×24 viewBox at 16px or 14px display size. **No emoji, no icon-font glyphs, anywhere in the product** — including in place of the spec documents' illustrative `👁`/`🔒`/`◎` notation, which are shorthand in the prose specs only, not a rendering instruction. Define each icon once (a `<symbol>` in a shared defs block or an equivalent icon-component registry) and reference it everywhere it's needed — never inline a redrawn copy of the same icon twice.

@@ -1,12 +1,11 @@
 import { Grid3x3, Magnet, Maximize, ZoomIn, ZoomOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { EditorStore } from "../../application/document";
-import { percentToZoom, zoomAtPoint, zoomToPercent } from "../../domain/transforms";
+import { zoomToPercent } from "../../domain/transforms";
 import { useEditorState } from "../useEditorStore";
 import { CANVAS_VIEWPORT_PX, fitViewportForBoard } from "./boardViewport";
+import { zoomInStep, zoomOutStep } from "./zoomSteps";
 
-const MIN_ZOOM_PERCENT = 5;
-const MAX_ZOOM_PERCENT = 1600;
 const VIEWPORT_CENTER = { x: CANVAS_VIEWPORT_PX.width / 2, y: CANVAS_VIEWPORT_PX.height / 2 };
 
 function ToggleChip({ label, active, onClick, icon: Icon }: { label: string; active: boolean; onClick: () => void; icon: typeof Grid3x3 }) {
@@ -83,11 +82,11 @@ export function CanvasToolbar({ store }: { store: EditorStore }) {
 
       <div style={{ flex: 1 }} />
 
-      <button aria-label={t("canvasToolbar.zoomOut")} className="btn mono" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={() => store.setViewport(zoomAtPoint(viewport, Math.max(percentToZoom(MIN_ZOOM_PERCENT), viewport.zoom / 1.25), VIEWPORT_CENTER))}>
+      <button aria-label={t("canvasToolbar.zoomOut")} className="btn mono" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={() => store.setViewport(zoomOutStep(viewport, VIEWPORT_CENTER))}>
         <ZoomOut size={14} />
       </button>
       <span className="mono" style={{ fontSize: 12, width: 46, textAlign: "center" }}>{Math.round(zoomToPercent(viewport.zoom))}%</span>
-      <button aria-label={t("canvasToolbar.zoomIn")} className="btn mono" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={() => store.setViewport(zoomAtPoint(viewport, Math.min(percentToZoom(MAX_ZOOM_PERCENT), viewport.zoom * 1.25), VIEWPORT_CENTER))}>
+      <button aria-label={t("canvasToolbar.zoomIn")} className="btn mono" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={() => store.setViewport(zoomInStep(viewport, VIEWPORT_CENTER))}>
         <ZoomIn size={14} />
       </button>
       <button className="btn" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12, gap: 6 }} onClick={() => store.setViewport(fitViewportForBoard(state.board))}>

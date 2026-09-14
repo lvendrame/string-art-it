@@ -4,7 +4,8 @@ import type { Point } from "../../domain/paths";
 import { nearestPinOrMirrorOwner, nearestThreadPath } from "./hitTesting";
 
 // Thread mode drawing workflow (docs/specs/12-thread-editor.md §26-29): click extends
-// the draft, double-click/right-click/Esc terminate it in their respective ways.
+// the draft, double-click/Esc terminate it. Right-click ("Cut") is a radial-menu
+// action (docs/specs/25-radial-context-menu.md) rather than an instant finish here.
 export function useThreadDrawing(store: EditorStore, state: EditorState, threadLayerId: string, cursorDoc: Point | null) {
   const [threadCandidateId, setThreadCandidateId] = useState<string | null>(null);
 
@@ -48,11 +49,6 @@ export function useThreadDrawing(store: EditorStore, state: EditorState, threadL
     if (hit) store.finishThreadDraftWithSegment(threadLayerId, hit.pinId);
   }
 
-  function handleContextMenu(): void {
-    if (state.threadTool !== "draw") return;
-    store.finishThreadDraft(threadLayerId);
-  }
-
   const statusText = useMemo(() => {
     if (!state.threadDraft) {
       // no insertion started yet — still surface the nearest pin under the cursor
@@ -70,5 +66,5 @@ export function useThreadDrawing(store: EditorStore, state: EditorState, threadL
     return `From Pin ${lastPinId} → ${threadCandidateId ?? "?"} | Segment: ${segment.toFixed(1)} cm`;
   }, [state.threadDraft, state.pinLayers, threadCandidateId, cursorDoc]);
 
-  return { threadCandidateId, handleMouseDown, handleMouseMove, handleDoubleClick, handleContextMenu, statusText };
+  return { threadCandidateId, handleMouseDown, handleMouseMove, handleDoubleClick, statusText };
 }

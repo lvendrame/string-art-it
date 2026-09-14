@@ -95,20 +95,24 @@ describe("Canvas — thread drawing interaction", () => {
     expect(screen.getAllByTestId("pin-used-in-thread")).toHaveLength(2);
     expect(screen.getByTestId("pin-active-origin")).toBeInTheDocument();
 
-    fireEvent.contextMenu(svg); // finish at the last confirmed pin
+    // Finishing ("Cut") is a radial-menu action wired in EditorShell.tsx, not
+    // something Canvas.tsx does on right-click by itself anymore — see
+    // EditorShell.test.tsx for the end-to-end wiring. This test stays at the
+    // Canvas level to cover that the used-pin markers clear once the draft is gone.
+    act(() => store.finishThreadDraft(store.getState().activeThreadLayerId));
 
     expect(store.getState().threadDraft).toBeNull();
     expect(screen.queryByTestId("pin-used-in-thread")).not.toBeInTheDocument();
   });
 
-  it("right-click finishes without adding a pending segment", () => {
+  it("finishing a draft (Cut) does not add a pending segment", () => {
     const { store, pins } = seedPinsAndEnterThreadMode();
     render(<Canvas store={store} />);
     const svg = screen.getByRole("img", { name: "Board canvas" });
 
     fireEvent.mouseDown(svg, { clientX: 200, clientY: 200 });
     act(() => store.extendThreadDraft(pins[pins.length - 1].id)); // far pin confirmed via store directly
-    fireEvent.contextMenu(svg);
+    act(() => store.finishThreadDraft(store.getState().activeThreadLayerId));
 
     const threads = store.getState().threadLayers[0].threadPaths;
     expect(threads).toHaveLength(1);

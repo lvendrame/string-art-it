@@ -19,7 +19,8 @@
       "square": "quadrado",
       "regular-polygon": "polígono regular",
       "star": "estrela",
-      "polygram": "polígrama"
+      "polygram": "polígrama",
+      "freehand": "mão livre"
     },
     "pinDistance": "Distância entre pinos",
     "fields": {

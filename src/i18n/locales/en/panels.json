@@ -19,7 +19,8 @@
       "square": "square",
       "regular-polygon": "regular-polygon",
       "star": "star",
-      "polygram": "polygram"
+      "polygram": "polygram",
+      "freehand": "freehand"
     },
     "pinDistance": "Pin distance",
     "fields": {

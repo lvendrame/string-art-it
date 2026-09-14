@@ -117,7 +117,8 @@ export function rotateGeometry(geometry: PinPathGeometry, pivot: Point, theta: n
 
 // docs/specs/21-scale-and-pin-distance.md Scale tool — the shape's own centroid,
 // invariant under scaling (the pivot IS the centre, so only size fields move).
-function geometryCenter(geometry: PinPathGeometry): Point {
+// Also the pivot for docs/specs/23-keyboard-transform.md's keyboard Rotate/Scale.
+export function geometryCenter(geometry: PinPathGeometry): Point {
   switch (geometry.type) {
     case "line":
     case "arc":

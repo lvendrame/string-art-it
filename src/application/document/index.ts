@@ -34,6 +34,7 @@ export {
   translateGeometry,
   rotateGeometry,
   scaleGeometry,
+  geometryCenter,
   type PinPathGeometry,
   type Pin,
   type PinPath,

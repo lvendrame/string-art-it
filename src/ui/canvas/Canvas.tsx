@@ -38,6 +38,7 @@ import { useMoveTool } from "./useMoveTool";
 import { useRotateTool } from "./useRotateTool";
 import { useScaleTool } from "./useScaleTool";
 import { useMergeTool } from "./useMergeTool";
+import { useKeyboardTransform } from "./useKeyboardTransform";
 import { useEraserHover } from "./useEraserHover";
 
 const VIEWPORT_PX = CANVAS_VIEWPORT_PX;
@@ -146,6 +147,7 @@ export function Canvas({ store }: { store: EditorStore }) {
   const rotateTool = useRotateTool(store, state);
   const scaleTool = useScaleTool(store, state);
   const mergeTool = useMergeTool(store, state);
+  useKeyboardTransform(store);
   const eraserHover = useEraserHover(state);
 
   const path = useMemo(() => boardPath(state.board), [state.board]);

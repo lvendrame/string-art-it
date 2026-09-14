@@ -47,6 +47,8 @@ Click a pin to select the Pin Path it belongs to. The left panel then shows that
 
 The left panel also has Move, Rotation, Scale, and Merge tools for a selected Pin Path: Move and Rotation drag it around or spin it in place; **Scale** drags it larger or smaller about its own centre, recalculating pin count and reattaching any connected threads to the nearest new pin; Merge collapses several pins (left-click to accumulate, right-click to commit) into one. Changing the **Pin distance** field in the property panel does the same recalculation-and-reattachment as Scale, without changing the shape's size.
 
+With a Pin Path selected, the arrow keys also drive whichever of Move/Rotation/Scale is active — 1 unit per press (1 screen-pixel of movement, 1°, or 1%), 10x with Shift held. Holding a key down repeats it automatically after a 500ms delay, then every 100ms, same as native "hold to repeat" controls. Rotation and Scale always pivot on the shape's own centre when driven from the keyboard, even though the mouse Rotation tool pivots on wherever you pressed down.
+
 ## Pin mode
 
 Pick a tool in the left panel, then draw on the canvas:

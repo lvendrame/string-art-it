@@ -20,11 +20,7 @@ import { PrintPreviewPanel } from "./panels/PrintPreviewPanel";
 import { StatisticsPanel } from "./panels/StatisticsPanel";
 import { HelpPanel } from "./panels/help/HelpPanel";
 import { useEditorState } from "./useEditorStore";
-
-function isTextEntryTarget(target: EventTarget | null): boolean {
-  if (!(target instanceof HTMLElement)) return false;
-  return target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
-}
+import { isTextEntryTarget } from "./keyboard";
 
 export function EditorShell({ store, onNewProject }: { store: EditorStore; onNewProject: () => void }) {
   const state = useEditorState(store);

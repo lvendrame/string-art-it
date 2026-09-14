@@ -72,6 +72,7 @@ The application must allow users to:
 | In-app help | [20-help.md](./20-help.md) |
 | Scale tool & pin distance | [21-scale-and-pin-distance.md](./21-scale-and-pin-distance.md) |
 | Thread draft pattern-follow (Right Arrow) | [22-thread-follow-pattern.md](./22-thread-follow-pattern.md) |
+| Keyboard Move/Rotate/Scale | [23-keyboard-transform.md](./23-keyboard-transform.md) |
 
 ## MVP Scope
 

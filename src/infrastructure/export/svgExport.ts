@@ -1,12 +1,13 @@
 import {
   boardPath,
+  geometryCenter,
   geometryToPath,
   type Board,
   type PinLayer,
   type PrintElements,
   type ThreadLayer,
 } from "../../application/document";
-import { pathBoundingBoxPoints } from "../../domain/paths";
+import { pathBoundingBoxPoints, type Point } from "../../domain/paths";
 import { boundingBoxOf } from "../../domain/transforms";
 import { boardFillDefsMarkup, boardFillPaint } from "../rendering/boardFill";
 import { pathToSvgD } from "../rendering/svgPath";
@@ -18,6 +19,58 @@ export interface ExportDocument {
 }
 
 const MARGIN_CM = 2;
+const PIN_DOT_RADIUS_CM = 0.06;
+const PIN_NUMBER_FONT_CM = 0.2;
+const PIN_NUMBER_GAP_CM = 0.08;
+// Centered (text-anchor/dominant-baseline "middle") on the offset point, so the
+// label's near edge — not its center — needs to clear the dot.
+const PIN_NUMBER_OFFSET_CM = PIN_DOT_RADIUS_CM + PIN_NUMBER_FONT_CM / 2 + PIN_NUMBER_GAP_CM;
+
+// docs/specs/15-export.md — a pure radial-from-centre offset keeps numbers outside
+// round/star-like closed shapes, but for straight runs of collinear pins (Line,
+// Rectangle/Square edges, Freehand wherever it's locally straight or coils tight)
+// the centre-to-pin ray points ALONG the path, landing the label on the next pin
+// instead of beside its own. Use the local outward NORMAL instead — perpendicular
+// to the path's tangent at that pin (from its neighbours in the already-ordered
+// `pins` array), oriented away from the shape's centre — which reduces to the same
+// radial offset for circles/ellipses/polygons and fixes the collinear cases too.
+function pinLabelPosition(
+  pin: Point,
+  prev: Point | null,
+  next: Point | null,
+  center: Point,
+  offsetCm: number,
+): Point {
+  const tx = (next?.x ?? pin.x) - (prev?.x ?? pin.x);
+  const ty = (next?.y ?? pin.y) - (prev?.y ?? pin.y);
+  const tlen = Math.hypot(tx, ty);
+  let nx: number, ny: number;
+  if (tlen > 1e-6) {
+    nx = -ty / tlen;
+    ny = tx / tlen;
+    const toPinX = pin.x - center.x;
+    const toPinY = pin.y - center.y;
+    if (nx * toPinX + ny * toPinY < 0) {
+      nx = -nx;
+      ny = -ny;
+    }
+  } else {
+    const dx = pin.x - center.x;
+    const dy = pin.y - center.y;
+    const dist = Math.hypot(dx, dy);
+    [nx, ny] = dist > 1e-6 ? [dx / dist, dy / dist] : [0, -1];
+  }
+  return { x: pin.x + nx * offsetCm, y: pin.y + ny * offsetCm };
+}
+
+function pinLabelPositions(pins: Point[], closed: boolean, center: Point, offsetCm: number): Point[] {
+  const n = pins.length;
+  return pins.map((pin, i) => {
+    const prev = closed ? pins[(i - 1 + n) % n] : (pins[i - 1] ?? null);
+    const next = closed ? pins[(i + 1) % n] : (pins[i + 1] ?? null);
+    return pinLabelPosition(pin, prev, next, center, offsetCm);
+  });
+}
 
 // Shared by static SVG/PDF/PNG export and the Play-mode video exporter (docs/specs/
 // 19-play-mode.md), so both size their output from the same board bounding box.
@@ -58,10 +111,14 @@ export function buildExportSvg(doc: ExportDocument, elements: PrintElements): st
         content.push(`<path d="${pathToSvgD(geometryToPath(p.geometry))}" fill="none" stroke="black" stroke-opacity="0.8" stroke-width="0.03" stroke-dasharray="0.15 0.1"/>`);
       }
       if (elements.pins) {
+        const center = geometryCenter(p.geometry);
+        const closed = geometryToPath(p.geometry).closed;
+        const labelPositions = pinLabelPositions(p.pins, closed, center, PIN_NUMBER_OFFSET_CM);
         p.pins.forEach((pin, i) => {
-          content.push(`<circle cx="${pin.x}" cy="${pin.y}" r="0.06" fill="${p.colour}" stroke="#1b1b1b" stroke-width="0.015"/>`);
+          content.push(`<circle cx="${pin.x}" cy="${pin.y}" r="${PIN_DOT_RADIUS_CM}" fill="${p.colour}" stroke="#1b1b1b" stroke-width="0.015"/>`);
           if (elements.pinNumbers) {
-            content.push(`<text x="${pin.x + 0.1}" y="${pin.y - 0.1}" font-size="0.15" fill="black">${i + 1}</text>`);
+            const labelPos = labelPositions[i];
+            content.push(`<text x="${labelPos.x}" y="${labelPos.y}" text-anchor="middle" dominant-baseline="middle" font-size="${PIN_NUMBER_FONT_CM}" fill="black">${i + 1}</text>`);
           }
         });
       }

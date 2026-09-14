@@ -9,16 +9,19 @@ import {
   computeMirroredPinGroups,
   computeTileGrid,
   findPinById,
+  geometryCenter,
   geometryToPath,
   paperDimensionsCm,
   type EditorState,
   type EditorStore,
   type PaperOrientation,
   type PaperSize,
+  type PinPath,
   type PrintElements,
   type PrintScaleMode,
 } from "../../application/document";
-import { pathBoundingBoxPoints } from "../../domain/paths";
+import { pathBoundingBoxPoints, type Point } from "../../domain/paths";
+import { generateRadialCopies, mirrorCopies } from "../../domain/symmetry";
 import {
   boundingBoxOf,
   CSS_PIXELS_PER_CM,
@@ -31,7 +34,9 @@ import {
 import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
 import { useEditorState } from "../useEditorStore";
 
-function elementLabels(t: TFunction<"printPreview">): { key: keyof PrintElements; label: string }[] {
+function elementLabels(
+  t: TFunction<"printPreview">,
+): { key: keyof PrintElements; label: string }[] {
   return [
     { key: "boardOutline", label: t("elements.boardOutline") },
     { key: "background", label: t("elements.background") },
@@ -49,8 +54,8 @@ function elementLabels(t: TFunction<"printPreview">): { key: keyof PrintElements
 const PRINT_PX_PER_CM = CSS_PIXELS_PER_CM;
 const CALIBRATION_LENGTH_CM = 10;
 const MIN_PIN_DOT_RADIUS_PX = 1.5;
-const MIN_PIN_NUMBER_FONT_PX = 8;
-const PIN_NUMBER_OFFSET_PX = 3;
+const MIN_PIN_NUMBER_FONT_PX = 7;
+const PIN_NUMBER_GAP_PX = 4;
 const MIN_GRID_STROKE_PX = 1;
 const GRID_OPACITY = 0.4;
 
@@ -136,7 +141,9 @@ export function PrintPreviewPanel({
             alignItems: "center",
           }}
         >
-          <span style={{ fontWeight: 700, fontSize: 13 }}>{t("panelTitle")}</span>
+          <span style={{ fontWeight: 700, fontSize: 13 }}>
+            {t("panelTitle")}
+          </span>
           <button
             className="btn"
             onClick={onClose}
@@ -310,7 +317,9 @@ export function PrintPreviewPanel({
               }}
             >
               <span style={{ fontSize: 11.5, color: "var(--text-secondary)" }}>
-                {t("calibration.instructions", { length: CALIBRATION_LENGTH_CM })}
+                {t("calibration.instructions", {
+                  length: CALIBRATION_LENGTH_CM,
+                })}
               </span>
               <button
                 className="btn"
@@ -478,7 +487,11 @@ export function PrintPreviewPanel({
                   className="mono"
                   style={{ fontSize: 11, color: "var(--accent)" }}
                 >
-                  {t("tiling.pagesCount", { count: grid.cols * grid.rows, cols: grid.cols, rows: grid.rows })}
+                  {t("tiling.pagesCount", {
+                    count: grid.cols * grid.rows,
+                    cols: grid.cols,
+                    rows: grid.rows,
+                  })}
                 </div>
               )}
             </>
@@ -708,6 +721,78 @@ function CalibrationPage({
   );
 }
 
+// docs/specs/14-printing.md — a fixed diagonal offset put numbers for pins on the
+// far side of a closed shape (bottom/left of a circle, say) back over the shape's
+// interior, covering other pins and paths (see printed-template feedback). A pure
+// radial-from-centre offset fixed that for round/star-like shapes, but for anything
+// with straight runs of collinear pins (Line, Rectangle/Square edges, and Freehand
+// wherever the sampled path is locally straight or curls tight, e.g. a spiral) the
+// centre-to-pin ray points ALONG the path rather than away from it — the label lands
+// on the next pin instead of beside its own. The general fix is the local outward
+// NORMAL: perpendicular to the path's tangent at that pin (from its neighbours in
+// the already-ordered `pins` array), oriented away from the shape's centre. This
+// reduces to the same radial offset for circles/ellipses/polygons (tangent there is
+// always perpendicular to the radius already) and additionally fixes the collinear
+// cases the pure-radial version got wrong.
+function pinLabelPosition(
+  pin: Point,
+  prev: Point | null,
+  next: Point | null,
+  center: Point,
+  offsetCm: number,
+): Point {
+  const tx = (next?.x ?? pin.x) - (prev?.x ?? pin.x);
+  const ty = (next?.y ?? pin.y) - (prev?.y ?? pin.y);
+  const tlen = Math.hypot(tx, ty);
+  let nx: number, ny: number;
+  if (tlen > 1e-6) {
+    nx = -ty / tlen;
+    ny = tx / tlen;
+    const toPinX = pin.x - center.x;
+    const toPinY = pin.y - center.y;
+    if (nx * toPinX + ny * toPinY < 0) {
+      nx = -nx;
+      ny = -ny;
+    }
+  } else {
+    const dx = pin.x - center.x;
+    const dy = pin.y - center.y;
+    const dist = Math.hypot(dx, dy);
+    [nx, ny] = dist > 1e-6 ? [dx / dist, dy / dist] : [0, -1];
+  }
+  return { x: pin.x + nx * offsetCm, y: pin.y + ny * offsetCm };
+}
+
+// Precomputes every pin's label position for one pin path in one pass, matching
+// pins up with their path-order neighbours (wrapping around for a closed shape,
+// clamping at the ends for an open one like Line/Arc/Freehand).
+function pinLabelPositions(pins: Point[], closed: boolean, center: Point, offsetCm: number): Point[] {
+  const n = pins.length;
+  return pins.map((pin, i) => {
+    const prev = closed ? pins[(i - 1 + n) % n] : (pins[i - 1] ?? null);
+    const next = closed ? pins[(i + 1) % n] : (pins[i + 1] ?? null);
+    return pinLabelPosition(pin, prev, next, center, offsetCm);
+  });
+}
+
+// The mirrored pin center is the source shape's centre carried through the same
+// mirror/radial transform used to derive the mirrored pins themselves, so its
+// label ray stays consistent with computeMirroredPinGroups' own point order.
+function mirroredGeometryCenters(pinPath: PinPath): Point[] {
+  const symmetry = pinPath.symmetry;
+  if (symmetry.type === "none") return [];
+  const center = geometryCenter(pinPath.geometry);
+  const groups =
+    symmetry.type === "radial"
+      ? generateRadialCopies(
+          [center],
+          symmetry.centre,
+          symmetry.intervalDegrees,
+        )
+      : mirrorCopies([center], symmetry.type, symmetry.axis);
+  return groups.map((group) => group[0]);
+}
+
 // One physical page's worth of board content, offset by `tileOffsetCm` (used when
 // tiling splits the printed board across multiple pages).
 function PrintPage({
@@ -741,7 +826,12 @@ function PrintPage({
   const pinDotRadiusCm = (diameterMm: number) =>
     Math.max(diameterMm / 20, MIN_PIN_DOT_RADIUS_PX / groupScale);
   const pinNumberFontCm = MIN_PIN_NUMBER_FONT_PX / groupScale;
-  const pinNumberOffsetCm = PIN_NUMBER_OFFSET_PX / groupScale;
+  const pinNumberGapCm = PIN_NUMBER_GAP_PX / groupScale;
+  // Centered (text-anchor/dominant-baseline "middle") on the offset point, so the
+  // label's near edge — not its center — needs to clear the dot: push out by the
+  // dot radius plus half the glyph height plus a small gap, not just the gap alone.
+  const pinNumberOffsetCm = (diameterMm: number) =>
+    pinDotRadiusCm(diameterMm) + pinNumberFontCm / 2 + pinNumberGapCm;
   const gridStrokeWidthCm = Math.max(0.02, MIN_GRID_STROKE_PX / groupScale);
   const paperPx = {
     width: paperSize.width * PRINT_PX_PER_CM,
@@ -851,66 +941,87 @@ function PrintPage({
                 }),
               )}
             {state.pinLayers.flatMap((l) =>
-              l.pinPaths.map((p) => (
-                <g key={p.id}>
-                  {elements.pinGuides && (
-                    <path
-                      d={pathToSvgD(geometryToPath(p.geometry))}
-                      fill="none"
-                      stroke="black"
-                      strokeOpacity={0.8}
-                      strokeWidth={0.03}
-                      strokeDasharray="0.15 0.1"
-                    />
-                  )}
-                  {elements.pins &&
-                    p.pins.map((pin, i) => (
-                      <g key={pin.id}>
-                        <circle
-                          cx={pin.x}
-                          cy={pin.y}
-                          r={pinDotRadiusCm(p.diameter)}
-                          fill="black"
-                        />
-                        {elements.pinNumbers && (
-                          <text
-                            x={pin.x + pinNumberOffsetCm}
-                            y={pin.y - pinNumberOffsetCm}
-                            fontSize={pinNumberFontCm}
-                            fill="black"
-                          >
-                            {i + 1}
-                          </text>
-                        )}
-                      </g>
-                    ))}
-                  {/* docs/specs/06-symmetry.md — a mirrored pin is a real physical pin
-                      on the board, so it prints too, numbered after its source. */}
-                  {elements.pins &&
-                    computeMirroredPinGroups(p).flatMap((group) =>
-                      group.map((pin, i) => (
-                        <g key={pin.id}>
-                          <circle
-                            cx={pin.x}
-                            cy={pin.y}
-                            r={pinDotRadiusCm(p.diameter)}
-                            fill="black"
-                          />
-                          {elements.pinNumbers && (
-                            <text
-                              x={pin.x + pinNumberOffsetCm}
-                              y={pin.y - pinNumberOffsetCm}
-                              fontSize={pinNumberFontCm}
-                              fill="black"
-                            >
-                              {i + 1}
-                            </text>
-                          )}
-                        </g>
-                      )),
+              l.pinPaths.map((p) => {
+                const center = geometryCenter(p.geometry);
+                const closed = geometryToPath(p.geometry).closed;
+                const mirroredCenters = mirroredGeometryCenters(p);
+                const offsetCm = pinNumberOffsetCm(p.diameter);
+                const labelPositions = pinLabelPositions(p.pins, closed, center, offsetCm);
+                return (
+                  <g key={p.id}>
+                    {elements.pinGuides && (
+                      <path
+                        d={pathToSvgD(geometryToPath(p.geometry))}
+                        fill="none"
+                        stroke="black"
+                        strokeOpacity={0.8}
+                        strokeWidth={0.03}
+                        strokeDasharray="0.15 0.1"
+                      />
                     )}
-                </g>
-              )),
+                    {elements.pins &&
+                      p.pins.map((pin, i) => {
+                        const labelPos = labelPositions[i];
+                        return (
+                          <g key={pin.id}>
+                            <circle
+                              cx={pin.x}
+                              cy={pin.y}
+                              r={pinDotRadiusCm(p.diameter)}
+                              fill="black"
+                            />
+                            {elements.pinNumbers && (
+                              <text
+                                x={labelPos.x}
+                                y={labelPos.y}
+                                textAnchor="middle"
+                                dominantBaseline="middle"
+                                fontSize={pinNumberFontCm}
+                                fill="black"
+                              >
+                                {i + 1}
+                              </text>
+                            )}
+                          </g>
+                        );
+                      })}
+                    {/* docs/specs/06-symmetry.md — a mirrored pin is a real physical pin
+                      on the board, so it prints too, numbered after its source. */}
+                    {elements.pins &&
+                      computeMirroredPinGroups(p).flatMap(
+                        (group, groupIndex) => {
+                          const mirroredCenter = mirroredCenters[groupIndex];
+                          const mirroredLabelPositions = pinLabelPositions(group, closed, mirroredCenter, offsetCm);
+                          return group.map((pin, i) => {
+                            const labelPos = mirroredLabelPositions[i];
+                            return (
+                              <g key={pin.id}>
+                                <circle
+                                  cx={pin.x}
+                                  cy={pin.y}
+                                  r={pinDotRadiusCm(p.diameter)}
+                                  fill="black"
+                                />
+                                {elements.pinNumbers && (
+                                  <text
+                                    x={labelPos.x}
+                                    y={labelPos.y}
+                                    textAnchor="middle"
+                                    dominantBaseline="middle"
+                                    fontSize={pinNumberFontCm}
+                                    fill="black"
+                                  >
+                                    {i + 1}
+                                  </text>
+                                )}
+                              </g>
+                            );
+                          });
+                        },
+                      )}
+                  </g>
+                );
+              }),
             )}
           </g>
         </g>

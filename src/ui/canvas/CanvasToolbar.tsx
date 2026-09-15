@@ -6,6 +6,7 @@ import type { EditorStore } from "../../application/document";
 import { zoomToPercent } from "../../domain/transforms";
 import { useEditorState } from "../useEditorStore";
 import { CANVAS_VIEWPORT_PX, fitViewportForBoard } from "./boardViewport";
+import { GridSettingsPopover } from "./GridSettingsPopover";
 import { zoomInStep, zoomOutStep } from "./zoomSteps";
 
 const VIEWPORT_CENTER = { x: CANVAS_VIEWPORT_PX.width / 2, y: CANVAS_VIEWPORT_PX.height / 2 };
@@ -37,53 +38,7 @@ export function CanvasToolbar({ store }: { store: EditorStore }) {
     <div style={{ flex: "0 0 auto", display: "flex", alignItems: "center", gap: 10, padding: "10px 16px", borderBottom: "1px solid var(--border)" }}>
       <ToggleChip label={grid.visible ? t("canvasToolbar.gridOn") : t("canvasToolbar.gridOff")} active={grid.visible} onClick={() => store.setGrid({ visible: !grid.visible })} icon={Grid3x3} />
       <ToggleChip label={grid.snapEnabled ? t("canvasToolbar.snapOn") : t("canvasToolbar.snapOff")} active={grid.snapEnabled} onClick={() => store.setGrid({ snapEnabled: !grid.snapEnabled })} icon={Magnet} />
-
-      <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--text-secondary)" }}>
-        {t("canvasToolbar.gapX")}
-        <input
-          type="number"
-          className="mono"
-          min={0.1}
-          step={0.1}
-          value={grid.gapX}
-          onChange={(e) => store.setGrid({ gapX: Math.max(0.1, Number(e.target.value)) })}
-          style={{ width: 52, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "3px 6px", fontSize: 11 }}
-        />
-      </label>
-      <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--text-secondary)" }}>
-        {t("canvasToolbar.gapY")}
-        <input
-          type="number"
-          className="mono"
-          min={0.1}
-          step={0.1}
-          value={grid.gapY}
-          onChange={(e) => store.setGrid({ gapY: Math.max(0.1, Number(e.target.value)) })}
-          style={{ width: 52, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "3px 6px", fontSize: 11 }}
-        />
-      </label>
-      <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--text-secondary)" }}>
-        {t("canvasToolbar.gridColour")}
-        <input
-          type="color"
-          value={grid.colour}
-          onChange={(e) => store.setGrid({ colour: e.target.value })}
-          style={{ width: 24, height: 22, border: "1px solid var(--border)", borderRadius: 4, background: "none", padding: 0 }}
-        />
-      </label>
-      <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--text-secondary)" }}>
-        {t("canvasToolbar.gridOpacity")}
-        <input
-          type="number"
-          className="mono"
-          min={0}
-          max={1}
-          step={0.05}
-          value={grid.opacity}
-          onChange={(e) => store.setGrid({ opacity: Math.min(1, Math.max(0, Number(e.target.value))) })}
-          style={{ width: 48, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "3px 6px", fontSize: 11 }}
-        />
-      </label>
+      <GridSettingsPopover store={store} />
 
       <div style={{ flex: 1 }} />
 

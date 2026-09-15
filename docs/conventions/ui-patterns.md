@@ -16,6 +16,17 @@ const [overlay, setOverlay] = useState<"none" | "print" | "stats" | "help">("non
 - A panel only needs the props it actually uses — `HelpPanel` takes no `store` because it's pure static content; don't pass a whole `EditorStore` "just in case."
 - Adding a fourth overlay: extend the union, add the button, add the conditional render. That's the whole pattern.
 
+## Anchored settings popover (Export / Language / Grid Settings)
+
+For a small cluster of controls that belongs next to the button that opens it — not a full page — three components share one shape: `ExportMenu.tsx`, `LanguageSwitcher.tsx`, and `GridSettingsPopover.tsx`. This is a different problem shape from the full-bleed overlay above: a handful of fields or actions anchored to their trigger, not a whole-screen panel.
+
+- Trigger wrapper is `position: relative`; the panel is `position: absolute; top: 110%` (`left: 0` or `right: 0` depending on which edge should stay on-screen), `zIndex: 20`.
+- Panel styling: `background: var(--bg-panel)` (or `--bg-panel-2`), `border: 1px solid var(--border)`, `borderRadius: var(--radius-md)`, inner controls/option rows use `--radius-sm`, elevation via `var(--shadow-float)`.
+- Open/close is local `useState<boolean>` on the trigger component — no shared `overlay` union, since these are independent, can-coexist-with-others popovers, not mutually-exclusive full-page states.
+- Dismissal: pointerdown outside the container and Escape both close it (see `LanguageSwitcher.tsx`'s `containerRef` + `useEffect` pair) — unlike the full-bleed overlay convention above, an anchored popover *should* close this way, since it's transient and anchored rather than a page you navigate into.
+- Trigger gets `aria-haspopup`/`aria-expanded`; the panel gets a role appropriate to its content (`listbox` for a menu of choices, plain `div` for a settings form).
+- Adding a new one: copy `GridSettingsPopover.tsx` (simplest form-fields case) or `LanguageSwitcher.tsx` (if it's a list of selectable options needing roving-tabindex).
+
 ## Tab-switcher styles
 
 Two existing precedents, used for different reasons:

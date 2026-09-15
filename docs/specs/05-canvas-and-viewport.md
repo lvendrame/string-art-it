@@ -30,6 +30,8 @@ Settings:
 - Vertical gap
 - Grid visibility
 - Snap to grid
+- Grid colour
+- Grid opacity
 
 ```text
 Horizontal gap: 1 cm
@@ -37,9 +39,18 @@ Vertical gap:   1 cm
 
 Grid visible:   Yes
 Snap to grid:   Yes
+
+Grid colour:    #808080
+Grid opacity:   0.5
 ```
 
 **Grid visibility and snapping are independent.** `Grid visible: OFF` + `Snap to grid: ON` is a valid, supported combination — the grid can be invisible while still exerting a magnetic pull on the cursor.
+
+### Grid Settings UI
+
+Grid visibility and Snap to grid are each a standalone toggle button in the Canvas Toolbar (immediately adjacent to each other). The remaining four appearance/spacing settings — Horizontal gap, Vertical gap, Grid colour, Grid opacity — are grouped behind a single **"Grid settings"** button placed next to the Snap toggle, which opens a small popover anchored to the button containing all four fields. This keeps the toolbar's main row to just the two toggles plus the trigger, instead of exposing every field inline.
+
+The popover is dismissed by clicking its trigger button again, clicking anywhere outside it, or pressing Escape. Each field edits its setting live — there is no separate "Apply"/"OK" step.
 
 ### Grid Snap Feedback
 
@@ -176,6 +187,31 @@ Feature: Grid visibility and snapping independence
     When the user moves the cursor near a grid intersection
     Then grid lines are rendered
     And the cursor position is not altered toward the intersection
+
+Feature: Grid settings popover
+
+  Scenario: Grid settings button opens a popover with the four appearance/spacing fields
+    Given the editor is showing the Canvas Toolbar
+    When the user clicks the "Grid settings" button
+    Then a popover opens anchored to the button
+    And it shows Horizontal gap, Vertical gap, Grid colour, and Grid opacity fields
+    And the Grid visible / Snap to grid toggles remain in the toolbar, not the popover
+
+  Scenario: Editing a field in the popover updates the grid live
+    Given the Grid settings popover is open
+    When the user changes Horizontal gap to 2.5 cm
+    Then the grid's horizontal gap is immediately 2.5 cm
+    And the popover remains open
+
+  Scenario: Clicking outside the popover closes it
+    Given the Grid settings popover is open
+    When the user clicks anywhere outside the popover
+    Then the popover closes
+
+  Scenario: Escape closes the popover
+    Given the Grid settings popover is open
+    When the user presses Escape
+    Then the popover closes
 
 Feature: Deterministic snapping priority
 

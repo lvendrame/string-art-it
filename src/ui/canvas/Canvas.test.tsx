@@ -80,26 +80,13 @@ describe("Canvas", () => {
     expect(r).toBeGreaterThan(0);
   });
 
-  it("grid gap fields are configurable and independent per axis", () => {
+  it("grid colour and opacity are reflected in the rendered dot", () => {
+    // Field-level editing of Gap X/Y/colour/opacity is covered by
+    // GridSettingsPopover.test.tsx (they live in that popover now, not inline
+    // in the toolbar) — this test only checks GridLayer's own rendering.
     const store = new EditorStore();
+    store.setGrid({ colour: "#ff0000", opacity: 0.3 });
     render(<Canvas store={store} />);
-
-    fireEvent.change(screen.getByLabelText("Gap X"), { target: { value: "2.5" } });
-    fireEvent.change(screen.getByLabelText("Gap Y"), { target: { value: "0.5" } });
-
-    expect(store.getState().grid.gapX).toBe(2.5);
-    expect(store.getState().grid.gapY).toBe(0.5);
-  });
-
-  it("grid colour and opacity are configurable and reflected in the rendered dot", () => {
-    const store = new EditorStore();
-    render(<Canvas store={store} />);
-
-    fireEvent.change(screen.getByLabelText("Grid colour"), { target: { value: "#ff0000" } });
-    fireEvent.change(screen.getByLabelText("Grid opacity"), { target: { value: "0.3" } });
-
-    expect(store.getState().grid.colour).toBe("#ff0000");
-    expect(store.getState().grid.opacity).toBe(0.3);
 
     const dot = document.querySelector("#grid-dots circle") as SVGCircleElement | null;
     expect(dot?.getAttribute("fill")).toBe("#ff0000");

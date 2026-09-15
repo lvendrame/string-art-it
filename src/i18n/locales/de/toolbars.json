@@ -77,6 +77,7 @@
     "gridOff": "Raster AUS",
     "snapOn": "Einrasten EIN",
     "snapOff": "Einrasten AUS",
+    "gridSettings": "Rastereinstellungen",
     "gapX": "Abstand X",
     "gapY": "Abstand Y",
     "gridColour": "Rasterfarbe",

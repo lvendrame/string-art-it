@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { buildWoodGrainGeometry, hashSeed, mixHex, mulberry32 } from "./woodGrain";
 
 const WALNUT: [string, string, string] = ["#8a5a3c", "#6b3f28", "#4a2a1a"];
-const OAK: [string, string, string] = ["#c9a06a", "#a97c46", "#7a5730"];
 
 describe("mulberry32", () => {
   it("is deterministic for a given seed", () => {

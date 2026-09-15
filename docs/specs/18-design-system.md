@@ -81,6 +81,9 @@ A track+knob control for a mutually-exclusive 2-way choice the user wants read a
 ### Property row
 A label/value pair inside a bordered card (`--bg-app`, `--border`, `--radius-md`, 12px padding), label in `--text-secondary` 12px, value in monospace `--text-primary` 12px 600 weight, right-aligned. Used for read-only geometry display when an object is selected ([09-selection-and-editing.md](./09-selection-and-editing.md)) and for statistics ([17-statistics.md](./17-statistics.md)).
 
+### Textarea
+Multi-line text entry, styled with the same token recipe as every other inline input in the app: `--bg-panel-2` fill, `--border` outline, `--radius-sm`, `--text-primary` text, 12–12.5px size. Resizable vertically only (`resize: vertical`), never horizontally — the app is not a wide-canvas layout. First used by the About tab's contact form message field ([28-help-about-tab.md](./28-help-about-tab.md)); no earlier component needed multi-line free text.
+
 ### Layer row
 Full-width row: eye icon button, lock icon button, name (flex-grow), 9px vertical / 16px horizontal padding. Selected row: `--accent-soft` background + 2px `--accent` left border. Hidden layer: name text drops to `--text-tertiary` (still fully legible, never below ~50% lightness, per "hidden layers retain their contents" — dimming signals state, it never implies removal). Locked layer: lock icon rendered in `--accent`; unlocked in `--text-tertiary`. See [13-layers.md](./13-layers.md).
 

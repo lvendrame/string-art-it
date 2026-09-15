@@ -141,6 +141,29 @@ Result: 9 pins, actual spacing 0.9375 cm
 (Contrast with the old floor-division rule: 8 pins at 0..7, 0.5 cm left empty, no pin at 7.5)
 ```
 
+## Multi-Contour Closed-Path Distribution (Text)
+
+Applies to **Text** only ([29-text-pin-path.md](./29-text-pin-path.md)) — the one shape whose guide geometry is more than one disconnected closed loop (a letter's ring plus its hole, or a separate dot).
+
+A Text Pin Path's geometry holds a list of contours instead of one continuous path. Each contour is a compound curved path (a font glyph outline, flattened from Bezier curves into a polyline) — not a shape defined by real straight-edge vertices — so it uses the **same rule as Circle/Ellipse**: [Closed-Path Pin Distribution](#closed-path-pin-distribution), continuous accumulation around that one contour's perimeter, closest-integer-interval-count spacing. The rule runs **independently per contour** — spacing never carries over from one contour to the next, since two contours of one letter (e.g. "o"'s outer ring and inner hole) are unrelated perimeters, each uniformly spaced on its own.
+
+The Pin Path's `pins[]` is the flat concatenation of every contour's pins, in contour order. `actualSpacing` reports the first contour's actual spacing as a representative value — the same "one number even though it varies per piece" precedent already established by [Vertex-Anchored Pin Distribution](#vertex-anchored-pin-distribution)'s per-edge shapes above.
+
+### Example
+
+```text
+Letter "o", flattened to two contours:
+  Outer ring, perimeter 40 cm
+  Inner hole, perimeter 16 cm
+Requested spacing: 2 cm
+
+Outer ring: closestIntervalCount(40, 2) -> 20 intervals, actual spacing 2.0 cm exactly
+Inner hole: closestIntervalCount(16, 2) -> 8 intervals, actual spacing 2.0 cm exactly
+
+Total pins: 20 + 8 = 28
+Reported actualSpacing: 2.0 cm (the outer ring's value)
+```
+
 ## Live Preview Values
 
 While creating or resizing a Pin Path, the editor displays live values that update whenever shape dimensions, rotation, curvature, or requested spacing change.
@@ -315,6 +338,22 @@ Feature: Geometry precision
     Given a pentagram (5-pointed star polygon) Pin Path
     Then its computed perimeter follows the star's actual point-to-point traversal path
     And is not equal to the perimeter of its convex hull (the outer pentagon)
+
+Feature: Multi-contour closed-path distribution (Text only)
+
+  Scenario: Each contour is distributed independently
+    Given a Text Pin Path with an outer contour of perimeter 40 cm and an inner contour of perimeter 16 cm
+    And requested spacing 2 cm
+    When pins are distributed
+    Then the outer contour receives 20 pins and the inner contour receives 8 pins
+    And the total pin count is 28
+    And no pin is duplicated at either contour's start/end seam
+
+  Scenario: Spacing does not carry over between contours
+    Given a Text Pin Path with two contours
+    When the last pin on the first contour falls short of that contour's own perimeter
+    Then the second contour's distribution starts fresh at its own distance 0
+    And does not continue accumulating distance from the first contour
 
 Feature: Live preview updates
 

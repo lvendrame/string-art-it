@@ -10,7 +10,7 @@ import {
   computeTileGrid,
   findPinById,
   geometryCenter,
-  geometryToPath,
+  geometryToContourPaths,
   paperDimensionsCm,
   type EditorState,
   type EditorStore,
@@ -943,7 +943,10 @@ function PrintPage({
             {state.pinLayers.flatMap((l) =>
               l.pinPaths.map((p) => {
                 const center = geometryCenter(p.geometry);
-                const closed = geometryToPath(p.geometry).closed;
+                // A Text Pin Path is N independent closed contours (every glyph
+                // outline is a closed loop) — treat it as closed for label placement,
+                // the same as Circle/Ellipse.
+                const closed = p.geometry.type === "text" ? true : geometryToContourPaths(p.geometry)[0].closed;
                 const mirroredCenters = mirroredGeometryCenters(p);
                 const offsetCm = pinNumberOffsetCm(p.diameter);
                 const labelPositions = pinLabelPositions(p.pins, closed, center, offsetCm);
@@ -951,7 +954,7 @@ function PrintPage({
                   <g key={p.id}>
                     {elements.pinGuides && (
                       <path
-                        d={pathToSvgD(geometryToPath(p.geometry))}
+                        d={geometryToContourPaths(p.geometry).map(pathToSvgD).join(" ")}
                         fill="none"
                         stroke="black"
                         strokeOpacity={0.8}

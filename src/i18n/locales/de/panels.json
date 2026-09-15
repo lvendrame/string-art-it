@@ -21,7 +21,8 @@
       "regular-polygon": "regelmäßiges Polygon",
       "star": "Stern",
       "polygram": "Polygramm",
-      "freehand": "Freihand"
+      "freehand": "Freihand",
+      "text": "Text"
     },
     "pinDistance": "Stiftabstand",
     "fields": {
@@ -41,7 +42,17 @@
       "height": "Höhe",
       "side": "Seite",
       "outerRadius": "Außenradius",
-      "innerRadius": "Innenradius"
+      "innerRadius": "Innenradius",
+      "font": "Schriftart",
+      "weight": "Schriftstärke",
+      "italic": "Kursiv",
+      "size": "Größe (cm)",
+      "letterSpacing": "Zeichenabstand (cm)",
+      "text": "Text"
+    },
+    "weightOptions": {
+      "regular": "Normal",
+      "bold": "Fett"
     },
     "deletePinPath": "Stiftpfad löschen",
     "multiPathsSelected": "{{count}} Stiftpfade ausgewählt ({{pins}} Stifte insgesamt)",

@@ -1,6 +1,6 @@
 {
   "topicsAriaLabel": "Temas de ayuda",
-  "tabs": { "layers": "Capas", "keyboardMouse": "Teclado y Ratón" },
+  "tabs": { "layers": "Capas", "keyboardMouse": "Teclado y Ratón", "about": "Acerca de" },
   "edit": {
     "tools": {
       "heading": "Herramientas",
@@ -135,6 +135,29 @@
       "rightClick": { "label": "Clic derecho", "description": "Abre un menú de contexto radial con secciones de icono según el modo actual del Editor — Seleccionar/Mover/Rotar/Escalar/Combinar (más Confirmar Combinación cuando hay 2 o más pines acumulados) en modo Editar, las herramientas de dibujo de Pin en modo Pin, Dibujar/Borrador/Segmento en modo Hilo (o Cortar/Atrás/Siguiente durante un borrador de hilo en curso), Ajustar/Acercar/Alejar en modo Desplazar, y los controles de reproducción en modo Reproducir. Escape o hacer clic fuera del menú lo cierra sin actuar." },
       "doubleClick": { "label": "Doble clic", "description": "Herramienta Dibujar Hilo — finaliza el borrador en curso, añadiendo un segmento final al pin en el que se hizo clic." },
       "leftDrag": { "label": "Arrastre con botón izquierdo", "description": "Desplaza el área de visualización en modo Desplazar; presionar-arrastrar-soltar también controla Mover/Rotación en modo Editar y la mayoría de las herramientas de forma en modo Pin." }
+    }
+  },
+  "about": {
+    "appInfo": {
+      "heading": "Acerca de StringArtIt",
+      "name": "Nombre",
+      "description": "Descripción",
+      "descriptionValue": "Una herramienta de diseño basada en el navegador para crear tableros físicos de string-art/hilo.",
+      "version": "Versión",
+      "author": "Autor"
+    },
+    "contactForm": {
+      "heading": "Contacto",
+      "intro": "¿Tienes una pregunta, necesitas soporte o encontraste un problema? Envía un mensaje — se abrirá en tu propia aplicación de correo, dirigido al autor.",
+      "name": { "label": "Nombre" },
+      "subject": {
+        "label": "Asunto",
+        "placeholder": "Elige un asunto…",
+        "options": { "question": "Pregunta", "support": "Soporte", "issue": "Problema", "other": "Otro" }
+      },
+      "message": { "label": "Mensaje" },
+      "send": "Enviar",
+      "mailBody": "Nombre: {{name}}\n\n{{message}}"
     }
   }
 }

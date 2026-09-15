@@ -1,4 +1,4 @@
-import { findPinById, geometryToPath, type PinLayer, type ThreadLayer } from "../../application/document";
+import { findPinById, geometryToContourPaths, type PinLayer, type ThreadLayer } from "../../application/document";
 import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
 import type { PinHit, ThreadHit } from "./hitTesting";
 
@@ -44,7 +44,7 @@ export function EraserHoverOverlay({ pinLayers, threadLayers, pinEraserHit, path
       {hoveredPinPath && (
         <g data-testid="path-eraser-candidate">
           <path
-            d={pathToSvgD(geometryToPath(hoveredPinPath.geometry))}
+            d={geometryToContourPaths(hoveredPinPath.geometry).map(pathToSvgD).join(" ")}
             fill="none"
             stroke="var(--danger)"
             strokeWidth={0.12}

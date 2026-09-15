@@ -1,7 +1,7 @@
 import {
   boardPath,
   geometryCenter,
-  geometryToPath,
+  geometryToContourPaths,
   type Board,
   type PinLayer,
   type PrintElements,
@@ -108,11 +108,15 @@ export function buildExportSvg(doc: ExportDocument, elements: PrintElements): st
     if (!layer.visible) continue;
     for (const p of layer.pinPaths) {
       if (elements.pinGuides) {
-        content.push(`<path d="${pathToSvgD(geometryToPath(p.geometry))}" fill="none" stroke="black" stroke-opacity="0.8" stroke-width="0.03" stroke-dasharray="0.15 0.1"/>`);
+        const d = geometryToContourPaths(p.geometry).map(pathToSvgD).join(" ");
+        content.push(`<path d="${d}" fill="none" stroke="black" stroke-opacity="0.8" stroke-width="0.03" stroke-dasharray="0.15 0.1"/>`);
       }
       if (elements.pins) {
         const center = geometryCenter(p.geometry);
-        const closed = geometryToPath(p.geometry).closed;
+        // A Text Pin Path is N independent closed contours — treat it as closed for
+        // label placement, same as Circle/Ellipse (see PrintPreviewPanel.tsx's
+        // identical rule).
+        const closed = p.geometry.type === "text" ? true : geometryToContourPaths(p.geometry)[0].closed;
         const labelPositions = pinLabelPositions(p.pins, closed, center, PIN_NUMBER_OFFSET_CM);
         p.pins.forEach((pin, i) => {
           content.push(`<circle cx="${pin.x}" cy="${pin.y}" r="${PIN_DOT_RADIUS_CM}" fill="${p.colour}" stroke="#1b1b1b" stroke-width="0.015"/>`);

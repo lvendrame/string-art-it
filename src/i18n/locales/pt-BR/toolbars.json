@@ -25,7 +25,8 @@
       "circle": "Círculo",
       "rectangle": "Ret.",
       "square": "Quadrado",
-      "freehand": "Livre"
+      "freehand": "Livre",
+      "text": "Texto"
     },
     "eraser": "Borracha",
     "pathEraser": "Borracha de Caminho",

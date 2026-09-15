@@ -51,6 +51,10 @@ This keeps all the actual prose in one reviewable place and makes the feature tr
 
 **Content accuracy rule**: when writing this kind of descriptive/reference content, describe only what's actually implemented in code — cross-check against the real component/hook, not just the matching spec file. Specs can describe an intended-but-not-yet-built capability (this repo has a few: mouse-wheel zoom, a "100%" zoom shortcut, Delete/Backspace-to-remove, shift-click multi-select, arrow-key nudging — none exist in code as of M12). Documenting an unimplemented feature as if it works is worse than a gap in coverage.
 
+## Mailto contact link
+
+This app has no backend, so `AboutTabContent.tsx` (Help panel's About tab) "sends" its contact form via a plain `mailto:` `<a>` href built from the form's current state — it opens the user's own configured mail client, addressed and pre-filled; it never transmits anything itself. Keep the element an `<a href="mailto:...">`, not a `<button>` + `window.open`/`location.href=`, so tests can assert on the rendered href directly instead of invoking a real mail client; when the form is incomplete, still render a real `href` (e.g. `"#"`) with `aria-disabled` + a click handler that calls `preventDefault()`, rather than omitting `href` — an anchor without an `href` attribute loses its `link` role in the accessibility tree, which breaks both `getByRole("link")` assertions and keyboard/screen-reader affordance.
+
 ## Play mode transport (reference example)
 
 `src/ui/toolbars/PlayToolbar.tsx` + `usePlaybackTransport.ts` — worth knowing as a worked example of iterating on a control layout: went from a 2-row grid of 6 icons (First/Previous/Play/Stop/Next/Last) to a single row of 5 (First/Previous/Play-Pause/Next/Last), because Stop and First turned out to be functionally identical (both pause + reset to frame 0) — a good reminder to check whether two controls are actually redundant before just rearranging them. Frames are 0-based (frame 0 = nothing drawn yet, not "the first segment"); pressing Play again while already at the last frame restarts from 0 rather than doing nothing, matching standard media-player convention.

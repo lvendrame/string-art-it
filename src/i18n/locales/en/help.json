@@ -1,6 +1,6 @@
 {
   "topicsAriaLabel": "Help topics",
-  "tabs": { "layers": "Layers", "keyboardMouse": "Keyboard & Mouse" },
+  "tabs": { "layers": "Layers", "keyboardMouse": "Keyboard & Mouse", "about": "About" },
   "edit": {
     "tools": {
       "heading": "Tools",
@@ -135,6 +135,29 @@
       "rightClick": { "label": "Right-click", "description": "Opens a radial context menu with icon slices matching the current Editor mode — Select/Move/Rotate/Scale/Merge (plus Commit Merge once 2+ pins are accumulated) in Edit mode, the Pin drawing tools in Pin mode, Draw/Eraser/Segment in Thread mode (or Cut/Back/Next while a thread draft is in progress), Fit/Zoom In/Zoom Out in Pan mode, and the playback transport in Play mode. Escape or clicking outside the menu closes it without acting." },
       "doubleClick": { "label": "Double-click", "description": "Thread Draw tool — finishes the in-progress draft, adding one final segment to the clicked pin." },
       "leftDrag": { "label": "Left-drag", "description": "Pans the viewport in Pan mode; press-drag-release also drives Move/Rotation in Edit mode and most shape tools in Pin mode." }
+    }
+  },
+  "about": {
+    "appInfo": {
+      "heading": "About StringArtIt",
+      "name": "Name",
+      "description": "Description",
+      "descriptionValue": "A browser-based design tool for creating physical string-art/string-line boards.",
+      "version": "Version",
+      "author": "Author"
+    },
+    "contactForm": {
+      "heading": "Contact",
+      "intro": "Have a question, need support, or found an issue? Send a message — it opens in your own email app, addressed to the author.",
+      "name": { "label": "Name" },
+      "subject": {
+        "label": "Subject",
+        "placeholder": "Choose a subject…",
+        "options": { "question": "Question", "support": "Support", "issue": "Issue", "other": "Other" }
+      },
+      "message": { "label": "Message" },
+      "send": "Send",
+      "mailBody": "Name: {{name}}\n\n{{message}}"
     }
   }
 }

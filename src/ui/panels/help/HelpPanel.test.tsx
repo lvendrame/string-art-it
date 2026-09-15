@@ -34,10 +34,17 @@ describe("HelpPanel", () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  it("renders all seven tabs", () => {
+  it("renders all eight tabs", () => {
     render(<HelpPanel currentMode="select" onClose={() => {}} />);
-    ["Edit", "Pin", "Thread", "Pan", "Play", "Layers", "Keyboard & Mouse"].forEach((label) => {
+    ["Edit", "Pin", "Thread", "Pan", "Play", "Layers", "Keyboard & Mouse", "About"].forEach((label) => {
       expect(screen.getByRole("tab", { name: new RegExp(label) })).toBeInTheDocument();
     });
+  });
+
+  it("switching to the About tab renders its contact form", () => {
+    render(<HelpPanel currentMode="select" onClose={() => {}} />);
+    fireEvent.click(screen.getByRole("tab", { name: /About/ }));
+    expect(screen.getByText(/About StringArtIt/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Send/i })).toBeInTheDocument();
   });
 });

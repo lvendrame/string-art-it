@@ -29,6 +29,7 @@ export type {
 export { EditorStore, canCommitSelectionMerge } from "./EditorStore";
 export {
   geometryToPath,
+  geometryToContourPaths,
   createPinPath,
   recomputePinPath,
   distributePins,

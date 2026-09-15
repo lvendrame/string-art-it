@@ -12,7 +12,9 @@ import {
   type ThreadTool,
 } from "../../application/document";
 import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
+import { DEFAULT_FONT_ID } from "../../infrastructure/fonts/fontCatalog";
 import { zoomToPercent } from "../../domain/transforms";
+import { buildTextGeometry } from "../text/buildTextGeometry";
 import { useEditorState } from "../useEditorStore";
 import { CANVAS_VIEWPORT_PX } from "./boardViewport";
 import { CanvasToolbar } from "./CanvasToolbar";
@@ -44,6 +46,12 @@ import { useKeyboardTransform } from "./useKeyboardTransform";
 import { useEraserHover } from "./useEraserHover";
 
 const VIEWPORT_PX = CANVAS_VIEWPORT_PX;
+
+// docs/specs/29-text-pin-path.md — initial font size for a newly placed Text Pin Path,
+// in the app's physical document units (cm), same convention as every other numeric
+// geometry field (Circle radius, Line length, etc). Editable immediately afterward via
+// the Selection panel's Size field.
+const DEFAULT_TEXT_SIZE = 5;
 
 // Data-URI cursors for tools with no matching built-in CSS cursor keyword. Each renders
 // the same lucide glyph used on that tool's own toolbar button, as a white-outlined black
@@ -101,6 +109,7 @@ const PIN_TOOL_CURSORS: Record<PinTool, string> = {
   heptagram: "crosshair",
   octagram: "crosshair",
   freehand: "crosshair",
+  text: "text",
   eraser: ERASER_CURSOR,
   "path-eraser": TRASH_CURSOR,
 };
@@ -208,6 +217,19 @@ export function Canvas({ store }: { store: EditorStore }) {
 
     if (state.pinTool === "freehand") {
       freehandDrawing.handleMouseDown(point);
+      return;
+    }
+
+    if (state.pinTool === "text") {
+      // docs/specs/29-text-pin-path.md — single click, no drag: place an empty Text
+      // Pin Path immediately (awaiting only the default font, never blocking on the
+      // user's own typing). addPinPath() already auto-switches to Select/Edit mode and
+      // selects the new path (EditorStore.ts) — the same "hands off to Edit mode"
+      // behaviour every other pin tool already gets, so no extra sync code is needed
+      // here for the "click once -> Edit tab, path selected" flow.
+      void buildTextGeometry(point, "", DEFAULT_FONT_ID, "regular", false, DEFAULT_TEXT_SIZE, 0).then((geometry) =>
+        store.addPinPath(layerId, geometry),
+      );
       return;
     }
 

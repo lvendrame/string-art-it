@@ -21,7 +21,8 @@
       "regular-polygon": "regular-polygon",
       "star": "star",
       "polygram": "polygram",
-      "freehand": "freehand"
+      "freehand": "freehand",
+      "text": "text"
     },
     "pinDistance": "Pin distance",
     "fields": {
@@ -41,7 +42,17 @@
       "height": "Height",
       "side": "Side",
       "outerRadius": "Outer radius",
-      "innerRadius": "Inner radius"
+      "innerRadius": "Inner radius",
+      "font": "Font",
+      "weight": "Weight",
+      "italic": "Italic",
+      "size": "Size (cm)",
+      "letterSpacing": "Letter spacing (cm)",
+      "text": "Text"
+    },
+    "weightOptions": {
+      "regular": "Regular",
+      "bold": "Bold"
     },
     "deletePinPath": "Delete Pin Path",
     "multiPathsSelected": "{{count}} Pin Paths selected ({{pins}} pins total)",

@@ -25,7 +25,8 @@
       "circle": "Circle",
       "rectangle": "Rect",
       "square": "Square",
-      "freehand": "Freehand"
+      "freehand": "Freehand",
+      "text": "Text"
     },
     "eraser": "Eraser",
     "pathEraser": "Path Eraser",

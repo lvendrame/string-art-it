@@ -1,5 +1,6 @@
 export { lineShape } from "./line";
 export { freehandShape } from "./freehand";
+export { closedPolylineShape } from "./polyline";
 export { arcShape } from "./arc";
 export { circleShape, ellipseShape } from "./ellipseCircle";
 export { rectangleShape, squareShape } from "./rectangleSquare";

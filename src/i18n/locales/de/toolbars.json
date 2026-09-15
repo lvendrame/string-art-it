@@ -25,7 +25,8 @@
       "circle": "Kreis",
       "rectangle": "Rck.",
       "square": "Quadrat",
-      "freehand": "Freihand"
+      "freehand": "Freihand",
+      "text": "Text"
     },
     "eraser": "Radierer",
     "pathEraser": "Pfad-Radierer",

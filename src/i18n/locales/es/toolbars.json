@@ -25,7 +25,8 @@
       "circle": "Círculo",
       "rectangle": "Rect.",
       "square": "Cuadrado",
-      "freehand": "Mano libre"
+      "freehand": "Mano libre",
+      "text": "Texto"
     },
     "eraser": "Borrador",
     "pathEraser": "Borrador de Trazado",

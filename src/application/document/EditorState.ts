@@ -41,6 +41,7 @@ export type PinTool =
   | "heptagram"
   | "octagram"
   | "freehand"
+  | "text"
   | "eraser"
   | "path-eraser";
 

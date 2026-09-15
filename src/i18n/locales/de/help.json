@@ -1,6 +1,6 @@
 {
   "topicsAriaLabel": "Hilfethemen",
-  "tabs": { "layers": "Ebenen", "keyboardMouse": "Tastatur & Maus" },
+  "tabs": { "layers": "Ebenen", "keyboardMouse": "Tastatur & Maus", "about": "Über" },
   "edit": {
     "tools": {
       "heading": "Werkzeuge",
@@ -135,6 +135,29 @@
       "rightClick": { "label": "Rechtsklick", "description": "Öffnet ein radiales Kontextmenü mit Symbolabschnitten passend zum aktuellen Editor-Modus — Auswählen/Verschieben/Drehen/Skalieren/Zusammenführen (plus Zusammenführung Bestätigen bei 2 oder mehr angesammelten Stiften) im Bearbeiten-Modus, die Stift-Zeichenwerkzeuge im Stift-Modus, Zeichnen/Radierer/Segment im Faden-Modus (oder Schneiden/Zurück/Weiter während eines laufenden Fadenentwurfs), Einpassen/Vergrößern/Verkleinern im Verschieben-Modus, und die Wiedergabesteuerung im Wiedergabe-Modus. Escape oder ein Klick außerhalb des Menüs schließt es, ohne etwas auszuführen." },
       "doubleClick": { "label": "Doppelklick", "description": "Faden-Zeichenwerkzeug — beendet den laufenden Entwurf, indem ein letztes Segment zum angeklickten Stift hinzugefügt wird." },
       "leftDrag": { "label": "Ziehen mit linker Taste", "description": "Verschiebt den Ansichtsbereich im Verschieben-Modus; Drücken-Ziehen-Loslassen steuert auch Verschieben/Drehung im Bearbeiten-Modus und die meisten Formwerkzeuge im Stift-Modus." }
+    }
+  },
+  "about": {
+    "appInfo": {
+      "heading": "Über StringArtIt",
+      "name": "Name",
+      "description": "Beschreibung",
+      "descriptionValue": "Ein browserbasiertes Design-Werkzeug zur Erstellung physischer Fadenkunst-/String-Art-Bretter.",
+      "version": "Version",
+      "author": "Autor"
+    },
+    "contactForm": {
+      "heading": "Kontakt",
+      "intro": "Haben Sie eine Frage, benötigen Sie Unterstützung oder haben Sie ein Problem gefunden? Senden Sie eine Nachricht — sie öffnet sich in Ihrem eigenen E-Mail-Programm, adressiert an den Autor.",
+      "name": { "label": "Name" },
+      "subject": {
+        "label": "Betreff",
+        "placeholder": "Betreff wählen…",
+        "options": { "question": "Frage", "support": "Unterstützung", "issue": "Problem", "other": "Sonstiges" }
+      },
+      "message": { "label": "Nachricht" },
+      "send": "Senden",
+      "mailBody": "Name: {{name}}\n\n{{message}}"
     }
   }
 }

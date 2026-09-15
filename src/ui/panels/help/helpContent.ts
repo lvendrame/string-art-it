@@ -1,8 +1,9 @@
 import type { ComponentType } from "react";
-import { Hand, Keyboard, Layers as LayersIcon, MousePointer2, Pin as PinIcon, Play, Spline } from "lucide-react";
+import { Hand, Info, Keyboard, Layers as LayersIcon, MousePointer2, Pin as PinIcon, Play, Spline } from "lucide-react";
 import type { EditorMode } from "../../../application/document";
+import { AboutTabContent } from "./AboutTabContent";
 
-export type HelpTabId = "edit" | "pin" | "thread" | "pan" | "play" | "layers" | "keyboard-mouse";
+export type HelpTabId = "edit" | "pin" | "thread" | "pan" | "play" | "layers" | "keyboard-mouse" | "about";
 
 export interface HelpItem {
   labelKey: string;
@@ -18,7 +19,11 @@ export interface HelpTab {
   id: HelpTabId;
   labelKey: string;
   icon: ComponentType<{ size?: number }>;
-  sections: HelpSection[];
+  // Static reference tabs use `sections` (rendered generically by HelpSectionView).
+  // About instead renders a live, stateful contact form, so it supplies `Content` —
+  // a custom component bypassing the generic section renderer entirely.
+  sections?: HelpSection[];
+  Content?: ComponentType;
 }
 
 // docs/specs/20-help.md — maps the live EditorMode to the Help tab shown by default
@@ -236,5 +241,11 @@ export const HELP_TABS: HelpTab[] = [
         ],
       },
     ],
+  },
+  {
+    id: "about",
+    labelKey: "help:tabs.about",
+    icon: Info,
+    Content: AboutTabContent,
   },
 ];

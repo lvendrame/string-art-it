@@ -1,6 +1,6 @@
 {
   "topicsAriaLabel": "Sujets d'aide",
-  "tabs": { "layers": "Calques", "keyboardMouse": "Clavier et Souris" },
+  "tabs": { "layers": "Calques", "keyboardMouse": "Clavier et Souris", "about": "À propos" },
   "edit": {
     "tools": {
       "heading": "Outils",
@@ -135,6 +135,29 @@
       "rightClick": { "label": "Clic droit", "description": "Ouvre un menu contextuel radial avec des tranches d'icônes correspondant au mode actuel de l'Éditeur — Sélectionner/Déplacer/Tourner/Redimensionner/Fusionner (plus Valider la Fusion une fois 2 broches ou plus accumulées) en mode Édition, les outils de dessin de Broche en mode Broche, Dessiner/Gomme/Segment en mode Fil (ou Couper/Retour/Suivant pendant un brouillon de fil en cours), Ajuster/Zoom avant/Zoom arrière en mode Déplacement, et les commandes de lecture en mode Lecture. Échap ou un clic hors du menu le ferme sans effectuer d'action." },
       "doubleClick": { "label": "Double-clic", "description": "Outil Dessiner Fil — termine le brouillon en cours, en ajoutant un segment final à la broche cliquée." },
       "leftDrag": { "label": "Glisser avec le bouton gauche", "description": "Déplace la zone de visualisation en mode Déplacement ; appuyer-glisser-relâcher pilote aussi Déplacer/Rotation en mode Édition et la plupart des outils de forme en mode Broche." }
+    }
+  },
+  "about": {
+    "appInfo": {
+      "heading": "À propos de StringArtIt",
+      "name": "Nom",
+      "description": "Description",
+      "descriptionValue": "Un outil de conception dans le navigateur pour créer des planches physiques de string-art/fil tendu.",
+      "version": "Version",
+      "author": "Auteur"
+    },
+    "contactForm": {
+      "heading": "Contact",
+      "intro": "Une question, besoin d'assistance, ou un problème rencontré ? Envoyez un message — il s'ouvrira dans votre propre application de messagerie, adressé à l'auteur.",
+      "name": { "label": "Nom" },
+      "subject": {
+        "label": "Sujet",
+        "placeholder": "Choisissez un sujet…",
+        "options": { "question": "Question", "support": "Assistance", "issue": "Problème", "other": "Autre" }
+      },
+      "message": { "label": "Message" },
+      "send": "Envoyer",
+      "mailBody": "Nom : {{name}}\n\n{{message}}"
     }
   }
 }

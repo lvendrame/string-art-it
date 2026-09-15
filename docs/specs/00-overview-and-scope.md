@@ -77,6 +77,8 @@ The application must allow users to:
 | Radial context menu | [25-radial-context-menu.md](./25-radial-context-menu.md) |
 | Edit-mode multi-select & granularity | [26-edit-mode-multi-select.md](./26-edit-mode-multi-select.md) |
 | Thread select tool | [27-thread-select-tool.md](./27-thread-select-tool.md) |
+| Help: About tab (app info + mailto contact form) | [28-help-about-tab.md](./28-help-about-tab.md) |
+| Text pin path | [29-text-pin-path.md](./29-text-pin-path.md) |
 
 ## MVP Scope
 

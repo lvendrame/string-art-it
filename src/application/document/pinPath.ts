@@ -1,6 +1,7 @@
 import {
   arcShape,
   circleShape,
+  closedPolylineShape,
   ellipseShape,
   freehandShape,
   lineShape,
@@ -27,7 +28,27 @@ export type PinPathGeometry =
   | { type: "regular-polygon"; center: Point; radius: number; sides: number; rotation: number }
   | { type: "star"; center: Point; outerRadius: number; innerRadius: number; points: number; rotation: number }
   | { type: "polygram"; center: Point; radius: number; points: number; skip: number; rotation: number }
-  | { type: "freehand"; points: Point[] };
+  | { type: "freehand"; points: Point[] }
+  // docs/specs/29-text-pin-path.md. `contours` is a DERIVED CACHE — the flattened, already
+  // font-resolved+positioned outline points (one array per closed loop; a hole letter like
+  // "o" or a disconnected piece like "i"'s dot contributes more than one), the same way
+  // pins[] is a derived cache of geometry+spacing for every other shape. It is produced by
+  // the UI layer (the only layer that talks to opentype.js — see
+  // src/infrastructure/fonts/) whenever text/fontId/weight/italic/size/letterSpacing
+  // changes, and is what keeps this application layer infra-free: distributePins/
+  // geometryToContourPaths below only ever consume already-flattened points, never fonts.
+  | {
+      type: "text";
+      origin: Point;
+      text: string;
+      fontId: string;
+      weight: "regular" | "bold";
+      italic: boolean;
+      size: number;
+      letterSpacing: number;
+      rotation: number;
+      contours: Point[][];
+    };
 
 export function geometryToPath(geometry: PinPathGeometry): Path {
   switch (geometry.type) {
@@ -51,7 +72,22 @@ export function geometryToPath(geometry: PinPathGeometry): Path {
       return polygramShape(geometry.center, geometry.radius, geometry.points, geometry.skip, geometry.rotation);
     case "freehand":
       return freehandShape(geometry.points);
+    case "text":
+      // Text has no single continuous Path — it's N closed contours (see the "text"
+      // PinPathGeometry variant's doc comment above). Callers that need geometry as
+      // Path(s) — distribution, rendering — must use geometryToContourPaths instead.
+      throw new Error("geometryToPath does not support \"text\" geometry — use geometryToContourPaths");
   }
+}
+
+// The general form: every shape as a list of Path contours. For the 10 single-contour
+// shapes this is just [geometryToPath(geometry)]; for "text" it's one closed
+// closedPolylineShape per already-flattened contour. distributePins and the guide-line
+// renderer (PinPathVisual.tsx) both use this instead of geometryToPath so multi-contour
+// shapes (a letter's ring + its hole) work with zero shape-specific code in either place.
+export function geometryToContourPaths(geometry: PinPathGeometry): Path[] {
+  if (geometry.type === "text") return geometry.contours.map(closedPolylineShape);
+  return [geometryToPath(geometry)];
 }
 
 // docs/specs/09-selection-and-editing.md Move tool — shifts every point field of a
@@ -72,6 +108,14 @@ export function translateGeometry(geometry: PinPathGeometry, delta: Point): PinP
       return { ...geometry, position: translatePoint(geometry.position, delta) };
     case "freehand":
       return { ...geometry, points: geometry.points.map((p) => translatePoint(p, delta)) };
+    case "text":
+      // Same treatment as freehand: contours are absolute points, so Move just shifts
+      // every one of them (plus origin, kept in sync purely for display/re-editing).
+      return {
+        ...geometry,
+        origin: translatePoint(geometry.origin, delta),
+        contours: geometry.contours.map((c) => c.map((p) => translatePoint(p, delta))),
+      };
   }
 }
 
@@ -112,6 +156,19 @@ export function rotateGeometry(geometry: PinPathGeometry, pivot: Point, theta: n
     }
     case "freehand":
       return { ...geometry, points: geometry.points.map((p) => rotatePoint(p, pivot, theta)) };
+    case "text":
+      // Same treatment as freehand: rotate the baked contour points directly rather
+      // than re-laying-out the font at an angle. Scope note (docs/specs/29-text-pin-
+      // path.md): if the text/font/size/weight/italic/letterSpacing is edited again
+      // after this, contours are regenerated from scratch at the field's literal
+      // (unrotated) values — same "typed edit regenerates, manual transform doesn't
+      // survive" precedent as Pin Eraser vs. geometry edits elsewhere in this file.
+      return {
+        ...geometry,
+        origin: rotatePoint(geometry.origin, pivot, theta),
+        rotation: geometry.rotation + theta,
+        contours: geometry.contours.map((c) => c.map((p) => rotatePoint(p, pivot, theta))),
+      };
   }
 }
 
@@ -135,6 +192,14 @@ export function geometryCenter(geometry: PinPathGeometry): Point {
       return { x: geometry.position.x + geometry.side / 2, y: geometry.position.y + geometry.side / 2 };
     case "freehand": {
       const pts = geometry.points;
+      return { x: pts.reduce((s, p) => s + p.x, 0) / pts.length, y: pts.reduce((s, p) => s + p.y, 0) / pts.length };
+    }
+    case "text": {
+      // Same "arithmetic mean of all points" rule as freehand — the one existing
+      // precedent for a shape defined by an arbitrary point cloud rather than a
+      // parametric centre/position field.
+      const pts = geometry.contours.flat();
+      if (pts.length === 0) return geometry.origin;
       return { x: pts.reduce((s, p) => s + p.x, 0) / pts.length, y: pts.reduce((s, p) => s + p.y, 0) / pts.length };
     }
   }
@@ -200,6 +265,15 @@ export function scaleGeometryAboutPivot(geometry: PinPathGeometry, pivot: Point,
       return { ...geometry, center: scalePoint(geometry.center, pivot, factor), radius: geometry.radius * factor };
     case "freehand":
       return { ...geometry, points: geometry.points.map((p) => scalePoint(p, pivot, factor)) };
+    case "text":
+      // Same treatment as freehand/rotate above: scale the baked contour points
+      // directly (font size itself is left untouched — see this variant's rotate case
+      // for the "regenerates on next text edit" scope note, which applies here too).
+      return {
+        ...geometry,
+        origin: scalePoint(geometry.origin, pivot, factor),
+        contours: geometry.contours.map((c) => c.map((p) => scalePoint(p, pivot, factor))),
+      };
   }
 }
 
@@ -255,6 +329,29 @@ export function isVertexAnchoredGeometry(type: PinPathGeometry["type"]): boolean
 }
 
 export function distributePins(geometry: PinPathGeometry, requestedSpacing: number): { pins: Pin[]; actualSpacing: number } {
+  // docs/specs/29-text-pin-path.md §Multi-contour closed-path distribution — a glyph
+  // contour is a compound curved path (flattened from Bezier curves), not a shape
+  // defined by real straight-edge vertices, so it gets the SAME closed-path continuous-
+  // accumulation rule as Circle/Ellipse (docs/specs/07-pin-geometry-engine.md), just run
+  // independently per contour instead of once over a single path — a letter's ring and
+  // its hole are two unrelated perimeters, each uniformly spaced on its own. `pins[]` is
+  // the flat concatenation across every contour, same shape as every other Pin Path;
+  // `actualSpacing` reports the first contour's value as a representative summary, the
+  // same "one number even though it varies per piece" precedent distributePathPerVertex
+  // already uses for per-edge shapes.
+  if (geometry.type === "text") {
+    const pins: Pin[] = [];
+    let actualSpacing = requestedSpacing;
+    geometry.contours.forEach((contourPoints, i) => {
+      if (contourPoints.length < 2) return; // degenerate contour — no meaningful perimeter
+      const contourPath = closedPolylineShape(contourPoints);
+      const { points, actualSpacing: contourSpacing } = distributeClosedPath(contourPath, requestedSpacing);
+      if (i === 0) actualSpacing = contourSpacing;
+      points.forEach((p) => pins.push({ id: nextPinId(), ...p }));
+    });
+    return { pins, actualSpacing };
+  }
+
   const path = geometryToPath(geometry);
   if (isVertexAnchoredGeometry(geometry.type)) {
     const { points, actualSpacing } = distributePathPerVertex(path, requestedSpacing);

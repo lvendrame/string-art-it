@@ -21,7 +21,8 @@
       "regular-polygon": "polígono regular",
       "star": "estrela",
       "polygram": "polígrama",
-      "freehand": "mão livre"
+      "freehand": "mão livre",
+      "text": "texto"
     },
     "pinDistance": "Distância entre pinos",
     "fields": {
@@ -41,7 +42,17 @@
       "height": "Altura",
       "side": "Lado",
       "outerRadius": "Raio externo",
-      "innerRadius": "Raio interno"
+      "innerRadius": "Raio interno",
+      "font": "Fonte",
+      "weight": "Peso",
+      "italic": "Itálico",
+      "size": "Tamanho (cm)",
+      "letterSpacing": "Espaçamento entre letras (cm)",
+      "text": "Texto"
+    },
+    "weightOptions": {
+      "regular": "Regular",
+      "bold": "Negrito"
     },
     "deletePinPath": "Excluir Caminho de Pinos",
     "multiPathsSelected": "{{count}} Caminhos de Pinos selecionados ({{pins}} pinos no total)",

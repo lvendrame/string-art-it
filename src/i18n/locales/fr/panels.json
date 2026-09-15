@@ -21,7 +21,8 @@
       "regular-polygon": "polygone régulier",
       "star": "étoile",
       "polygram": "polygramme",
-      "freehand": "main levée"
+      "freehand": "main levée",
+      "text": "texte"
     },
     "pinDistance": "Distance entre broches",
     "fields": {
@@ -41,7 +42,17 @@
       "height": "Hauteur",
       "side": "Côté",
       "outerRadius": "Rayon extérieur",
-      "innerRadius": "Rayon intérieur"
+      "innerRadius": "Rayon intérieur",
+      "font": "Police",
+      "weight": "Graisse",
+      "italic": "Italique",
+      "size": "Taille (cm)",
+      "letterSpacing": "Espacement des lettres (cm)",
+      "text": "Texte"
+    },
+    "weightOptions": {
+      "regular": "Normal",
+      "bold": "Gras"
     },
     "deletePinPath": "Supprimer le Tracé de Broches",
     "multiPathsSelected": "{{count}} Tracés de Broches sélectionnés ({{pins}} broches au total)",

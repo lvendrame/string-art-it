@@ -25,7 +25,8 @@
       "circle": "Cercle",
       "rectangle": "Rect.",
       "square": "Carré",
-      "freehand": "Main levée"
+      "freehand": "Main levée",
+      "text": "Texte"
     },
     "eraser": "Gomme",
     "pathEraser": "Gomme de Tracé",

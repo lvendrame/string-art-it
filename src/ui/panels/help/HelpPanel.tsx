@@ -53,9 +53,11 @@ export function HelpPanel({ currentMode, onClose }: { currentMode: EditorMode; o
       </div>
 
       <div role="tabpanel" id={`help-panel-${tab.id}`} aria-labelledby={`help-tab-${tab.id}`} style={{ maxWidth: 720, display: "flex", flexDirection: "column", gap: 20 }}>
-        {tab.sections.map((section, i) => (
-          <HelpSectionView key={section.headingKey ?? i} section={section} t={t} />
-        ))}
+        {tab.Content ? (
+          <tab.Content />
+        ) : (
+          (tab.sections ?? []).map((section, i) => <HelpSectionView key={section.headingKey ?? i} section={section} t={t} />)
+        )}
       </div>
     </div>
   );

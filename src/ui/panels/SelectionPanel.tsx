@@ -1,5 +1,8 @@
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type { EditorStore, PinPathGeometry } from "../../application/document";
+import { FONT_CATALOG, getFontCatalogEntry, type FontWeight } from "../../infrastructure/fonts/fontCatalog";
+import { buildTextGeometry } from "../text/buildTextGeometry";
 import { useEditorState } from "../useEditorStore";
 import { SymmetryPanel } from "./SymmetryPanel";
 
@@ -36,6 +39,22 @@ function SummaryMessage({ text }: { text: string }) {
 export function SelectionPanel({ store }: { store: EditorStore }) {
   const { t } = useTranslation("panels");
   const state = useEditorState(store);
+  const textInputRef = useRef<HTMLInputElement>(null);
+
+  // docs/specs/29-text-pin-path.md — focus the Text field the moment a Text Pin Path
+  // becomes selected (this fires exactly once per selection change, not per keystroke,
+  // since `state.selection` only gets a new reference from an explicit store.select()
+  // call — geometry edits from typing go through updatePinPathGeometry instead and
+  // never touch it). This is what the Text tool's placement click relies on: it selects
+  // the freshly-created empty path via the same generic addPinPath -> setMode("select")
+  // + select() flow every pin tool already gets, and this effect turns that selection
+  // change into "the Text field is ready to type into" with no extra click.
+  useEffect(() => {
+    if (state.selection.type !== "pinPaths" || state.selection.refs.length !== 1) return;
+    if (store.getSelectedPinPath()?.geometry.type !== "text") return;
+    textInputRef.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- keyed on the selection identity, not the store (a stable ref)
+  }, [state.selection]);
 
   if (state.selection.type === "pins") {
     const paths = new Set(state.selection.refs.map((r) => r.pathId));
@@ -62,6 +81,18 @@ export function SelectionPanel({ store }: { store: EditorStore }) {
 
   const set = (next: PinPathGeometry) => store.updatePinPathGeometry(layerId, pathId, next);
   const f = (key: string) => t(`selectionPanel.fields.${key}`);
+
+  // docs/specs/29-text-pin-path.md — the only async field-edit path in this panel:
+  // Font/Weight/Italic/Size/LetterSpacing/Text-content all regenerate the contours from
+  // the (possibly newly loaded) font before committing. `ensureFontLoaded` inside
+  // buildTextGeometry is memoized, so re-typing text against an already-loaded font
+  // resolves instantly (no real network wait) — only switching to a font/weight/italic
+  // combination that hasn't been fetched yet pays that cost.
+  const setText = (patch: Partial<{ text: string; fontId: string; weight: FontWeight; italic: boolean; size: number; letterSpacing: number }>) => {
+    if (g.type !== "text") return;
+    const next = { ...g, ...patch };
+    void buildTextGeometry(next.origin, next.text, next.fontId, next.weight, next.italic, next.size, next.letterSpacing).then(set);
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -126,6 +157,59 @@ export function SelectionPanel({ store }: { store: EditorStore }) {
               </>
             )}
             {g.type === "polygram" && <NumberField label={f("radius")} value={g.radius} onChange={(v) => set({ ...g, radius: Math.max(v, 0.01) })} />}
+          </>
+        )}
+        {g.type === "text" && (
+          <>
+            <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
+              {f("text")}
+              <input
+                ref={textInputRef}
+                type="text"
+                value={g.text}
+                onChange={(e) => setText({ text: e.target.value })}
+                style={{ width: 140, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "4px 6px", fontSize: 12 }}
+              />
+            </label>
+            <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
+              {f("font")}
+              <select
+                value={g.fontId}
+                onChange={(e) => setText({ fontId: e.target.value })}
+                style={{ background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "4px 6px", fontSize: 12 }}
+              >
+                {FONT_CATALOG.map((font) => (
+                  <option key={font.id} value={font.id}>
+                    {font.family}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
+              {f("weight")}
+              <select
+                value={g.weight}
+                onChange={(e) => setText({ weight: e.target.value as FontWeight })}
+                style={{ background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "4px 6px", fontSize: 12 }}
+              >
+                {(getFontCatalogEntry(g.fontId)?.weights ?? ["regular"]).map((weight) => (
+                  <option key={weight} value={weight}>
+                    {t(`selectionPanel.weightOptions.${weight}`)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
+              {f("italic")}
+              <input
+                type="checkbox"
+                checked={g.italic}
+                disabled={!getFontCatalogEntry(g.fontId)?.hasItalic}
+                onChange={(e) => setText({ italic: e.target.checked })}
+              />
+            </label>
+            <NumberField label={f("size")} value={g.size} onChange={(v) => setText({ size: Math.max(v, 0.1) })} />
+            <NumberField label={f("letterSpacing")} value={g.letterSpacing} onChange={(v) => setText({ letterSpacing: v })} />
           </>
         )}
       </div>

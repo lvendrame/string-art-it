@@ -6,6 +6,9 @@
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
+      // Consent Mode v2: deny analytics storage until the cookie banner
+      // records an explicit accept (see src/infrastructure/analytics/consent.ts).
+      gtag('consent', 'default', { 'analytics_storage': 'denied' });
       gtag('js', new Date());
 
       gtag('config', 'G-22HZEX7HLG');

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EditorStore, recomputePinPath, rotateGeometry, scaleGeometry, translateGeometry } from "./application/document";
 import { fitViewportForBoard } from "./ui/canvas/boardViewport";
+import { CookieConsentBanner } from "./ui/CookieConsentBanner";
 import { EditorShell } from "./ui/EditorShell";
 import { BoardSetup } from "./ui/panels/BoardSetup";
 import { useAutosave } from "./ui/useAutosave";
@@ -81,6 +82,8 @@ export function App() {
       ) : (
         <BoardSetup store={store} onContinue={enterEditor} />
       )}
+
+      <CookieConsentBanner />
     </>
   );
 }

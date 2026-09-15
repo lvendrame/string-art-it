@@ -68,6 +68,60 @@ button {
   z-index: 1000;
 }
 
+/* docs/specs/18-design-system.md tokens — react-cookie-consent's <CookieConsent
+   disableStyles> ships unstyled, so its container/text/button-wrapper classes
+   are styled here to match the rest of the chrome (cf. the autosave banner in
+   App.tsx, which uses the same panel/accent tokens inline). */
+.cookie-consent-banner {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  max-width: min(640px, calc(100vw - 32px));
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-float);
+  padding: 14px 18px;
+  font-size: 12.5px;
+  color: var(--text-primary);
+}
+
+.cookie-consent-banner__text {
+  flex: 1 1 320px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.cookie-consent-banner__actions {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.cookie-consent-banner__actions .btn {
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cookie-consent-banner__accept {
+  background: var(--accent);
+  color: white;
+  border-color: transparent;
+}
+
+.cookie-consent-banner__accept:hover {
+  background: var(--accent);
+  filter: brightness(1.1);
+}
+
 /* docs/specs/14-printing.md — window.print() prints the whole document by default.
    #print-portal (PrintPreviewPanel.tsx's <PrintPortal>) holds a plain, unstyled copy of
    the print pages mounted directly on <body> — outside the app's own flex/absolute

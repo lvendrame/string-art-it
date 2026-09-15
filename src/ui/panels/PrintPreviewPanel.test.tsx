@@ -141,14 +141,18 @@ describe("PrintPreviewPanel", () => {
     expect(duplicates).toEqual([]);
   });
 
-  it("a board larger than one page renders multiple tiled pages", () => {
-    const store = new EditorStore();
-    store.setBoardDimensions({ diameter: 200 }); // much larger than any paper size
-    store.setPrintSettings({ scale: { mode: "1:1", customRatio: 1 } });
+  it(
+    "a board larger than one page renders multiple tiled pages",
+    () => {
+      const store = new EditorStore();
+      store.setBoardDimensions({ diameter: 200 }); // much larger than any paper size
+      store.setPrintSettings({ scale: { mode: "1:1", customRatio: 1 } });
 
-    render(<PrintPreviewPanel store={store} onClose={() => {}} />);
-    fireEvent.click(screen.getByLabelText("Enable tiling across multiple pages"));
+      render(<PrintPreviewPanel store={store} onClose={() => {}} />);
+      fireEvent.click(screen.getByLabelText("Enable tiling across multiple pages"));
 
-    expect(screen.getByText(/pages \(/)).toBeInTheDocument();
-  });
+      expect(screen.getByText(/pages \(/)).toBeInTheDocument();
+    },
+    15000, // many tiled pages, each rendering the full procedural wood-grain fill
+  );
 });

@@ -1,4 +1,5 @@
 import type { BoardAppearance } from "../../application/document";
+import { buildWoodGrainGeometry, type WoodGrainGeometry } from "./woodGrain";
 
 // docs/specs §00 Phase 2 "rich board textures" — expanded preset set.
 const WOOD_PRESETS: Record<string, [string, string, string]> = {
@@ -25,6 +26,29 @@ const PAINT_PRESETS: Record<string, [string, string, string]> = {
 
 export const PAINT_PRESET_IDS = Object.keys(PAINT_PRESETS);
 
+// Growth-ring pattern shared by "wood-texture" and "painted-wood": just the procedural
+// noise-banded rings from woodGrain.ts, centred on the board so every ring is complete.
+// `tint` (painted-wood only) is a translucent colour rect on top so grain still shows
+// through the paint (docs/specs/04-board-appearance.md).
+function WoodGrainPattern({
+  id,
+  geometry,
+  tint,
+}: {
+  id: string;
+  geometry: WoodGrainGeometry;
+  tint?: string;
+}) {
+  return (
+    <pattern id={id} patternUnits="objectBoundingBox" patternContentUnits="objectBoundingBox" width={1} height={1}>
+      {geometry.bands.map((b, i) => (
+        <path key={`band-${i}`} d={b.d} fillRule="evenodd" fill={b.colour} />
+      ))}
+      {tint && <rect x={0} y={0} width={1} height={1} fill={tint} fillOpacity={0.45} />}
+    </pattern>
+  );
+}
+
 // docs/specs/04-board-appearance.md: appearance is independent from pins/threads/
 // guides/grid — this module only ever reads `board.appearance`.
 export function BoardFillDefs({ id, appearance }: { id: string; appearance: BoardAppearance }) {
@@ -46,24 +70,14 @@ export function BoardFillDefs({ id, appearance }: { id: string; appearance: Boar
         </radialGradient>
       );
     case "wood-texture": {
-      const [c0, c1, c2] = WOOD_PRESETS[appearance.presetId] ?? WOOD_PRESETS.walnut;
-      return (
-        <radialGradient id={id} cx="40%" cy="35%" r="75%">
-          <stop offset="0%" stopColor={c0} />
-          <stop offset="55%" stopColor={c1} />
-          <stop offset="100%" stopColor={c2} />
-        </radialGradient>
-      );
+      const colours = WOOD_PRESETS[appearance.presetId] ?? WOOD_PRESETS.walnut;
+      const geometry = buildWoodGrainGeometry(appearance.presetId, colours);
+      return <WoodGrainPattern id={id} geometry={geometry} />;
     }
     case "painted-wood": {
-      const [c0, c1, c2] = PAINT_PRESETS[appearance.presetId] ?? WOOD_PRESETS[appearance.presetId] ?? WOOD_PRESETS.walnut;
-      return (
-        <radialGradient id={id} cx="40%" cy="35%" r="75%">
-          <stop offset="0%" stopColor={c0} />
-          <stop offset="55%" stopColor={c1} />
-          <stop offset="100%" stopColor={c2} />
-        </radialGradient>
-      );
+      const colours = PAINT_PRESETS[appearance.presetId] ?? WOOD_PRESETS[appearance.presetId] ?? WOOD_PRESETS.walnut;
+      const geometry = buildWoodGrainGeometry(appearance.presetId, colours);
+      return <WoodGrainPattern id={id} geometry={geometry} tint={colours[1]} />;
     }
     case "custom-texture":
       return (
@@ -81,6 +95,17 @@ export function boardFillPaint(id: string, appearance: BoardAppearance): string 
   return `url(#${id})`;
 }
 
+// Plain-string equivalent of WoodGrainPattern, kept structurally identical so raster/PDF
+// export renders the same geometry as the live editor SVG.
+function woodGrainPatternMarkup(id: string, geometry: WoodGrainGeometry, tint?: string): string {
+  const bands = geometry.bands.map((b) => `<path d="${b.d}" fill-rule="evenodd" fill="${b.colour}"/>`).join("");
+  const tintRect = tint ? `<rect x="0" y="0" width="1" height="1" fill="${tint}" fill-opacity="0.45"/>` : "";
+  return (
+    `<pattern id="${id}" patternUnits="objectBoundingBox" patternContentUnits="objectBoundingBox" width="1" height="1">` +
+    `${bands}${tintRect}</pattern>`
+  );
+}
+
 // Plain-string equivalent of BoardFillDefs, for non-React renderers (export/print-to-
 // string) that build an SVG document as text rather than a React tree.
 export function boardFillDefsMarkup(id: string, appearance: BoardAppearance): string {
@@ -94,12 +119,14 @@ export function boardFillDefsMarkup(id: string, appearance: BoardAppearance): st
         .map((s) => `<stop offset="${s.offset}%" stop-color="${s.colour}"/>`)
         .join("")}</radialGradient>`;
     case "wood-texture": {
-      const [c0, c1, c2] = WOOD_PRESETS[appearance.presetId] ?? WOOD_PRESETS.walnut;
-      return `<radialGradient id="${id}" cx="40%" cy="35%" r="75%"><stop offset="0%" stop-color="${c0}"/><stop offset="55%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/></radialGradient>`;
+      const colours = WOOD_PRESETS[appearance.presetId] ?? WOOD_PRESETS.walnut;
+      const geometry = buildWoodGrainGeometry(appearance.presetId, colours);
+      return woodGrainPatternMarkup(id, geometry);
     }
     case "painted-wood": {
-      const [c0, c1, c2] = PAINT_PRESETS[appearance.presetId] ?? WOOD_PRESETS[appearance.presetId] ?? WOOD_PRESETS.walnut;
-      return `<radialGradient id="${id}" cx="40%" cy="35%" r="75%"><stop offset="0%" stop-color="${c0}"/><stop offset="55%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/></radialGradient>`;
+      const colours = PAINT_PRESETS[appearance.presetId] ?? WOOD_PRESETS[appearance.presetId] ?? WOOD_PRESETS.walnut;
+      const geometry = buildWoodGrainGeometry(appearance.presetId, colours);
+      return woodGrainPatternMarkup(id, geometry, colours[1]);
     }
     case "custom-texture":
       return `<pattern id="${id}" patternUnits="objectBoundingBox" patternContentUnits="objectBoundingBox" width="1" height="1"><image href="${appearance.imageDataUrl}" x="0" y="0" width="1" height="1" preserveAspectRatio="xMidYMid slice"/></pattern>`;

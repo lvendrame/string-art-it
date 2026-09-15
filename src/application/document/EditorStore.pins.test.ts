@@ -21,14 +21,14 @@ describe("EditorStore pin path mutations", () => {
     const pathId = store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: 10 })!;
 
     expect(store.getState().mode).toBe("select");
-    expect(store.getState().selection).toEqual({ type: "pinPath", layerId, pathId });
+    expect(store.getState().selection).toEqual({ type: "pinPaths", refs: [{ layerId, pathId }] });
   });
 
   it("deleting a pin path removes it and clears selection if it was selected", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;
     const pathId = store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: 10 })!;
-    store.select({ type: "pinPath", layerId, pathId });
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
 
     store.deletePinPath(layerId, pathId);
 
@@ -65,7 +65,7 @@ describe("EditorStore pin path mutations", () => {
     const layerId = store.getState().pinLayers[0].id;
     const pathA = store.addPinPath(layerId, { type: "line", start: { x: 0, y: 0 }, end: { x: 8, y: 0 } })!;
     const pathB = store.addPinPath(layerId, { type: "line", start: { x: 0, y: 0 }, end: { x: 8, y: 0 } })!;
-    store.select({ type: "pinPath", layerId, pathId: pathA });
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId: pathA }] });
 
     store.setPinProperty({ spacing: 2 });
 

@@ -197,6 +197,6 @@ describe("Canvas — pin drawing interaction", () => {
     const svg = screen.getByRole("img", { name: "Board canvas" });
     mouseDownAt(svg, 200, 200); // doc(10,10), the line's start pin
 
-    expect(store.getState().selection).toEqual({ type: "pinPath", layerId, pathId });
+    expect(store.getState().selection).toEqual({ type: "pinPaths", refs: [{ layerId, pathId }] });
   });
 });

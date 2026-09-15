@@ -20,7 +20,7 @@ describe("EditorStore symmetry", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;
     const pathId = store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: 5 })!;
-    store.select({ type: "pinPath", layerId, pathId });
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
 
     store.setSymmetryConfig({ type: "vertical", axis: { x: 0, y: 0 } });
     expect(store.getState().pinLayers[0].pinPaths[0].symmetry).toEqual({ type: "vertical", axis: { x: 0, y: 0 } });
@@ -33,7 +33,7 @@ describe("EditorStore symmetry", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;
     const pathId = store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: 5 })!;
-    store.select({ type: "pinPath", layerId, pathId });
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
     store.setSymmetryConfig({ type: "radial", centre: { x: 0, y: 0 }, intervalDegrees: 90 });
 
     store.deletePinPath(layerId, pathId);

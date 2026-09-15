@@ -44,26 +44,40 @@ export type PinTool =
   | "eraser"
   | "path-eraser";
 
-export type Selection = { type: "none" } | { type: "pinPath"; layerId: string; pathId: string };
-
-// docs/specs/09-selection-and-editing.md — the Edit-mode tool area.
-export type SelectTool = "select" | "move" | "rotate" | "merge" | "scale";
-
-// A candidate pin accumulated by the Merge tool before commit — transient,
-// non-undoable, same status as ThreadDraft. EditorState.ts can't import
-// ui/canvas/hitTesting.ts's PinHit (Clean Architecture), so this is a local twin.
-export interface MergeCandidate {
+// docs/specs/26-edit-mode-multi-select.md — a reference to a whole Pin Path, or to one
+// individual pin within a Pin Path, used by the multi-select Selection variants below.
+export interface PinPathRef {
+  layerId: string;
+  pathId: string;
+}
+export interface PinRef {
   layerId: string;
   pathId: string;
   pinId: string;
 }
 
+// "pinPaths"/"pins" hold 1+ refs (docs/specs/26-edit-mode-multi-select.md) — a single
+// selected Pin Path is just a length-1 "pinPaths" selection, not a separate variant.
+export type Selection =
+  | { type: "none" }
+  | { type: "pinPaths"; refs: PinPathRef[] }
+  | { type: "pins"; refs: PinRef[] }
+  | { type: "threadPath"; layerId: string; pathId: string };
+
+// docs/specs/09-selection-and-editing.md, docs/specs/26-edit-mode-multi-select.md —
+// the Edit-mode tool area. "merge" is not a tool here — per 26, Merge is an instant
+// action fired against the current selection, not a mode you switch into.
+export type SelectTool = "select" | "move" | "rotate" | "scale";
+
+// docs/specs/26-edit-mode-multi-select.md — the granularity switch.
+export type SelectGranularity = "path" | "pins";
+
 export interface PinDefaults extends PinStyle {
   spacing: number;
 }
 
-// docs/specs/24-thread-mode
-export type ThreadTool = "draw" | "eraser" | "segment-eraser";
+// docs/specs/24-thread-mode, docs/specs/27-thread-select-tool.md
+export type ThreadTool = "draw" | "eraser" | "segment-eraser" | "select";
 
 export interface ThreadDefaults {
   colours: string[];
@@ -88,7 +102,7 @@ export interface EditorState {
   symmetryDefaults: SymmetryConfig;
   selection: Selection;
   selectTool: SelectTool;
-  mergeSelection: MergeCandidate[];
+  selectGranularity: SelectGranularity;
   threadLayers: ThreadLayer[];
   activeThreadLayerId: string;
   threadTool: ThreadTool;

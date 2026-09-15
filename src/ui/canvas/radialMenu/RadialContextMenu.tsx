@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import {
   ArrowLeft,
   ArrowRight,
-  Check,
   ChevronLeft,
   ChevronRight,
   Circle,
@@ -80,9 +79,7 @@ function buildDescriptor(
     case "scale":
       return { icon: Scaling, tooltip: t("selectToolbar.tools.scale.label"), onSelect: () => store.setSelectTool("scale") };
     case "merge":
-      return { icon: GitMerge, tooltip: t("selectToolbar.tools.merge.label"), onSelect: () => store.setSelectTool("merge") };
-    case "commitMerge":
-      return { icon: Check, tooltip: t("radialMenu.commitMerge"), onSelect: () => store.commitMergeSelection() };
+      return { icon: GitMerge, tooltip: t("selectToolbar.tools.merge.label"), onSelect: () => store.commitSelectionMerge() };
     case "pinLine":
       return { icon: Minus, tooltip: t("pinToolbar.basicTools.line"), onSelect: () => store.setPinTool("line") };
     case "pinArc":

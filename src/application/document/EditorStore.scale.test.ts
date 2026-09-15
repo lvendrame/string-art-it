@@ -58,7 +58,7 @@ describe("EditorStore — Pin distance (setPinProperty spacing)", () => {
     store.extendThreadDraft(originalPath.pins[0].id);
     store.finishThreadDraftWithSegment(threadLayerId, originalPath.pins[1].id);
 
-    store.select({ type: "pinPath", layerId, pathId });
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
     store.setPinProperty({ spacing: originalPath.requestedSpacing / 2 });
 
     const respaced = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathId)!;
@@ -78,7 +78,7 @@ describe("EditorStore — Pin distance (setPinProperty spacing)", () => {
     const layerId = store.getState().pinLayers[0].id;
     const pathId = store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: 4 })!;
     const originalPath = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathId)!;
-    store.select({ type: "pinPath", layerId, pathId });
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
     store.togglePinLayerLocked(layerId);
 
     store.setPinProperty({ spacing: originalPath.requestedSpacing / 2 });
@@ -91,7 +91,7 @@ describe("EditorStore — Pin distance (setPinProperty spacing)", () => {
     const layerId = store.getState().pinLayers[0].id;
     const pathId = store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: 4 })!;
     const originalPath = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathId)!;
-    store.select({ type: "pinPath", layerId, pathId });
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
 
     store.setPinProperty({ colour: "#ff0000" });
 

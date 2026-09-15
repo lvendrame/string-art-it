@@ -4,12 +4,16 @@
   },
   "selectToolbar": {
     "sectionTitle": "Edit Tools",
+    "granularity": {
+      "pinPath": "Pin Path",
+      "pins": "Pins"
+    },
     "tools": {
-      "select": { "label": "Select", "tooltip": "Click a pin to select its Pin Path." },
-      "move": { "label": "Move", "tooltip": "Drag to translate the selected Pin Path." },
-      "rotate": { "label": "Rotation", "tooltip": "Drag left or right from any point to rotate the selected Pin Path around that point." },
-      "scale": { "label": "Scale", "tooltip": "Drag left or right to scale the selected Pin Path about its own centre." },
-      "merge": { "label": "Merge", "tooltip": "Click pins to select them, then right-click and choose Commit Merge to merge them into one pin at their midpoint." }
+      "select": { "label": "Select", "tooltip": "Click, Alt/Cmd-click, or drag a rectangle to select Pin Paths or Pins." },
+      "move": { "label": "Move", "tooltip": "Drag to translate the selection." },
+      "rotate": { "label": "Rotation", "tooltip": "Drag left or right from any point to rotate the selection around that point." },
+      "scale": { "label": "Scale", "tooltip": "Drag left or right to scale the selection about its centroid." },
+      "merge": { "label": "Merge", "tooltip": "Combine the current selection into one — merges the selected Pin Paths (Pin Path mode) or the selected pins (Pins mode)." }
     }
   },
   "pinToolbar": {
@@ -42,11 +46,9 @@
   "threadToolbar": {
     "sectionTitle": "Thread",
     "draw": "Draw",
+    "select": "Select",
     "eraser": "Eraser",
     "segment": "Segment",
-    "coloursSectionTitle": "Colours",
-    "width": "Width",
-    "twistPitch": "Twist pitch",
     "legend": {
       "normal": "Normal",
       "nearestCandidate": "Nearest candidate",
@@ -84,7 +86,6 @@
     "fit": "Fit"
   },
   "radialMenu": {
-    "commitMerge": "Commit Merge",
     "cut": "Cut",
     "back": "Back",
     "next": "Next"

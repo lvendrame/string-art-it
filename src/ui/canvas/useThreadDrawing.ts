@@ -35,11 +35,22 @@ export function useThreadDrawing(store: EditorStore, state: EditorState, threadL
       if (hit) store.eraseThreadSegment(hit.layerId, hit.pathId, hit.segmentIndex);
       return;
     }
+    // docs/specs/27-thread-select-tool.md — reuses the same nearest-thread-path lookup
+    // the eraser tools already use; clicking empty canvas clears the selection.
+    if (state.threadTool === "select") {
+      const hit = nearestThreadPath(state.threadLayers, state.pinLayers, raw, maxDist);
+      store.select(hit ? { type: "threadPath", layerId: hit.layerId, pathId: hit.pathId } : { type: "none" });
+      return;
+    }
     const hit = nearestPinOrMirrorOwner(state.pinLayers, raw, maxDist);
     if (hit) store.extendThreadDraft(hit.pinId);
   }
 
   function handleMouseMove(raw: Point, maxDist: number): void {
+    if (state.threadTool === "select") {
+      setThreadCandidateId(null); // no pin-candidate concept for the Select tool
+      return;
+    }
     setThreadCandidateId(nearestPinOrMirrorOwner(state.pinLayers, raw, maxDist)?.pinId ?? null);
   }
 

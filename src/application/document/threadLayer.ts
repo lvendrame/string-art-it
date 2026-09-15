@@ -41,6 +41,19 @@ export function findThreadPath(layers: ThreadLayer[], layerId: string, pathId: s
   return findLayer(layers, layerId)?.threadPaths.find((p) => p.id === pathId);
 }
 
+// docs/specs/27-thread-select-tool.md — mirrors updatePinPathInLayers, for editing a
+// selected Thread Path's own properties (colours/width) in place.
+export function updateThreadPathInLayers(
+  layers: ThreadLayer[],
+  layerId: string,
+  pathId: string,
+  updater: (path: ThreadPath) => ThreadPath,
+): ThreadLayer[] {
+  return layers.map((l) =>
+    l.id === layerId ? { ...l, threadPaths: l.threadPaths.map((p) => (p.id === pathId ? updater(p) : p)) } : l,
+  );
+}
+
 export function duplicateThreadLayer(layer: ThreadLayer): ThreadLayer {
   return {
     ...layer,

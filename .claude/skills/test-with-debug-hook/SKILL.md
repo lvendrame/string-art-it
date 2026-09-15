@@ -76,38 +76,62 @@ whether a mutation came from the debug hook or a real click).
 `setMode(mode)` — `"select" | "pin" | "thread" | "pan" | "play"`,
 `setGrid(patch)`, `setPinSnapEnabled(bool)`, `setViewport(viewport)`,
 `setPinTool(tool)`, `select(selection)`, `setSelectTool(tool)` — `"select" | "move" |
-"rotate" | "scale" | "merge"`
+"rotate" | "scale"` (Merge is not a tool — see below),
+`setSelectGranularity(granularity)` — `"path" | "pins"`, clears the current selection
+(docs/specs/26-edit-mode-multi-select.md)
+
+**`Selection` shape** (as of docs/specs/26-edit-mode-multi-select.md — this replaced the
+old single-`pinPath` variant, so don't pass `{type:"pinPath",layerId,pathId}` anymore):
+`{type:"none"}` | `{type:"pinPaths", refs:[{layerId,pathId}, ...]}` (1+ refs — a single
+selected path is just a length-1 array) | `{type:"pins", refs:[{layerId,pathId,pinId},
+...]}` | `{type:"threadPath", layerId, pathId}`.
 
 **Pin Paths**
 `addPinPath(layerId, geometry)` → returns new `pathId` or `null` if layer locked,
 `setSymmetryConfig(config)`, `deletePinPath(layerId, pathId)`,
 `updatePinPathGeometry(layerId, pathId, geometry)`,
 `setPinProperty(patch)` — `{spacing?, colour?, diameter?, guideVisible?}`, applies to
-selected path or future defaults depending on `state.selection`,
-`erasePin(layerId, pathId, pinId)`, `erasePinPath(layerId, pathId)`,
-`getSelectedPinPath()`
+the selected path (only when exactly one Pin Path is selected) or future defaults
+otherwise, `erasePin(layerId, pathId, pinId)`, `erasePinPath(layerId, pathId)`,
+`getSelectedPinPath()` (defined only for a single-path `pinPaths` selection),
+`getSelectedPinPaths()` (every selected path, any count)
 
-**Edit-mode tools (Move/Rotation/Scale/Merge)** — these back real drag gestures; call
-them directly to skip simulating the drag entirely when the gesture math itself isn't
-what you're testing:
-`previewPinPathPins(layerId, pathId, pins)` (non-undoable live preview),
-`commitPinPathTransform(layerId, pathId, geometry, pins, previousPinLayers)` (Move/
-Rotation — keeps pin ids stable),
+**Edit-mode tools (Move/Rotation/Scale)** — these back real drag gestures; call them
+directly to skip simulating the drag entirely when the gesture math itself isn't what
+you're testing. Each has a singular (path-mode, 1 path) and plural (multi-path or
+pins-granularity) form:
+`previewPinPathPins(layerId, pathId, pins)` / `previewPinPaths(updates)` (non-undoable
+live preview; `updates` is `{layerId,pathId,pins}[]`),
+`commitPinPathTransform(layerId, pathId, geometry, pins, previousPinLayers)` /
+`commitPinPathsTransform(updates, previousPinLayers)` (Move/Rotation — keeps pin ids
+stable; `updates` is `{layerId,pathId,geometry,pins}[]`),
 `restorePinLayers(previous)` (Esc-cancel),
-`commitPinPathScale(layerId, pathId, newPinPath, {pinLayers, threadLayers})` — build
-`newPinPath` with `recomputePinPath({...path, geometry: scaleGeometry(path.geometry,
-factor)})`, using `window.stringArtItDebugHelpers` for both (see worked example below —
-these are plain module exports, not store methods, so they aren't reachable off
-`stringArtItDebug` itself),
-`extendMergeSelection(candidate)`, `cancelMergeSelection()`, `commitMergeSelection()`
+`commitPinPathScale(layerId, pathId, newPinPath, {pinLayers, threadLayers})` /
+`commitPinPathsScale(updates, {pinLayers, threadLayers})` — build `newPinPath` with
+`recomputePinPath({...path, geometry: scaleGeometry(path.geometry, factor)})`, using
+`window.stringArtItDebugHelpers` for both (see worked example below — these are plain
+module exports, not store methods, so they aren't reachable off `stringArtItDebug`
+itself); `updates` is `{layerId,pathId,newPinPath}[]`,
+`commitPinsTransform(updates, previousPinLayers)` — pins-granularity Move/Rotation/
+Scale, a DIRECT raw x/y write with no geometry/spacing recompute; `updates` is
+`{layerId,pathId,pinId,x,y}[]`
+
+**Merge** — an instant action fired against the current `state.selection`, not a tool:
+`commitSelectionMerge()` (no-op below 2 selected members; all-or-nothing on any locked
+layer). `canCommitSelectionMerge(selection)` (exported alongside `EditorStore`, not a
+method on it) is the pure `>=2 members` predicate the toolbar/radial-menu use.
 
 **Threads**
-`setThreadTool(tool)`, `setThreadDefaults(patch)`,
+`setThreadTool(tool)` — `"draw" | "select" | "eraser" | "segment-eraser"`,
+`setThreadDefaults(patch)` — the NEXT-drawn thread's colours/width/twistPitch,
 `extendThreadDraft(pinId)` — click a pin to start/extend a thread,
 `finishThreadDraftWithSegment(layerId, pinId)` — double-click equivalent,
 `finishThreadDraft(layerId)`, `escapeThreadDraft(layerId)`, `cancelThreadDraft()`,
 `retractThreadDraft()`, `deleteThreadPath(layerId, pathId)`,
-`eraseThreadSegment(layerId, pathId, segmentIndex)`
+`eraseThreadSegment(layerId, pathId, segmentIndex)`,
+`setThreadProperty(layerId, pathId, patch)` — `{colours?, width?}` on an EXISTING
+Thread Path (docs/specs/27-thread-select-tool.md; distinct from `setThreadDefaults`),
+`getSelectedThreadPath()` — defined only for a `{type:"threadPath"}` selection
 
 **Layers**
 `setLayerPanelTab("pin"|"thread")`, `setActivePinLayer(layerId)`,
@@ -134,7 +158,7 @@ async (page) => {
     const threadLayerId = store.getState().threadLayers[0].id;
     store.extendThreadDraft(pins[0].id);
     store.finishThreadDraftWithSegment(threadLayerId, pins[1].id);
-    store.select({ type: "pinPath", layerId, pathId });
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
     return store.getState();
   });
 }
@@ -154,7 +178,7 @@ async (page) => {
   return await page.evaluate(() => {
     const store = window.stringArtItDebug;
     const { scaleGeometry, recomputePinPath } = window.stringArtItDebugHelpers;
-    const { layerId, pathId } = store.getState().selection; // must already be a selected pinPath
+    const { layerId, pathId } = store.getState().selection.refs[0]; // must be a single-path pinPaths selection
     const path = store.getSelectedPinPath();
     const previous = { pinLayers: store.getState().pinLayers, threadLayers: store.getState().threadLayers };
     const newPinPath = recomputePinPath({ ...path, geometry: scaleGeometry(path.geometry, 2) }); // factor 2 = double

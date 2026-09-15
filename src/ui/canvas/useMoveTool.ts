@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
-import { translateGeometry, type EditorState, type EditorStore, type Pin, type PinLayer } from "../../application/document";
+import { findPinPath, translateGeometry, type EditorState, type EditorStore, type Pin, type PinLayer } from "../../application/document";
 import { translatePoint } from "../../domain/transforms";
 import type { Point } from "../../domain/paths";
+import { buildPinGroups, type PinGroup } from "./pinGroups";
 
-interface MoveDrag {
-  layerId: string;
-  pathId: string;
-  origin: Point;
-  snapshot: PinLayer[];
-  originalPins: Pin[];
-}
+type MoveDrag =
+  | { kind: "paths"; origin: Point; snapshot: PinLayer[]; paths: { layerId: string; pathId: string; originalPins: Pin[] }[] }
+  | { kind: "pins"; origin: Point; snapshot: PinLayer[]; groups: PinGroup[] };
 
-// docs/specs/09-selection-and-editing.md Move tool: press-drag-release translation of
-// the selected Pin Path, live pin+thread preview, single commit on release.
+// docs/specs/09-selection-and-editing.md, docs/specs/26-edit-mode-multi-select.md
+// Move tool: press-drag-release translation of the current selection (one or more Pin
+// Paths, or one or more individual pins), live pin+thread preview, single commit on
+// release covering every affected path/pin.
 export function useMoveTool(store: EditorStore, state: EditorState) {
   const [drag, setDrag] = useState<MoveDrag | null>(null);
 
@@ -34,26 +33,69 @@ export function useMoveTool(store: EditorStore, state: EditorState) {
   }, [drag, store]);
 
   function handleMouseDown(point: Point): void {
-    if (state.selection.type !== "pinPath") return;
-    const { layerId, pathId } = state.selection;
-    const path = store.getSelectedPinPath();
-    if (!path) return;
-    setDrag({ layerId, pathId, origin: point, snapshot: state.pinLayers, originalPins: path.pins });
+    const { selection } = state;
+    if (selection.type === "pinPaths" && selection.refs.length > 0) {
+      const paths = selection.refs
+        .map((r) => {
+          const path = findPinPath(state.pinLayers, r.layerId, r.pathId);
+          return path ? { layerId: r.layerId, pathId: r.pathId, originalPins: path.pins } : null;
+        })
+        .filter((x): x is { layerId: string; pathId: string; originalPins: Pin[] } => !!x);
+      if (paths.length === 0) return;
+      setDrag({ kind: "paths", origin: point, snapshot: state.pinLayers, paths });
+      return;
+    }
+    if (selection.type === "pins" && selection.refs.length > 0) {
+      const groups = buildPinGroups(state.pinLayers, selection.refs);
+      if (groups.length === 0) return;
+      setDrag({ kind: "pins", origin: point, snapshot: state.pinLayers, groups });
+    }
   }
 
   function handleMouseMove(point: Point): void {
     if (!drag) return;
     const delta = { x: point.x - drag.origin.x, y: point.y - drag.origin.y };
-    store.previewPinPathPins(drag.layerId, drag.pathId, drag.originalPins.map((p) => ({ ...p, ...translatePoint(p, delta) })));
+    if (drag.kind === "paths") {
+      store.previewPinPaths(
+        drag.paths.map((p) => ({ layerId: p.layerId, pathId: p.pathId, pins: p.originalPins.map((pin) => ({ ...pin, ...translatePoint(pin, delta) })) })),
+      );
+    } else {
+      store.previewPinPaths(
+        drag.groups.map((g) => ({
+          layerId: g.layerId,
+          pathId: g.pathId,
+          pins: g.originalPins.map((pin) => (g.selectedIds.has(pin.id) ? { ...pin, ...translatePoint(pin, delta) } : pin)),
+        })),
+      );
+    }
   }
 
   function handleMouseUp(point: Point): void {
     if (!drag) return;
     const delta = { x: point.x - drag.origin.x, y: point.y - drag.origin.y };
-    const path = store.getSelectedPinPath(); // geometry untouched by preview, still original
-    if (path) {
-      const pins = drag.originalPins.map((p) => ({ ...p, ...translatePoint(p, delta) }));
-      store.commitPinPathTransform(drag.layerId, drag.pathId, translateGeometry(path.geometry, delta), pins, drag.snapshot);
+    if (drag.kind === "paths") {
+      const updates = drag.paths
+        .map((p) => {
+          const path = findPinPath(drag.snapshot, p.layerId, p.pathId); // geometry untouched by preview, still original
+          if (!path) return null;
+          return {
+            layerId: p.layerId,
+            pathId: p.pathId,
+            geometry: translateGeometry(path.geometry, delta),
+            pins: p.originalPins.map((pin) => ({ ...pin, ...translatePoint(pin, delta) })),
+          };
+        })
+        .filter((u): u is NonNullable<typeof u> => !!u);
+      store.commitPinPathsTransform(updates, drag.snapshot);
+    } else {
+      const updates = drag.groups.flatMap((g) =>
+        [...g.selectedIds].map((pinId) => {
+          const original = g.originalPins.find((p) => p.id === pinId)!;
+          const moved = translatePoint(original, delta);
+          return { layerId: g.layerId, pathId: g.pathId, pinId, x: moved.x, y: moved.y };
+        }),
+      );
+      store.commitPinsTransform(updates, drag.snapshot);
     }
     setDrag(null);
   }

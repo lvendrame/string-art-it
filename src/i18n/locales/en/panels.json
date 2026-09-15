@@ -13,6 +13,7 @@
     "title": "Selection — {{type}}",
     "shapeTypes": {
       "line": "line",
+      "arc": "arc",
       "circle": "circle",
       "ellipse": "ellipse",
       "rectangle": "rectangle",
@@ -42,7 +43,16 @@
       "outerRadius": "Outer radius",
       "innerRadius": "Inner radius"
     },
-    "deletePinPath": "Delete Pin Path"
+    "deletePinPath": "Delete Pin Path",
+    "multiPathsSelected": "{{count}} Pin Paths selected ({{pins}} pins total)",
+    "multiPinsSelected": "{{count}} pins selected across {{paths}} Pin Paths"
+  },
+  "threadPropertiesPanel": {
+    "titleSelected": "Thread Properties (selected)",
+    "titleDefaults": "Thread Properties (defaults)",
+    "coloursSectionTitle": "Colours",
+    "width": "Width",
+    "twistPitch": "Twist pitch"
   },
   "symmetryPanel": {
     "sectionTitle": "Symmetry",

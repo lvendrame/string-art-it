@@ -43,21 +43,22 @@ function tooltipContents(container: HTMLElement): (string | null)[] {
 }
 
 describe("RadialContextMenu", () => {
-  it("renders the Edit-mode base slice set", () => {
-    const { container } = renderMenu({ mode: "select", selectTool: "select" });
-    expect(tooltipContents(container)).toEqual(["Select", "Move", "Rotation", "Scale", "Merge"]);
+  it("renders the Edit-mode base slice set with no Merge slice absent a mergeable selection", () => {
+    const { container } = renderMenu({ mode: "select", selectTool: "select", selection: { type: "none" } });
+    expect(tooltipContents(container)).toEqual(["Select", "Move", "Rotation", "Scale"]);
   });
 
-  it("renders Commit Merge once 2+ pins are accumulated", () => {
-    const { container } = renderMenu({
+  it("renders the Merge slice once 2+ Pin Paths are selected, and clicking it fires commitSelectionMerge", () => {
+    const { store, container, onClose } = renderMenu({
       mode: "select",
-      selectTool: "merge",
-      mergeSelection: [
-        { layerId: "l1", pathId: "p1", pinId: "pin-1" },
-        { layerId: "l1", pathId: "p1", pinId: "pin-2" },
-      ],
+      selection: { type: "pinPaths", refs: [{ layerId: "l1", pathId: "p1" }, { layerId: "l1", pathId: "p2" }] },
     });
-    expect(tooltipContents(container)).toEqual(["Select", "Move", "Rotation", "Scale", "Merge", "Commit Merge"]);
+    expect(tooltipContents(container)).toEqual(["Select", "Move", "Rotation", "Scale", "Merge"]);
+
+    const spy = vi.spyOn(store, "commitSelectionMerge");
+    fireEvent.click(container.querySelector('[data-tooltip-content="Merge"]')!);
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it("clicking a Pin-mode slice sets the matching Pin tool and closes", () => {

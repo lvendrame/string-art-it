@@ -1,20 +1,16 @@
-import { Eraser, PenLine, Scissors } from "lucide-react";
+import { Eraser, MousePointer2, PenLine, Scissors } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { EditorStore } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
 
-const PALETTE = ["#5b8def", "#edeff7", "#e8b449", "#d96c6c", "#8fd6c8"];
-
-// docs/specs/24-thread-mode + 25-thread-colour-rendering
+// docs/specs/24-thread-mode, docs/specs/27-thread-select-tool.md — just the tool
+// selector + the pin-highlight-state legend. Colour/width/twist-pitch fields live in
+// ThreadPropertiesPanel.tsx (dual-context: selected Thread Path or drawing defaults),
+// same split as Pin mode's PinToolbar (tools only) vs PinPropertiesPanel (fields) —
+// keeping both here duplicated the fields once a thread could be selected too.
 export function ThreadToolbar({ store }: { store: EditorStore }) {
   const { t } = useTranslation("toolbars");
   const state = useEditorState(store);
-  const colours = state.threadDefaults.colours;
-
-  function setColourCount(n: number) {
-    const next = Array.from({ length: n }, (_, i) => colours[i] ?? PALETTE[i % PALETTE.length]);
-    store.setThreadDefaults({ colours: next });
-  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -26,6 +22,10 @@ export function ThreadToolbar({ store }: { store: EditorStore }) {
           <PenLine size={14} />
           {t("threadToolbar.draw")}
         </button>
+        <button className={`btn${state.threadTool === "select" ? " btn-active" : ""}`} onClick={() => store.setThreadTool("select")} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}>
+          <MousePointer2 size={14} />
+          {t("threadToolbar.select")}
+        </button>
         <button className={`btn${state.threadTool === "eraser" ? " btn-active" : ""}`} onClick={() => store.setThreadTool("eraser")} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}>
           <Eraser size={14} />
           {t("threadToolbar.eraser")}
@@ -35,62 +35,6 @@ export function ThreadToolbar({ store }: { store: EditorStore }) {
           {t("threadToolbar.segment")}
         </button>
       </div>
-
-      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase", marginTop: 4 }}>
-        {t("threadToolbar.coloursSectionTitle")}
-      </div>
-      <div style={{ display: "flex", gap: 6 }}>
-        {[1, 2, 3].map((n) => (
-          <button
-            key={n}
-            className={`btn${colours.length === n ? " btn-active" : ""}`}
-            onClick={() => setColourCount(n)}
-            style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 700 }}
-          >
-            {n}
-          </button>
-        ))}
-      </div>
-      <div style={{ display: "flex", gap: 6 }}>
-        {colours.map((c, i) => (
-          <input
-            key={i}
-            type="color"
-            value={c}
-            onChange={(e) => store.setThreadDefaults({ colours: colours.map((existing, idx) => (idx === i ? e.target.value : existing)) })}
-            style={{ width: 24, height: 24, border: "1px solid var(--border-strong)", borderRadius: 5, background: "none", padding: 0 }}
-          />
-        ))}
-      </div>
-
-      <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)", marginTop: 4 }}>
-        {t("threadToolbar.width")}
-        <input
-          type="number"
-          className="mono"
-          min={0.5}
-          step={0.5}
-          value={state.threadDefaults.width}
-          onChange={(e) => store.setThreadDefaults({ width: Number(e.target.value) })}
-          style={{ width: 60, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "4px 6px" }}
-        />
-      </label>
-
-      {colours.length > 1 && (
-        <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
-          {t("threadToolbar.twistPitch")}
-          <input
-            type="number"
-            className="mono"
-            min={2}
-            max={20}
-            step={1}
-            value={state.threadDefaults.twistPitch}
-            onChange={(e) => store.setThreadDefaults({ twistPitch: Number(e.target.value) })}
-            style={{ width: 60, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "4px 6px" }}
-          />
-        </label>
-      )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8, background: "var(--bg-app)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: "10px 12px", marginTop: 4 }}>
         <PinStateLegend swatch={<span style={{ width: 10, height: 10, borderRadius: "50%", background: "#c7cad3", display: "inline-block" }} />} label={t("threadToolbar.legend.normal")} />

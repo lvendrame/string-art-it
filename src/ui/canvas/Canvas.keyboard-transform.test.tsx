@@ -20,7 +20,7 @@ describe("Canvas — keyboard transform: Move", () => {
     const originalPath = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathId)!;
     store.setMode("select");
     store.setSelectTool("move");
-    store.select({ type: "pinPath", layerId, pathId });
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
     return { store, layerId, pathId, originalPath };
   }
 
@@ -126,7 +126,7 @@ describe("Canvas — keyboard transform: Rotate", () => {
     const pathId = store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } })!;
     store.setMode("select");
     store.setSelectTool("rotate");
-    store.select({ type: "pinPath", layerId, pathId });
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
     return { store, pathId };
   }
 
@@ -187,7 +187,7 @@ describe("Canvas — keyboard transform: Scale", () => {
     const pathId = store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: 4 })!;
     store.setMode("select");
     store.setSelectTool("scale");
-    store.select({ type: "pinPath", layerId, pathId });
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
     return { store, layerId, pathId };
   }
 
@@ -260,7 +260,7 @@ describe("Canvas — keyboard transform: hold-to-repeat", () => {
     const pathId = store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } })!;
     store.setMode("select");
     store.setSelectTool("move");
-    store.select({ type: "pinPath", layerId, pathId });
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
     return { store, pathId };
   }
 

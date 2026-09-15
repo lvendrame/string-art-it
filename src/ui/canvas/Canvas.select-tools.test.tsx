@@ -1,4 +1,4 @@
-import { act, render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { beforeAll, describe, expect, it } from "vitest";
 import { EditorStore } from "../../application/document";
 import { rotatePoint } from "../../domain/transforms";
@@ -22,7 +22,7 @@ describe("Canvas — Edit mode: Move", () => {
     store.finishThreadDraftWithSegment(threadLayerId, pins[5].id);
     store.setMode("select");
     store.setSelectTool("move");
-    store.select({ type: "pinPath", layerId, pathId });
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
     return { store, layerId, pathId, pins };
   }
 
@@ -82,7 +82,7 @@ describe("Canvas — Edit mode: Rotation", () => {
     const pathId = store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } })!;
     store.setMode("select");
     store.setSelectTool("rotate");
-    store.select({ type: "pinPath", layerId, pathId });
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
 
     render(<Canvas store={store} />);
     const svg = screen.getByRole("img", { name: "Board canvas" });
@@ -103,81 +103,135 @@ describe("Canvas — Edit mode: Rotation", () => {
   });
 });
 
-describe("Canvas — Edit mode: Merge", () => {
+// docs/specs/26-edit-mode-multi-select.md — Merge dropped its own canvas pointer
+// gesture entirely; it's now an instant action fired against whatever the Select
+// tool's multi-selection holds (EditorStore.merge.test.ts covers the algorithm).
+// These tests instead cover the Select tool's own new gestures: click (replace),
+// Alt/Cmd-click (toggle), rubber-band drag (replace with touched set), Alt/Cmd-drag
+// (union), and Esc-cancels-a-drag.
+describe("Canvas — Select tool: multi-select gestures (Pin Path granularity)", () => {
   function seedTwoPaths(store: EditorStore) {
     const layerId = store.getState().pinLayers[0].id;
     const pathIdA = store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 12, y: 10 } })!; // pins x=10,11,12 y=10
     const pathIdB = store.addPinPath(layerId, { type: "line", start: { x: 10, y: 20 }, end: { x: 12, y: 20 } })!; // pins x=10,11,12 y=20
     store.setMode("select");
-    store.setSelectTool("merge");
+    store.setSelectTool("select");
     return { layerId, pathIdA, pathIdB };
   }
 
-  it("left-click accumulates pins across two Pin Paths; committing merges them into one pin in the first-clicked path", () => {
-    // Committing (docs/specs/25-radial-context-menu.md "Commit Merge") is a radial-
-    // menu action wired in EditorShell.tsx, not something Canvas.tsx does on right-
-    // click by itself anymore — see EditorShell.test.tsx for the end-to-end wiring.
-    // This test stays at the Canvas level to cover accumulation + the store call's
-    // effect on pin geometry.
+  it("click selects a single Pin Path, replacing any previous selection", () => {
     const store = new EditorStore();
     const { layerId, pathIdA, pathIdB } = seedTwoPaths(store);
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId: pathIdB }] });
     render(<Canvas store={store} />);
     const svg = screen.getByRole("img", { name: "Board canvas" });
 
     fireEvent.mouseDown(svg, { clientX: 200, clientY: 200 }); // pinsA[0] at doc(10,10)
-    fireEvent.mouseDown(svg, { clientX: 200, clientY: 240 }); // pinsB[0] at doc(10,20)
-    act(() => store.commitMergeSelection());
+    fireEvent.mouseUp(svg, { clientX: 200, clientY: 200 });
 
-    const pathA = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathIdA)!;
-    const pathB = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathIdB)!;
-    expect(pathA.pins).toHaveLength(3);
-    expect(pathB.pins).toHaveLength(2);
-    const mergedPin = pathA.pins.find((p) => p.x === 10 && p.y === 15);
-    expect(mergedPin).toBeDefined();
-    expect(store.getState().selection).toEqual({ type: "pinPath", layerId, pathId: pathIdA });
-    expect(store.getState().mergeSelection).toEqual([]);
+    expect(store.getState().selection).toEqual({ type: "pinPaths", refs: [{ layerId, pathId: pathIdA }] });
   });
 
-  it("right-clicking directly on an already-selected pin does not toggle it off (a real right-click also fires mousedown)", () => {
-    // Regression test: handlePointerDown must ignore non-primary buttons — otherwise
-    // the right-click's own mousedown would re-toggle the pin OFF via the merge
-    // tool's left-click handler a moment before the radial menu's Commit Merge
-    // action (EditorShell.test.tsx) tries to commit, silently dropping it below the
-    // 2-candidate minimum.
+  it("clicking empty canvas clears the selection", () => {
+    const store = new EditorStore();
+    const { layerId, pathIdA } = seedTwoPaths(store);
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId: pathIdA }] });
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.mouseDown(svg, { clientX: 600, clientY: 600 });
+    fireEvent.mouseUp(svg, { clientX: 600, clientY: 600 });
+
+    expect(store.getState().selection).toEqual({ type: "none" });
+  });
+
+  it("Alt-click adds an unselected path to the selection without clearing the rest", () => {
+    const store = new EditorStore();
+    const { layerId, pathIdA, pathIdB } = seedTwoPaths(store);
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId: pathIdA }] });
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.mouseDown(svg, { clientX: 200, clientY: 240, altKey: true }); // pinsB[0] at doc(10,20)
+    fireEvent.mouseUp(svg, { clientX: 200, clientY: 240, altKey: true });
+
+    const sel = store.getState().selection;
+    if (sel.type !== "pinPaths") throw new Error("expected pinPaths selection");
+    expect(sel.refs).toHaveLength(2);
+    expect(sel.refs.map((r) => r.pathId).sort()).toEqual([pathIdA, pathIdB].sort());
+  });
+
+  it("Alt-click on an already-selected path removes it from the selection", () => {
+    const store = new EditorStore();
+    const { layerId, pathIdA, pathIdB } = seedTwoPaths(store);
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId: pathIdA }, { layerId, pathId: pathIdB }] });
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.mouseDown(svg, { clientX: 200, clientY: 200, altKey: true }); // pinsA[0]
+    fireEvent.mouseUp(svg, { clientX: 200, clientY: 200, altKey: true });
+
+    expect(store.getState().selection).toEqual({ type: "pinPaths", refs: [{ layerId, pathId: pathIdB }] });
+  });
+
+  it("Alt-click on empty space is a no-op, leaving the selection untouched", () => {
+    const store = new EditorStore();
+    const { layerId, pathIdA } = seedTwoPaths(store);
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId: pathIdA }] });
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.mouseDown(svg, { clientX: 600, clientY: 600, altKey: true });
+    fireEvent.mouseUp(svg, { clientX: 600, clientY: 600, altKey: true });
+
+    expect(store.getState().selection).toEqual({ type: "pinPaths", refs: [{ layerId, pathId: pathIdA }] });
+  });
+
+  it("a rubber-band drag selects every Pin Path touched by the rectangle, replacing the selection", () => {
     const store = new EditorStore();
     const { pathIdA, pathIdB } = seedTwoPaths(store);
     render(<Canvas store={store} />);
     const svg = screen.getByRole("img", { name: "Board canvas" });
 
-    fireEvent.mouseDown(svg, { clientX: 200, clientY: 200 }); // pinsA[0] at doc(10,10)
-    fireEvent.mouseDown(svg, { clientX: 200, clientY: 240 }); // pinsB[0] at doc(10,20)
-    expect(store.getState().mergeSelection).toHaveLength(2);
+    // rect doc(5,5)->(15,25): screen (180,180)->(220,260), covers both paths' pins
+    fireEvent.mouseDown(svg, { clientX: 180, clientY: 180 });
+    fireEvent.mouseMove(svg, { clientX: 220, clientY: 260 });
+    fireEvent.mouseUp(svg, { clientX: 220, clientY: 260 });
 
-    // A real right-click on pinsA[0] fires a (button=2) mousedown first.
-    fireEvent.mouseDown(svg, { clientX: 200, clientY: 200, button: 2 });
-    expect(store.getState().mergeSelection).toHaveLength(2); // still 2 — not toggled off
-
-    act(() => store.commitMergeSelection());
-
-    const pathA = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathIdA)!;
-    const pathB = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathIdB)!;
-    expect(pathA.pins).toHaveLength(3); // 3 - 1 removed + 1 merged
-    expect(pathB.pins).toHaveLength(2); // 3 - 1 removed
-    expect(store.getState().mergeSelection).toEqual([]);
+    const sel = store.getState().selection;
+    if (sel.type !== "pinPaths") throw new Error("expected pinPaths selection");
+    expect(sel.refs.map((r) => r.pathId).sort()).toEqual([pathIdA, pathIdB].sort());
   });
 
-  it("Esc cancels a pending merge selection without mutating any pin", () => {
+  it("an Alt-rubber-band drag unions the touched set into the existing selection", () => {
     const store = new EditorStore();
-    const { pathIdA } = seedTwoPaths(store);
-    const originalPath = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathIdA)!;
+    const { layerId, pathIdA, pathIdB } = seedTwoPaths(store);
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId: pathIdA }] });
     render(<Canvas store={store} />);
     const svg = screen.getByRole("img", { name: "Board canvas" });
 
-    fireEvent.mouseDown(svg, { clientX: 200, clientY: 200 }); // pinsA[0]
-    expect(store.getState().mergeSelection).toHaveLength(1);
-    fireEvent.keyDown(window, { key: "Escape" });
+    // rect touching only pathB: doc(5,15)->(15,25) -> screen(180,220)->(220,260)
+    fireEvent.mouseDown(svg, { clientX: 180, clientY: 220, altKey: true });
+    fireEvent.mouseMove(svg, { clientX: 220, clientY: 260, altKey: true });
+    fireEvent.mouseUp(svg, { clientX: 220, clientY: 260, altKey: true });
 
-    expect(store.getState().mergeSelection).toEqual([]);
-    expect(store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathIdA)).toEqual(originalPath);
+    const sel = store.getState().selection;
+    if (sel.type !== "pinPaths") throw new Error("expected pinPaths selection");
+    expect(sel.refs.map((r) => r.pathId).sort()).toEqual([pathIdA, pathIdB].sort());
+  });
+
+  it("Esc cancels an in-progress rubber-band drag, leaving the selection unchanged", () => {
+    const store = new EditorStore();
+    const { layerId, pathIdA } = seedTwoPaths(store);
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId: pathIdA }] });
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.mouseDown(svg, { clientX: 180, clientY: 180 });
+    fireEvent.mouseMove(svg, { clientX: 220, clientY: 260 });
+    fireEvent.keyDown(window, { key: "Escape" });
+    fireEvent.mouseUp(svg, { clientX: 220, clientY: 260 });
+
+    expect(store.getState().selection).toEqual({ type: "pinPaths", refs: [{ layerId, pathId: pathIdA }] });
   });
 });

@@ -25,9 +25,10 @@ import { SymmetryOverlay } from "./SymmetryOverlay";
 import { ThreadLayersView } from "./ThreadLayersView";
 import { ThreadDraftLayer } from "./ThreadDraftLayer";
 import { PinHighlightOverlay } from "./PinHighlightOverlay";
-import { MergeSelectionOverlay } from "./MergeSelectionOverlay";
+import { SelectedPinsOverlay } from "./SelectedPinsOverlay";
+import { SelectionMarqueeOverlay } from "./SelectionMarqueeOverlay";
 import { EraserHoverOverlay } from "./EraserHoverOverlay";
-import { nearestPinOrMirrorOwner, nearestPinOwner } from "./hitTesting";
+import { nearestPinOwner } from "./hitTesting";
 import { symmetryPreviewTransforms } from "./symmetryPreviewTransforms";
 import { useAltModifier } from "./useAltModifier";
 import { useSnappedPointer } from "./useSnappedPointer";
@@ -35,10 +36,10 @@ import { usePanInteraction } from "./usePanInteraction";
 import { usePinDrawing } from "./usePinDrawing";
 import { useFreehandDrawing } from "./useFreehandDrawing";
 import { useThreadDrawing } from "./useThreadDrawing";
+import { useSelectTool } from "./useSelectTool";
 import { useMoveTool } from "./useMoveTool";
 import { useRotateTool } from "./useRotateTool";
 import { useScaleTool } from "./useScaleTool";
-import { useMergeTool } from "./useMergeTool";
 import { useKeyboardTransform } from "./useKeyboardTransform";
 import { useEraserHover } from "./useEraserHover";
 
@@ -81,7 +82,6 @@ const SELECT_TOOL_CURSORS: Record<SelectTool, string> = {
   move: "move",
   rotate: ROTATE_CURSOR,
   scale: "ew-resize",
-  merge: "default",
 };
 
 const PIN_TOOL_CURSORS: Record<PinTool, string> = {
@@ -107,6 +107,7 @@ const PIN_TOOL_CURSORS: Record<PinTool, string> = {
 
 const THREAD_TOOL_CURSORS: Record<ThreadTool, string> = {
   draw: "crosshair",
+  select: "default",
   eraser: ERASER_CURSOR,
   "segment-eraser": SCISSORS_CURSOR,
 };
@@ -145,10 +146,10 @@ export function Canvas({ store }: { store: EditorStore }) {
     threadLayerId,
     cursorDoc,
   );
+  const selectTool = useSelectTool(store, state);
   const moveTool = useMoveTool(store, state);
   const rotateTool = useRotateTool(store, state);
   const scaleTool = useScaleTool(store, state);
-  const mergeTool = useMergeTool(store, state);
   useKeyboardTransform(store);
   const eraserHover = useEraserHover(state);
 
@@ -171,22 +172,17 @@ export function Canvas({ store }: { store: EditorStore }) {
     const raw = screenToDoc(e);
     const point = resolvePoint(raw);
 
+    const hasTransformableSelection = state.selection.type === "pinPaths" || state.selection.type === "pins";
+
     if (state.mode === "select") {
       if (state.selectTool === "select") {
-        const hit = nearestPinOrMirrorOwner(state.pinLayers, raw, maxDist);
-        store.select(
-          hit
-            ? { type: "pinPath", layerId: hit.layerId, pathId: hit.pathId }
-            : { type: "none" },
-        );
-      } else if (state.selectTool === "move" && state.selection.type === "pinPath") {
+        selectTool.handleMouseDown(raw, e.clientX, e.clientY);
+      } else if (state.selectTool === "move" && hasTransformableSelection) {
         moveTool.handleMouseDown(point);
-      } else if (state.selectTool === "rotate" && state.selection.type === "pinPath") {
+      } else if (state.selectTool === "rotate" && hasTransformableSelection) {
         rotateTool.handleMouseDown(point, e.clientX);
-      } else if (state.selectTool === "scale" && state.selection.type === "pinPath") {
+      } else if (state.selectTool === "scale" && hasTransformableSelection) {
         scaleTool.handleMouseDown(e.clientX);
-      } else if (state.selectTool === "merge") {
-        mergeTool.handleMouseDown(raw, maxDist);
       }
       return;
     }
@@ -227,10 +223,10 @@ export function Canvas({ store }: { store: EditorStore }) {
     const { raw } = updateCursor(e);
     if (state.mode === "thread") threadDrawing.handleMouseMove(raw, maxDist);
     if (state.mode === "pin" && state.pinTool === "freehand") freehandDrawing.handleMouseMove(raw, viewport);
+    if (state.mode === "select" && state.selectTool === "select") selectTool.handleMouseMove(raw, e.clientX, e.clientY);
     if (state.mode === "select" && state.selectTool === "move") moveTool.handleMouseMove(resolvePoint(raw));
     if (state.mode === "select" && state.selectTool === "rotate") rotateTool.handleMouseMove(resolvePoint(raw), e.clientX);
     if (state.mode === "select" && state.selectTool === "scale") scaleTool.handleMouseMove(e.clientX);
-    if (state.mode === "select" && state.selectTool === "merge") mergeTool.handleMouseMove(raw, maxDist);
     if (state.mode === "pin") eraserHover.handlePinMouseMove(raw, maxDist, state.pinTool);
     if (state.mode === "thread") eraserHover.handleThreadMouseMove(raw, maxDist, state.threadTool);
   }
@@ -242,6 +238,10 @@ export function Canvas({ store }: { store: EditorStore }) {
     }
     if (state.mode === "pin" && state.pinTool === "freehand") {
       freehandDrawing.handleMouseUp();
+      return;
+    }
+    if (state.mode === "select" && state.selectTool === "select") {
+      selectTool.handleMouseUp(screenToDoc(e), maxDist, e.altKey || e.metaKey);
       return;
     }
     if (state.mode === "select" && state.selectTool === "move") {
@@ -277,8 +277,12 @@ export function Canvas({ store }: { store: EditorStore }) {
       ? { type: "freehand", points: freehandDrawing.points }
       : null;
   const activePreviewGeometry = previewGeometry ?? freehandPreviewGeometry;
-  const selectedPathId =
-    state.selection.type === "pinPath" ? state.selection.pathId : null;
+  const selectedPathIds =
+    state.selection.type === "pinPaths" ? state.selection.refs.map((r) => r.pathId) : [];
+  const selectedPinIds =
+    state.selection.type === "pins" ? state.selection.refs.map((r) => r.pinId) : [];
+  const selectedThreadPathId =
+    state.selection.type === "threadPath" ? state.selection.pathId : null;
   const activeSymmetry = store.getSelectedPinPath()?.symmetry ?? state.symmetryDefaults;
 
   return (
@@ -328,6 +332,7 @@ export function Canvas({ store }: { store: EditorStore }) {
           <ThreadLayersView
             threadLayers={state.threadLayers}
             pinLayers={state.pinLayers}
+            selectedPathId={selectedThreadPathId}
           />
 
           {/* The in-progress draft paints like a thread, so it stays under pins too. */}
@@ -342,7 +347,7 @@ export function Canvas({ store }: { store: EditorStore }) {
 
           <PinLayersView
             pinLayers={state.pinLayers}
-            selectedPathId={selectedPathId}
+            selectedPathIds={selectedPathIds}
           />
 
           {state.mode === "pin" && (
@@ -390,12 +395,12 @@ export function Canvas({ store }: { store: EditorStore }) {
             />
           )}
 
-          {state.mode === "select" && state.selectTool === "merge" && (
-            <MergeSelectionOverlay
-              pinLayers={state.pinLayers}
-              selectedPinIds={state.mergeSelection.map((c) => c.pinId)}
-              hoverPinId={mergeTool.hoverPinId}
-            />
+          {state.mode === "select" && state.selectGranularity === "pins" && (
+            <SelectedPinsOverlay pinLayers={state.pinLayers} selectedPinIds={selectedPinIds} />
+          )}
+
+          {state.mode === "select" && selectTool.dragRect && (
+            <SelectionMarqueeOverlay rect={selectTool.dragRect} />
           )}
 
           {((state.mode === "pin" && (state.pinTool === "eraser" || state.pinTool === "path-eraser")) ||

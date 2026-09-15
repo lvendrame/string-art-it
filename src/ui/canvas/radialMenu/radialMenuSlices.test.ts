@@ -3,30 +3,33 @@ import { EditorStore } from "../../../application/document";
 import { getRadialMenuSliceIds } from "./radialMenuSlices";
 
 describe("getRadialMenuSliceIds", () => {
-  it("Edit mode: base slice set without an active merge", () => {
-    const state = new EditorStore({ mode: "select", selectTool: "select" }).getState();
-    expect(getRadialMenuSliceIds(state)).toEqual(["select", "move", "rotate", "scale", "merge"]);
+  it("Edit mode: base slice set with no mergeable selection", () => {
+    const state = new EditorStore({ mode: "select", selectTool: "select", selection: { type: "none" } }).getState();
+    expect(getRadialMenuSliceIds(state)).toEqual(["select", "move", "rotate", "scale"]);
   });
 
-  it("Edit mode: Commit Merge stays absent below 2 accumulated pins", () => {
+  it("Edit mode: Merge slice stays absent below 2 selected paths", () => {
     const state = new EditorStore({
       mode: "select",
-      selectTool: "merge",
-      mergeSelection: [{ layerId: "l1", pathId: "p1", pinId: "pin-1" }],
+      selection: { type: "pinPaths", refs: [{ layerId: "l1", pathId: "p1" }] },
+    }).getState();
+    expect(getRadialMenuSliceIds(state)).toEqual(["select", "move", "rotate", "scale"]);
+  });
+
+  it("Edit mode: Merge slice appears once 2+ Pin Paths are selected", () => {
+    const state = new EditorStore({
+      mode: "select",
+      selection: { type: "pinPaths", refs: [{ layerId: "l1", pathId: "p1" }, { layerId: "l1", pathId: "p2" }] },
     }).getState();
     expect(getRadialMenuSliceIds(state)).toEqual(["select", "move", "rotate", "scale", "merge"]);
   });
 
-  it("Edit mode: Commit Merge appears once 2+ pins are accumulated", () => {
+  it("Edit mode: Merge slice appears once 2+ pins are selected (Pins granularity)", () => {
     const state = new EditorStore({
       mode: "select",
-      selectTool: "merge",
-      mergeSelection: [
-        { layerId: "l1", pathId: "p1", pinId: "pin-1" },
-        { layerId: "l1", pathId: "p1", pinId: "pin-2" },
-      ],
+      selection: { type: "pins", refs: [{ layerId: "l1", pathId: "p1", pinId: "pin-1" }, { layerId: "l1", pathId: "p1", pinId: "pin-2" }] },
     }).getState();
-    expect(getRadialMenuSliceIds(state)).toEqual(["select", "move", "rotate", "scale", "merge", "commitMerge"]);
+    expect(getRadialMenuSliceIds(state)).toEqual(["select", "move", "rotate", "scale", "merge"]);
   });
 
   it("Pin mode: the nine basic tools, Polygon/Star family excluded", () => {

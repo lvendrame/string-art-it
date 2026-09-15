@@ -19,12 +19,14 @@ export type {
   PinDefaults,
   Selection,
   SelectTool,
-  MergeCandidate,
+  SelectGranularity,
+  PinPathRef,
+  PinRef,
   ThreadTool,
   ThreadDefaults,
   ThreadDraft,
 } from "./EditorState";
-export { EditorStore } from "./EditorStore";
+export { EditorStore, canCommitSelectionMerge } from "./EditorStore";
 export {
   geometryToPath,
   createPinPath,
@@ -34,12 +36,20 @@ export {
   translateGeometry,
   rotateGeometry,
   scaleGeometry,
+  scaleGeometryAboutPivot,
   geometryCenter,
   type PinPathGeometry,
   type Pin,
   type PinPath,
   type PinStyle,
 } from "./pinPath";
+export {
+  selectionCentroid,
+  pinsCentroid,
+  combinePinPaths,
+  resolveMergeDestinationPath,
+  type CombinePinPathsResult,
+} from "./multiSelect";
 export {
   createPinLayer,
   isLayerLocked,
@@ -76,6 +86,7 @@ export {
   findThreadPath,
   addThreadPathToLayers,
   removeThreadPathFromLayers,
+  updateThreadPathInLayers,
   removePinFromAllThreadLayers,
   splitThreadPathInLayer,
   remapPinsInAllThreadLayers,

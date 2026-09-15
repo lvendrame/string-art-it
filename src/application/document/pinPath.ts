@@ -145,7 +145,15 @@ export function geometryCenter(geometry: PinPathGeometry): Point {
 // only size fields change. Arc's `curvature` is a physical sagitta length (see
 // domain/shapes/arc.ts), so it scales with the shape like any other length field.
 export function scaleGeometry(geometry: PinPathGeometry, factor: number): PinPathGeometry {
-  const pivot = geometryCenter(geometry);
+  return scaleGeometryAboutPivot(geometry, geometryCenter(geometry), factor);
+}
+
+// docs/specs/26-edit-mode-multi-select.md — the general form of Scale, about an
+// ARBITRARY pivot rather than necessarily the shape's own centroid. Single-path Scale
+// (docs/specs/21-scale-and-pin-distance.md) is the special case `scaleGeometry` above
+// calls this with (pivot = geometryCenter); multi-path Scale passes the shared
+// selection centroid instead, so every selected path scales about the same point.
+export function scaleGeometryAboutPivot(geometry: PinPathGeometry, pivot: Point, factor: number): PinPathGeometry {
   switch (geometry.type) {
     case "line":
       return { ...geometry, start: scalePoint(geometry.start, pivot, factor), end: scalePoint(geometry.end, pivot, factor) };
@@ -157,24 +165,39 @@ export function scaleGeometry(geometry: PinPathGeometry, factor: number): PinPat
         curvature: geometry.curvature * factor,
       };
     case "circle":
-      return { ...geometry, radius: geometry.radius * factor };
+      return { ...geometry, center: scalePoint(geometry.center, pivot, factor), radius: geometry.radius * factor };
     case "ellipse":
-      return { ...geometry, radiusX: geometry.radiusX * factor, radiusY: geometry.radiusY * factor };
+      return {
+        ...geometry,
+        center: scalePoint(geometry.center, pivot, factor),
+        radiusX: geometry.radiusX * factor,
+        radiusY: geometry.radiusY * factor,
+      };
     case "rectangle": {
       const width = geometry.width * factor;
       const height = geometry.height * factor;
-      return { ...geometry, width, height, position: { x: pivot.x - width / 2, y: pivot.y - height / 2 } };
+      const oldCenter: Point = { x: geometry.position.x + geometry.width / 2, y: geometry.position.y + geometry.height / 2 };
+      const newCenter = scalePoint(oldCenter, pivot, factor);
+      return { ...geometry, width, height, position: { x: newCenter.x - width / 2, y: newCenter.y - height / 2 } };
     }
     case "square": {
       const side = geometry.side * factor;
-      return { ...geometry, side, position: { x: pivot.x - side / 2, y: pivot.y - side / 2 } };
+      const oldSide = geometry.side;
+      const oldCenter: Point = { x: geometry.position.x + oldSide / 2, y: geometry.position.y + oldSide / 2 };
+      const newCenter = scalePoint(oldCenter, pivot, factor);
+      return { ...geometry, side, position: { x: newCenter.x - side / 2, y: newCenter.y - side / 2 } };
     }
     case "regular-polygon":
-      return { ...geometry, radius: geometry.radius * factor };
+      return { ...geometry, center: scalePoint(geometry.center, pivot, factor), radius: geometry.radius * factor };
     case "star":
-      return { ...geometry, outerRadius: geometry.outerRadius * factor, innerRadius: geometry.innerRadius * factor };
+      return {
+        ...geometry,
+        center: scalePoint(geometry.center, pivot, factor),
+        outerRadius: geometry.outerRadius * factor,
+        innerRadius: geometry.innerRadius * factor,
+      };
     case "polygram":
-      return { ...geometry, radius: geometry.radius * factor };
+      return { ...geometry, center: scalePoint(geometry.center, pivot, factor), radius: geometry.radius * factor };
     case "freehand":
       return { ...geometry, points: geometry.points.map((p) => scalePoint(p, pivot, factor)) };
   }

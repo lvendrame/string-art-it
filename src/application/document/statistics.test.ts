@@ -9,7 +9,7 @@ describe("pinPathStatistics", () => {
     store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: 31 / (2 * Math.PI) });
     store.setPinProperty({ spacing: 2 });
     // property changes apply to defaults only when nothing selected; re-add with spacing baked in
-    store.select({ type: "pinPath", layerId, pathId: store.getState().pinLayers[0].pinPaths[0].id });
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId: store.getState().pinLayers[0].pinPaths[0].id }] });
     store.setPinProperty({ spacing: 2 });
 
     const stats = pinPathStatistics(store.getState().pinLayers[0].pinPaths[0]);

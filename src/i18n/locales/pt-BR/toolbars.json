@@ -4,12 +4,16 @@
   },
   "selectToolbar": {
     "sectionTitle": "Ferramentas de Edição",
+    "granularity": {
+      "pinPath": "Caminho de Pinos",
+      "pins": "Pinos"
+    },
     "tools": {
-      "select": { "label": "Selecionar", "tooltip": "Clique em um pino para selecionar seu Caminho de Pinos." },
-      "move": { "label": "Mover", "tooltip": "Arraste para transladar o Caminho de Pinos selecionado." },
-      "rotate": { "label": "Rotação", "tooltip": "Arraste para a esquerda ou direita a partir de qualquer ponto para girar o Caminho de Pinos selecionado em torno desse ponto." },
-      "scale": { "label": "Escala", "tooltip": "Arraste para a esquerda ou direita para redimensionar o Caminho de Pinos selecionado em torno de seu próprio centro." },
-      "merge": { "label": "Mesclar", "tooltip": "Clique nos pinos para selecioná-los, depois clique com o botão direito e escolha Confirmar Mesclagem para mesclá-los em um único pino no ponto médio entre eles." }
+      "select": { "label": "Selecionar", "tooltip": "Clique, Alt/Cmd-clique, ou arraste um retângulo para selecionar Caminhos de Pinos ou Pinos." },
+      "move": { "label": "Mover", "tooltip": "Arraste para transladar a seleção." },
+      "rotate": { "label": "Rotação", "tooltip": "Arraste para a esquerda ou direita a partir de qualquer ponto para girar a seleção em torno desse ponto." },
+      "scale": { "label": "Escala", "tooltip": "Arraste para a esquerda ou direita para redimensionar a seleção em torno de seu centroide." },
+      "merge": { "label": "Mesclar", "tooltip": "Combina a seleção atual em uma só — mescla os Caminhos de Pinos selecionados (modo Caminho de Pinos) ou os pinos selecionados (modo Pinos)." }
     }
   },
   "pinToolbar": {
@@ -42,11 +46,9 @@
   "threadToolbar": {
     "sectionTitle": "Linha",
     "draw": "Desenhar",
+    "select": "Selecionar",
     "eraser": "Borracha",
     "segment": "Segmento",
-    "coloursSectionTitle": "Cores",
-    "width": "Espessura",
-    "twistPitch": "Passo da torção",
     "legend": {
       "normal": "Normal",
       "nearestCandidate": "Candidato mais próximo",
@@ -84,7 +86,6 @@
     "fit": "Ajustar"
   },
   "radialMenu": {
-    "commitMerge": "Confirmar Mesclagem",
     "cut": "Cortar",
     "back": "Voltar",
     "next": "Avançar"

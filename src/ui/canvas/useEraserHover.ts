@@ -4,8 +4,7 @@ import type { Point } from "../../domain/paths";
 import { nearestPinOwner, nearestThreadPath, type PinHit, type ThreadHit } from "./hitTesting";
 
 // docs/specs/11-erasers.md — none of the four erasers previously showed what a click
-// would remove before it landed (the same gap the Merge tool's candidate ring already
-// closed, see useMergeTool.ts). Tracks one hit per eraser tool so EraserHoverOverlay can
+// would remove before it landed. Tracks one hit per eraser tool so EraserHoverOverlay can
 // render a `--danger` preview matching exactly what that tool's click would delete.
 export function useEraserHover(state: EditorState) {
   const [pinEraserHit, setPinEraserHit] = useState<PinHit | null>(null);

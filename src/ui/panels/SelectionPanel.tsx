@@ -19,12 +19,30 @@ function NumberField({ label, value, onChange }: { label: string; value: number;
   );
 }
 
-// docs/specs/09-selection-and-editing.md — editable geometry fields per shape. Editing
-// any field recalculates pins via store.updatePinPathGeometry.
+function SummaryMessage({ text }: { text: string }) {
+  return (
+    <div style={{ color: "var(--text-secondary)", fontSize: 12, background: "var(--bg-app)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 12 }}>
+      {text}
+    </div>
+  );
+}
+
+// docs/specs/09-selection-and-editing.md, docs/specs/26-edit-mode-multi-select.md —
+// editable geometry fields per shape when exactly one Pin Path is selected. Editing
+// any field recalculates pins via store.updatePinPathGeometry. A multi-path or
+// pins-granularity selection shows a summary only — no per-shape fields, no delete
+// action (multi-selection delete isn't part of this pass, a known scope gap per
+// docs/specs/26-edit-mode-multi-select.md).
 export function SelectionPanel({ store }: { store: EditorStore }) {
   const { t } = useTranslation("panels");
   const state = useEditorState(store);
-  if (state.selection.type !== "pinPath") {
+
+  if (state.selection.type === "pins") {
+    const paths = new Set(state.selection.refs.map((r) => r.pathId));
+    return <SummaryMessage text={t("selectionPanel.multiPinsSelected", { count: state.selection.refs.length, paths: paths.size })} />;
+  }
+
+  if (state.selection.type !== "pinPaths") {
     return (
       <div style={{ color: "var(--text-tertiary)", fontSize: 12 }}>
         {t("selectionPanel.emptyMessage")}
@@ -32,9 +50,14 @@ export function SelectionPanel({ store }: { store: EditorStore }) {
     );
   }
 
+  if (state.selection.refs.length > 1) {
+    const totalPins = store.getSelectedPinPaths().reduce((sum, p) => sum + p.pins.length, 0);
+    return <SummaryMessage text={t("selectionPanel.multiPathsSelected", { count: state.selection.refs.length, pins: totalPins })} />;
+  }
+
   const selected = store.getSelectedPinPath();
   if (!selected) return null;
-  const { layerId, pathId } = state.selection;
+  const { layerId, pathId } = state.selection.refs[0];
   const g = selected.geometry;
 
   const set = (next: PinPathGeometry) => store.updatePinPathGeometry(layerId, pathId, next);

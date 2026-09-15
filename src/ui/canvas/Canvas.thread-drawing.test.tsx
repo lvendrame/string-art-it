@@ -324,3 +324,55 @@ describe("Canvas — thread drawing interaction", () => {
     expect(screen.queryByTestId("segment-eraser-candidate")).not.toBeInTheDocument();
   });
 });
+
+// docs/specs/27-thread-select-tool.md
+describe("Canvas — Thread Select tool", () => {
+  it("clicking a Thread Path selects it, rendering the accent highlight", () => {
+    const { store, pins } = seedPinsAndEnterThreadMode();
+    const threadLayerId = store.getState().threadLayers[0].id;
+    store.extendThreadDraft(pins[0].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[5].id); // A-B, doc(10,10)-(15,10)
+    const threadPathId = store.getState().threadLayers[0].threadPaths[0].id;
+    store.setThreadTool("select");
+
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    expect(screen.queryByTestId("thread-path-selected")).not.toBeInTheDocument();
+    fireEvent.mouseDown(svg, { clientX: 210, clientY: 200 }); // midpoint of A-B, doc(12.5,10)
+
+    expect(store.getState().selection).toEqual({ type: "threadPath", layerId: threadLayerId, pathId: threadPathId });
+    expect(screen.getByTestId("thread-path-selected")).toBeInTheDocument();
+  });
+
+  it("clicking empty canvas clears the Thread Path selection", () => {
+    const { store, pins } = seedPinsAndEnterThreadMode();
+    const threadLayerId = store.getState().threadLayers[0].id;
+    store.extendThreadDraft(pins[0].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[5].id);
+    const threadPathId = store.getState().threadLayers[0].threadPaths[0].id;
+    store.setThreadTool("select");
+    store.select({ type: "threadPath", layerId: threadLayerId, pathId: threadPathId });
+
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.mouseDown(svg, { clientX: 0, clientY: 0 });
+
+    expect(store.getState().selection).toEqual({ type: "none" });
+  });
+
+  it("switching to another Thread tool does not clear the selection", () => {
+    const { store, pins } = seedPinsAndEnterThreadMode();
+    const threadLayerId = store.getState().threadLayers[0].id;
+    store.extendThreadDraft(pins[0].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[5].id);
+    const threadPathId = store.getState().threadLayers[0].threadPaths[0].id;
+    store.setThreadTool("select");
+    store.select({ type: "threadPath", layerId: threadLayerId, pathId: threadPathId });
+
+    store.setThreadTool("draw");
+
+    expect(store.getState().selection).toEqual({ type: "threadPath", layerId: threadLayerId, pathId: threadPathId });
+  });
+});

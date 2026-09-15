@@ -1,7 +1,20 @@
 import { HistoryStack } from "../commands/HistoryStack";
 import { SetValueCommand } from "../commands/SetValueCommand";
 import { createDefaultBoard, defaultDimensionsFor, clampDimension, type Board, type BoardAppearance, type BoardDimensions, type BoardShape, type TriangleType } from "./board";
-import type { EditorMode, EditorState, GridSettings, MergeCandidate, PinDefaults, PinTool, SelectTool, Selection, ThreadDefaults, ThreadTool } from "./EditorState";
+import type {
+  EditorMode,
+  EditorState,
+  GridSettings,
+  PinDefaults,
+  PinPathRef,
+  PinRef,
+  PinTool,
+  SelectGranularity,
+  SelectTool,
+  Selection,
+  ThreadDefaults,
+  ThreadTool,
+} from "./EditorState";
 import {
   addPinPathToLayers,
   createPinLayer,
@@ -17,19 +30,22 @@ import {
 import { deleteLayer, renameLayer, reorderLayer, toggleLayerLocked, toggleLayerVisible } from "./layerOps";
 import { createPinPath, nextPinId, recomputePinPath, type Pin, type PinPath, type PinPathGeometry } from "./pinPath";
 import { NO_SYMMETRY, buildNearestPinRemap, type SymmetryConfig } from "./symmetryConfig";
+import { combinePinPaths, resolveMergeDestinationPath } from "./multiSelect";
 import {
   addThreadPathToLayers,
   createThreadLayer,
   duplicateThreadLayer as cloneThreadLayer,
+  findThreadPath,
   isThreadLayerLocked,
   remapPinsInAllThreadLayers,
   remapPinsInAllThreadLayersByMap,
   removePinFromAllThreadLayers,
   removeThreadPathFromLayers,
   splitThreadPathInLayer,
+  updateThreadPathInLayers,
   type ThreadLayer,
 } from "./threadLayer";
-import { createThreadPath } from "./threadPath";
+import { createThreadPath, type ThreadPath } from "./threadPath";
 import { computeNextPatternPinId } from "./threadPattern";
 import { serializeProject, type ProjectFile, type SerializableDocument } from "./projectFile";
 import { defaultPrintSettings, type PrintSettings } from "./printSettings";
@@ -39,6 +55,14 @@ import { seedCounterFrom } from "./idCounter";
 // that had already advanced further than this session's — bump every relevant counter
 // past what's already here so newly created layers/paths/pins/threads can never reuse
 // one of them (docs/specs/16-persistence.md).
+// docs/specs/26-edit-mode-multi-select.md — shared enabled/disabled predicate for the
+// Merge action button (SelectToolbar) and the radial menu's Merge slice, so both stay
+// in sync with the same rule: at least 2 members in a path- or pins-granularity
+// selection (a "none"/"threadPath" selection, or fewer than 2 members, can't merge).
+export function canCommitSelectionMerge(selection: Selection): boolean {
+  return (selection.type === "pinPaths" || selection.type === "pins") && selection.refs.length >= 2;
+}
+
 function seedIdCountersFrom(doc: SerializableDocument): void {
   for (const layer of doc.pinLayers) {
     seedCounterFrom(layer.id);
@@ -79,7 +103,7 @@ export class EditorStore {
       symmetryDefaults: NO_SYMMETRY,
       selection: { type: "none" },
       selectTool: "select",
-      mergeSelection: [],
+      selectGranularity: "path",
       threadLayers: [defaultThreadLayer],
       activeThreadLayerId: defaultThreadLayer.id,
       threadTool: "draw",
@@ -192,11 +216,17 @@ export class EditorStore {
   }
 
   setSelectTool(tool: SelectTool): void {
-    // Leaving Merge clears any pending accumulation — it's tool-specific transient UI
-    // state with no meaning once you switch tools; unlike ThreadDraft (which has no
-    // mode-switch-clears precedent and relies on Esc), a half-built merge left behind
-    // would just be a stale, confusing highlight. Esc still cancels while staying on Merge.
-    this.state = { ...this.state, selectTool: tool, mergeSelection: tool === "merge" ? this.state.mergeSelection : [] };
+    this.state = { ...this.state, selectTool: tool };
+    this.notify();
+  }
+
+  // docs/specs/26-edit-mode-multi-select.md — flipping the Pin Path/Pins granularity
+  // switch clears the current selection: a path-selection and a pin-selection are
+  // different kinds of things and are never translated across the switch. Same "sync
+  // belongs in the store method that changes the driving state" template as setMode's
+  // layerPanelTab sync (docs/conventions/ui-patterns.md).
+  setSelectGranularity(granularity: SelectGranularity): void {
+    this.state = { ...this.state, selectGranularity: granularity, selection: { type: "none" } };
     this.notify();
   }
 
@@ -223,7 +253,7 @@ export class EditorStore {
     const pinPath = createPinPath(geometry, this.state.pinDefaults.spacing, this.state.pinDefaults, this.state.symmetryDefaults);
     this.runLayersChange(addPinPathToLayers(this.state.pinLayers, layerId, pinPath));
     this.setMode("select");
-    this.select({ type: "pinPath", layerId, pathId: pinPath.id });
+    this.select({ type: "pinPaths", refs: [{ layerId, pathId: pinPath.id }] });
     return pinPath.id;
   }
 
@@ -233,10 +263,14 @@ export class EditorStore {
   // (docs/specs/10-undo-redo.md) in the selected-path case.
   setSymmetryConfig(config: SymmetryConfig): void {
     const { selection } = this.state;
-    if (selection.type === "pinPath") {
-      if (isLayerLocked(this.state.pinLayers, selection.layerId)) return;
+    // Symmetry editing is single-object-shaped, per docs/specs/06-symmetry.md — with
+    // exactly one Pin Path selected, edit it; otherwise (none, multi-path, pins, or a
+    // Thread Path selected) fall back to changing the drawing defaults, same as before.
+    if (selection.type === "pinPaths" && selection.refs.length === 1) {
+      const { layerId, pathId } = selection.refs[0];
+      if (isLayerLocked(this.state.pinLayers, layerId)) return;
       this.runLayersChange(
-        updatePinPathInLayers(this.state.pinLayers, selection.layerId, selection.pathId, (path) => ({
+        updatePinPathInLayers(this.state.pinLayers, layerId, pathId, (path) => ({
           ...path,
           symmetry: config,
         })),
@@ -250,7 +284,7 @@ export class EditorStore {
   deletePinPath(layerId: string, pathId: string): void {
     if (isLayerLocked(this.state.pinLayers, layerId)) return;
     this.runLayersChange(removePinPathFromLayers(this.state.pinLayers, layerId, pathId));
-    if (this.state.selection.type === "pinPath" && this.state.selection.pathId === pathId) {
+    if (this.state.selection.type === "pinPaths" && this.state.selection.refs.some((r) => r.pathId === pathId)) {
       this.select({ type: "none" });
     }
   }
@@ -274,8 +308,8 @@ export class EditorStore {
   // SAME undo step, unlike colour/diameter/guide changes which never touch pins.
   setPinProperty(patch: Partial<PinDefaults>): void {
     const { selection } = this.state;
-    if (selection.type === "pinPath") {
-      const { layerId, pathId } = selection;
+    if (selection.type === "pinPaths" && selection.refs.length === 1) {
+      const { layerId, pathId } = selection.refs[0];
       if (isLayerLocked(this.state.pinLayers, layerId)) return;
       const path = findPinPath(this.state.pinLayers, layerId, pathId);
       if (!path) return;
@@ -340,24 +374,55 @@ export class EditorStore {
       next,
     );
     this.history.run(command);
-    if (this.state.selection.type === "pinPath" && this.state.selection.pathId === pathId) {
+    if (this.state.selection.type === "pinPaths" && this.state.selection.refs.some((r) => r.pathId === pathId)) {
       this.select({ type: "none" });
     }
   }
 
-  getSelectedPinPath() {
+  // docs/specs/26-edit-mode-multi-select.md — every selected Pin Path's live document
+  // object, in selection order. Empty unless the current selection is path-granularity.
+  getSelectedPinPaths(): PinPath[] {
     const { selection } = this.state;
-    if (selection.type !== "pinPath") return undefined;
-    return findPinPath(this.state.pinLayers, selection.layerId, selection.pathId);
+    if (selection.type !== "pinPaths") return [];
+    return selection.refs
+      .map((r) => findPinPath(this.state.pinLayers, r.layerId, r.pathId))
+      .filter((p): p is PinPath => !!p);
   }
 
-  // --- Edit mode: Move / Rotation / Merge (docs/specs/09-selection-and-editing.md) ---
+  // Thin single-object wrapper kept for every pre-existing single-selection consumer
+  // (PinPropertiesPanel, SymmetryPanel, Canvas.tsx, useKeyboardTransform's single-path
+  // fallback) — behaves exactly as before: defined only when exactly one Pin Path is
+  // selected, undefined for none/multi/pins/threadPath selections.
+  getSelectedPinPath(): PinPath | undefined {
+    const paths = this.getSelectedPinPaths();
+    return paths.length === 1 ? paths[0] : undefined;
+  }
+
+  // docs/specs/27-thread-select-tool.md
+  getSelectedThreadPath(): ThreadPath | undefined {
+    const { selection } = this.state;
+    if (selection.type !== "threadPath") return undefined;
+    return findThreadPath(this.state.threadLayers, selection.layerId, selection.pathId);
+  }
+
+  // --- Edit mode: Move / Rotation / Scale / Merge (docs/specs/09-selection-and-
+  // editing.md, docs/specs/21-scale-and-pin-distance.md, docs/specs/26-edit-mode-
+  // multi-select.md) ---
 
   // Live preview only — bypasses undo history entirely, like setViewport. The real
-  // committed transform happens once, on release, via commitPinPathTransform.
-  previewPinPathPins(layerId: string, pathId: string, pins: Pin[]): void {
-    this.state = { ...this.state, pinLayers: updatePinPathInLayers(this.state.pinLayers, layerId, pathId, (p) => ({ ...p, pins })) };
+  // committed transform happens once, on release, via commitPinPath(s)Transform /
+  // commitPinsTransform. Plural form previews every affected path in one pass (path-
+  // mode multi-select, or pins-mode drags — the calling hook patches each affected
+  // path's full pins[] array, only the selected pins' positions actually differing).
+  previewPinPaths(updates: { layerId: string; pathId: string; pins: Pin[] }[]): void {
+    let pinLayers = this.state.pinLayers;
+    for (const u of updates) pinLayers = updatePinPathInLayers(pinLayers, u.layerId, u.pathId, (p) => ({ ...p, pins: u.pins }));
+    this.state = { ...this.state, pinLayers };
     this.notify();
+  }
+
+  previewPinPathPins(layerId: string, pathId: string, pins: Pin[]): void {
+    this.previewPinPaths([{ layerId, pathId, pins }]);
   }
 
   // Move/Rotation commit. Takes the already-transformed `pins` (same ids, moved
@@ -380,6 +445,51 @@ export class EditorStore {
       return;
     }
     const next = updatePinPathInLayers(previous, layerId, pathId, (path) => ({ ...path, geometry, pins }));
+    const command = new SetValueCommand<PinLayer[]>((l) => this.setPinLayers(l), previous, next);
+    this.history.run(command);
+  }
+
+  // docs/specs/26-edit-mode-multi-select.md — Move/Rotation commit across N selected
+  // Pin Paths (path granularity), bundled as ONE undo step. Same in-place, stable-id
+  // semantics as commitPinPathTransform, applied per path; all-or-nothing lock abort
+  // across every involved path.
+  commitPinPathsTransform(
+    updates: { layerId: string; pathId: string; geometry: PinPathGeometry; pins: Pin[] }[],
+    previous: PinLayer[],
+  ): void {
+    if (updates.some((u) => isLayerLocked(this.state.pinLayers, u.layerId))) {
+      this.setPinLayers(previous);
+      return;
+    }
+    let next = previous;
+    for (const u of updates) {
+      next = updatePinPathInLayers(next, u.layerId, u.pathId, (path) => ({ ...path, geometry: u.geometry, pins: u.pins }));
+    }
+    const command = new SetValueCommand<PinLayer[]>((l) => this.setPinLayers(l), previous, next);
+    this.history.run(command);
+  }
+
+  // docs/specs/26-edit-mode-multi-select.md pins granularity — Move/Rotation/Scale
+  // commit as a direct raw x/y transform of just the selected pins. The owning Pin
+  // Path's geometry/requestedSpacing is left untouched (same "custom/stale" precedent
+  // the Pin Eraser already established when removing individual pins, docs/specs/
+  // 11-erasers.md) — no pin-count recompute, no distribution re-run. ALWAYS one
+  // bundled undo step, even spanning multiple paths/layers; all-or-nothing lock abort.
+  commitPinsTransform(
+    updates: { layerId: string; pathId: string; pinId: string; x: number; y: number }[],
+    previous: PinLayer[],
+  ): void {
+    if (updates.some((u) => isLayerLocked(this.state.pinLayers, u.layerId))) {
+      this.setPinLayers(previous);
+      return;
+    }
+    let next = previous;
+    for (const u of updates) {
+      next = updatePinPathInLayers(next, u.layerId, u.pathId, (path) => ({
+        ...path,
+        pins: path.pins.map((pin) => (pin.id === u.pinId ? { ...pin, x: u.x, y: u.y } : pin)),
+      }));
+    }
     const command = new SetValueCommand<PinLayer[]>((l) => this.setPinLayers(l), previous, next);
     this.history.run(command);
   }
@@ -439,38 +549,127 @@ export class EditorStore {
     this.commitPinPathWithReattach(layerId, pathId, newPinPath, previous);
   }
 
-  extendMergeSelection(candidate: MergeCandidate): void {
-    const existing = this.state.mergeSelection;
-    const next = existing.some((c) => c.pinId === candidate.pinId)
-      ? existing.filter((c) => c.pinId !== candidate.pinId) // click again to deselect
-      : [...existing, candidate];
-    this.state = { ...this.state, mergeSelection: next };
-    this.notify();
-  }
-
-  cancelMergeSelection(): void {
-    this.state = { ...this.state, mergeSelection: [] };
-    this.notify();
-  }
-
-  commitMergeSelection(): void {
-    const candidates = this.state.mergeSelection;
-    if (candidates.length < 2) {
-      this.cancelMergeSelection();
+  // docs/specs/26-edit-mode-multi-select.md — Scale commit across N selected Pin
+  // Paths (path granularity). Each path recomputes its own pins (fresh ids) and
+  // reattaches threads via nearest-pin remap, same as commitPinPathScale, but every
+  // path's remap is UNIONED into one combined map so the whole gesture — every
+  // selected path's pin recompute AND every affected thread reattachment — commits as
+  // ONE undo step. All-or-nothing lock abort across every involved path.
+  commitPinPathsScale(
+    updates: { layerId: string; pathId: string; newPinPath: PinPath }[],
+    previous: { pinLayers: PinLayer[]; threadLayers: ThreadLayer[] },
+  ): void {
+    if (updates.some((u) => isLayerLocked(this.state.pinLayers, u.layerId))) {
+      this.setPinLayers(previous.pinLayers);
       return;
     }
-    if (candidates.some((c) => isLayerLocked(this.state.pinLayers, c.layerId))) return; // whole merge aborts; selection left intact
+    let nextPinLayers = previous.pinLayers;
+    const combinedRemap = new Map<string, string>();
+    for (const u of updates) {
+      const oldPath = findPinPath(previous.pinLayers, u.layerId, u.pathId);
+      if (!oldPath) continue;
+      for (const [k, v] of buildNearestPinRemap(oldPath, u.newPinPath)) combinedRemap.set(k, v);
+      nextPinLayers = updatePinPathInLayers(nextPinLayers, u.layerId, u.pathId, () => u.newPinPath);
+    }
+    const nextThreadLayers = remapPinsInAllThreadLayersByMap(previous.threadLayers, combinedRemap);
+    const prev = { pinLayers: previous.pinLayers, threadLayers: previous.threadLayers };
+    const next = { pinLayers: nextPinLayers, threadLayers: nextThreadLayers };
+    const command = new SetValueCommand<typeof next>(
+      (v) => {
+        this.state = { ...this.state, ...v };
+        this.notify();
+      },
+      prev,
+      next,
+    );
+    this.history.run(command);
+  }
 
-    const destination = candidates[0];
-    const oldPinIds = new Set(candidates.map((c) => c.pinId));
-    const points = candidates
-      .map((c) => findPinPath(this.state.pinLayers, c.layerId, c.pathId)?.pins.find((p) => p.id === c.pinId))
+  // docs/specs/26-edit-mode-multi-select.md — Merge is an instant action fired against
+  // the CURRENT selection, not a tool you switch into (replaces the old Merge-tool
+  // accumulate-then-commit gesture entirely — see canCommitSelectionMerge below for
+  // the shared enabled/disabled predicate the toolbar button and radial menu use).
+  // No-op below 2 selected members. All-or-nothing abort if any involved Pin Path's
+  // layer is locked — selection is left intact, same as the old Merge tool's rule.
+  commitSelectionMerge(): void {
+    const { selection } = this.state;
+    if (selection.type === "pinPaths" && selection.refs.length >= 2) {
+      this.commitPathModeMerge(selection.refs);
+      return;
+    }
+    if (selection.type === "pins" && selection.refs.length >= 2) {
+      this.commitPinsModeMerge(selection.refs);
+    }
+  }
+
+  // docs/specs/26-edit-mode-multi-select.md path-mode Merge: combine every selected
+  // Pin Path's pins into the first-selected path (which keeps its own id/style/
+  // symmetry — the other selected paths are removed entirely, their pins having been
+  // pooled into the destination). Coincident pins collapse and EVERY surviving pin
+  // gets a fresh id (combinePinPaths), so every original pin across every selected
+  // path needs its thread references remapped — bundled with the pin change as ONE
+  // undo step, same {pinLayers,threadLayers} SetValueCommand pattern as Scale.
+  //
+  // The destination's `geometry` is replaced with a freehand geometry threading
+  // through the combined pins (in the same order as the merged pins[]), NOT left as
+  // whichever single shape type the first-selected path happened to be. Keeping (say)
+  // a bare "circle" geometry while pins[] actually holds a circle+line's worth of
+  // points would be a silent data-loss trap: every later pins-from-geometry recompute
+  // (Scale, Pin distance — see commitPinPathScale/setPinProperty) regenerates pins[]
+  // strictly from `geometry`, so a merged path that kept a single shape's original
+  // geometry would have the OTHER shape's entire pin contribution silently deleted on
+  // the very next Scale (found live: merging a circle with a line, then scaling,
+  // deleted every pin from whichever shape didn't match the retained geometry type).
+  // A freehand geometry through every merged pin keeps the path self-consistent for
+  // every future recompute, at the cost of the merged shape no longer being described
+  // as "this is a circle" — an accepted, documented tradeoff (data loss is worse).
+  private commitPathModeMerge(refs: PinPathRef[]): void {
+    if (refs.some((r) => isLayerLocked(this.state.pinLayers, r.layerId))) return;
+    const paths = refs.map((r) => findPinPath(this.state.pinLayers, r.layerId, r.pathId)).filter((p): p is PinPath => !!p);
+    if (paths.length < 2) return;
+    const destination = refs[0];
+    const { pins, remap } = combinePinPaths(paths);
+    const mergedGeometry: PinPathGeometry = { type: "freehand", points: pins.map((p) => ({ x: p.x, y: p.y })) };
+    const withCombinedPins = updatePinPathInLayers(this.state.pinLayers, destination.layerId, destination.pathId, (path) => ({
+      ...path,
+      geometry: mergedGeometry,
+      pins,
+    }));
+    const nextPinLayers = refs
+      .slice(1)
+      .reduce((layers, r) => removePinPathFromLayers(layers, r.layerId, r.pathId), withCombinedPins);
+    const nextThreadLayers = remapPinsInAllThreadLayersByMap(this.state.threadLayers, remap);
+    const prev = { pinLayers: this.state.pinLayers, threadLayers: this.state.threadLayers };
+    const next = { pinLayers: nextPinLayers, threadLayers: nextThreadLayers };
+    const command = new SetValueCommand<typeof next>(
+      (v) => {
+        this.state = { ...this.state, ...v };
+        this.notify();
+      },
+      prev,
+      next,
+    );
+    this.history.run(command);
+    this.select({ type: "pinPaths", refs: [destination] });
+  }
+
+  // docs/specs/26-edit-mode-multi-select.md pins-mode Merge: same per-pin averaging/
+  // thread-repoint rule as today's Merge, but the destination path is resolved by
+  // resolveMergeDestinationPath's most-selected-pins/centroid/id-tiebreak rule instead
+  // of "first-clicked wins".
+  private commitPinsModeMerge(refs: PinRef[]): void {
+    if (refs.some((r) => isLayerLocked(this.state.pinLayers, r.layerId))) return;
+    const oldPinIds = new Set(refs.map((r) => r.pinId));
+    const points = refs
+      .map((r) => findPinPath(this.state.pinLayers, r.layerId, r.pathId)?.pins.find((p) => p.id === r.pinId))
       .filter((p): p is Pin => !!p);
-    const newPin: Pin = {
-      id: nextPinId(),
+    if (points.length < 2) return;
+    const newPinPos = {
       x: points.reduce((s, p) => s + p.x, 0) / points.length,
       y: points.reduce((s, p) => s + p.y, 0) / points.length,
     };
+    const destination = resolveMergeDestinationPath(this.state.pinLayers, refs, newPinPos);
+    const newPin: Pin = { id: nextPinId(), ...newPinPos };
 
     const nextPinLayers = mergePinsInLayers(this.state.pinLayers, oldPinIds, destination, newPin);
     const nextThreadLayers = remapPinsInAllThreadLayers(this.state.threadLayers, oldPinIds, newPin.id);
@@ -485,9 +684,7 @@ export class EditorStore {
       next,
     );
     this.history.run(command);
-
-    this.state = { ...this.state, mergeSelection: [], selection: { type: "pinPath", layerId: destination.layerId, pathId: destination.pathId } };
-    this.notify();
+    this.select({ type: "pins", refs: [{ ...destination, pinId: newPin.id }] });
   }
 
   // --- Thread editor (docs/specs/12-thread-editor.md) ---
@@ -500,6 +697,23 @@ export class EditorStore {
   setThreadDefaults(patch: Partial<ThreadDefaults>): void {
     this.state = { ...this.state, threadDefaults: { ...this.state.threadDefaults, ...patch } };
     this.notify();
+  }
+
+  // docs/specs/27-thread-select-tool.md — dual-context, same pattern as
+  // setPinProperty: with a Thread Path selected, edits apply to it; otherwise they
+  // change the defaults used by the next drawn thread. One method, one set of fields
+  // in ThreadPropertiesPanel — no duplicate colour/width/twist-pitch controls between
+  // a "next thread" panel and a "selected thread" panel.
+  setThreadProperty(patch: Partial<{ colours: string[]; width: number; twistPitch: number }>): void {
+    const { selection } = this.state;
+    if (selection.type === "threadPath") {
+      if (isThreadLayerLocked(this.state.threadLayers, selection.layerId)) return;
+      const next = updateThreadPathInLayers(this.state.threadLayers, selection.layerId, selection.pathId, (path) => ({ ...path, ...patch }));
+      const command = new SetValueCommand<ThreadLayer[]>((l) => this.setThreadLayers(l), this.state.threadLayers, next);
+      this.history.run(command);
+      return;
+    }
+    this.setThreadDefaults(patch);
   }
 
   // §26-thread-drawing-workflow: first click starts the draft; each further click
@@ -747,7 +961,7 @@ export class EditorStore {
       activeThreadLayerId: doc.threadLayers[0]?.id ?? this.state.activeThreadLayerId,
       selection: { type: "none" },
       selectTool: "select",
-      mergeSelection: [],
+      selectGranularity: "path",
       threadDraft: null,
     };
     this.notify();

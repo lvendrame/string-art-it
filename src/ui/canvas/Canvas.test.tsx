@@ -160,9 +160,6 @@ describe("Canvas", () => {
       expect.stringMatching(new RegExp(`^url\\("data:image/svg\\+xml;base64,[^"]+"\\) 12 12, ${fallback}$`));
 
     act(() => store.setMode("select"));
-    act(() => store.setSelectTool("merge"));
-    expect(svg.style.cursor).toBe("default");
-
     act(() => store.setSelectTool("rotate"));
     expect(svg.style.cursor).toEqual(svgCursorEndingIn("grab"));
 
@@ -186,32 +183,31 @@ describe("Canvas", () => {
     expect(svg.style.cursor).toEqual(svgCursorEndingIn("crosshair"));
   });
 
-  it("Merge tool highlights the nearest pin as a click candidate before it's selected", () => {
+  it("Pins granularity highlights every individually selected pin", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;
-    store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } });
-    const [pinA, pinB] = store.getState().pinLayers[0].pinPaths[0].pins;
+    const pathId = store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } })!;
+    const [pinA] = store.getState().pinLayers[0].pinPaths[0].pins;
     store.setMode("select");
-    store.setSelectTool("merge");
+    store.setSelectGranularity("pins");
+    store.select({ type: "pins", refs: [{ layerId, pathId, pinId: pinA.id }] });
+    render(<Canvas store={store} />);
+
+    expect(screen.getByTestId("pin-selected")).toBeInTheDocument();
+  });
+
+  it("a rubber-band drag renders a live marquee overlay while dragging, which disappears on release", () => {
+    const store = new EditorStore();
+    store.setMode("select");
     render(<Canvas store={store} />);
     const svg = screen.getByRole("img", { name: "Board canvas" });
-    // Default viewport: zoom 4, panOrigin (-40,-40) — clientX/Y = (doc + 40) * 4.
-    const toScreen = (p: { x: number; y: number }) => ({ clientX: (p.x + 40) * 4, clientY: (p.y + 40) * 4 });
 
-    fireEvent.mouseMove(svg, toScreen(pinA));
-    expect(screen.getByTestId("pin-merge-candidate")).toBeInTheDocument();
-    expect(screen.queryByTestId("pin-merge-selected")).not.toBeInTheDocument();
-
-    fireEvent.mouseDown(svg, toScreen(pinA));
-    expect(screen.queryByTestId("pin-merge-candidate")).not.toBeInTheDocument();
-    expect(screen.getByTestId("pin-merge-selected")).toBeInTheDocument();
-
-    fireEvent.mouseMove(svg, toScreen(pinB));
-    expect(screen.getByTestId("pin-merge-candidate")).toBeInTheDocument();
-    expect(screen.getByTestId("pin-merge-selected")).toBeInTheDocument();
-
-    fireEvent.mouseMove(svg, { clientX: 0, clientY: 0 });
-    expect(screen.queryByTestId("pin-merge-candidate")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("selection-marquee")).not.toBeInTheDocument();
+    fireEvent.mouseDown(svg, { clientX: 180, clientY: 180 });
+    fireEvent.mouseMove(svg, { clientX: 220, clientY: 260 });
+    expect(screen.getByTestId("selection-marquee")).toBeInTheDocument();
+    fireEvent.mouseUp(svg, { clientX: 220, clientY: 260 });
+    expect(screen.queryByTestId("selection-marquee")).not.toBeInTheDocument();
   });
 
   it("Pin Eraser highlights the hovered pin before it's erased", () => {
@@ -267,7 +263,7 @@ describe("Canvas", () => {
     // Source pins at doc(10,10)/(30,10); mirrored across x=50 land at doc(90,10)/(70,10).
     fireEvent.mouseDown(svg, { clientX: 520, clientY: 200 }); // mirrored pin at doc(90,10)
 
-    expect(store.getState().selection).toEqual({ type: "pinPath", layerId, pathId });
+    expect(store.getState().selection).toEqual({ type: "pinPaths", refs: [{ layerId, pathId }] });
   });
 
   it("Fit sizes the viewport so the board fills most of the canvas, not a tiny corner", () => {

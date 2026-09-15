@@ -58,46 +58,41 @@ describe("EditorShell radial context menu", () => {
   // Canvas.tsx) since it must cover both the interactive Canvas and PlaybackCanvas.
   // zoom 4, panOrigin (-40,-40): screen(200,200)->doc(10,10), screen(200,240)->doc(10,20).
 
-  it("right-click opens the menu; Commit Merge merges the accumulated pins", () => {
+  it("right-click opens the menu; the Merge slice merges the selected Pin Paths", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;
     const pathIdA = store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 12, y: 10 } })!;
     const pathIdB = store.addPinPath(layerId, { type: "line", start: { x: 10, y: 20 }, end: { x: 12, y: 20 } })!;
     store.setMode("select");
-    store.setSelectTool("merge");
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId: pathIdA }, { layerId, pathId: pathIdB }] });
     const { container } = render(<EditorShell store={store} onNewProject={() => {}} />);
     const svg = screen.getByRole("img", { name: "Board canvas" });
 
-    fireEvent.mouseDown(svg, { clientX: 200, clientY: 200 }); // pinsA[0] at doc(10,10)
-    fireEvent.mouseDown(svg, { clientX: 200, clientY: 240 }); // pinsB[0] at doc(10,20)
-    expect(store.getState().mergeSelection).toHaveLength(2);
-
     fireEvent.contextMenu(svg);
-    const commitSlice = container.querySelector('[data-tooltip-content="Commit Merge"]');
-    expect(commitSlice).not.toBeNull();
-    fireEvent.click(commitSlice!);
+    const mergeSlice = container.querySelector('[data-tooltip-content="Merge"]');
+    expect(mergeSlice).not.toBeNull();
+    fireEvent.click(mergeSlice!);
 
-    const pathA = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathIdA)!;
-    const pathB = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathIdB)!;
-    expect(pathA.pins).toHaveLength(3);
-    expect(pathB.pins).toHaveLength(2);
-    expect(store.getState().mergeSelection).toEqual([]);
+    // docs/specs/26-edit-mode-multi-select.md — path-mode Merge combines every
+    // selected path's pins into one resulting path (3 + 3 pins pooled, none coincide).
+    const remaining = store.getState().pinLayers[0].pinPaths;
+    expect(remaining).toHaveLength(1);
+    expect(remaining[0].pins).toHaveLength(6);
   });
 
-  it("does not show Commit Merge (or commit anything) below 2 accumulated pins", () => {
+  it("does not show the Merge slice (or merge anything) below 2 selected Pin Paths", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;
-    store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 12, y: 10 } });
+    const pathId = store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 12, y: 10 } })!;
     store.setMode("select");
-    store.setSelectTool("merge");
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
     const { container } = render(<EditorShell store={store} onNewProject={() => {}} />);
     const svg = screen.getByRole("img", { name: "Board canvas" });
 
-    fireEvent.mouseDown(svg, { clientX: 200, clientY: 200 }); // one pin accumulated
     fireEvent.contextMenu(svg);
 
-    expect(container.querySelector('[data-tooltip-content="Commit Merge"]')).toBeNull();
-    expect(store.getState().mergeSelection).toHaveLength(1); // untouched
+    expect(container.querySelector('[data-tooltip-content="Merge"]')).toBeNull();
+    expect(store.getState().pinLayers[0].pinPaths).toHaveLength(1); // untouched
   });
 
   it("right-click during a thread draft; Cut finishes it without adding a pending segment", () => {

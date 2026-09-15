@@ -31,7 +31,7 @@ export const PlaybackCanvas = forwardRef<SVGSVGElement, { state: EditorState; fr
         <BoardLayer board={state.board} pathD={pathD} />
         <GridLayer grid={state.grid} viewport={viewport} viewportPx={CANVAS_VIEWPORT_PX} />
         <ThreadLayersView threadLayers={visibleThreadLayers} pinLayers={state.pinLayers} />
-        <PinLayersView pinLayers={state.pinLayers} selectedPathId={null} />
+        <PinLayersView pinLayers={state.pinLayers} selectedPathIds={[]} />
       </svg>
     </div>
   );

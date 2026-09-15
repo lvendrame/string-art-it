@@ -44,6 +44,55 @@ function distanceToSegment(p: Point, a: Point, b: Point): number {
   return Math.hypot(p.x - (a.x + t * dx), p.y - (a.y + t * dy));
 }
 
+// docs/specs/26-edit-mode-multi-select.md — a rubber-band rectangle in document
+// coordinates, normalized (order-independent: the user can drag in any direction).
+export interface Rect {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+}
+
+function pointInRect(p: Point, r: Rect): boolean {
+  const minX = Math.min(r.x0, r.x1);
+  const maxX = Math.max(r.x0, r.x1);
+  const minY = Math.min(r.y0, r.y1);
+  const maxY = Math.max(r.y0, r.y1);
+  return p.x >= minX && p.x <= maxX && p.y >= minY && p.y <= maxY;
+}
+
+// docs/specs/26-edit-mode-multi-select.md Pin Path granularity rubber-band: a path is
+// "touched" if the rect contains any of its real pins OR a symmetry-derived mirrored
+// pin belonging to it — same "a mirrored pin's click resolves to its source path" rule
+// single-object Select already uses (nearestPinOrMirrorOwner above).
+export function pinPathsTouchingRect(pinLayers: PinLayer[], rect: Rect): { layerId: string; pathId: string }[] {
+  const touched: { layerId: string; pathId: string }[] = [];
+  for (const l of pinLayers) {
+    for (const p of l.pinPaths) {
+      if (allPinsWithMirrors(p).some((pin) => pointInRect(pin, rect))) {
+        touched.push({ layerId: l.id, pathId: p.id });
+      }
+    }
+  }
+  return touched;
+}
+
+// docs/specs/26-edit-mode-multi-select.md Pins granularity rubber-band: only real,
+// stored pins are selectable (mirrors excluded, same restriction the Merge tool's
+// pin-picking already had — a pins-mode transform writes directly into pins[], and a
+// mirrored pin has no entry there).
+export function pinsTouchingRect(pinLayers: PinLayer[], rect: Rect): PinHit[] {
+  const touched: PinHit[] = [];
+  for (const l of pinLayers) {
+    for (const p of l.pinPaths) {
+      for (const pin of p.pins) {
+        if (pointInRect(pin, rect)) touched.push({ layerId: l.id, pathId: p.id, pinId: pin.id });
+      }
+    }
+  }
+  return touched;
+}
+
 export interface ThreadHit {
   layerId: string;
   pathId: string;

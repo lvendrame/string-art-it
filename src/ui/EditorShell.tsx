@@ -17,6 +17,7 @@ import { usePlaybackTransport } from "./toolbars/usePlaybackTransport";
 import { useVideoExport } from "./toolbars/useVideoExport";
 import { PinPropertiesPanel } from "./panels/PinPropertiesPanel";
 import { SelectionPanel } from "./panels/SelectionPanel";
+import { ThreadPropertiesPanel } from "./panels/ThreadPropertiesPanel";
 import { SymmetryPanel } from "./panels/SymmetryPanel";
 import { LayersPanel } from "./panels/LayersPanel";
 import { PrintPreviewPanel } from "./panels/PrintPreviewPanel";
@@ -130,8 +131,9 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
           </div>
         )}
         {state.mode === "thread" && (
-          <div style={{ width: 248, flex: "0 0 auto", background: "var(--bg-panel)", borderRight: "1px solid var(--border)", overflowY: "auto", padding: 16 }}>
+          <div style={{ width: 248, flex: "0 0 auto", background: "var(--bg-panel)", borderRight: "1px solid var(--border)", overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 20 }}>
             <ThreadToolbar store={store} />
+            <ThreadPropertiesPanel store={store} />
           </div>
         )}
         {state.mode === "play" && (

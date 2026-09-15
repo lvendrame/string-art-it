@@ -11,5 +11,9 @@ export function detectInitialLanguage(
 ): SupportedLanguage {
   if (isSupportedLanguage(stored)) return stored;
   const lower = (navigatorLanguage ?? "en").toLowerCase();
-  return lower.startsWith("pt") ? "pt-BR" : "en";
+  if (lower.startsWith("pt")) return "pt-BR";
+  if (lower.startsWith("es")) return "es";
+  if (lower.startsWith("fr")) return "fr";
+  if (lower.startsWith("de")) return "de";
+  return "en";
 }

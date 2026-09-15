@@ -1,0 +1,93 @@
+{
+  "modeSwitcher": {
+    "ariaLabel": "Modo del editor"
+  },
+  "selectToolbar": {
+    "sectionTitle": "Herramientas de Edición",
+    "granularity": {
+      "pinPath": "Trazado de Pines",
+      "pins": "Pines"
+    },
+    "tools": {
+      "select": { "label": "Seleccionar", "tooltip": "Haz clic, Alt/Cmd-clic, o arrastra un rectángulo para seleccionar Trazados de Pines o Pines." },
+      "move": { "label": "Mover", "tooltip": "Arrastra para trasladar la selección." },
+      "rotate": { "label": "Rotación", "tooltip": "Arrastra hacia la izquierda o derecha desde cualquier punto para girar la selección alrededor de ese punto." },
+      "scale": { "label": "Escala", "tooltip": "Arrastra hacia la izquierda o derecha para escalar la selección alrededor de su centroide." },
+      "merge": { "label": "Combinar", "tooltip": "Combina la selección actual en una sola — combina los Trazados de Pines seleccionados (modo Trazado de Pines) o los pines seleccionados (modo Pines)." }
+    }
+  },
+  "pinToolbar": {
+    "sectionTitle": "Herramientas de Pin",
+    "basicTools": {
+      "line": "Línea",
+      "arc": "Arco",
+      "ellipse": "Elipse",
+      "circle": "Círculo",
+      "rectangle": "Rect.",
+      "square": "Cuadrado",
+      "freehand": "Mano libre"
+    },
+    "eraser": "Borrador",
+    "pathEraser": "Borrador de Trazado",
+    "polygonStarLabel": "Polígono / Estrella",
+    "choosePlaceholder": "Elegir…",
+    "polygonFamily": {
+      "pentagon": "Pentágono",
+      "hexagon": "Hexágono",
+      "octagon": "Octágono",
+      "star-5": "Estrella de 5 puntas",
+      "star-6": "Estrella de 6 puntas",
+      "star-8": "Estrella de 8 puntas",
+      "pentagram": "Pentagrama",
+      "heptagram": "Heptagrama",
+      "octagram": "Octagrama"
+    }
+  },
+  "threadToolbar": {
+    "sectionTitle": "Hilo",
+    "draw": "Dibujar",
+    "select": "Seleccionar",
+    "eraser": "Borrador",
+    "segment": "Segmento",
+    "legend": {
+      "normal": "Normal",
+      "nearestCandidate": "Candidato más cercano",
+      "activeOrigin": "Origen activo",
+      "usedInThisThread": "Usado en este hilo"
+    }
+  },
+  "playToolbar": {
+    "sectionTitle": "Reproducir",
+    "firstFrame": "Primer fotograma",
+    "previousFrame": "Fotograma anterior",
+    "pause": "Pausar",
+    "play": "Reproducir",
+    "playRestart": "Reproducir (reinicia desde el principio)",
+    "nextFrame": "Siguiente fotograma",
+    "lastFrame": "Último fotograma",
+    "frame": "Fotograma",
+    "total": "Total",
+    "timeBetweenFrames": "Tiempo entre fotogramas (ms)",
+    "exportToVideo": "Exportar a Video",
+    "exporting": "Exportando… {{progress}}/{{total}}",
+    "videoNotSupported": "La exportación de video no es compatible con este navegador."
+  },
+  "canvasToolbar": {
+    "gridOn": "Cuadrícula ACTIVADA",
+    "gridOff": "Cuadrícula DESACTIVADA",
+    "snapOn": "Ajuste ACTIVADO",
+    "snapOff": "Ajuste DESACTIVADO",
+    "gapX": "Espacio X",
+    "gapY": "Espacio Y",
+    "gridColour": "Color de la cuadrícula",
+    "gridOpacity": "Opacidad de la cuadrícula",
+    "zoomOut": "Alejar",
+    "zoomIn": "Acercar",
+    "fit": "Ajustar"
+  },
+  "radialMenu": {
+    "cut": "Cortar",
+    "back": "Atrás",
+    "next": "Siguiente"
+  }
+}

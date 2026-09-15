@@ -1,6 +1,8 @@
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { FilePlus, FolderOpen, Save } from "lucide-react";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 import {
   createEmptyProject,
   migrateProjectFile,
@@ -9,6 +11,8 @@ import {
 } from "../../application/document";
 import { fitViewportForBoard } from "../canvas/boardViewport";
 import { mapOpenFileError } from "./openFileErrors";
+
+const FILE_MENU_TOOLTIP_ID = "file-menu-tooltip";
 
 // docs/specs/16-persistence.md — New/Save/Open. This MVP stands the real file system
 // in with a browser download (Save) and a file picker (Open); a File System Access
@@ -53,19 +57,38 @@ export function FileMenu({ store, onNewProject }: { store: EditorStore; onNewPro
 
   return (
     <div style={{ display: "flex", gap: 6 }}>
-      <button className="btn" onClick={handleNew} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
+      <button
+        className="btn"
+        onClick={handleNew}
+        aria-label={t("file.new")}
+        data-tooltip-id={FILE_MENU_TOOLTIP_ID}
+        data-tooltip-content={t("file.new")}
+        style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}
+      >
         <FilePlus size={14} />
-        {t("file.new")}
       </button>
-      <button className="btn" onClick={handleSave} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
+      <button
+        className="btn"
+        onClick={handleSave}
+        aria-label={t("file.save")}
+        data-tooltip-id={FILE_MENU_TOOLTIP_ID}
+        data-tooltip-content={t("file.save")}
+        style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}
+      >
         <Save size={14} />
-        {t("file.save")}
       </button>
-      <button className="btn" onClick={handleOpenClick} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
+      <button
+        className="btn"
+        onClick={handleOpenClick}
+        aria-label={t("file.open")}
+        data-tooltip-id={FILE_MENU_TOOLTIP_ID}
+        data-tooltip-content={t("file.open")}
+        style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}
+      >
         <FolderOpen size={14} />
-        {t("file.open")}
       </button>
       <input ref={fileInputRef} type="file" accept="application/json" onChange={handleFileSelected} style={{ display: "none" }} />
+      <Tooltip id={FILE_MENU_TOOLTIP_ID} place="top" />
     </div>
   );
 }

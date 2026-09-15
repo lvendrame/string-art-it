@@ -1,0 +1,22 @@
+{
+  "actions": {
+    "close": "Cerrar"
+  },
+  "modes": {
+    "select": "Editar",
+    "pin": "Pin",
+    "thread": "Hilo",
+    "pan": "Desplazar",
+    "play": "Reproducir"
+  },
+  "language": {
+    "trigger": "Cambiar idioma",
+    "en": "English",
+    "pt-BR": "Português (BR)"
+  },
+  "autosave": {
+    "found": "Se encontró un proyecto guardado automáticamente.",
+    "restore": "Restaurar",
+    "discard": "Descartar"
+  }
+}

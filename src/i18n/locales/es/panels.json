@@ -1,0 +1,97 @@
+{
+  "pinPropertiesPanel": {
+    "titleSelected": "Propiedades del Pin (seleccionado)",
+    "titleDefaults": "Propiedades del Pin (predeterminadas)",
+    "spacing": "Espaciado (cm)",
+    "actualGap": "Espaciado real",
+    "diameter": "Diámetro (mm)",
+    "colour": "Color",
+    "guideVisible": "Guía visible"
+  },
+  "selectionPanel": {
+    "emptyMessage": "Haz clic en un pin para seleccionar su Trazado de Pines.",
+    "title": "Selección — {{type}}",
+    "shapeTypes": {
+      "line": "línea",
+      "arc": "arco",
+      "circle": "círculo",
+      "ellipse": "elipse",
+      "rectangle": "rectángulo",
+      "square": "cuadrado",
+      "regular-polygon": "polígono regular",
+      "star": "estrella",
+      "polygram": "polígrama",
+      "freehand": "mano libre"
+    },
+    "pinDistance": "Distancia entre pines",
+    "fields": {
+      "startX": "Inicio X",
+      "startY": "Inicio Y",
+      "endX": "Fin X",
+      "endY": "Fin Y",
+      "centreX": "Centro X",
+      "centreY": "Centro Y",
+      "radius": "Radio",
+      "radiusX": "Radio X",
+      "radiusY": "Radio Y",
+      "rotation": "Rotación",
+      "positionX": "Posición X",
+      "positionY": "Posición Y",
+      "width": "Ancho",
+      "height": "Alto",
+      "side": "Lado",
+      "outerRadius": "Radio externo",
+      "innerRadius": "Radio interno"
+    },
+    "deletePinPath": "Eliminar Trazado de Pines",
+    "multiPathsSelected": "{{count}} Trazados de Pines seleccionados ({{pins}} pines en total)",
+    "multiPinsSelected": "{{count}} pines seleccionados en {{paths}} Trazados de Pines"
+  },
+  "threadPropertiesPanel": {
+    "titleSelected": "Propiedades del Hilo (seleccionado)",
+    "titleDefaults": "Propiedades del Hilo (predeterminadas)",
+    "coloursSectionTitle": "Colores",
+    "width": "Grosor",
+    "twistPitch": "Paso de torsión"
+  },
+  "symmetryPanel": {
+    "sectionTitle": "Simetría",
+    "options": {
+      "none": "Ninguna",
+      "horizontal": "Horiz.",
+      "vertical": "Vert.",
+      "both": "Ambas",
+      "radial": "Radial"
+    },
+    "interval": "Intervalo (°)",
+    "centreX": "Centro X",
+    "centreY": "Centro Y"
+  },
+  "layersPanel": {
+    "pinLayersTab": "Capas de Pines",
+    "threadLayersTab": "Capas de Hilo",
+    "hideLayer": "Ocultar {{name}}",
+    "showLayer": "Mostrar {{name}}",
+    "unlockLayer": "Desbloquear {{name}}",
+    "lockLayer": "Bloquear {{name}}",
+    "newLayer": "Nueva Capa",
+    "duplicate": "Duplicar",
+    "moveUp": "Subir capa",
+    "moveDown": "Bajar capa",
+    "delete": "Eliminar"
+  },
+  "statisticsPanel": {
+    "title": "Estadísticas",
+    "totalPins": "Total de pines",
+    "pathTitle": "{{layerName}} — Trazado {{index}}",
+    "pins": "Pines",
+    "requestedGap": "Espaciado solicitado",
+    "actualGap": "Espaciado real",
+    "pinDiameter": "Diámetro del pin",
+    "threadTitle": "{{layerName}} — Hilo {{index}}",
+    "segments": "Segmentos",
+    "threadLength": "Longitud del hilo",
+    "pinsVisited": "Pines visitados",
+    "colours": "Colores"
+  }
+}

@@ -14,12 +14,15 @@ describe("LanguageSwitcher", () => {
     expect(screen.getByRole("button", { name: "Change language" })).toHaveTextContent("English");
   });
 
-  it("opens to list both supported languages", () => {
+  it("opens to list every supported language", () => {
     render(<LanguageSwitcher />);
     fireEvent.click(screen.getByRole("button", { name: "Change language" }));
 
     expect(screen.getByRole("option", { name: "English" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "Português (BR)" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Español" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Français" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Deutsch" })).toBeInTheDocument();
   });
 
   it("selecting a language changes i18n.language and persists it", () => {

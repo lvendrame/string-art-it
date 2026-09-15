@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { BarChart3, HelpCircle, Printer, Redo2, Undo2 } from "lucide-react";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 import { totalThreadFrames, type EditorStore } from "../application/document";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Canvas } from "./canvas/Canvas";
@@ -25,6 +27,8 @@ import { StatisticsPanel } from "./panels/StatisticsPanel";
 import { HelpPanel } from "./panels/help/HelpPanel";
 import { useEditorState } from "./useEditorStore";
 import { isTextEntryTarget } from "./keyboard";
+
+const EDITOR_SHELL_TOOLTIP_ID = "editor-shell-tooltip";
 
 export function EditorShell({ store, onNewProject }: { store: EditorStore; onNewProject: () => void }) {
   const { t } = useTranslation("editorShell");
@@ -90,27 +94,60 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
         <div style={{ flex: 1 }} />
         <ModeSwitcher mode={state.mode} onChange={store.setMode.bind(store)} />
         <div style={{ flex: 1 }} />
-        <button className="btn" disabled={!store.canUndo()} onClick={() => store.undo()} style={{ borderRadius: 8, padding: 8, background: "transparent", borderColor: "transparent", gap: 6 }}>
+        <button
+          className="btn"
+          disabled={!store.canUndo()}
+          onClick={() => store.undo()}
+          aria-label={t("undo")}
+          data-tooltip-id={EDITOR_SHELL_TOOLTIP_ID}
+          data-tooltip-content={t("undo")}
+          style={{ borderRadius: 8, padding: 8, background: "transparent", borderColor: "transparent", gap: 6 }}
+        >
           <Undo2 size={14} />
-          {t("undo")}
         </button>
-        <button className="btn" disabled={!store.canRedo()} onClick={() => store.redo()} style={{ borderRadius: 8, padding: 8, background: "transparent", borderColor: "transparent", gap: 6 }}>
+        <button
+          className="btn"
+          disabled={!store.canRedo()}
+          onClick={() => store.redo()}
+          aria-label={t("redo")}
+          data-tooltip-id={EDITOR_SHELL_TOOLTIP_ID}
+          data-tooltip-content={t("redo")}
+          style={{ borderRadius: 8, padding: 8, background: "transparent", borderColor: "transparent", gap: 6 }}
+        >
           <Redo2 size={14} />
-          {t("redo")}
         </button>
-        <button className="btn" onClick={() => setOverlay("stats")} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
+        <button
+          className="btn"
+          onClick={() => setOverlay("stats")}
+          aria-label={t("stats")}
+          data-tooltip-id={EDITOR_SHELL_TOOLTIP_ID}
+          data-tooltip-content={t("stats")}
+          style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}
+        >
           <BarChart3 size={14} />
-          {t("stats")}
         </button>
-        <button className="btn" onClick={() => setOverlay("help")} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
+        <button
+          className="btn"
+          onClick={() => setOverlay("help")}
+          aria-label={t("help")}
+          data-tooltip-id={EDITOR_SHELL_TOOLTIP_ID}
+          data-tooltip-content={t("help")}
+          style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}
+        >
           <HelpCircle size={14} />
-          {t("help")}
         </button>
-        <button className="btn" onClick={() => setOverlay("print")} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}>
+        <button
+          className="btn"
+          onClick={() => setOverlay("print")}
+          aria-label={t("print")}
+          data-tooltip-id={EDITOR_SHELL_TOOLTIP_ID}
+          data-tooltip-content={t("print")}
+          style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}
+        >
           <Printer size={14} />
-          {t("print")}
         </button>
         <LanguageSwitcher />
+        <Tooltip id={EDITOR_SHELL_TOOLTIP_ID} place="bottom" />
       </div>
 
       <div style={{ flex: 1, display: "flex", minHeight: 0, position: "relative" }}>

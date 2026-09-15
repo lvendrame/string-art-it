@@ -1,0 +1,97 @@
+{
+  "pinPropertiesPanel": {
+    "titleSelected": "Propriétés de la Broche (sélectionnée)",
+    "titleDefaults": "Propriétés de la Broche (par défaut)",
+    "spacing": "Espacement (cm)",
+    "actualGap": "Espacement réel",
+    "diameter": "Diamètre (mm)",
+    "colour": "Couleur",
+    "guideVisible": "Guide visible"
+  },
+  "selectionPanel": {
+    "emptyMessage": "Cliquez sur une broche pour sélectionner son Tracé de Broches.",
+    "title": "Sélection — {{type}}",
+    "shapeTypes": {
+      "line": "ligne",
+      "arc": "arc",
+      "circle": "cercle",
+      "ellipse": "ellipse",
+      "rectangle": "rectangle",
+      "square": "carré",
+      "regular-polygon": "polygone régulier",
+      "star": "étoile",
+      "polygram": "polygramme",
+      "freehand": "main levée"
+    },
+    "pinDistance": "Distance entre broches",
+    "fields": {
+      "startX": "Début X",
+      "startY": "Début Y",
+      "endX": "Fin X",
+      "endY": "Fin Y",
+      "centreX": "Centre X",
+      "centreY": "Centre Y",
+      "radius": "Rayon",
+      "radiusX": "Rayon X",
+      "radiusY": "Rayon Y",
+      "rotation": "Rotation",
+      "positionX": "Position X",
+      "positionY": "Position Y",
+      "width": "Largeur",
+      "height": "Hauteur",
+      "side": "Côté",
+      "outerRadius": "Rayon extérieur",
+      "innerRadius": "Rayon intérieur"
+    },
+    "deletePinPath": "Supprimer le Tracé de Broches",
+    "multiPathsSelected": "{{count}} Tracés de Broches sélectionnés ({{pins}} broches au total)",
+    "multiPinsSelected": "{{count}} broches sélectionnées sur {{paths}} Tracés de Broches"
+  },
+  "threadPropertiesPanel": {
+    "titleSelected": "Propriétés du Fil (sélectionné)",
+    "titleDefaults": "Propriétés du Fil (par défaut)",
+    "coloursSectionTitle": "Couleurs",
+    "width": "Épaisseur",
+    "twistPitch": "Pas de torsion"
+  },
+  "symmetryPanel": {
+    "sectionTitle": "Symétrie",
+    "options": {
+      "none": "Aucune",
+      "horizontal": "Horiz.",
+      "vertical": "Vert.",
+      "both": "Les deux",
+      "radial": "Radiale"
+    },
+    "interval": "Intervalle (°)",
+    "centreX": "Centre X",
+    "centreY": "Centre Y"
+  },
+  "layersPanel": {
+    "pinLayersTab": "Calques de Broches",
+    "threadLayersTab": "Calques de Fil",
+    "hideLayer": "Masquer {{name}}",
+    "showLayer": "Afficher {{name}}",
+    "unlockLayer": "Déverrouiller {{name}}",
+    "lockLayer": "Verrouiller {{name}}",
+    "newLayer": "Nouveau Calque",
+    "duplicate": "Dupliquer",
+    "moveUp": "Monter le calque",
+    "moveDown": "Descendre le calque",
+    "delete": "Supprimer"
+  },
+  "statisticsPanel": {
+    "title": "Statistiques",
+    "totalPins": "Total des broches",
+    "pathTitle": "{{layerName}} — Tracé {{index}}",
+    "pins": "Broches",
+    "requestedGap": "Espacement demandé",
+    "actualGap": "Espacement réel",
+    "pinDiameter": "Diamètre de la broche",
+    "threadTitle": "{{layerName}} — Fil {{index}}",
+    "segments": "Segments",
+    "threadLength": "Longueur du fil",
+    "pinsVisited": "Broches visitées",
+    "colours": "Couleurs"
+  }
+}

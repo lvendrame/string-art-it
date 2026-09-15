@@ -2,19 +2,19 @@
 
 ## Purpose
 
-StringArtIt ships in two languages: English (default) and Portuguese (pt-BR). A user switches between them via a language dropdown present on both the Board Setup screen and the main Editor's top bar; the choice applies immediately across the whole UI and persists across reloads. This spec covers the language-switching mechanism, translation coverage, and the explicit scope boundaries of what does and does not get translated.
+StringArtIt ships in five languages: English (default), Portuguese (pt-BR), Spanish (es), French (fr), and German (de). A user switches between them via a language dropdown present on both the Board Setup screen and the main Editor's top bar; the choice applies immediately across the whole UI and persists across reloads. This spec covers the language-switching mechanism, translation coverage, and the explicit scope boundaries of what does and does not get translated.
 
 Language selection is ephemeral UI/application preference, not document state — it never routes through `EditorStore`'s `HistoryStack`/`Command` machinery and is never undoable, matching how `overlay` (Stats/Print/Help) and Play mode's local transport state are already treated ([01-architecture.md](./01-architecture.md)).
 
 ## Supported Languages & Detection
 
-Two languages: `en` (English, default) and `pt-BR` (Portuguese). On first visit, with no saved preference, the initial language is detected from `navigator.language`: any value starting with `pt` (case-insensitive — `pt`, `pt-BR`, `pt-PT`, …) resolves to `pt-BR`; anything else falls back to `en`. Once the user makes an explicit choice via the Language Switcher, it is persisted to `localStorage` under `stringartit:language:v1` (mirroring the `stringartit:autosave:v1` convention in `src/infrastructure/persistence/autosave.ts`) and that stored choice always wins over browser-locale detection on subsequent visits.
+Five languages: `en` (English, default), `pt-BR` (Portuguese), `es` (Spanish), `fr` (French), and `de` (German). On first visit, with no saved preference, the initial language is detected from `navigator.language` by case-insensitive prefix match: `pt*` (`pt`, `pt-BR`, `pt-PT`, …) resolves to `pt-BR`; `es*` resolves to `es`; `fr*` resolves to `fr`; `de*` resolves to `de`; anything else falls back to `en`. Once the user makes an explicit choice via the Language Switcher, it is persisted to `localStorage` under `stringartit:language:v1` (mirroring the `stringartit:autosave:v1` convention in `src/infrastructure/persistence/autosave.ts`) and that stored choice always wins over browser-locale detection on subsequent visits.
 
 ## Language Switcher
 
 A shared component (`src/ui/LanguageSwitcher.tsx`), mounted identically in two places — the Board Setup screen's header row (next to the "New Board" title) and the Editor Shell's top bar (after the Print button) — both reading and writing the same global `i18next` language state, so they always agree with no prop threading between them.
 
-It is a **custom-built dropdown**, not a native `<select>`: a `.btn`-styled trigger (Globe icon + current language's native name + chevron) opens an absolutely-positioned menu (`role="listbox"`) listing both languages as `role="option"` buttons, the active one marked with a checkmark. This is a deliberate new UI pattern — `18-design-system.md`'s Component Vocabulary previously had no Select/Dropdown entry beyond the segmented mode switcher (scoped to ≤4 options as a tab-like control, not a real dropdown) and the plain `<select>` elements used for paper size / board texture presets. The switcher closes on outside click (`pointerdown` outside its container) and on `Escape`, and supports `ArrowUp`/`ArrowDown` to move focus between its two options.
+It is a **custom-built dropdown**, not a native `<select>`: a `.btn`-styled trigger (Globe icon + current language's native name + chevron) opens an absolutely-positioned menu (`role="listbox"`) listing every supported language as `role="option"` buttons, the active one marked with a checkmark. This is a deliberate new UI pattern — `18-design-system.md`'s Component Vocabulary previously had no Select/Dropdown entry beyond the segmented mode switcher (scoped to ≤4 options as a tab-like control, not a real dropdown) and the plain `<select>` elements used for paper size / board texture presets. The switcher closes on outside click (`pointerdown` outside its container) and on `Escape`, and supports `ArrowUp`/`ArrowDown` to move focus between its options.
 
 ## Translation Coverage
 
@@ -56,10 +56,10 @@ Every user-facing string across `src/ui/` is sourced from `react-i18next`, split
 ```gherkin
 Feature: Language switcher
 
-  Scenario: Dropdown lists both supported languages
+  Scenario: Dropdown lists every supported language
     Given the Language Switcher is closed
     When the user opens it
-    Then "English" and "Português (BR)" are both listed as options
+    Then "English", "Português (BR)", "Español", "Français", and "Deutsch" are all listed as options
 
   Scenario: Selecting a language updates visible text immediately
     Given the app is showing English text in Board Setup
@@ -102,5 +102,5 @@ Feature: Language switcher
 
 ## Notes
 
-- Packages: `i18next` + `react-i18next` only — no `i18next-http-backend` (resources are bundled JSON, loaded synchronously) and no `i18next-browser-languagedetector` (the two-language detection rule above is simple enough to hand-write in `src/i18n/detectLanguage.ts`, a pure function unit-tested independently of the i18next instance).
-- `src/i18n/keyParity.test.ts` walks every namespace's `en`/`pt-BR` JSON pair and asserts identical leaf-key sets, catching translation drift as new strings are added in future milestones.
+- Packages: `i18next` + `react-i18next` only — no `i18next-http-backend` (resources are bundled JSON, loaded synchronously) and no `i18next-browser-languagedetector` (the prefix-based detection rule above is simple enough to hand-write in `src/i18n/detectLanguage.ts`, a pure function unit-tested independently of the i18next instance).
+- `src/i18n/keyParity.test.ts` walks every namespace's `en` vs. each other supported language's JSON pair and asserts identical leaf-key sets, catching translation drift as new strings are added in future milestones.

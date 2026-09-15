@@ -1,5 +1,7 @@
 import { Grid3x3, Magnet, Maximize, ZoomIn, ZoomOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 import type { EditorStore } from "../../application/document";
 import { zoomToPercent } from "../../domain/transforms";
 import { useEditorState } from "../useEditorStore";
@@ -7,16 +9,19 @@ import { CANVAS_VIEWPORT_PX, fitViewportForBoard } from "./boardViewport";
 import { zoomInStep, zoomOutStep } from "./zoomSteps";
 
 const VIEWPORT_CENTER = { x: CANVAS_VIEWPORT_PX.width / 2, y: CANVAS_VIEWPORT_PX.height / 2 };
+const CANVAS_TOOLBAR_TOOLTIP_ID = "canvas-toolbar-tooltip";
 
 function ToggleChip({ label, active, onClick, icon: Icon }: { label: string; active: boolean; onClick: () => void; icon: typeof Grid3x3 }) {
   return (
     <button
       className={`btn${active ? " btn-active" : ""}`}
       onClick={onClick}
+      aria-label={label}
+      data-tooltip-id={CANVAS_TOOLBAR_TOOLTIP_ID}
+      data-tooltip-content={label}
       style={{ borderRadius: 999, padding: "6px 12px", fontSize: 11.5, fontWeight: 600, gap: 6 }}
     >
       <Icon size={14} />
-      {label}
     </button>
   );
 }
@@ -93,6 +98,7 @@ export function CanvasToolbar({ store }: { store: EditorStore }) {
         <Maximize size={14} />
         {t("canvasToolbar.fit")}
       </button>
+      <Tooltip id={CANVAS_TOOLBAR_TOOLTIP_ID} place="top" />
     </div>
   );
 }

@@ -17,7 +17,7 @@ describe("languagePreference", () => {
   });
 
   it("ignores a corrupted/unsupported stored value", () => {
-    window.localStorage.setItem("stringartit:language:v1", "fr");
+    window.localStorage.setItem("stringartit:language:v1", "it");
     expect(getStoredLanguage()).toBeNull();
   });
 });

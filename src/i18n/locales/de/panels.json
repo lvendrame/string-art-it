@@ -1,0 +1,97 @@
+{
+  "pinPropertiesPanel": {
+    "titleSelected": "Stift-Eigenschaften (ausgewählt)",
+    "titleDefaults": "Stift-Eigenschaften (Standard)",
+    "spacing": "Abstand (cm)",
+    "actualGap": "Tatsächlicher Abstand",
+    "diameter": "Durchmesser (mm)",
+    "colour": "Farbe",
+    "guideVisible": "Hilfslinie sichtbar"
+  },
+  "selectionPanel": {
+    "emptyMessage": "Klicken Sie auf einen Stift, um seinen Stiftpfad auszuwählen.",
+    "title": "Auswahl — {{type}}",
+    "shapeTypes": {
+      "line": "Linie",
+      "arc": "Bogen",
+      "circle": "Kreis",
+      "ellipse": "Ellipse",
+      "rectangle": "Rechteck",
+      "square": "Quadrat",
+      "regular-polygon": "regelmäßiges Polygon",
+      "star": "Stern",
+      "polygram": "Polygramm",
+      "freehand": "Freihand"
+    },
+    "pinDistance": "Stiftabstand",
+    "fields": {
+      "startX": "Start X",
+      "startY": "Start Y",
+      "endX": "Ende X",
+      "endY": "Ende Y",
+      "centreX": "Mitte X",
+      "centreY": "Mitte Y",
+      "radius": "Radius",
+      "radiusX": "Radius X",
+      "radiusY": "Radius Y",
+      "rotation": "Drehung",
+      "positionX": "Position X",
+      "positionY": "Position Y",
+      "width": "Breite",
+      "height": "Höhe",
+      "side": "Seite",
+      "outerRadius": "Außenradius",
+      "innerRadius": "Innenradius"
+    },
+    "deletePinPath": "Stiftpfad löschen",
+    "multiPathsSelected": "{{count}} Stiftpfade ausgewählt ({{pins}} Stifte insgesamt)",
+    "multiPinsSelected": "{{count}} Stifte ausgewählt in {{paths}} Stiftpfaden"
+  },
+  "threadPropertiesPanel": {
+    "titleSelected": "Faden-Eigenschaften (ausgewählt)",
+    "titleDefaults": "Faden-Eigenschaften (Standard)",
+    "coloursSectionTitle": "Farben",
+    "width": "Stärke",
+    "twistPitch": "Drehsteigung"
+  },
+  "symmetryPanel": {
+    "sectionTitle": "Symmetrie",
+    "options": {
+      "none": "Keine",
+      "horizontal": "Horiz.",
+      "vertical": "Vert.",
+      "both": "Beide",
+      "radial": "Radial"
+    },
+    "interval": "Intervall (°)",
+    "centreX": "Mitte X",
+    "centreY": "Mitte Y"
+  },
+  "layersPanel": {
+    "pinLayersTab": "Stift-Ebenen",
+    "threadLayersTab": "Faden-Ebenen",
+    "hideLayer": "{{name}} ausblenden",
+    "showLayer": "{{name}} einblenden",
+    "unlockLayer": "{{name}} entsperren",
+    "lockLayer": "{{name}} sperren",
+    "newLayer": "Neue Ebene",
+    "duplicate": "Duplizieren",
+    "moveUp": "Ebene nach oben verschieben",
+    "moveDown": "Ebene nach unten verschieben",
+    "delete": "Löschen"
+  },
+  "statisticsPanel": {
+    "title": "Statistiken",
+    "totalPins": "Stifte insgesamt",
+    "pathTitle": "{{layerName}} — Pfad {{index}}",
+    "pins": "Stifte",
+    "requestedGap": "Angeforderter Abstand",
+    "actualGap": "Tatsächlicher Abstand",
+    "pinDiameter": "Stiftdurchmesser",
+    "threadTitle": "{{layerName}} — Faden {{index}}",
+    "segments": "Segmente",
+    "threadLength": "Fadenlänge",
+    "pinsVisited": "Besuchte Stifte",
+    "colours": "Farben"
+  }
+}

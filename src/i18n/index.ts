@@ -18,7 +18,7 @@ const initOptions: InitOptions = {
   resources,
   lng: initialLanguage,
   fallbackLng: "en",
-  supportedLngs: ["en", "pt-BR"],
+  supportedLngs: ["en", "pt-BR", "es", "fr", "de"],
   ns: NAMESPACES,
   defaultNS: "common",
   interpolation: { escapeValue: false },

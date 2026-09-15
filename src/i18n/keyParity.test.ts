@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { resources } from "./resources";
+import { SUPPORTED_LANGUAGES } from "./languages";
 
 function leafKeyPaths(obj: unknown, prefix = ""): string[] {
   if (typeof obj !== "object" || obj === null) return [prefix];
@@ -10,14 +11,17 @@ function leafKeyPaths(obj: unknown, prefix = ""): string[] {
 
 describe("locale key parity", () => {
   const namespaces = Object.keys(resources.en) as (keyof typeof resources.en)[];
+  const otherLanguages = SUPPORTED_LANGUAGES.filter((lng) => lng !== "en");
 
-  it.each(namespaces)("en and pt-BR carry the same keys in %s.json", (ns) => {
-    const enKeys = new Set(leafKeyPaths(resources.en[ns]));
-    const ptKeys = new Set(leafKeyPaths(resources["pt-BR"][ns]));
+  for (const lng of otherLanguages) {
+    it.each(namespaces)(`en and ${lng} carry the same keys in %s.json`, (ns) => {
+      const enKeys = new Set(leafKeyPaths(resources.en[ns]));
+      const otherKeys = new Set(leafKeyPaths(resources[lng][ns]));
 
-    const missingInPt = [...enKeys].filter((k) => !ptKeys.has(k));
-    const missingInEn = [...ptKeys].filter((k) => !enKeys.has(k));
+      const missingInOther = [...enKeys].filter((k) => !otherKeys.has(k));
+      const missingInEn = [...otherKeys].filter((k) => !enKeys.has(k));
 
-    expect({ missingInPt, missingInEn }).toEqual({ missingInPt: [], missingInEn: [] });
-  });
+      expect({ missingInOther, missingInEn }).toEqual({ missingInOther: [], missingInEn: [] });
+    });
+  }
 });

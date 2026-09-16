@@ -1,6 +1,6 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { EditorStore, type PinPathGeometry } from "../../application/document";
+import { EditorStore, pinPathStatistics, type PinPathGeometry } from "../../application/document";
 import { SelectionPanel } from "./SelectionPanel";
 
 // docs/specs/29-text-pin-path.md — buildTextGeometry is the one place these tests would
@@ -85,6 +85,47 @@ describe("SelectionPanel", () => {
     expect(screen.getByText(/2 Pin Paths selected/)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Delete Pin Path" })).not.toBeInTheDocument();
     expect(screen.queryByLabelText("Radius")).not.toBeInTheDocument();
+  });
+
+  // docs/specs/17-statistics.md figures, surfaced inline for Edit-mode Pin Path selection.
+  it("with one Pin Path selected, shows a stats box with pins/actual gap/perimeter", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    const pathId = store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: 31 / (2 * Math.PI) })!;
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
+    store.setPinProperty({ spacing: 2 });
+    const stats = pinPathStatistics(store.getState().pinLayers[0].pinPaths[0]);
+
+    render(<SelectionPanel store={store} />);
+
+    const statsBox = screen.getByText("Stats").parentElement!;
+    expect(within(statsBox).getByText("Pins").nextSibling).toHaveTextContent(String(stats.pins));
+    expect(within(statsBox).getByText("Actual gap").nextSibling).toHaveTextContent(`${stats.actualSpacing.toFixed(2)} cm`);
+    expect(within(statsBox).getByText("Path perimeter").nextSibling).toHaveTextContent(`${stats.perimeterCm.toFixed(2)} cm`);
+  });
+
+  it("with multiple Pin Paths selected, the stats box sums pins/perimeter and omits Actual gap", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    const pathIdA = store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: 5 })!;
+    const pathIdB = store.addPinPath(layerId, { type: "circle", center: { x: 20, y: 0 }, radius: 3 })!;
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId: pathIdA }, { layerId, pathId: pathIdB }] });
+    const paths = store.getState().pinLayers[0].pinPaths;
+    const expectedPins = paths.reduce((sum, p) => sum + p.pins.length, 0);
+    const expectedPerimeter = paths.reduce((sum, p) => sum + pinPathStatistics(p).perimeterCm, 0);
+
+    render(<SelectionPanel store={store} />);
+
+    const statsBox = screen.getByText("Stats").parentElement!;
+    expect(within(statsBox).getByText("Pins").nextSibling).toHaveTextContent(String(expectedPins));
+    expect(within(statsBox).getByText("Path perimeter").nextSibling).toHaveTextContent(`${expectedPerimeter.toFixed(2)} cm`);
+    expect(within(statsBox).queryByText("Actual gap")).not.toBeInTheDocument();
+  });
+
+  it("shows no stats box when nothing or only pins are selected", () => {
+    const store = new EditorStore();
+    render(<SelectionPanel store={store} />);
+    expect(screen.queryByText("Stats")).not.toBeInTheDocument();
   });
 
   it("shows a summary when individual pins are selected (Pins granularity)", () => {

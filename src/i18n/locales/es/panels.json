@@ -55,15 +55,27 @@
       "bold": "Negrita"
     },
     "deletePinPath": "Eliminar Trazado de Pines",
-    "multiPathsSelected": "{{count}} Trazados de Pines seleccionados ({{pins}} pines en total)",
-    "multiPinsSelected": "{{count}} pines seleccionados en {{paths}} Trazados de Pines"
+    "multiPathsSelected": "{{count}} Trazados de Pines seleccionados",
+    "multiPinsSelected": "{{count}} pines seleccionados en {{paths}} Trazados de Pines",
+    "stats": {
+      "title": "Estadísticas",
+      "pins": "Pines",
+      "actualGap": "Espaciado real",
+      "perimeter": "Perímetro del trazado"
+    }
   },
   "threadPropertiesPanel": {
     "titleSelected": "Propiedades del Hilo (seleccionado)",
     "titleDefaults": "Propiedades del Hilo (predeterminadas)",
     "coloursSectionTitle": "Colores",
     "width": "Grosor",
-    "twistPitch": "Paso de torsión"
+    "twistPitch": "Paso de torsión",
+    "stats": {
+      "title": "Estadísticas",
+      "segments": "Segmentos",
+      "threadLength": "Longitud del hilo",
+      "pinsVisited": "Pines visitados"
+    }
   },
   "symmetryPanel": {
     "sectionTitle": "Simetría",

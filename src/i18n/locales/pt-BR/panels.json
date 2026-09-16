@@ -55,15 +55,27 @@
       "bold": "Negrito"
     },
     "deletePinPath": "Excluir Caminho de Pinos",
-    "multiPathsSelected": "{{count}} Caminhos de Pinos selecionados ({{pins}} pinos no total)",
-    "multiPinsSelected": "{{count}} pinos selecionados em {{paths}} Caminhos de Pinos"
+    "multiPathsSelected": "{{count}} Caminhos de Pinos selecionados",
+    "multiPinsSelected": "{{count}} pinos selecionados em {{paths}} Caminhos de Pinos",
+    "stats": {
+      "title": "Estatísticas",
+      "pins": "Pinos",
+      "actualGap": "Espaçamento real",
+      "perimeter": "Perímetro do caminho"
+    }
   },
   "threadPropertiesPanel": {
     "titleSelected": "Propriedades da Linha (selecionada)",
     "titleDefaults": "Propriedades da Linha (padrão)",
     "coloursSectionTitle": "Cores",
     "width": "Espessura",
-    "twistPitch": "Passo da torção"
+    "twistPitch": "Passo da torção",
+    "stats": {
+      "title": "Estatísticas",
+      "segments": "Segmentos",
+      "threadLength": "Comprimento da linha",
+      "pinsVisited": "Pinos visitados"
+    }
   },
   "symmetryPanel": {
     "sectionTitle": "Simetria",

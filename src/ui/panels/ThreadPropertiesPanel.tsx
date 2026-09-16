@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import type { EditorStore } from "../../application/document";
+import { threadPathStatistics, type EditorStore } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
 
 const PALETTE = ["#5b8def", "#edeff7", "#e8b449", "#d96c6c", "#8fd6c8"];
@@ -82,6 +82,35 @@ export function ThreadPropertiesPanel({ store }: { store: EditorStore }) {
           />
         </label>
       )}
+
+      {selected && <ThreadStatsBox thread={selected} pinLayers={state.pinLayers} />}
+    </div>
+  );
+}
+
+// docs/specs/17-statistics.md — same figures as the Statistics overlay's per-thread
+// StatCard, surfaced inline so selecting a thread shows its stats without leaving
+// Thread mode. Always derived live from the current document, never stored.
+function ThreadStatsBox({ thread, pinLayers }: { thread: NonNullable<ReturnType<EditorStore["getSelectedThreadPath"]>>; pinLayers: Parameters<typeof threadPathStatistics>[1] }) {
+  const { t } = useTranslation("panels");
+  const stats = threadPathStatistics(thread, pinLayers);
+  const rows: [string, string][] = [
+    [t("threadPropertiesPanel.stats.segments"), String(stats.segments)],
+    [t("threadPropertiesPanel.stats.threadLength"), `${(stats.lengthCm / 100).toFixed(2)} m`],
+    [t("threadPropertiesPanel.stats.pinsVisited"), String(stats.pinsVisited)],
+  ];
+
+  return (
+    <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 10, display: "flex", flexDirection: "column", gap: 8, marginTop: 4 }}>
+      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
+        {t("threadPropertiesPanel.stats.title")}
+      </div>
+      {rows.map(([label, value]) => (
+        <div key={label} className="mono" style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
+          <span style={{ color: "var(--text-secondary)" }}>{label}</span>
+          <span style={{ color: "var(--text-primary)" }}>{value}</span>
+        </div>
+      ))}
     </div>
   );
 }

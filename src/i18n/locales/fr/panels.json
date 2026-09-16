@@ -55,15 +55,27 @@
       "bold": "Gras"
     },
     "deletePinPath": "Supprimer le Tracé de Broches",
-    "multiPathsSelected": "{{count}} Tracés de Broches sélectionnés ({{pins}} broches au total)",
-    "multiPinsSelected": "{{count}} broches sélectionnées sur {{paths}} Tracés de Broches"
+    "multiPathsSelected": "{{count}} Tracés de Broches sélectionnés",
+    "multiPinsSelected": "{{count}} broches sélectionnées sur {{paths}} Tracés de Broches",
+    "stats": {
+      "title": "Statistiques",
+      "pins": "Broches",
+      "actualGap": "Espacement réel",
+      "perimeter": "Périmètre du tracé"
+    }
   },
   "threadPropertiesPanel": {
     "titleSelected": "Propriétés du Fil (sélectionné)",
     "titleDefaults": "Propriétés du Fil (par défaut)",
     "coloursSectionTitle": "Couleurs",
     "width": "Épaisseur",
-    "twistPitch": "Pas de torsion"
+    "twistPitch": "Pas de torsion",
+    "stats": {
+      "title": "Statistiques",
+      "segments": "Segments",
+      "threadLength": "Longueur du fil",
+      "pinsVisited": "Broches visitées"
+    }
   },
   "symmetryPanel": {
     "sectionTitle": "Symétrie",

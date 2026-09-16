@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import type { EditorStore, PinPathGeometry } from "../../application/document";
+import { pinPathStatistics, type EditorStore, type PinPathGeometry } from "../../application/document";
 import { FONT_CATALOG, getFontCatalogEntry, type FontWeight } from "../../infrastructure/fonts/fontCatalog";
 import { buildTextGeometry } from "../text/buildTextGeometry";
 import { useEditorState } from "../useEditorStore";
@@ -26,6 +26,34 @@ function SummaryMessage({ text }: { text: string }) {
   return (
     <div style={{ color: "var(--text-secondary)", fontSize: 12, background: "var(--bg-app)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 12 }}>
       {text}
+    </div>
+  );
+}
+
+// docs/specs/17-statistics.md — same Pins/Actual-gap/Perimeter figures the Statistics
+// overlay's per-path card shows, surfaced inline whenever one or more Pin Paths are
+// selected in Edit mode. `actualGapCm` is omitted for a multi-path selection (2+ paths
+// can have different actual spacing, so no single "Actual gap" value is unambiguous —
+// Pins and Perimeter still sum cleanly across the whole selection).
+function PinPathStatsBox({ pins, actualGapCm, perimeterCm }: { pins: number; actualGapCm?: number; perimeterCm: number }) {
+  const { t } = useTranslation("panels");
+  const rows: [string, string][] = [
+    [t("selectionPanel.stats.pins"), String(pins)],
+    ...(actualGapCm !== undefined ? ([[t("selectionPanel.stats.actualGap"), `${actualGapCm.toFixed(2)} cm`]] as [string, string][]) : []),
+    [t("selectionPanel.stats.perimeter"), `${perimeterCm.toFixed(2)} cm`],
+  ];
+
+  return (
+    <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 10, display: "flex", flexDirection: "column", gap: 8 }}>
+      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
+        {t("selectionPanel.stats.title")}
+      </div>
+      {rows.map(([label, value]) => (
+        <div key={label} className="mono" style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
+          <span style={{ color: "var(--text-secondary)" }}>{label}</span>
+          <span style={{ color: "var(--text-primary)" }}>{value}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -70,14 +98,22 @@ export function SelectionPanel({ store }: { store: EditorStore }) {
   }
 
   if (state.selection.refs.length > 1) {
-    const totalPins = store.getSelectedPinPaths().reduce((sum, p) => sum + p.pins.length, 0);
-    return <SummaryMessage text={t("selectionPanel.multiPathsSelected", { count: state.selection.refs.length, pins: totalPins })} />;
+    const selectedPaths = store.getSelectedPinPaths();
+    const totalPerimeter = selectedPaths.reduce((sum, p) => sum + pinPathStatistics(p).perimeterCm, 0);
+    const totalPins = selectedPaths.reduce((sum, p) => sum + p.pins.length, 0);
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <SummaryMessage text={t("selectionPanel.multiPathsSelected", { count: state.selection.refs.length })} />
+        <PinPathStatsBox pins={totalPins} perimeterCm={totalPerimeter} />
+      </div>
+    );
   }
 
   const selected = store.getSelectedPinPath();
   if (!selected) return null;
   const { layerId, pathId } = state.selection.refs[0];
   const g = selected.geometry;
+  const stats = pinPathStatistics(selected);
 
   const set = (next: PinPathGeometry) => store.updatePinPathGeometry(layerId, pathId, next);
   const f = (key: string) => t(`selectionPanel.fields.${key}`);
@@ -214,6 +250,7 @@ export function SelectionPanel({ store }: { store: EditorStore }) {
         )}
       </div>
       <SymmetryPanel store={store} />
+      <PinPathStatsBox pins={stats.pins} actualGapCm={stats.actualSpacing} perimeterCm={stats.perimeterCm} />
       <button
         className="btn"
         onClick={() => store.deletePinPath(layerId, pathId)}

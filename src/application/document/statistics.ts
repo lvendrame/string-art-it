@@ -1,5 +1,6 @@
+import { pathLength } from "../../domain/paths";
 import { findPinById, type PinLayer } from "./pinLayer";
-import type { PinPath } from "./pinPath";
+import { geometryToContourPaths, type PinPath } from "./pinPath";
 import type { ThreadPath } from "./threadPath";
 
 // docs/specs/17-statistics.md
@@ -8,10 +9,16 @@ export interface PinPathStatistics {
   requestedSpacing: number;
   actualSpacing: number;
   diameter: number;
+  perimeterCm: number;
 }
 
+// perimeterCm sums every contour's length (multi-contour Text Pin Paths — a letter's
+// hole or disconnected piece — contribute more than one), reusing the same
+// geometryToContourPaths generalization distribution/rendering already rely on so a
+// single-contour shape's perimeter is exactly geometryToPath's length.
 export function pinPathStatistics(path: PinPath): PinPathStatistics {
-  return { pins: path.pins.length, requestedSpacing: path.requestedSpacing, actualSpacing: path.actualSpacing, diameter: path.diameter };
+  const perimeterCm = geometryToContourPaths(path.geometry).reduce((sum, contour) => sum + pathLength(contour), 0);
+  return { pins: path.pins.length, requestedSpacing: path.requestedSpacing, actualSpacing: path.actualSpacing, diameter: path.diameter, perimeterCm };
 }
 
 export function projectTotalPins(pinLayers: PinLayer[]): number {

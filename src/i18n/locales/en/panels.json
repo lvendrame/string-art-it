@@ -55,15 +55,27 @@
       "bold": "Bold"
     },
     "deletePinPath": "Delete Pin Path",
-    "multiPathsSelected": "{{count}} Pin Paths selected ({{pins}} pins total)",
-    "multiPinsSelected": "{{count}} pins selected across {{paths}} Pin Paths"
+    "multiPathsSelected": "{{count}} Pin Paths selected",
+    "multiPinsSelected": "{{count}} pins selected across {{paths}} Pin Paths",
+    "stats": {
+      "title": "Stats",
+      "pins": "Pins",
+      "actualGap": "Actual gap",
+      "perimeter": "Path perimeter"
+    }
   },
   "threadPropertiesPanel": {
     "titleSelected": "Thread Properties (selected)",
     "titleDefaults": "Thread Properties (defaults)",
     "coloursSectionTitle": "Colours",
     "width": "Width",
-    "twistPitch": "Twist pitch"
+    "twistPitch": "Twist pitch",
+    "stats": {
+      "title": "Stats",
+      "segments": "Segments",
+      "threadLength": "Thread length",
+      "pinsVisited": "Pins visited"
+    }
   },
   "symmetryPanel": {
     "sectionTitle": "Symmetry",

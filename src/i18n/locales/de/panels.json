@@ -55,15 +55,27 @@
       "bold": "Fett"
     },
     "deletePinPath": "Stiftpfad löschen",
-    "multiPathsSelected": "{{count}} Stiftpfade ausgewählt ({{pins}} Stifte insgesamt)",
-    "multiPinsSelected": "{{count}} Stifte ausgewählt in {{paths}} Stiftpfaden"
+    "multiPathsSelected": "{{count}} Stiftpfade ausgewählt",
+    "multiPinsSelected": "{{count}} Stifte ausgewählt in {{paths}} Stiftpfaden",
+    "stats": {
+      "title": "Statistiken",
+      "pins": "Stifte",
+      "actualGap": "Tatsächlicher Abstand",
+      "perimeter": "Pfadumfang"
+    }
   },
   "threadPropertiesPanel": {
     "titleSelected": "Faden-Eigenschaften (ausgewählt)",
     "titleDefaults": "Faden-Eigenschaften (Standard)",
     "coloursSectionTitle": "Farben",
     "width": "Stärke",
-    "twistPitch": "Drehsteigung"
+    "twistPitch": "Drehsteigung",
+    "stats": {
+      "title": "Statistiken",
+      "segments": "Segmente",
+      "threadLength": "Fadenlänge",
+      "pinsVisited": "Besuchte Stifte"
+    }
   },
   "symmetryPanel": {
     "sectionTitle": "Symmetrie",

@@ -16,6 +16,31 @@ describe("pinPathStatistics", () => {
     expect(stats.pins).toBe(16);
     expect(stats.actualSpacing).toBeCloseTo(1.9375, 3);
     expect(stats.requestedSpacing).toBe(2);
+    expect(stats.perimeterCm).toBeCloseTo(31, 6);
+  });
+
+  it("sums every contour's length for a multi-contour (Text) Pin Path", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    const pathId = store.addPinPath(layerId, {
+      type: "text",
+      origin: { x: 0, y: 0 },
+      text: "x",
+      fontId: "pt-sans",
+      weight: "regular",
+      italic: false,
+      size: 5,
+      letterSpacing: 0,
+      rotation: 0,
+      // two disjoint closed contours: a 3-4-5 triangle (perimeter 12) and a unit square (perimeter 4)
+      contours: [
+        [{ x: 0, y: 0 }, { x: 3, y: 0 }, { x: 3, y: 4 }],
+        [{ x: 10, y: 10 }, { x: 11, y: 10 }, { x: 11, y: 11 }, { x: 10, y: 11 }],
+      ],
+    })!;
+
+    const stats = pinPathStatistics(store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathId)!);
+    expect(stats.perimeterCm).toBeCloseTo(12 + 4, 6);
   });
 });
 

@@ -98,7 +98,7 @@ export function BoardSetup({ store, onContinue }: { store: EditorStore; onContin
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1 style={{ margin: 0, fontSize: 18 }}>{t("title")}</h1>
+        <h2 style={{ margin: 0, fontSize: 18 }}>{t("title")}</h2>
         <LanguageSwitcher />
       </div>
 

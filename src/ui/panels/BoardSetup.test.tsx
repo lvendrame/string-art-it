@@ -4,6 +4,13 @@ import { EditorStore } from "../../application/document";
 import { BoardSetup } from "./BoardSetup";
 
 describe("BoardSetup", () => {
+  it("renders its title as an h2, since LandingHero owns the page's h1", () => {
+    const store = new EditorStore();
+    render(<BoardSetup store={store} onContinue={() => {}} />);
+
+    expect(screen.getByRole("heading", { level: 2, name: "New Board" })).toBeInTheDocument();
+  });
+
   it("shows only the relevant dimension field per shape (docs/specs/03)", () => {
     const store = new EditorStore();
     render(<BoardSetup store={store} onContinue={() => {}} />);

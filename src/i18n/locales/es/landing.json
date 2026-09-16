@@ -1,0 +1,38 @@
+{
+  "hero": {
+    "title": "Design String Art Online — Free String Art Editor & Generator",
+    "subtitle": "Turn a circle, oval, rectangle, square, or triangle into a pin-and-thread string art pattern, right in your browser. Place pins, connect threads across layers, and print a ready-to-build template — free, with no signup and no download."
+  },
+  "features": {
+    "heading": "What you can do",
+    "items": {
+      "shapes": { "title": "Any board shape", "description": "Start from a circle, oval, rectangle, square, or triangle with your own physical dimensions." },
+      "pins": { "title": "Precise pin placement", "description": "Distribute pins evenly along lines, arcs, polygons, and stars with exact spacing control." },
+      "threads": { "title": "Multi-layer threading", "description": "Connect pins with single- or multi-colour threads, organised across separate thread layers." },
+      "layers": { "title": "Pin & thread layers", "description": "Keep pins and threads organised in their own layers, with visibility and locking." },
+      "undo": { "title": "Full undo history", "description": "Every change is undoable and redoable, so you can experiment freely." },
+      "print": { "title": "Print-ready templates", "description": "Export a print-ready template with pin numbers and guides for building the real thing." }
+    }
+  },
+  "howItWorks": {
+    "heading": "How it works",
+    "steps": {
+      "setup": { "title": "Set up your board", "description": "Choose a shape and enter its real-world dimensions and appearance." },
+      "pins": { "title": "Place your pins", "description": "Draw pin paths with precise, evenly spaced pin placement." },
+      "threads": { "title": "Connect the threads", "description": "Draw thread paths between pins across as many layers as you like." },
+      "print": { "title": "Export & print", "description": "Print a build template, or save your project to keep working on it later." }
+    }
+  },
+  "faq": {
+    "heading": "Frequently asked questions",
+    "items": {
+      "whatIsStringArt": { "question": "What is string art?", "answer": "String art is a technique where thread or string is wound between pins or nails arranged on a board to form geometric patterns and images. StringArtIt lets you design that pin-and-thread layout digitally before building it physically." },
+      "isFree": { "question": "Is StringArtIt free to use?", "answer": "Yes. StringArtIt runs entirely in your browser and is free to use, with no signup required." },
+      "needsAccount": { "question": "Do I need to create an account?", "answer": "No account is needed. Your project stays in your browser, and you can save it to a file to reopen later." },
+      "shapes": { "question": "What board shapes are supported?", "answer": "Circle, oval, rectangle, square, and triangle boards, each with custom real-world dimensions and appearance." },
+      "print": { "question": "Can I print a template to build the real string art?", "answer": "Yes. The Print Preview generates a build template showing pins, guides, and pin numbers, printable at 1:1 scale or fit to page." },
+      "saveProject": { "question": "Can I save my project and come back later?", "answer": "Yes. You can save your project to a file and reopen it later, and an autosave will offer to restore unsaved work if you leave the page." },
+      "symmetry": { "question": "Does StringArtIt support symmetrical patterns?", "answer": "Yes. Horizontal, vertical, both, and radial symmetry tools let you draw once and generate mirrored or radial copies automatically." }
+    }
+  }
+}

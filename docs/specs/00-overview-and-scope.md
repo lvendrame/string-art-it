@@ -79,6 +79,7 @@ The application must allow users to:
 | Thread select tool | [27-thread-select-tool.md](./27-thread-select-tool.md) |
 | Help: About tab (app info + mailto contact form) | [28-help-about-tab.md](./28-help-about-tab.md) |
 | Text pin path | [29-text-pin-path.md](./29-text-pin-path.md) |
+| SEO (meta, structured data, landing content) | [30-seo.md](./30-seo.md) |
 
 ## MVP Scope
 

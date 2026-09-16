@@ -28,10 +28,15 @@ const initOptions: InitOptions = {
 
 void i18n.use(initReactI18next).init(initOptions);
 
+if (typeof document !== "undefined") {
+  document.documentElement.lang = i18n.language;
+}
+
 // Persisted centrally here (not in the component that calls changeLanguage) so it can
 // never be missed regardless of what triggers a language change.
 i18n.on("languageChanged", (lng) => {
   if (isSupportedLanguage(lng)) setStoredLanguage(lng);
+  if (typeof document !== "undefined") document.documentElement.lang = lng;
 });
 
 export default i18n;

@@ -9,6 +9,7 @@ import canvasEn from "./locales/en/canvas.json";
 import helpEn from "./locales/en/help.json";
 import errorsEn from "./locales/en/errors.json";
 import cookieConsentEn from "./locales/en/cookieConsent.json";
+import landingEn from "./locales/en/landing.json";
 
 import commonPtBR from "./locales/pt-BR/common.json";
 import boardSetupPtBR from "./locales/pt-BR/boardSetup.json";
@@ -21,6 +22,7 @@ import canvasPtBR from "./locales/pt-BR/canvas.json";
 import helpPtBR from "./locales/pt-BR/help.json";
 import errorsPtBR from "./locales/pt-BR/errors.json";
 import cookieConsentPtBR from "./locales/pt-BR/cookieConsent.json";
+import landingPtBR from "./locales/pt-BR/landing.json";
 
 import commonEs from "./locales/es/common.json";
 import boardSetupEs from "./locales/es/boardSetup.json";
@@ -33,6 +35,7 @@ import canvasEs from "./locales/es/canvas.json";
 import helpEs from "./locales/es/help.json";
 import errorsEs from "./locales/es/errors.json";
 import cookieConsentEs from "./locales/es/cookieConsent.json";
+import landingEs from "./locales/es/landing.json";
 
 import commonFr from "./locales/fr/common.json";
 import boardSetupFr from "./locales/fr/boardSetup.json";
@@ -45,6 +48,7 @@ import canvasFr from "./locales/fr/canvas.json";
 import helpFr from "./locales/fr/help.json";
 import errorsFr from "./locales/fr/errors.json";
 import cookieConsentFr from "./locales/fr/cookieConsent.json";
+import landingFr from "./locales/fr/landing.json";
 
 import commonDe from "./locales/de/common.json";
 import boardSetupDe from "./locales/de/boardSetup.json";
@@ -57,6 +61,7 @@ import canvasDe from "./locales/de/canvas.json";
 import helpDe from "./locales/de/help.json";
 import errorsDe from "./locales/de/errors.json";
 import cookieConsentDe from "./locales/de/cookieConsent.json";
+import landingDe from "./locales/de/landing.json";
 
 export const resources = {
   en: {
@@ -71,6 +76,7 @@ export const resources = {
     help: helpEn,
     errors: errorsEn,
     cookieConsent: cookieConsentEn,
+    landing: landingEn,
   },
   "pt-BR": {
     common: commonPtBR,
@@ -84,6 +90,7 @@ export const resources = {
     help: helpPtBR,
     errors: errorsPtBR,
     cookieConsent: cookieConsentPtBR,
+    landing: landingPtBR,
   },
   es: {
     common: commonEs,
@@ -97,6 +104,7 @@ export const resources = {
     help: helpEs,
     errors: errorsEs,
     cookieConsent: cookieConsentEs,
+    landing: landingEs,
   },
   fr: {
     common: commonFr,
@@ -110,6 +118,7 @@ export const resources = {
     help: helpFr,
     errors: errorsFr,
     cookieConsent: cookieConsentFr,
+    landing: landingFr,
   },
   de: {
     common: commonDe,
@@ -123,6 +132,7 @@ export const resources = {
     help: helpDe,
     errors: errorsDe,
     cookieConsent: cookieConsentDe,
+    landing: landingDe,
   },
 } as const;
 

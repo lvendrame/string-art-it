@@ -1,0 +1,13 @@
+{
+  "name": "StringArtIt — String Art Editor",
+  "short_name": "StringArtIt",
+  "description": "Design and print physical string art board templates for free, right in your browser.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111419",
+  "theme_color": "#111419",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

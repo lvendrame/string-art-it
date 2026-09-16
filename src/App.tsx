@@ -4,6 +4,10 @@ import { EditorStore, recomputePinPath, rotateGeometry, scaleGeometry, translate
 import { fitViewportForBoard } from "./ui/canvas/boardViewport";
 import { CookieConsentBanner } from "./ui/CookieConsentBanner";
 import { EditorShell } from "./ui/EditorShell";
+import { LandingFAQ } from "./ui/panels/landing/LandingFAQ";
+import { LandingFeatures } from "./ui/panels/landing/LandingFeatures";
+import { LandingHero } from "./ui/panels/landing/LandingHero";
+import { LandingHowItWorks } from "./ui/panels/landing/LandingHowItWorks";
 import { BoardSetup } from "./ui/panels/BoardSetup";
 import { useAutosave } from "./ui/useAutosave";
 
@@ -80,7 +84,13 @@ export function App() {
       {entered ? (
         <EditorShell store={store} onNewProject={() => setEntered(false)} />
       ) : (
-        <BoardSetup store={store} onContinue={enterEditor} />
+        <>
+          <LandingHero />
+          <BoardSetup store={store} onContinue={enterEditor} />
+          <LandingFeatures />
+          <LandingHowItWorks />
+          <LandingFAQ />
+        </>
       )}
 
       <CookieConsentBanner />

@@ -29,11 +29,47 @@ export function nearestPinOwner(pinLayers: PinLayer[], point: Point, maxDocDista
 }
 
 // docs/specs/06-symmetry.md: mirrored pins are real physical pins on the board, so
-// Thread drawing (and select-mode, which resolves a mirrored hit's pathId back to its
-// source per §94) must be able to target them too — unlike the Pin Eraser, which only
-// ever targets real, stored pins.
+// Thread drawing (via nearestThreadInsertionPin below) and Select mode (via
+// nearestSelectPathHit below, which resolves a mirrored hit's pathId back to its source
+// per §94) must be able to target them too — unlike the Pin Eraser, which only ever
+// targets real, stored pins.
 export function nearestPinOrMirrorOwner(pinLayers: PinLayer[], point: Point, maxDocDistance: number): PinHit | null {
   return nearestAmongPins(pinLayers, point, maxDocDistance, allPinsWithMirrors);
+}
+
+// docs/specs/12-thread-editor.md §Pin Layer Scope for Thread Insertion,
+// docs/specs/26-edit-mode-multi-select.md §Pin Layer Scope for Selection — both Thread
+// insertion and Edit-mode Select (click/rubber-band, either granularity) only target
+// pins on visible Pin Layers, and treat the active Pin Layer as a priority stage: if it
+// has a match, that match wins outright — even a farther pin, or a smaller touched set
+// — over anything on another visible layer (same shape as 05-canvas-and-viewport.md's
+// pin>grid snapping priority — a priority stage wins outright, not on a distance
+// tie-break). Only the active layer's own matches are ever mixed with a fallback to the
+// *rest* of the visible layers, never both at once.
+function visibleLayersPrioritized(pinLayers: PinLayer[], activePinLayerId: string): { active: PinLayer[]; others: PinLayer[] } {
+  const visible = pinLayers.filter((l) => l.visible);
+  return { active: visible.filter((l) => l.id === activePinLayerId), others: visible.filter((l) => l.id !== activePinLayerId) };
+}
+
+export function nearestThreadInsertionPin(pinLayers: PinLayer[], activePinLayerId: string, point: Point, maxDocDistance: number): PinHit | null {
+  const { active, others } = visibleLayersPrioritized(pinLayers, activePinLayerId);
+  return nearestPinOrMirrorOwner(active, point, maxDocDistance) ?? nearestPinOrMirrorOwner(others, point, maxDocDistance);
+}
+
+// Edit-mode Select tool: Pin Path granularity click (mirror-aware, matches
+// nearestPinOrMirrorOwner's target set — Move/Rotate/Scale/Merge then only ever act on
+// whatever ends up in state.selection, so filtering here is sufficient to keep them off
+// hidden-layer objects too).
+export function nearestSelectPathHit(pinLayers: PinLayer[], activePinLayerId: string, point: Point, maxDocDistance: number): PinHit | null {
+  const { active, others } = visibleLayersPrioritized(pinLayers, activePinLayerId);
+  return nearestPinOrMirrorOwner(active, point, maxDocDistance) ?? nearestPinOrMirrorOwner(others, point, maxDocDistance);
+}
+
+// Edit-mode Select tool: Pins granularity click (real, stored pins only — same
+// restriction nearestPinOwner already has).
+export function nearestSelectPinHit(pinLayers: PinLayer[], activePinLayerId: string, point: Point, maxDocDistance: number): PinHit | null {
+  const { active, others } = visibleLayersPrioritized(pinLayers, activePinLayerId);
+  return nearestPinOwner(active, point, maxDocDistance) ?? nearestPinOwner(others, point, maxDocDistance);
 }
 
 function distanceToSegment(p: Point, a: Point, b: Point): number {
@@ -64,7 +100,8 @@ function pointInRect(p: Point, r: Rect): boolean {
 // docs/specs/26-edit-mode-multi-select.md Pin Path granularity rubber-band: a path is
 // "touched" if the rect contains any of its real pins OR a symmetry-derived mirrored
 // pin belonging to it — same "a mirrored pin's click resolves to its source path" rule
-// single-object Select already uses (nearestPinOrMirrorOwner above).
+// single-object Select already uses (nearestPinOrMirrorOwner/nearestSelectPathHit
+// above).
 export function pinPathsTouchingRect(pinLayers: PinLayer[], rect: Rect): { layerId: string; pathId: string }[] {
   const touched: { layerId: string; pathId: string }[] = [];
   for (const l of pinLayers) {
@@ -91,6 +128,24 @@ export function pinsTouchingRect(pinLayers: PinLayer[], rect: Rect): PinHit[] {
     }
   }
   return touched;
+}
+
+// docs/specs/26-edit-mode-multi-select.md §Pin Layer Scope for Selection — rubber-band
+// rect-select, Pin Path granularity: only visible layers are touchable, and if the
+// active layer has any touched path, only its paths are selected (other visible
+// layers' touched paths are dropped, not merged in) — same outright-priority shape as
+// the point-based hit tests above, applied to a set instead of a single nearest match.
+export function selectablePinPathsTouchingRect(pinLayers: PinLayer[], activePinLayerId: string, rect: Rect): { layerId: string; pathId: string }[] {
+  const { active, others } = visibleLayersPrioritized(pinLayers, activePinLayerId);
+  const activeTouched = pinPathsTouchingRect(active, rect);
+  return activeTouched.length > 0 ? activeTouched : pinPathsTouchingRect(others, rect);
+}
+
+// Same priority rule as selectablePinPathsTouchingRect, Pins granularity.
+export function selectablePinsTouchingRect(pinLayers: PinLayer[], activePinLayerId: string, rect: Rect): PinHit[] {
+  const { active, others } = visibleLayersPrioritized(pinLayers, activePinLayerId);
+  const activeTouched = pinsTouchingRect(active, rect);
+  return activeTouched.length > 0 ? activeTouched : pinsTouchingRect(others, rect);
 }
 
 export interface ThreadHit {

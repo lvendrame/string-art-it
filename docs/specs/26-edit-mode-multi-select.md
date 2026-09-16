@@ -32,6 +32,17 @@ The Select tool builds the selection via:
 - **Pin Path** granularity — a Pin Path is touched if any of its real, stored pins (or a symmetry-derived mirrored/radial pin belonging to it) falls inside the rectangle — the same "a mirrored pin's click resolves to its source path" rule single-object Select already uses ([09-selection-and-editing.md](./09-selection-and-editing.md), [06-symmetry.md](./06-symmetry.md)).
 - **Pins** granularity — only real, stored pins are selectable (mirrored/radial copies are excluded, since a pins-mode transform writes directly into a Pin Path's `pins[]` and a mirrored pin has no entry there to write to — the same restriction Merge's pin-picking already had).
 
+## Pin Layer Scope for Selection
+
+Both Selection Gestures above (click and rubber-band, either granularity) only target pins on **visible** Pin Layers — a hidden layer's Pin Paths/pins are not selectable, and therefore never reach Move/Rotation/Scale/Merge either, since those tools only ever act on whatever `state.selection` already holds (see [13-layers.md](./13-layers.md)'s "hidden layers retain their contents" guarantee — hiding a layer removes it from Select targeting without deleting anything).
+
+Among visible Pin Layers, the **active Pin Layer** ([13-layers.md](./13-layers.md)) is a priority stage, not a tie-break:
+
+- **Click** — if the active layer has a pin/path within snap radius of the click, it wins outright, even when another visible layer has a geometrically closer one. Only when the active layer has nothing in range does the click fall back to the nearest match among the other visible layers.
+- **Rubber-band** — if the rectangle touches anything on the active layer, only the active layer's touched paths/pins are selected — touched items on other visible layers are dropped, not merged in. Only when the active layer has nothing touched does the rectangle fall back to the touched set from the other visible layers.
+
+This is the same scope/priority rule [12-thread-editor.md](./12-thread-editor.md) applies to Thread insertion, applied here to Select.
+
 ## Tools by Granularity
 
 ### Pin Path granularity
@@ -117,6 +128,38 @@ Feature: Selection gestures
     Given Pin Path A is selected
     When the user starts dragging a rubber-band rectangle and presses Esc before releasing
     Then the selection remains exactly Pin Path A, unchanged
+
+Feature: Pin Layer scope for Selection
+
+  Scenario: Hidden layer's pin is not a valid click target
+    Given Pin Layer "Detail" is hidden, and pin-9 (on "Detail") is the closest pin to the click point
+    And Pin Layer "Base" is visible with pin-14 also within snap radius but farther away
+    When the user clicks near pin-9 in Pins granularity
+    Then pin-14 is selected, not pin-9
+
+  Scenario: Active Pin Layer's path is prioritized over a closer path on another visible layer
+    Given Pin Layer "Base" is the active Pin Layer and both "Base" and "Overlay" are visible
+    And Pin Path X (on "Base") and Pin Path Y (on "Overlay") both have a pin within snap radius of the click, with Y's pin closer
+    When the user clicks in Pin Path granularity
+    Then Pin Path X is selected, not Pin Path Y
+
+  Scenario: Rubber-band selects only the active layer's touched paths when it has any
+    Given Pin Layer "Base" is the active Pin Layer and both "Base" and "Overlay" are visible
+    And a rubber-band rectangle touches Pin Path X (on "Base") and Pin Path Y (on "Overlay")
+    When the user releases the drag
+    Then only Pin Path X is selected
+
+  Scenario: Rubber-band falls back to another visible layer when the active layer has nothing touched
+    Given Pin Layer "Base" is the active Pin Layer with nothing inside the rubber-band rectangle
+    And Pin Layer "Overlay" is visible with Pin Path Y inside the rectangle
+    When the user releases the drag
+    Then Pin Path Y is selected
+
+  Scenario: A hidden layer's paths are never selected by rubber-band, even without an active-layer match
+    Given Pin Layer "Detail" is hidden with Pin Path Z inside the rubber-band rectangle
+    And no visible layer has anything inside the rectangle
+    When the user releases the drag
+    Then the selection is empty
 
 Feature: Path-mode Move/Rotation/Scale over multiple selected paths
 

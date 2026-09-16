@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { findPinById, type EditorState, type EditorStore } from "../../application/document";
 import type { Point } from "../../domain/paths";
-import { nearestPinOrMirrorOwner, nearestThreadPath } from "./hitTesting";
+import { nearestThreadInsertionPin, nearestThreadPath } from "./hitTesting";
 
 // Thread mode drawing workflow (docs/specs/12-thread-editor.md §26-29): click extends
 // the draft, double-click/Esc terminate it. Right-click ("Cut") is a radial-menu
@@ -42,7 +42,7 @@ export function useThreadDrawing(store: EditorStore, state: EditorState, threadL
       store.select(hit ? { type: "threadPath", layerId: hit.layerId, pathId: hit.pathId } : { type: "none" });
       return;
     }
-    const hit = nearestPinOrMirrorOwner(state.pinLayers, raw, maxDist);
+    const hit = nearestThreadInsertionPin(state.pinLayers, state.activePinLayerId, raw, maxDist);
     if (hit) store.extendThreadDraft(hit.pinId);
   }
 
@@ -51,12 +51,12 @@ export function useThreadDrawing(store: EditorStore, state: EditorState, threadL
       setThreadCandidateId(null); // no pin-candidate concept for the Select tool
       return;
     }
-    setThreadCandidateId(nearestPinOrMirrorOwner(state.pinLayers, raw, maxDist)?.pinId ?? null);
+    setThreadCandidateId(nearestThreadInsertionPin(state.pinLayers, state.activePinLayerId, raw, maxDist)?.pinId ?? null);
   }
 
   function handleDoubleClick(raw: Point, maxDist: number): void {
     if (state.threadTool !== "draw") return;
-    const hit = nearestPinOrMirrorOwner(state.pinLayers, raw, maxDist);
+    const hit = nearestThreadInsertionPin(state.pinLayers, state.activePinLayerId, raw, maxDist);
     if (hit) store.finishThreadDraftWithSegment(threadLayerId, hit.pinId);
   }
 

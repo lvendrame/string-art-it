@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { EditorState, EditorStore, PinPathRef, PinRef } from "../../application/document";
 import type { Point } from "../../domain/paths";
-import { nearestPinOrMirrorOwner, nearestPinOwner, pinPathsTouchingRect, pinsTouchingRect, type Rect } from "./hitTesting";
+import { nearestSelectPathHit, nearestSelectPinHit, selectablePinPathsTouchingRect, selectablePinsTouchingRect, type Rect } from "./hitTesting";
 
 // docs/specs/26-edit-mode-multi-select.md — click vs. drag is decided by a small
 // SCREEN-pixel movement threshold (not document units), same zoom-independence
@@ -44,7 +44,7 @@ export function useSelectTool(store: EditorStore, state: EditorState) {
   }
 
   function handleClickPathMode(raw: Point, maxDist: number, altHeld: boolean): void {
-    const hit = nearestPinOrMirrorOwner(state.pinLayers, raw, maxDist);
+    const hit = nearestSelectPathHit(state.pinLayers, state.activePinLayerId, raw, maxDist);
     if (!hit) {
       if (!altHeld) store.select({ type: "none" }); // Alt-click on empty space is a no-op
       return;
@@ -62,7 +62,7 @@ export function useSelectTool(store: EditorStore, state: EditorState) {
   }
 
   function handleClickPinsMode(raw: Point, maxDist: number, altHeld: boolean): void {
-    const hit = nearestPinOwner(state.pinLayers, raw, maxDist);
+    const hit = nearestSelectPinHit(state.pinLayers, state.activePinLayerId, raw, maxDist);
     if (!hit) {
       if (!altHeld) store.select({ type: "none" });
       return;
@@ -78,7 +78,7 @@ export function useSelectTool(store: EditorStore, state: EditorState) {
   }
 
   function handleRubberBandPathMode(rect: Rect, altHeld: boolean): void {
-    const touched = pinPathsTouchingRect(state.pinLayers, rect);
+    const touched = selectablePinPathsTouchingRect(state.pinLayers, state.activePinLayerId, rect);
     if (!altHeld) {
       store.select(touched.length > 0 ? { type: "pinPaths", refs: touched } : { type: "none" });
       return;
@@ -90,7 +90,7 @@ export function useSelectTool(store: EditorStore, state: EditorState) {
   }
 
   function handleRubberBandPinsMode(rect: Rect, altHeld: boolean): void {
-    const touched = pinsTouchingRect(state.pinLayers, rect);
+    const touched = selectablePinsTouchingRect(state.pinLayers, state.activePinLayerId, rect);
     if (!altHeld) {
       store.select(touched.length > 0 ? { type: "pins", refs: touched } : { type: "none" });
       return;

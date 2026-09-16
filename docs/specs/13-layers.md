@@ -42,7 +42,7 @@ Each layer supports:
 
 ## Guarantees
 
-- **Hidden layers retain their contents.** Hiding is purely visual; hidden objects are not deleted and still participate in document logic where relevant (e.g. a hidden Pin Layer's pins can still be referenced by threads, though editors may choose to warn about connecting to hidden pins).
+- **Hidden layers retain their contents.** Hiding is purely visual; hidden objects are not deleted and still participate in document logic where relevant — a Thread Path already referencing a pin keeps working after that pin's Pin Layer is hidden. New Thread insertion, however, only targets pins on visible Pin Layers, and prioritizes the active Pin Layer's pins over other visible layers' (see [12-thread-editor.md](./12-thread-editor.md) §Pin Layer Scope for Thread Insertion).
 - **Locked layers cannot be modified.** No create/move/resize/rotate/erase/property-change operation succeeds against an object on a locked layer (see [09-selection-and-editing.md](./09-selection-and-editing.md), [11-erasers.md](./11-erasers.md)).
 - Deleting a layer deletes all objects it contains, as a single undoable operation (see [10-undo-redo.md](./10-undo-redo.md)).
 - Duplicating a layer duplicates its objects with new stable IDs; any Thread Path referencing a duplicated pin still references the original pin's ID, not the duplicate's — duplication does not rewire thread connections.

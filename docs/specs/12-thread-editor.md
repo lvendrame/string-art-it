@@ -62,6 +62,12 @@ Pin 4 → Pin 12 → Pin 27 → Pin 8
 
 Stored as one Thread Path.
 
+## Pin Layer Scope for Thread Insertion
+
+Nearest-pin detection (candidate highlight, click-to-extend, double-click-to-finish) only considers pins belonging to **visible** Pin Layers — a hidden layer's pins are not valid Thread insertion targets, even if geometrically closest to the cursor. This applies per [13-layers.md](./13-layers.md)'s existing "hidden layers retain their contents" rule: hiding a layer removes it from Thread insertion, but does not delete its pins or detach any Thread Path that already references them.
+
+Among visible Pin Layers, the **active Pin Layer** (the one new pins/threads are added to, per [13-layers.md](./13-layers.md)) is checked first: if it has a pin within snap radius, that pin wins the nearest-pin search even when another visible layer has a geometrically closer pin. Only when the active layer has no pin within radius does the search fall back to the other visible layers' nearest pin. This mirrors the pin-over-grid snapping priority pipeline in [05-canvas-and-viewport.md](./05-canvas-and-viewport.md) — active-layer pins are a priority stage, not just a tie-break.
+
 ## Pin Highlight States
 
 At least three states required:
@@ -173,6 +179,27 @@ Feature: Thread drawing workflow
     When the user left-clicks at a canvas position with no pin within snap radius
     Then no segment is added
     And the Thread Path remains at its last confirmed pin
+
+Feature: Pin Layer scope for Thread insertion
+
+  Scenario: Hidden layer's pins are not valid Thread insertion targets
+    Given Pin Layer "Detail" is hidden, and pin-9 (on "Detail") is the closest pin to the cursor
+    And Pin Layer "Base" is visible with pin-14 also within snap radius but farther away
+    When the cursor moves near pin-9
+    Then pin-9 is not shown as the Nearest Candidate
+    And pin-14 is shown as the Nearest Candidate instead
+
+  Scenario: Active Pin Layer's pin is prioritized over a closer pin on another visible layer
+    Given Pin Layer "Base" is the active Pin Layer and both "Base" and "Overlay" are visible
+    And pin-3 (on "Base") and pin-7 (on "Overlay") are both within snap radius, with pin-7 geometrically closer
+    When the cursor moves near both pins
+    Then pin-3 is shown as the Nearest Candidate, not pin-7
+
+  Scenario: Falls back to another visible layer when the active layer has no candidate
+    Given Pin Layer "Base" is the active Pin Layer but has no pin within snap radius of the cursor
+    And Pin Layer "Overlay" is visible with pin-7 within snap radius
+    When the cursor moves near pin-7
+    Then pin-7 is shown as the Nearest Candidate
 
 Feature: Pin highlight states
 

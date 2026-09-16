@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { EditorStore } from "./EditorStore";
-import { pinPathStatistics, projectTotalPins, threadPathStatistics } from "./statistics";
+import { pinPathStatistics, projectThreadTotals, projectTotalPins, threadPathStatistics } from "./statistics";
 
 describe("pinPathStatistics", () => {
   it("reports pin count, requested/actual spacing, and diameter", () => {
@@ -77,5 +77,33 @@ describe("threadPathStatistics", () => {
     expect(stats.pinsVisited).toBe(3); // includes the repeated visit
     expect(stats.lengthCm).toBeCloseTo(10, 6); // 0->5 (5cm) + 5->0 (5cm)
     expect(stats.colours).toEqual(["red", "white"]);
+  });
+});
+
+describe("projectThreadTotals", () => {
+  it("sums thread count and length across all Thread Paths and layers", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 0, y: 0 }, end: { x: 8, y: 0 } });
+    const pins = store.getState().pinLayers[0].pinPaths[0].pins;
+    const threadLayerId = store.getState().threadLayers[0].id;
+
+    store.extendThreadDraft(pins[0].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[5].id); // 0->5, 5cm
+
+    store.addThreadLayer();
+    const secondThreadLayerId = store.getState().threadLayers[1].id;
+    store.extendThreadDraft(pins[0].id);
+    store.finishThreadDraftWithSegment(secondThreadLayerId, pins[3].id); // 0->3, 3cm
+
+    const totals = projectThreadTotals(store.getState().threadLayers, store.getState().pinLayers);
+    expect(totals.threadCount).toBe(2);
+    expect(totals.totalLengthCm).toBeCloseTo(8, 6);
+  });
+
+  it("returns zeroes for a document with no threads", () => {
+    const store = new EditorStore();
+    const totals = projectThreadTotals(store.getState().threadLayers, store.getState().pinLayers);
+    expect(totals).toEqual({ threadCount: 0, totalLengthCm: 0 });
   });
 });

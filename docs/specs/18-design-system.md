@@ -29,8 +29,9 @@ Defined as CSS custom properties (`oklch()`), computed once at the app shell roo
 | `--text-primary` | `oklch(93% 0.006 264)` | Primary text, active labels |
 | `--text-secondary` | `oklch(68% 0.014 264)` | Secondary labels, inactive control text |
 | `--text-tertiary` | `oklch(50% 0.014 264)` | Section headers, muted metadata |
-| `--accent` | `oklch(65–68% 0.19 hue)` | Active/selected state, primary actions, links — single hue, user/brand-configurable |
-| `--accent-soft` | `color-mix(in oklch, var(--accent) 16%, transparent)` | Active-state fill (buttons, chips, selected rows) |
+| `--accent` | `oklch(65–68% 0.19 hue)` | Active/selected state, primary actions (as foreground), focus rings, links — single hue, user/brand-configurable |
+| `--accent-strong` | `oklch(from var(--accent) 55% c h)` | Solid-fill background of primary CTA buttons with white text (e.g. Continue, Restore) — `--accent` itself is too light for white text to clear 4.5:1 AA contrast |
+| `--accent-soft` | `color-mix(in oklch, var(--accent) 8%, transparent)` | Active-state fill (buttons, chips, selected rows) |
 | `--accent-soft-2` | `color-mix(in oklch, var(--accent) 28%, transparent)` | Stronger active fill (toggles) |
 | `--danger` | `oklch(66% 0.18 22)` | Destructive actions, lock/error indicators |
 | `--danger-soft` | `color-mix(in oklch, var(--danger) 16%, transparent)` | Destructive hover/fill |
@@ -99,7 +100,7 @@ A small panel of fields/actions anchored to the button that opens it (`Export`, 
 All icons are inline SVG, stroke-based (`stroke="currentColor"`, ~1.5px weight, round caps/joins), on a 24×24 viewBox at 16px or 14px display size. **No emoji, no icon-font glyphs, anywhere in the product** — including in place of the spec documents' illustrative `👁`/`🔒`/`◎` notation, which are shorthand in the prose specs only, not a rendering instruction. Define each icon once (a `<symbol>` in a shared defs block or an equivalent icon-component registry) and reference it everywhere it's needed — never inline a redrawn copy of the same icon twice.
 
 ### Primary / secondary buttons
-Primary action (e.g. Export): `--accent` solid fill, white text, no border. Secondary (e.g. Print, Undo/Redo): transparent or `--bg-panel-2` fill, `--border` outline, `--text-secondary`/`--text-primary`. At most one primary button visible in a given toolbar region at a time — primary emphasis is not spread across multiple simultaneous actions.
+Primary action (e.g. Export): `--accent-strong` solid fill, white text, no border. Secondary (e.g. Print, Undo/Redo): transparent or `--bg-panel-2` fill, `--border` outline, `--text-secondary`/`--text-primary`. At most one primary button visible in a given toolbar region at a time — primary emphasis is not spread across multiple simultaneous actions.
 
 ## Canvas Rendering Conventions
 

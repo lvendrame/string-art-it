@@ -39,6 +39,7 @@
     "centreX": "Mitte X %",
     "centreY": "Mitte Y %",
     "texturePreviewAlt": "Vorschau der Brettstruktur",
+    "presetLabel": "Farbvoreinstellung",
     "presets": {
       "walnut": "Walnuss",
       "oak": "Eiche",

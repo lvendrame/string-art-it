@@ -1,0 +1,10 @@
+# StringArtIt
+
+> Free, browser-based string-art design tool. Place pins on a board, connect threads across layers, and print a ready-to-build template — no signup, no download required.
+
+StringArtIt runs entirely in the browser: design a board, plan pin layouts, draw thread paths with symmetry and pattern tools, preview playback, and export a printable template or video of the build process.
+
+## Site
+
+- [StringArtIt](https://stringartit.com/): the editor — start designing string art directly, free, no account needed.
+- [Sitemap](https://stringartit.com/sitemap.xml): full list of indexed URLs.

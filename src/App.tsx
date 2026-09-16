@@ -10,6 +10,7 @@ import { LandingHero } from "./ui/panels/landing/LandingHero";
 import { LandingHowItWorks } from "./ui/panels/landing/LandingHowItWorks";
 import { BoardSetup } from "./ui/panels/BoardSetup";
 import { useAutosave } from "./ui/useAutosave";
+import { registerWebMcpTools } from "./infrastructure/webmcp/tools";
 
 // Unstable debug/test hook — no compat guarantee, not part of the app's public
 // surface. Lets Playwright (or anyone in the console) drive the document directly via
@@ -37,6 +38,10 @@ export function App() {
     window.stringArtItDebug = store;
     window.stringArtItDebugHelpers = { scaleGeometry, rotateGeometry, translateGeometry, recomputePinPath };
   }, [store]);
+  // docs/specs/31-webmcp-agent-tools.md — a separate, genuinely public/stable-contract
+  // surface from the debug hook above; feature-detected, a no-op in every browser that
+  // doesn't implement navigator.modelContext yet.
+  useEffect(() => registerWebMcpTools(store), [store]);
   const [entered, setEntered] = useState(false);
   const { pendingAutosave, restore, discard } = useAutosave(store);
 
@@ -71,7 +76,7 @@ export function App() {
           <button
             className="btn"
             onClick={() => { restore(); enterEditor(); }}
-            style={{ borderRadius: 6, padding: "5px 10px", fontSize: 12, fontWeight: 600, background: "var(--accent)", color: "white", borderColor: "transparent" }}
+            style={{ borderRadius: 6, padding: "5px 10px", fontSize: 12, fontWeight: 600, background: "var(--accent-strong)", color: "white", borderColor: "transparent" }}
           >
             {t("autosave.restore")}
           </button>
@@ -81,17 +86,19 @@ export function App() {
         </div>
       )}
 
-      {entered ? (
-        <EditorShell store={store} onNewProject={() => setEntered(false)} />
-      ) : (
-        <>
-          <LandingHero />
-          <BoardSetup store={store} onContinue={enterEditor} />
-          <LandingFeatures />
-          <LandingHowItWorks />
-          <LandingFAQ />
-        </>
-      )}
+      <main>
+        {entered ? (
+          <EditorShell store={store} onNewProject={() => setEntered(false)} />
+        ) : (
+          <>
+            <LandingHero />
+            <BoardSetup store={store} onContinue={enterEditor} />
+            <LandingFeatures />
+            <LandingHowItWorks />
+            <LandingFAQ />
+          </>
+        )}
+      </main>
 
       <CookieConsentBanner />
     </>

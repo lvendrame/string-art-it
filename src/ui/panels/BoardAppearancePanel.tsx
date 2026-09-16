@@ -129,6 +129,7 @@ export function BoardAppearancePanel({ store }: { store: EditorStore }) {
 
       {(appearance.type === "wood-texture" || appearance.type === "painted-wood") && (
         <select
+          aria-label={t("appearance.presetLabel")}
           value={appearance.presetId}
           onChange={(e) => store.setBoardAppearance({ type: appearance.type, presetId: e.target.value })}
           style={{ background: "var(--bg-app)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "6px 8px", fontSize: 13 }}

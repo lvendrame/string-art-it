@@ -1,6 +1,7 @@
 import { pathLength } from "../../domain/paths";
 import { findPinById, type PinLayer } from "./pinLayer";
 import { geometryToContourPaths, type PinPath } from "./pinPath";
+import type { ThreadLayer } from "./threadLayer";
 import type { ThreadPath } from "./threadPath";
 
 // docs/specs/17-statistics.md
@@ -47,4 +48,24 @@ export function threadPathStatistics(thread: ThreadPath, pinLayers: PinLayer[]):
     pinsVisited: thread.pinIds.length,
     colours: thread.colours,
   };
+}
+
+export interface ProjectThreadTotals {
+  threadCount: number;
+  totalLengthCm: number;
+}
+
+// docs/specs/31-webmcp-agent-tools.md get_document_stats — mirrors projectTotalPins'
+// shape (sum across every layer) for the thread side, which had no project-level
+// aggregate before (StatisticsPanel only ever showed per-thread cards).
+export function projectThreadTotals(threadLayers: ThreadLayer[], pinLayers: PinLayer[]): ProjectThreadTotals {
+  let threadCount = 0;
+  let totalLengthCm = 0;
+  for (const layer of threadLayers) {
+    for (const thread of layer.threadPaths) {
+      threadCount += 1;
+      totalLengthCm += threadPathStatistics(thread, pinLayers).lengthCm;
+    }
+  }
+  return { threadCount, totalLengthCm };
 }

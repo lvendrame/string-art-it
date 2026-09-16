@@ -118,8 +118,10 @@ export {
   pinPathStatistics,
   projectTotalPins,
   threadPathStatistics,
+  projectThreadTotals,
   type PinPathStatistics,
   type ThreadPathStatistics,
+  type ProjectThreadTotals,
 } from "./statistics";
 export {
   CURRENT_PROJECT_VERSION,

@@ -106,7 +106,7 @@ export function AboutTabContent() {
               gap: 6,
               textDecoration: "none",
               ...(canSend
-                ? { background: "var(--accent)", color: "#fff", borderColor: "var(--accent)" }
+                ? { background: "var(--accent-strong)", color: "#fff", borderColor: "var(--accent-strong)" }
                 : { opacity: 0.5, pointerEvents: "none" as const }),
             }}
           >

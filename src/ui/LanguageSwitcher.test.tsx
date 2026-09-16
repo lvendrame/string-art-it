@@ -11,12 +11,12 @@ describe("LanguageSwitcher", () => {
 
   it("renders a trigger showing the current language", () => {
     render(<LanguageSwitcher />);
-    expect(screen.getByRole("button", { name: "Change language" })).toHaveTextContent("English");
+    expect(screen.getByRole("button", { name: "Change language: English" })).toHaveTextContent("English");
   });
 
   it("opens to list every supported language", () => {
     render(<LanguageSwitcher />);
-    fireEvent.click(screen.getByRole("button", { name: "Change language" }));
+    fireEvent.click(screen.getByRole("button", { name: "Change language: English" }));
 
     expect(screen.getByRole("option", { name: "English" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "Português (BR)" })).toBeInTheDocument();
@@ -27,7 +27,7 @@ describe("LanguageSwitcher", () => {
 
   it("selecting a language changes i18n.language and persists it", () => {
     render(<LanguageSwitcher />);
-    fireEvent.click(screen.getByRole("button", { name: "Change language" }));
+    fireEvent.click(screen.getByRole("button", { name: "Change language: English" }));
     fireEvent.click(screen.getByRole("option", { name: "Português (BR)" }));
 
     expect(i18n.language).toBe("pt-BR");
@@ -36,7 +36,7 @@ describe("LanguageSwitcher", () => {
 
   it("closes the menu on Escape", () => {
     render(<LanguageSwitcher />);
-    fireEvent.click(screen.getByRole("button", { name: "Change language" }));
+    fireEvent.click(screen.getByRole("button", { name: "Change language: English" }));
     expect(screen.getByRole("listbox")).toBeInTheDocument();
 
     fireEvent.keyDown(document, { key: "Escape" });
@@ -50,7 +50,7 @@ describe("LanguageSwitcher", () => {
         <LanguageSwitcher />
       </div>,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Change language" }));
+    fireEvent.click(screen.getByRole("button", { name: "Change language: English" }));
     expect(screen.getByRole("listbox")).toBeInTheDocument();
 
     fireEvent.pointerDown(screen.getByTestId("outside"));

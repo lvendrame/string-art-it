@@ -39,6 +39,7 @@
     "centreX": "Centre X %",
     "centreY": "Centre Y %",
     "texturePreviewAlt": "Board texture preview",
+    "presetLabel": "Colour preset",
     "presets": {
       "walnut": "Walnut",
       "oak": "Oak",

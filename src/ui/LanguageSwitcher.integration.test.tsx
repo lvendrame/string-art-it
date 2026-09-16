@@ -16,7 +16,7 @@ describe("LanguageSwitcher integration", () => {
 
     expect(screen.getByText("New Board")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "Change language" }));
+    fireEvent.click(screen.getByRole("button", { name: "Change language: English" }));
     fireEvent.click(screen.getByRole("option", { name: "Português (BR)" }));
 
     expect(screen.queryByText("New Board")).not.toBeInTheDocument();
@@ -29,7 +29,7 @@ describe("LanguageSwitcher integration", () => {
 
     expect(screen.getByRole("button", { name: /Print/ })).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "Change language" }));
+    fireEvent.click(screen.getByRole("button", { name: "Change language: English" }));
     fireEvent.click(screen.getByRole("option", { name: "Português (BR)" }));
 
     expect(screen.getByRole("button", { name: /Imprimir/ })).toBeInTheDocument();

@@ -39,6 +39,7 @@
     "centreX": "Centre X %",
     "centreY": "Centre Y %",
     "texturePreviewAlt": "Aperçu de la texture de la planche",
+    "presetLabel": "Préréglage de couleur",
     "presets": {
       "walnut": "Noyer",
       "oak": "Chêne",

@@ -57,7 +57,7 @@ export function LanguageSwitcher() {
         className="btn"
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label={t("language.trigger")}
+        aria-label={`${t("language.trigger")}: ${LANGUAGE_META[current].nativeLabel}`}
         onClick={() => setOpen((o) => !o)}
         style={{ borderRadius: 8, padding: "7px 10px", fontSize: 12, fontWeight: 600, gap: 6 }}
       >

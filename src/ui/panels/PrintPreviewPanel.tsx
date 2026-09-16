@@ -507,7 +507,7 @@ export function PrintPreviewPanel({
             padding: 10,
             fontSize: 13,
             fontWeight: 700,
-            background: "var(--accent)",
+            background: "var(--accent-strong)",
             color: "white",
             borderColor: "transparent",
           }}

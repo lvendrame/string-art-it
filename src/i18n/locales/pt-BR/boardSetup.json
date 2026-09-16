@@ -39,6 +39,7 @@
     "centreX": "Centro X %",
     "centreY": "Centro Y %",
     "texturePreviewAlt": "Pré-visualização da textura do quadro",
+    "presetLabel": "Predefinição de cor",
     "presets": {
       "walnut": "Nogueira",
       "oak": "Carvalho",

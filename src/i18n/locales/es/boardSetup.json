@@ -39,6 +39,7 @@
     "centreX": "Centro X %",
     "centreY": "Centro Y %",
     "texturePreviewAlt": "Vista previa de la textura del tablero",
+    "presetLabel": "Preajuste de color",
     "presets": {
       "walnut": "Nogal",
       "oak": "Roble",

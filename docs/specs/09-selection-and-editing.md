@@ -46,6 +46,7 @@ Also editable regardless of shape (see [08-pin-tools-and-properties.md](./08-pin
 - Selecting a Thread Path exposes thread-level properties (colours, width — see [12-thread-editor.md](./12-thread-editor.md)); it does not expose pin-geometry controls.
 - Selecting the radial symmetry centre allows it to be dragged, per [06-symmetry.md](./06-symmetry.md).
 - Selecting an object on a locked layer must not allow edits (see [13-layers.md](./13-layers.md)).
+- A Pin Path/Pins selection only exists in Edit mode: switching to Pin or Thread mode clears it. A Thread Path selection only exists in Thread mode: switching to Pin or Edit mode clears it. (Switching to Pan or Play leaves the current selection untouched — those modes don't have their own selection concept, so there's nothing to reconcile it with.) Within Pin mode, picking any pin tool also clears a Pin Path/Pins selection (see [08-pin-tools-and-properties.md](./08-pin-tools-and-properties.md)); within Thread mode, picking any thread tool also clears a Thread Path selection (see [12-thread-editor.md](./12-thread-editor.md)).
 
 ## Edit Tool Area
 
@@ -101,6 +102,28 @@ Feature: Selecting objects
     Given a Pin Path with radial symmetry and a visible centre indicator ◎
     When the user selects and drags the centre
     Then all radial copies recompute around the new centre position
+
+Feature: Selection clears across mode and tool switches
+
+  Scenario: Entering Pin mode clears a Pin Path/Pins selection
+    Given a Pin Path is selected in Edit mode
+    When the user switches to Pin mode
+    Then no Pin Path or pin is selected
+
+  Scenario: Entering Thread mode clears a Pin Path/Pins selection
+    Given a Pin Path is selected in Edit mode
+    When the user switches to Thread mode
+    Then no Pin Path or pin is selected
+
+  Scenario: Entering Edit mode clears a Thread Path selection
+    Given a Thread Path is selected in Thread mode
+    When the user switches to Edit mode
+    Then no Thread Path is selected
+
+  Scenario: Entering Pin mode clears a Thread Path selection
+    Given a Thread Path is selected in Thread mode
+    When the user switches to Pin mode
+    Then no Thread Path is selected
 
 Feature: Editing geometry recalculates pins
 

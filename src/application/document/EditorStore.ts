@@ -55,6 +55,15 @@ import { seedCounterFrom } from "./idCounter";
 // that had already advanced further than this session's — bump every relevant counter
 // past what's already here so newly created layers/paths/pins/threads can never reuse
 // one of them (docs/specs/16-persistence.md).
+// docs/specs/12-pin-drawing-tools — the pin defaults a draw-tool selection resets to.
+const DEFAULT_PIN_DEFAULTS: PinDefaults = { spacing: 1, colour: "#f2ede4", diameter: 2, guideVisible: true };
+
+// eraser/path-eraser aren't shape tools — switching to one shouldn't clobber the pin
+// defaults a user just dialled in for their next shape.
+function isPinDrawTool(tool: PinTool): boolean {
+  return tool !== "eraser" && tool !== "path-eraser";
+}
+
 // docs/specs/26-edit-mode-multi-select.md — shared enabled/disabled predicate for the
 // Merge action button (SelectToolbar) and the radial menu's Merge slice, so both stay
 // in sync with the same rule: at least 2 members in a path- or pins-granularity
@@ -99,7 +108,7 @@ export class EditorStore {
       pinLayers: [defaultPinLayer],
       activePinLayerId: defaultPinLayer.id,
       pinTool: "circle",
-      pinDefaults: { spacing: 1, colour: "#f2ede4", diameter: 2, guideVisible: true },
+      pinDefaults: DEFAULT_PIN_DEFAULTS,
       symmetryDefaults: NO_SYMMETRY,
       selection: { type: "none" },
       selectTool: "select",
@@ -184,9 +193,33 @@ export class EditorStore {
   // Switching into Pin or Thread mode also switches the Layers panel to the matching
   // tab (if it isn't already showing it) — keeps the visible layer list consistent
   // with which kind of layer the current tool actually edits.
+  //
+  // Mode switches also drop whichever selection kind doesn't belong in the mode being
+  // entered: a Pin Path/Pins selection only makes sense in Edit mode (that's where it's
+  // shown/edited), so entering Pin or Thread mode clears it; a Thread Path selection
+  // only makes sense in Thread mode, so entering Pin or Edit mode clears it. Pan/Play
+  // leave the current selection untouched.
+  //
+  // Entering Pin mode also resets pinDefaults/symmetryDefaults to their out-of-the-box
+  // values, same as picking a draw tool (setPinTool) — landing on the Pin tab, whether
+  // by clicking it directly or by picking a tool while already there, always starts
+  // from a known baseline rather than whatever was last dialled in.
   setMode(mode: EditorMode): void {
     const layerPanelTab = mode === "pin" || mode === "thread" ? mode : this.state.layerPanelTab;
-    this.state = { ...this.state, mode, layerPanelTab };
+    let { selection } = this.state;
+    if (mode === "pin" || mode === "thread") {
+      if (selection.type === "pinPaths" || selection.type === "pins") selection = { type: "none" };
+    }
+    if (mode === "pin" || mode === "select") {
+      if (selection.type === "threadPath") selection = { type: "none" };
+    }
+    this.state = {
+      ...this.state,
+      mode,
+      layerPanelTab,
+      selection,
+      ...(mode === "pin" ? { pinDefaults: DEFAULT_PIN_DEFAULTS, symmetryDefaults: NO_SYMMETRY } : {}),
+    };
     this.notify();
   }
 
@@ -205,8 +238,19 @@ export class EditorStore {
     this.notify();
   }
 
+  // Picking any Pin-tab tool drops a live Pin Path/Pins selection — the tool is about
+  // to act on the canvas, not the selection. Picking a shape/freehand/text draw tool
+  // (as opposed to eraser/path-eraser) additionally resets pinDefaults and
+  // symmetryDefaults to their out-of-the-box values, so switching tools always starts
+  // the next shape from a known baseline rather than whatever was last dialled in.
   setPinTool(tool: PinTool): void {
-    this.state = { ...this.state, pinTool: tool };
+    const selection = this.state.selection.type === "pinPaths" || this.state.selection.type === "pins" ? { type: "none" as const } : this.state.selection;
+    this.state = {
+      ...this.state,
+      pinTool: tool,
+      selection,
+      ...(isPinDrawTool(tool) ? { pinDefaults: DEFAULT_PIN_DEFAULTS, symmetryDefaults: NO_SYMMETRY } : {}),
+    };
     this.notify();
   }
 
@@ -689,8 +733,11 @@ export class EditorStore {
 
   // --- Thread editor (docs/specs/12-thread-editor.md) ---
 
+  // Picking any Thread-tab tool drops a selected Thread Path, same rationale as
+  // setPinTool's selection clear — the tool is about to act on the canvas.
   setThreadTool(tool: ThreadTool): void {
-    this.state = { ...this.state, threadTool: tool };
+    const selection = this.state.selection.type === "threadPath" ? { type: "none" as const } : this.state.selection;
+    this.state = { ...this.state, threadTool: tool, selection };
     this.notify();
   }
 

@@ -16,7 +16,7 @@ This is a first pass, deliberately narrow:
 
 ## Selection
 
-Clicking a Thread Path with the Select tool selects it; clicking empty canvas (no thread within hit tolerance) clears the selection. Switching to another Thread tool (Draw/Eraser/Segment Eraser) does **not** clear the selection — it persists until the user clicks elsewhere or selects a different Thread Path, consistent with how selection already persists across mode switches elsewhere in the app.
+Clicking a Thread Path with the Select tool selects it; clicking empty canvas (no thread within hit tolerance) clears the selection. Switching to another Thread tool (Draw/Eraser/Segment Eraser) also clears the selection — a tool switch means the user is about to act with a different tool, not continue editing the selected Thread Path, so it's cleared exactly as picking any Pin tool clears a Pin Path/Pins selection ([08-pin-tools-and-properties.md](./08-pin-tools-and-properties.md)).
 
 Hit-testing reuses the existing nearest-thread-path lookup already used by the Thread Eraser tools, within the same screen-space tolerance convention.
 
@@ -60,10 +60,10 @@ Feature: Selecting a Thread Path
     When the user clicks Thread Path B
     Then only Thread Path B is selected
 
-  Scenario: Switching Thread tools does not clear the selection
+  Scenario: Switching Thread tools clears the selection
     Given Thread Path A is selected with the Select tool
     When the user switches to the Draw tool
-    Then Thread Path A remains selected
+    Then no Thread Path is selected
 
 Feature: Editing a selected Thread Path's properties
 

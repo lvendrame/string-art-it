@@ -362,7 +362,7 @@ describe("Canvas — Thread Select tool", () => {
     expect(store.getState().selection).toEqual({ type: "none" });
   });
 
-  it("switching to another Thread tool does not clear the selection", () => {
+  it("switching to another Thread tool clears the selection", () => {
     const { store, pins } = seedPinsAndEnterThreadMode();
     const threadLayerId = store.getState().threadLayers[0].id;
     store.extendThreadDraft(pins[0].id);
@@ -373,6 +373,6 @@ describe("Canvas — Thread Select tool", () => {
 
     store.setThreadTool("draw");
 
-    expect(store.getState().selection).toEqual({ type: "threadPath", layerId: threadLayerId, pathId: threadPathId });
+    expect(store.getState().selection).toEqual({ type: "none" });
   });
 });

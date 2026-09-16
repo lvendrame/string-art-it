@@ -832,9 +832,10 @@ export class EditorStore {
 
   // Right Arrow while drawing (docs/specs/22-thread-follow-pattern.md): once the
   // draft has 4+ vertices, extrapolate the next one from the numeric pin-position
-  // pattern the vertices form. No-ops (nothing to undo/redo) when the pattern can't
-  // be resolved — e.g. fewer than 4 vertices yet, or a relevant vertex is a
-  // symmetry-mirrored pin id with no stable position of its own.
+  // pattern the vertices form (a symmetry-mirrored pin resolves to its source pin's
+  // position and stays on the same mirror copy — docs/specs/22-thread-follow-pattern.md
+  // "Symmetry-mirrored pins"). No-ops (nothing to undo/redo) when the pattern can't be
+  // resolved — e.g. fewer than 4 vertices yet.
   advanceThreadDraftByPattern(): void {
     const draft = this.state.threadDraft;
     if (!draft) return;

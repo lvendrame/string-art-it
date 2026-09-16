@@ -1,17 +1,24 @@
 import type { PinLayer } from "./pinLayer";
 import type { PinPath } from "./pinPath";
+import { computeMirroredPinGroups, mirroredPinId } from "./symmetryConfig";
 
 // docs/specs/22-thread-follow-pattern.md — the "Pin N" numbering here is the same
 // 1-based position-within-its-own-Pin-Path shown in Print Preview/SVG export, NOT the
-// internal stable `Pin.id`. Only matches against `path.pins` (never symmetry-derived
-// mirror copies, which live nowhere but a live-recomputed array and have no stable
-// position of their own) — so a mirrored pin id simply fails to resolve here, and the
-// pattern feature correctly no-ops for it.
-export function findPinPosition(layers: PinLayer[], pinId: string): { path: PinPath; index: number } | undefined {
+// internal stable `Pin.id`. A symmetry-derived mirror copy shares its source pin's
+// index within `path.pins` (mirror groups are built by mapping over `path.pins` in
+// order — docs/specs/06-symmetry.md), so it resolves to that same Pin-N; `groupIndex`
+// (-1 for a real, stored pin) records which physical instance it was, so the pattern
+// keeps extrapolating within that same mirror copy rather than jumping back to source.
+export function findPinPosition(layers: PinLayer[], pinId: string): { path: PinPath; index: number; groupIndex: number } | undefined {
   for (const layer of layers) {
     for (const path of layer.pinPaths) {
       const index = path.pins.findIndex((p) => p.id === pinId);
-      if (index !== -1) return { path, index };
+      if (index !== -1) return { path, index, groupIndex: -1 };
+      const mirrorGroups = computeMirroredPinGroups(path);
+      for (let g = 0; g < mirrorGroups.length; g++) {
+        const mirrorIndex = mirrorGroups[g].findIndex((p) => p.id === pinId);
+        if (mirrorIndex !== -1) return { path, index: mirrorIndex, groupIndex: g };
+      }
     }
   }
   return undefined;
@@ -52,5 +59,9 @@ export function computeNextPatternPinId(layers: PinLayer[], pinIds: string[]): s
   if (pinCount === 0) return undefined;
 
   const nextNumber = wrap(lastNumber + step, pinCount);
-  return lastPos.path.pins[nextNumber - 1]?.id;
+  const nextPin = lastPos.path.pins[nextNumber - 1];
+  if (!nextPin) return undefined;
+  // Stay within whichever physical instance `last` belongs to — a mirror copy keeps
+  // extrapolating through that same copy, not back onto the source.
+  return lastPos.groupIndex === -1 ? nextPin.id : mirroredPinId(nextPin.id, lastPos.groupIndex);
 }

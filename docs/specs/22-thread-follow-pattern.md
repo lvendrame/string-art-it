@@ -38,9 +38,12 @@ The last row's wraparound: Group B's step is 6 (`12 − 6`); `12 + 6 = 18`, whic
 
 A draft is not confined to one Pin Path — the user can click a pin on any Pin Path to extend a thread. When a group's two most recent members live on different Pin Paths (example 1: pins 3/4 on one path, 15/16 on another), `step` is still just the plain numeric difference of their Pin-N values, and wraparound uses the pin count of whichever Pin Path `last` (the most recent of the two) belongs to. The feature does not attempt to correlate the two paths' geometries — it only extrapolates the numbering, per the user's request.
 
+## Symmetry-mirrored pins
+
+A symmetry-derived mirrored pin id ([06-symmetry.md](./06-symmetry.md)) has no *stored* position of its own — mirrors are recomputed live on every render, never stored in a Pin Path's `pins` array — but each mirror copy is built by mapping over the source's `pins` in order, so a mirror copy shares its source pin's Pin-N (a mirror of "Pin 3" is Pin-N 3, on that copy). When the active group's most recently added member (`last`) is a mirror copy, the extrapolated result stays on that **same physical copy** (not the source, and not a different copy) — same Pin-N arithmetic, same wraparound, just re-expressed as that copy's derived pin id. `secondLast` can be on a different copy (or the source) without affecting this — only `last`'s instance decides which copy the new vertex lands on, consistent with the existing "owning Pin Path of `last`" rule for wraparound.
+
 ## Scope limits
 
-- Only plain (non-mirrored) pins participate. A symmetry-derived mirrored pin id ([06-symmetry.md](./06-symmetry.md)) has no stable Pin-N position of its own (mirrors are recomputed live on every render, never stored in a Pin Path's `pins` array), so if either of the active group's last two members is a mirrored pin, the pattern can't be resolved and `ArrowRight` is a no-op.
 - With fewer than 4 vertices in the draft, `ArrowRight` is a no-op.
 - With no draft in progress (Thread mode, but no click has started an insertion yet), `ArrowRight` is a no-op.
 
@@ -94,10 +97,10 @@ Feature: Thread draft pattern-follow (Right Arrow)
     When the user presses Right Arrow again
     Then pin 17 is appended, on the second Pin Path
 
-  Scenario: A mirrored pin among the relevant vertices makes Right Arrow a no-op
-    Given a Thread Path draft's 4 vertices include a symmetry-mirrored pin among the two most recent same-parity vertices
+  Scenario: Right Arrow extrapolates through a symmetry-mirrored pin, staying on the same copy
+    Given a Thread Path draft's 4 vertices are the mirror copy of pin 3, pin 15, the mirror copy of pin 4, and pin 16
     When the user presses Right Arrow
-    Then no vertex is added to the draft
+    Then the mirror copy of pin 5 is appended (not pin 5 itself, and not a different mirror copy)
 
   Scenario: Right Arrow does not affect other draft controls
     Given a Thread Path draft has 5 vertices, the last 2 added via Right Arrow

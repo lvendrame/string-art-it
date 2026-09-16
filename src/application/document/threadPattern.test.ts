@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { computeNextPatternPinId, findPinPosition } from "./threadPattern";
+import { mirroredPinId } from "./symmetryConfig";
 import type { PinLayer } from "./pinLayer";
 import type { Pin } from "./pinPath";
+import type { SymmetryConfig } from "./symmetryConfig";
 
 function pin(id: string, x: number, y: number): Pin {
   return { id, x, y };
@@ -9,8 +11,9 @@ function pin(id: string, x: number, y: number): Pin {
 
 // One layer, one Pin Path with `count` pins numbered "p1".."pN" in position order
 // (pins[0] is "Pin 1", matching the same 1-based convention used by Print
-// Preview/SVG export).
-function makeLayer(count: number, pathId = "path-a"): PinLayer[] {
+// Preview/SVG export). `symmetry` defaults to none; pass one to also exercise
+// mirror-derived pins (their ids are `mirroredPinId(sourceId, groupIndex)`).
+function makeLayer(count: number, pathId = "path-a", symmetry: SymmetryConfig = { type: "none" }): PinLayer[] {
   const pins = Array.from({ length: count }, (_, i) => pin(`p${i + 1}`, i, 0));
   return [
     {
@@ -28,7 +31,7 @@ function makeLayer(count: number, pathId = "path-a"): PinLayer[] {
           guideVisible: true,
           colour: "#fff",
           diameter: 2,
-          symmetry: { type: "none" },
+          symmetry,
         },
       ],
     },
@@ -62,9 +65,15 @@ describe("findPinPosition", () => {
     expect(found?.path.id).toBe("path-a");
   });
 
-  it("returns undefined for an id not present in any path's `pins` (e.g. a mirrored pin id)", () => {
+  it("returns undefined for an id not present in any path's `pins` or its mirror groups", () => {
     const layers = makeLayer(5);
-    expect(findPinPosition(layers, "p3~mirror-x")).toBeUndefined();
+    expect(findPinPosition(layers, "p3~mirror-0")).toBeUndefined();
+  });
+
+  it("resolves a mirrored pin id to its source pin's index and a non-negative groupIndex", () => {
+    const layers = makeLayer(5, "path-a", { type: "vertical", axis: { x: 0, y: 0 } });
+    const found = findPinPosition(layers, mirroredPinId("p3", 0));
+    expect(found).toEqual({ path: layers[0].pinPaths[0], index: 2, groupIndex: 0 });
   });
 });
 
@@ -137,11 +146,19 @@ describe("computeNextPatternPinId", () => {
     }
   });
 
-  it("no-ops (returns undefined) when a relevant vertex is a mirrored pin id", () => {
-    // Active group for the 5th vertex is positions 1 & 3 (indices 0, 2) — put the
-    // mirrored id there so it's the group actually being extrapolated.
-    const layers = makeLayer(20);
-    const pinIds = ["p3~mirror-1", "p15", "p4", "p16"];
-    expect(computeNextPatternPinId(layers, pinIds)).toBeUndefined();
+  it("extrapolates through a mirrored pin, staying on the same mirror copy", () => {
+    // Active group for the 5th vertex is positions 1 & 3 (indices 0, 2) — both on the
+    // mirror copy, so the extrapolated result should stay on that same copy too.
+    const layers = makeLayer(20, "path-a", { type: "vertical", axis: { x: 0, y: 0 } });
+    const pinIds = [mirroredPinId("p3", 0), "p15", mirroredPinId("p4", 0), "p16"];
+    expect(computeNextPatternPinId(layers, pinIds)).toBe(mirroredPinId("p5", 0));
+  });
+
+  it("a mixed group (real + mirror) still extrapolates from `last`'s own instance", () => {
+    // secondLast is the real pin p3, last is its mirror copy p4~mirror-0 — result
+    // should land on the mirror copy (whichever instance `last` belongs to).
+    const layers = makeLayer(20, "path-a", { type: "vertical", axis: { x: 0, y: 0 } });
+    const pinIds = ["p3", "p15", mirroredPinId("p4", 0), "p16"];
+    expect(computeNextPatternPinId(layers, pinIds)).toBe(mirroredPinId("p5", 0));
   });
 });

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { EditorStore } from "./EditorStore";
+import { mirroredPinId } from "./symmetryConfig";
 
 function seedPins(store: EditorStore, count: number) {
   const layerId = store.getState().pinLayers[0].id;
@@ -183,6 +184,21 @@ describe("EditorStore cascading pin deletion into threads", () => {
     store.advanceThreadDraftByPattern();
 
     expect(store.getState().threadDraft?.pinIds).toHaveLength(3);
+  });
+
+  it("advanceThreadDraftByPattern extrapolates through symmetry-mirrored pins, staying on the same copy", () => {
+    const store = new EditorStore();
+    store.setSymmetryConfig({ type: "vertical", axis: { x: 0, y: 0 } });
+    const { pins } = seedPins(store, 16); // vertical symmetry -> one mirror copy per pin
+    const mirrorId = (i: number) => mirroredPinId(pins[i].id, 0);
+
+    store.extendThreadDraft(mirrorId(2)); // mirror of Pin 3
+    store.extendThreadDraft(pins[5].id); // Pin 6
+    store.extendThreadDraft(mirrorId(8)); // mirror of Pin 9
+    store.extendThreadDraft(pins[11].id); // Pin 12
+
+    store.advanceThreadDraftByPattern();
+    expect(store.getState().threadDraft?.pinIds.at(-1)).toBe(mirrorId(14)); // mirror of Pin 15, not Pin 15 itself
   });
 
   it("advanceThreadDraftByPattern is a no-op when no draft is in progress", () => {

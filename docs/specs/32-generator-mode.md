@@ -32,17 +32,17 @@ Built the same milestone after M25 shipped, reusing M25's engine and primitives 
 
 | Pattern | Pin layout | Threading | Parameters | Scope note |
 |---|---|---|---|---|
-| **Wave** | One circle, `n` pins (same primitive as Mandala) | Generalizes Mandala's modular-multiplication traversal (`waveLayerSequences`) to a *partial* pass per layer: only `layerFill` of the `n` connections, starting at a rotating `layerSpread`-position offset each layer — full coverage (`layerFill=n`, `layerSpread=0`) degenerates back to a Mandala layer | `n` (3–400), `base` (2–99), `layers` (1–20), `layerFill` (1–400), `layerSpread` (0–200) | — |
-| **Hexagon Spades** | The same 6-triangle ring as Star of David's own tiles (`tileRingLayout(6, 3, …)`), with no central hexagon hub | One adjacent-side fan per tile side (`connectTwoSidesLocalIndices`, shared with Star of David) — 6 tiles × 3 sides = 18 Thread Paths | `depth` (1–40), `layerAngle` (0.02–0.15), `rotation`, `mirrorTiling` | — |
+| **Wave** | One circle, `n` pins (same primitive as Mandala) | Generalizes the classic modular-multiplication 4-point cell (`waveLayerSequences`: for every odd `k` in the layer's fill range, `k, (k·base mod n), (k·base mod n)+base, k+1`, all shifted by the layer's own rotating offset) to a *partial* pass per layer — only `layerFill` of the `n` positions, starting at a rotating `layerSpread`-position offset each layer, which is what produces the rippling "wave" look | `n` (3–400), `base` (2–99), `layers` (1–20), `layerFill` (1–400), `layerSpread` (0–200) | — |
+| **Hexagon Spades** | The same 6-triangle ring as Star of David's own tiles (`tileRingLayout(6, 3, …)`, same proportions — `R0/3` triangle radius, `2·R0/3` helper radius), with no central hexagon hub | One adjacent-side fan per tile side (`connectTwoSidesLocalIndices`, shared with Star of David) — 6 tiles × 3 sides = 18 Thread Paths | `depth` (1–40), `layerAngle` (0.02–0.15), `rotation`, `mirrorTiling` | — |
 | **Dance of Planets** | Two concentric rings, each independently a circle or `regular-polygon` Pin Path | `roundRobinSequence([outerCount, innerCount])`, repeated `rounds` times; `reverse` walks the inner ring backward, which is what makes the two rings appear to counter-rotate | `outerType`/`outerNails`/`outerSides`, `innerType`/`innerNails`/`innerSides`/`innerSizeRatio`, `rounds` (1–20), `reverse`, `rotation` | — |
-| **Sun** | Reuses Star's own spoke-wheel construction verbatim for the base shape, plus `layers` extra shrinking concentric circles | Star's own 3-zigzags-per-point threading, unchanged, plus one simple base-2 modular self-weave per extra ring | Star's own params + `layers` (0–10), `layerSpread` (0–0.3) | Simplified: extra "rays" are decorative shrinking rings with their own light self-weave, not additional native-star geometry |
-| **Vortex** | A single nested-polygon spiral (`nestedPolygonLevels`/`nestedPolygonVertices`, the primitive Star of David's tiles use), corners only | One closed-polygon-outline Thread Path per level, coloured per level | `sides` (3–20), `layers` (1–40), `layerAngle` (0.01–0.2), `rotation` | Simplified: threads level outlines only, not per-edge interior density |
-| **Polygon** | One `regular-polygon` Pin Path, `sides·nailsPerSide` pins (vertex-anchored: side `s`'s pins are local indices `s·nailsPerSide … s·nailsPerSide+nailsPerSide-1`) | `twoRayZigzag` between side `s` and side `(s+bezierStep) mod sides`, one Thread Path per side | `sides` (3–20), `nailsPerSide` (2–100), `bezierStep` (1–19), `rotation` | — |
-| **Flower** | `layers` rotated copies of Polygon's own geometry, same radius, increasing rotation offset per copy | `twoRayZigzag` per layer per side (reuses Polygon's own weave) | `sides` (3–20), `nailsPerSide` (2–100), `layers` (1–20), `rotation` | — |
-| **Assymetry** | One circle + one spoke line (the same line-geometry construction Star's spokes use) | `asymmetryZigzag`: one continuous zigzag over the circle+spoke's combined index space, advancing from `startFraction` and walking backward from `endFraction` to meet in the middle; `reverse` swaps direction | `circleNails` (3–400), `startFraction`/`endFraction` (0–1), `reverse`, `rotation` | Simplified: a single configurable pass, not the researched pattern's 3 parallel default passes |
-| **Spiral** | One circle, `n` pins | `spiralDecayingWalk`: a single continuous walk whose chord span starts near `n/2` and shrinks to `innerLength` each of `repetition` passes | `n` (10–400), `repetition` (1–20), `innerLength` (1–100), `rotation` | — |
+| **Sun** | Reuses Star's own spoke-wheel construction verbatim for the base shape, plus `layers` extra shrinking concentric circles | Star's own 3-zigzags-per-point threading, unchanged, plus one simple base-2 modular self-weave per extra ring | Star's own params + `layers` (0–10), `layerSpread` (0–0.3) | Simplified: an original reinterpretation reusing this app's own spoke-wheel Star rather than the researched pattern's own separate pointed-star-plus-backdrop-fan construction; extra "rays" are decorative shrinking rings with a light self-weave |
+| **Vortex** | `layers` nested/inscribed regular polygons (`nestedPolygonLevels`, the shrink-and-twist primitive Star of David's tiles use), each its own native `regular-polygon` Pin Path with `nailsPerSide` vertex-anchored pins per side | Within each level, side `s`'s pin `i` connects to side `(s+1) mod sides`'s pin `i` — chaining that same-index chord across all `sides` sides into one closed loop per `i` reproduces the full chord set with no extra segments (`layers·nailsPerSide` Thread Paths total, one colour per level) | `sides` (3–10), `nailsPerSide` (3–200), `layers` (1–40), `layerAngle` (0.01–0.2), `rotation` | — |
+| **Polygon** | One `regular-polygon` Pin Path, `sides·nailsPerSide` pins (vertex-anchored: side `s`'s pins are local indices `s·nailsPerSide … s·nailsPerSide+nailsPerSide-1`) | `sameIndexZigzag` between side `s` and side `(s+bezierStep) mod sides` — the 4-point cell `A_k, B_k, B_k+1, A_k+1` for advancing even `k` (same-index chords across the two sides, not reversed pairing — this is what a regular polygon's own side-to-side envelope curve actually uses), one Thread Path per side | `sides` (3–20), `nailsPerSide` (2–100), `bezierStep` (1–19), `rotation` | — |
+| **Flower** | `layers` rotated copies of Polygon's own geometry, same radius, increasing rotation offset per copy | `sameIndexZigzag` per layer per side (reuses Polygon's own corrected weave) | `sides` (3–20), `nailsPerSide` (2–100), `layers` (1–20), `rotation` | — |
+| **Assymetry** | One circle + one spoke line (the same line-geometry construction Star's spokes use), spoke nail count derived to match the circle's own physical spacing (`round(circleNails / 2π)`) | `asymmetryZigzag`: a pivot point advances by a fixed `start` offset every other step, alternating with a second pointer that counts up from 0 — each successive chord's far end creeps forward by a constant offset (not a constant ratio, which is what makes the fan read as asymmetric) | `circleNails` (3–400), `startFraction`/`endFraction` (0–1), `reverse`, `rotation` | Simplified: a single configurable pass, not the researched pattern's 3 parallel default passes |
+| **Spiral** | One circle, `n` pins | `spiralDecayingWalk`: a pointer oscillates forward by the current span then backward by span-1, repeatedly, while the span slowly shrinks from `innerLength` down to 0 (one decrement every `2·repetition-1` oscillations) — the back-and-forth oscillation is what makes the accumulated chords cross back over themselves as they tighten | `n` (10–400), `repetition` (1–20), `innerLength` (1–100, the starting span/"thickness") | — |
 | **Maurer Rose** | Curve-sampled points from the classic public Maurer-rose formula (`maurerRosePoints`; Peter M. Maurer, 1987 — a well-known general construction, not any app's proprietary algorithm), built directly into pins (freehand-bypass, same architecture as Spirals) | Sequential: connect every sampled point in generation order, one continuous Thread Path | `N` (1–30, petal count), `maxSteps` (10–720), `angleDegrees` (1–180), `rotation` | — |
-| **Comet** | One circle, `n` pins | `cometLayerSequences`: `layers` offset-alternation passes, connecting `i` to `i+d`; both the run length and offset `d` shrink linearly per layer, tapering like a comet's tail | `n` (10–400), `layers` (1–40), `firstLayerSize` (2–200), `distance` (1–200), `rotation` | Simplified: one linear shrink mode, not the researched pattern's two selectable modes |
+| **Comet** | One circle, `n` pins | `cometLayerSequences`: `layers` offset-alternation passes, connecting `i` to `i+d`; the offset `d` shrinks linearly per layer (by `layerDistance`, floored at 1) — each layer's own run length is DERIVED from `d` (`n-d+1` steps), not set independently, which is what gives the tapering "comet tail" look | `n` (10–400), `layers` (1–40), `firstLayerSize` (2–200, the starting offset), `layerDistance` (1–200), `rotation` | — |
 | **Flower of Life** | The same 6-triangle ring as Hexagon Spades, plus an optional outer ring circle with its own base-`ringBase` modular self-weave | Same tile fans as Hexagon Spades (18 Thread Paths), plus 1 more when the ring is enabled | `depth` (1–40), `layerAngle` (0.02–0.15), `rotation`, `ringEnabled`, `ringNails` (3–400), `ringBase` (2–99) | Simplified: the researched pattern is a `6·levels²`-tile hex-grid; this ships a fixed 6-tile ring + optional ring, stated plainly |
 | **Lotus** | `sides` circles placed evenly around a helper circle (Freestyle's own circle-placement idea, arranged evenly instead of freely) | `roundRobinSequence` per *adjacent pair* of circles (not all circles together, unlike Freestyle) — one Thread Path per pair | `sides` (3–20), `nailsPerCircle` (3–200), `radiusRatio` (0.1–0.9), `rotation` | Simplified: no centre-point patch handling, no "remove sections" control |
 | **Crosses** | An original 4-line "#" grid (2 lines each direction, the same line-geometry construction as Assymetry/Star's spokes) | `twoRayZigzag` across each of the 4 crossing pairs — one Thread Path per pair | `nailsPerLine` (2–100), `gap` (0.02–0.4), `rotation` | Simplified/original layout: the researched pattern is a fixed 10-line (4 long + 6 crossbar) arrangement; this ships a simpler original 4-line grid with the same crossing-weave character |
@@ -202,11 +202,11 @@ Feature: Discarding an uncommitted draft
 
 Feature: Generating the M26 patterns
 
-  Scenario: Wave builds a partial-coverage traversal per layer
+  Scenario: Wave builds a partial-coverage 4-point-cell traversal per layer
     Given Generator mode is active with the Wave pattern (n=100, layers=4, layerFill=20)
     When the user clicks Generate
     Then the draft has one circle Pin Path with 100 pins
-    And the draft has 4 Thread Paths, each with 40 pin ids (2*layerFill)
+    And the draft has 4 Thread Paths, each with one 4-point cell per odd k in [1, layerFill)
 
   Scenario: Hexagon Spades builds 6 triangle tiles with no hub
     Given Generator mode is active with the Hexagon Spades pattern (depth=8)
@@ -225,11 +225,12 @@ Feature: Generating the M26 patterns
     When the user clicks Generate
     Then the draft has Star's own Pin/Thread Paths plus 3 more of each
 
-  Scenario: Vortex threads each nested-polygon level as a closed outline
-    Given Generator mode is active with the Vortex pattern (sides=5, layers=6)
+  Scenario: Vortex weaves same-index chords across every side of each nested level
+    Given Generator mode is active with the Vortex pattern (sides=5, nailsPerSide=8, layers=6)
     When the user clicks Generate
-    Then the draft has one freehand Pin Path with 30 pins (sides*layers)
-    And the draft has 6 Thread Paths, each a closed loop of sides+1 pin ids
+    Then the draft has 6 regular-polygon Pin Paths (one per level), each with 40 pins (sides*nailsPerSide)
+    And the draft has 48 Thread Paths (layers*nailsPerSide), each a closed loop of sides+1 pin ids
+    And each loop visits side s's pin i then side (s+1 mod sides)'s pin i, for a fixed i
 
   Scenario: Polygon curve-stitches each side against another side
     Given Generator mode is active with the Polygon pattern (sides=6, nailsPerSide=10)
@@ -259,10 +260,11 @@ Feature: Generating the M26 patterns
     Then the draft's freehand Pin Path has exactly 91 pins (maxSteps+1)
     And the single Thread Path visits them in sampled order
 
-  Scenario: Comet's layers taper via a shrinking offset and run length
-    Given Generator mode is active with the Comet pattern (layers=5)
+  Scenario: Comet's layers taper via a shrinking offset (run length is derived from it)
+    Given Generator mode is active with the Comet pattern (layers=5, layerDistance=3)
     When the user clicks Generate
     Then the draft has one circle Pin Path and 5 Thread Paths
+    And each layer's own run length (n-d+1) grows as its offset d shrinks
 
   Scenario: Flower of Life's outer ring is optional
     Given Generator mode is active with the Flower of Life pattern (ringEnabled=false)

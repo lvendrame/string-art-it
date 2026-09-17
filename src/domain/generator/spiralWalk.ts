@@ -1,21 +1,33 @@
 // docs/specs/32-generator-mode.md Spiral pattern — a single continuous walk around one
-// circle of n pins, jumping by a chord "span" that starts near n/2 and shrinks by one
-// pin every step down to `innerLength`, then resets for the next of `repetition`
-// passes. A shrinking chord span sweeps progressively tighter arcs each pass, which is
-// what gives the accumulated threads their spiral-like tightening look — an original,
-// simple decaying-span walk, not a reproduction of any specific reference formula.
+// circle of n pins: a pointer oscillates forward by the current "span" then backward
+// by span-1, repeatedly, while span slowly shrinks from `innerLength` down to 0 (one
+// decrement every `2*repetition-1` oscillations, nudging the pointer forward by 1 each
+// time it does). The back-and-forth oscillation is what makes the accumulated chords
+// cross back over themselves as they tighten, producing the layered spiral look — a
+// monotonic one-directional walk (this pattern's first version) reads as a plain
+// fan instead. Basic index arithmetic, an original implementation of the general
+// "oscillating decaying span" technique.
 export function spiralDecayingWalk(n: number, repetition: number, innerLength: number): number[] {
   if (n <= 0) throw new Error("n must be positive");
   if (repetition <= 0) throw new Error("repetition must be positive");
   if (innerLength <= 0) throw new Error("innerLength must be positive");
+  const realRepetition = 2 * repetition - 1;
+  let span = Math.round(innerLength);
+  let repetitionCount = 0;
+  let point = 0;
+  let isPrevPoint = false;
   const indices: number[] = [0];
-  let current = 0;
-  for (let r = 0; r < repetition; r += 1) {
-    const startSpan = Math.max(innerLength + 1, Math.floor(n / 2));
-    for (let span = startSpan; span > innerLength; span -= 1) {
-      current = (current + span) % n;
-      indices.push(current);
+  while (span > 0) {
+    point = isPrevPoint ? point - span + 1 : point + span;
+    if (repetitionCount === realRepetition) {
+      span -= 1;
+      repetitionCount = 0;
+      point += 1;
+    } else {
+      repetitionCount += 1;
     }
+    indices.push(((point % n) + n) % n);
+    isPrevPoint = !isPrevPoint;
   }
   return indices;
 }

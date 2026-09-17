@@ -234,13 +234,20 @@ describe("buildGeneratorPattern — sun", () => {
 });
 
 describe("buildGeneratorPattern — vortex", () => {
-  it("builds one freehand pin path (sides*layers pins) with one closed-outline thread per level", () => {
-    const result = buildGeneratorPattern({ patternId: "vortex", sides: 5, layers: 6, layerAngle: 0.05, rotation: 0 }, ctx);
-    expect(result.pinPaths).toHaveLength(1);
-    expect(result.pinPaths[0].pins).toHaveLength(5 * 6);
-    expect(result.threadPaths).toHaveLength(6);
-    for (const t of result.threadPaths) expect(t.pinIds).toHaveLength(6); // sides + 1 (closed loop)
+  it("builds one regular-polygon pin path per level, sides*nailsPerSide pins each", () => {
+    const result = buildGeneratorPattern({ patternId: "vortex", sides: 5, nailsPerSide: 8, layers: 6, layerAngle: 0.05, rotation: 0 }, ctx);
+    expect(result.pinPaths).toHaveLength(6);
+    for (const p of result.pinPaths) {
+      expect(p.geometry.type).toBe("regular-polygon");
+      expect(p.pins).toHaveLength(5 * 8);
+    }
     expect(allPinIdsValid(result)).toBe(true);
+  });
+
+  it("threads nailsPerSide closed loops per level, each visiting one same-side-index chord per side", () => {
+    const result = buildGeneratorPattern({ patternId: "vortex", sides: 5, nailsPerSide: 8, layers: 3, layerAngle: 0.05, rotation: 0 }, ctx);
+    expect(result.threadPaths).toHaveLength(3 * 8); // layers * nailsPerSide
+    for (const t of result.threadPaths) expect(t.pinIds).toHaveLength(5 + 1); // sides + 1 (closed loop)
   });
 });
 
@@ -295,7 +302,7 @@ describe("buildGeneratorPattern — maurer-rose", () => {
 
 describe("buildGeneratorPattern — comet", () => {
   it("builds one circle with `layers` shrinking offset-alternation threads", () => {
-    const result = buildGeneratorPattern({ patternId: "comet", n: 80, layers: 5, firstLayerSize: 20, distance: 15, rotation: 0 }, ctx);
+    const result = buildGeneratorPattern({ patternId: "comet", n: 80, layers: 5, firstLayerSize: 20, layerDistance: 3, rotation: 0 }, ctx);
     expect(result.pinPaths).toHaveLength(1);
     expect(result.threadPaths).toHaveLength(5);
     expect(allPinIdsValid(result)).toBe(true);

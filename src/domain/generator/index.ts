@@ -4,7 +4,7 @@ export { spiralArmPoints } from "./spiralArms";
 export { nestedPolygonLevels, nestedPolygonVertices, connectTwoSidesLocalIndices, type NestedPolygonLevel } from "./nestedPolygon";
 export { starSpokeCircleZigzag, starAdjacentSpokeZigzag, type StarWeaveNode } from "./starWeave";
 export { tileRingLayout, type TileRingTile } from "./tileRing";
-export { twoRayZigzag, type RayZigzagNode } from "./rayZigzag";
+export { twoRayZigzag, sameIndexZigzag, type RayZigzagNode } from "./rayZigzag";
 export { waveLayerSequences, type WaveLayerSequence } from "./wave";
 export { asymmetryZigzag, type AsymmetryNode } from "./asymmetryZigzag";
 export { spiralDecayingWalk } from "./spiralWalk";

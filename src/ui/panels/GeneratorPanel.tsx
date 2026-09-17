@@ -287,7 +287,8 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
 
         {params.patternId === "vortex" && (
           <>
-            <NumberField label={t("generatorPanel.fields.sides")} value={params.sides} min={3} max={20} onChange={(v) => set("sides", v)} />
+            <NumberField label={t("generatorPanel.fields.sides")} value={params.sides} min={3} max={10} onChange={(v) => set("sides", v)} />
+            <NumberField label={t("generatorPanel.fields.nailsPerSide")} value={params.nailsPerSide} min={3} max={200} onChange={(v) => set("nailsPerSide", v)} />
             <NumberField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={40} onChange={(v) => set("layers", v)} />
             <NumberField label={t("generatorPanel.fields.layerAngle")} value={params.layerAngle} min={0.01} max={0.2} step={0.005} onChange={(v) => set("layerAngle", v)} />
             <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
@@ -345,7 +346,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
             <NumberField label={t("generatorPanel.fields.n")} value={params.n} min={10} max={400} onChange={(v) => set("n", v)} />
             <NumberField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={40} onChange={(v) => set("layers", v)} />
             <NumberField label={t("generatorPanel.fields.firstLayerSize")} value={params.firstLayerSize} min={2} max={200} onChange={(v) => set("firstLayerSize", v)} />
-            <NumberField label={t("generatorPanel.fields.distance")} value={params.distance} min={1} max={200} onChange={(v) => set("distance", v)} />
+            <NumberField label={t("generatorPanel.fields.layerDistance")} value={params.layerDistance} min={1} max={200} onChange={(v) => set("layerDistance", v)} />
             <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
           </>
         )}

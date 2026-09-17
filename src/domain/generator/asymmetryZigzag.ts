@@ -1,13 +1,16 @@
-// docs/specs/32-generator-mode.md Assymetry pattern — one continuous zigzag over a
-// COMBINED index space (the circle's `circleCount` pins followed by the spoke's
-// `spokeCount` pins, `circleCount + spokeCount` positions total), advancing from a
-// start position and walking backward from an end position at the same time, meeting
-// in the middle — same "two advancing pointers meeting in the middle" shape as
-// rayZigzag.ts's twoRayZigzag, but over one wrapped index space instead of two
-// independent rays, which is what lets a single pass cross from the circle onto the
+// docs/specs/32-generator-mode.md Assymetry pattern — one continuous walk over a
+// COMBINED, wrapped index space (the circle's `circleCount` pins followed by the
+// spoke's `spokeCount` pins, `circleCount + spokeCount` positions total): a pivot
+// point advances by a fixed `start` offset every other step, alternating with a
+// second pointer that simply counts up from 0 — `toNode(k+start)`, `toNode(k)`,
+// `toNode(k+1+start)`, `toNode(k+1)`, … — so each successive chord's far end also
+// creeps forward, which is what makes the fan look asymmetric rather than a evenly
+// spaced mandala-style ring (that would connect a CONSTANT ratio, not a constant
+// offset). Any index that wraps past the circle's own nails lands back among the
+// spoke's, which is what lets one continuous pass cross from the circle onto the
 // spoke and back without a hard seam. `startFraction`/`endFraction` (0..1) pick where
-// in that combined space the walk starts/ends; `reverse` swaps which end advances
-// which direction.
+// in the combined space the walk starts and how many steps it runs; `reverse` walks
+// the combined space backward instead of forward.
 export type AsymmetryNode = { which: "circle" | "spoke"; index: number };
 
 function wrap(index: number, total: number): number {
@@ -21,17 +24,27 @@ export function asymmetryZigzag(circleCount: number, spokeCount: number, startFr
     const i = wrap(globalIndex, total);
     return i < circleCount ? { which: "circle", index: i } : { which: "spoke", index: i - circleCount };
   };
+  // In reverse mode the walk counts DOWN from `total` instead of up from 0 — mapped
+  // once here, then every later step (including the `+advance` connector below) works
+  // directly off that already-mapped value, matching a walk that consistently moves
+  // in one direction (down) rather than flipping direction mid-step.
+  const getPointIndex = (index: number): number => (reverse ? total - index : index);
 
-  const startIdx = Math.round(startFraction * total);
-  const endIdx = Math.round(endFraction * total);
-  const steps = Math.max(1, Math.abs(endIdx - startIdx));
+  const start = Math.round(startFraction * total);
+  const endIndex = Math.max(0, Math.round(endFraction * total) - start);
+  const advance = reverse ? -1 : 1;
 
-  const nodes: AsymmetryNode[] = [];
-  for (let k = 0; k <= steps; k += 1) {
-    const forward = startIdx + k;
-    const backward = endIdx - k;
-    nodes.push(toNode(reverse ? backward : forward));
-    nodes.push(toNode(reverse ? forward : backward));
+  const nodes: AsymmetryNode[] = [toNode(getPointIndex(0))];
+  let prevPointIndex = getPointIndex(0);
+  let isPrevSide = false;
+
+  for (let index = 0; index <= endIndex; index += 1) {
+    if (index) {
+      nodes.push(toNode(prevPointIndex + advance));
+    }
+    prevPointIndex = getPointIndex(isPrevSide ? index : index + start);
+    nodes.push(toNode(prevPointIndex));
+    isPrevSide = !isPrevSide;
   }
   return nodes;
 }

@@ -12,6 +12,7 @@ import {
   starAdjacentSpokeZigzag,
   starSpokeCircleZigzag,
   tileRingLayout,
+  sameIndexZigzag,
   twoRayZigzag,
   waveLayerSequences,
   type AsymmetryNode,
@@ -81,13 +82,13 @@ export type GeneratorParams =
       rotation: number;
     }
   | { patternId: "sun"; sideNails: number; starPoints: number; starOuterRatio: number; starInnerRatio: number; rotation: number; layers: number; layerSpread: number }
-  | { patternId: "vortex"; sides: number; layers: number; layerAngle: number; rotation: number }
+  | { patternId: "vortex"; sides: number; nailsPerSide: number; layers: number; layerAngle: number; rotation: number }
   | { patternId: "polygon"; sides: number; nailsPerSide: number; bezierStep: number; rotation: number }
   | { patternId: "flower"; sides: number; nailsPerSide: number; layers: number; rotation: number }
   | { patternId: "assymetry"; circleNails: number; startFraction: number; endFraction: number; reverse: boolean; rotation: number }
   | { patternId: "spiral"; n: number; repetition: number; innerLength: number; rotation: number }
   | { patternId: "maurer-rose"; N: number; maxSteps: number; angleDegrees: number; rotation: number }
-  | { patternId: "comet"; n: number; layers: number; firstLayerSize: number; distance: number; rotation: number }
+  | { patternId: "comet"; n: number; layers: number; firstLayerSize: number; layerDistance: number; rotation: number }
   | { patternId: "flower-of-life"; depth: number; layerAngle: number; rotation: number; ringEnabled: boolean; ringNails: number; ringBase: number }
   | { patternId: "lotus"; sides: number; nailsPerCircle: number; radiusRatio: number; rotation: number }
   | { patternId: "crosses"; nailsPerLine: number; gap: number; rotation: number };
@@ -374,8 +375,11 @@ function buildStarOfDavid(params: Extract<GeneratorParams, { patternId: "star-of
 // hexagon hub, so the six nested-spiral triangle "spades" stand alone.
 function buildHexagonSpades(params: Extract<GeneratorParams, { patternId: "hexagon-spades" }>, ctx: GeneratorBuildContext): GeneratorBuildResult {
   const { depth, layerAngle, rotation, mirrorTiling } = params;
-  const triangleRadius = ctx.maxRadius * 0.5;
-  const helperRadius = ctx.maxRadius - triangleRadius;
+  // Same 6-triangle ring construction and proportions as Star of David's own outer
+  // tiles (triangleRadius=R0/3, helperRadius=2*R0/3, tip radius reaching R0 exactly),
+  // just with no central hexagon hub drawn.
+  const triangleRadius = ctx.maxRadius / 3;
+  const helperRadius = (2 * ctx.maxRadius) / 3;
   const tiles = tileRingLayout(6, 3, helperRadius, Math.PI / 6, rotation, ctx.center, mirrorTiling);
   return buildTileFans(tiles, () => triangleRadius, layerAngle, depth, ctx);
 }
@@ -505,40 +509,43 @@ function buildSun(params: Extract<GeneratorParams, { patternId: "sun" }>, ctx: G
   return { pinPaths, threadPaths };
 }
 
-// Vortex — a single nested-polygon spiral (nestedPolygonLevels/nestedPolygonVertices,
-// the same primitive Star of David's tiles use), simplified to corners-only: each level
-// threads as its own closed polygon OUTLINE, not per-edge subdivided fill (the plan's
-// stated simplification — the real pattern densifies per edge too).
+// Vortex — `layers` nested/inscribed regular polygons (nestedPolygonLevels, the same
+// shrink-and-twist primitive Star of David's tiles use, one native "regular-polygon"
+// PinPath per level so each gets its own vertex-anchored `nailsPerSide` pins per
+// side). Within EACH level, side `s`'s pin `i` connects to side `(s+1)%sides`'s pin
+// `i` — a same-index chord across every side. Chaining all `sides` of those chords for
+// a fixed `i` into one closed-loop Thread Path (side0.i → side1.i → … → side0.i)
+// reproduces that exact same set of chords with no extra segments, since each chord
+// shares its endpoint with the next (this is the corrected version of an earlier
+// "closed outline per level" simplification, which was a genuinely different — and
+// far sparser — topology than this per-side-index weave).
 function buildVortex(params: Extract<GeneratorParams, { patternId: "vortex" }>, ctx: GeneratorBuildContext): GeneratorBuildResult {
-  const { sides, layers, layerAngle, rotation } = params;
+  const { sides, nailsPerSide, layers, layerAngle, rotation } = params;
   const levels = nestedPolygonLevels(sides, ctx.maxRadius, rotation, layerAngle, layers, 1);
-  const points = nestedPolygonVertices(ctx.center, sides, levels);
-  const pins: Pin[] = points.map((p) => ({ id: nextPinId(), ...p }));
-  const pinPath: PinPath = {
-    id: nextPathId(),
-    geometry: { type: "freehand", points },
-    requestedSpacing: ctx.maxRadius / Math.max(1, layers),
-    actualSpacing: ctx.maxRadius / Math.max(1, layers),
-    pins,
-    guideVisible: ctx.pinStyle.guideVisible,
-    colour: ctx.pinStyle.colour,
-    diameter: ctx.pinStyle.diameter,
-    symmetry: NO_SYMMETRY,
-  };
+  const pinPaths: PinPath[] = levels.map((level) => {
+    const geometry: PinPathGeometry = { type: "regular-polygon", center: ctx.center, radius: level.radius, sides, rotation: level.rotation };
+    const sideLength = 2 * level.radius * Math.sin(Math.PI / sides);
+    const spacing = spacingForPinCount(sideLength, nailsPerSide);
+    return createPinPath(geometry, spacing, ctx.pinStyle);
+  });
   const palette = ctx.threadDefaults.colours.length > 0 ? ctx.threadDefaults.colours : ["#5b8def"];
   const threadPaths: ThreadPath[] = [];
-  for (let level = 0; level < levels.length; level += 1) {
-    const base = level * sides;
-    const pinIds = Array.from({ length: sides + 1 }, (_, i) => pins[base + (i % sides)].id);
-    threadPaths.push(createThreadPath(pinIds, [palette[threadPaths.length % palette.length]], ctx.threadDefaults.width, ctx.threadDefaults.twistPitch));
-  }
-  return { pinPaths: [pinPath], threadPaths };
+  pinPaths.forEach((path, level) => {
+    const colour = palette[level % palette.length];
+    for (let i = 0; i < nailsPerSide; i += 1) {
+      const pinIds = Array.from({ length: sides + 1 }, (_, s) => path.pins[(s % sides) * nailsPerSide + i].id);
+      threadPaths.push(createThreadPath(pinIds, [colour], ctx.threadDefaults.width, ctx.threadDefaults.twistPitch));
+    }
+  });
+  return { pinPaths, threadPaths };
 }
 
 // Shared by Polygon and Flower: one `regular-polygon` PinPath (sides*nailsPerSide pins,
 // vertex-anchored — side s's pins are local indices s*nailsPerSide..s*nailsPerSide+
-// nailsPerSide-1), curve-stitched (twoRayZigzag, src/domain/generator/rayZigzag.ts)
-// between side s and side (s+bezierStep)%sides, one Thread Path per side.
+// nailsPerSide-1), curve-stitched (sameIndexZigzag, src/domain/generator/rayZigzag.ts
+// — same-index chords across two sides, not reversed pairing, which is what a regular
+// polygon's own side-to-side "Bézier" envelope actually uses) between side s and side
+// (s+bezierStep)%sides, one Thread Path per side.
 function buildPolygonCore(sides: number, nailsPerSide: number, bezierStep: number, rotation: number, ctx: GeneratorBuildContext, colourOffset: number): { pinPath: PinPath; threadPaths: ThreadPath[] } {
   const geometry: PinPathGeometry = { type: "regular-polygon", center: ctx.center, radius: ctx.maxRadius, sides, rotation };
   const sideLength = 2 * ctx.maxRadius * Math.sin(Math.PI / sides);
@@ -551,7 +558,7 @@ function buildPolygonCore(sides: number, nailsPerSide: number, bezierStep: numbe
     const sideAStart = s * nailsPerSide;
     const sideBStart = otherSide * nailsPerSide;
     const resolve = (node: RayZigzagNode): string => pinPath.pins[(node.which === "A" ? sideAStart : sideBStart) + node.index].id;
-    const pinIds = twoRayZigzag(nailsPerSide, nailsPerSide).map(resolve);
+    const pinIds = sameIndexZigzag(nailsPerSide, nailsPerSide).map(resolve);
     threadPaths.push(createThreadPath(pinIds, [palette[(colourOffset + threadPaths.length) % palette.length]], ctx.threadDefaults.width, ctx.threadDefaults.twistPitch));
   }
   return { pinPath, threadPaths };
@@ -589,13 +596,17 @@ function buildAssymetry(params: Extract<GeneratorParams, { patternId: "assymetry
   const circleSpacing = spacingForPinCount(circlePerimeter(ctx.maxRadius), circleNails);
   const circlePath = createPinPath(circleGeometry, circleSpacing, ctx.pinStyle);
 
+  // Same physical nail spacing on the spoke as on the circle (a circle of radius R and
+  // circleNails nails has spacing 2πR/circleNails; a spoke of length R divided at that
+  // spacing gets round(R / (2πR/circleNails)) = round(circleNails/2π) intervals).
+  const spokeNailCount = Math.max(1, Math.round(circleNails / (2 * Math.PI)));
   const end: Point = { x: ctx.center.x + ctx.maxRadius * Math.cos(rotation), y: ctx.center.y + ctx.maxRadius * Math.sin(rotation) };
   const spokeGeometry: PinPathGeometry = { type: "line", start: ctx.center, end };
-  const spokeSpacing = spacingForPinCount(ctx.maxRadius, Math.max(1, circleNails - 1));
+  const spokeSpacing = spacingForPinCount(ctx.maxRadius, spokeNailCount);
   const spokePath = createPinPath(spokeGeometry, spokeSpacing, ctx.pinStyle);
 
   const resolve = (node: AsymmetryNode): string => (node.which === "circle" ? circlePath.pins[node.index].id : spokePath.pins[node.index].id);
-  const pinIds = asymmetryZigzag(circleNails, circleNails, startFraction, endFraction, reverse).map(resolve);
+  const pinIds = asymmetryZigzag(circleNails, spokeNailCount, startFraction, endFraction, reverse).map(resolve);
   const threadPath = createThreadPath(pinIds, ctx.threadDefaults.colours, ctx.threadDefaults.width, ctx.threadDefaults.twistPitch);
   return { pinPaths: [circlePath, spokePath], threadPaths: pinIds.length >= 2 ? [threadPath] : [] };
 }
@@ -645,16 +656,18 @@ function buildMaurerRose(params: Extract<GeneratorParams, { patternId: "maurer-r
 }
 
 // Comet — one circle, `layers` offset-alternation passes (cometLayerSequences) whose
-// offset and run length both shrink per layer, giving the accumulated result a
-// tapering "tail". `rotation` applied as an index shift, same rationale as Spiral.
+// offset shrinks per layer (by `layerDistance`); each layer's own run length is
+// derived from that offset, not set independently, which is what gives the
+// accumulated result its tapering "tail". `rotation` applied as an index shift, same
+// rationale as Spiral.
 function buildComet(params: Extract<GeneratorParams, { patternId: "comet" }>, ctx: GeneratorBuildContext): GeneratorBuildResult {
-  const { n, layers, firstLayerSize, distance, rotation } = params;
+  const { n, layers, firstLayerSize, layerDistance, rotation } = params;
   const geometry: PinPathGeometry = { type: "circle", center: ctx.center, radius: ctx.maxRadius };
   const spacing = spacingForPinCount(circlePerimeter(ctx.maxRadius), n);
   const pinPath = createPinPath(geometry, spacing, ctx.pinStyle);
   const shift = Math.round((rotation / (2 * Math.PI)) * n);
   const palette = ctx.threadDefaults.colours.length > 0 ? ctx.threadDefaults.colours : ["#5b8def"];
-  const layerSeqs = cometLayerSequences(n, layers, firstLayerSize, distance);
+  const layerSeqs = cometLayerSequences(n, layers, firstLayerSize, layerDistance);
   const threadPaths = layerSeqs.map((layer, i) =>
     createThreadPath(
       layer.localIndices.map((idx) => pinPath.pins[((idx + shift) % n + n) % n].id),
@@ -863,7 +876,7 @@ export const GENERATOR_PATTERNS: Record<GeneratorPatternId, GeneratorPatternDef>
   vortex: {
     id: "vortex",
     labelKey: "vortex",
-    defaultParams: { patternId: "vortex", sides: 6, layers: 12, layerAngle: 0.05, rotation: 0 },
+    defaultParams: { patternId: "vortex", sides: 4, nailsPerSide: 15, layers: 12, layerAngle: 0.05, rotation: 0 },
   },
   polygon: {
     id: "polygon",
@@ -878,12 +891,12 @@ export const GENERATOR_PATTERNS: Record<GeneratorPatternId, GeneratorPatternDef>
   assymetry: {
     id: "assymetry",
     labelKey: "assymetry",
-    defaultParams: { patternId: "assymetry", circleNails: 120, startFraction: 0, endFraction: 1, reverse: false, rotation: 0 },
+    defaultParams: { patternId: "assymetry", circleNails: 120, startFraction: 0.25, endFraction: 1, reverse: false, rotation: 0 },
   },
   spiral: {
     id: "spiral",
     labelKey: "spiral",
-    defaultParams: { patternId: "spiral", n: 180, repetition: 3, innerLength: 4, rotation: 0 },
+    defaultParams: { patternId: "spiral", n: 180, repetition: 4, innerLength: 70, rotation: 0 },
   },
   "maurer-rose": {
     id: "maurer-rose",
@@ -893,7 +906,7 @@ export const GENERATOR_PATTERNS: Record<GeneratorPatternId, GeneratorPatternDef>
   comet: {
     id: "comet",
     labelKey: "comet",
-    defaultParams: { patternId: "comet", n: 150, layers: 15, firstLayerSize: 40, distance: 20, rotation: 0 },
+    defaultParams: { patternId: "comet", n: 150, layers: 15, firstLayerSize: 70, layerDistance: 3, rotation: 0 },
   },
   "flower-of-life": {
     id: "flower-of-life",

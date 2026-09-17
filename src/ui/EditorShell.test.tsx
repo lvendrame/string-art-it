@@ -40,6 +40,23 @@ describe("EditorShell undo/redo shortcuts", () => {
     document.body.removeChild(input);
   });
 
+  it("Ctrl/Cmd+Z retracts the last vertex of an in-progress Thread Path draft instead of undoing history", () => {
+    const store = new EditorStore();
+    store.setBoardDimensions({ diameter: 90 }); // a committed, undoable step
+    store.setMode("thread");
+    const [pinLayer] = store.getState().pinLayers;
+    store.addPinPath(pinLayer.id, { type: "circle", center: { x: 0, y: 0 }, radius: 7 });
+    const path = store.getState().pinLayers[0].pinPaths[0];
+    store.extendThreadDraft(path.pins[0].id);
+    store.extendThreadDraft(path.pins[1].id);
+    render(<EditorShell store={store} onNewProject={() => {}} />);
+
+    fireEvent.keyDown(window, { key: "z", ctrlKey: true });
+
+    expect(store.getState().threadDraft?.pinIds).toEqual([path.pins[0].id]);
+    expect(store.getState().board.dimensions.diameter).toBe(90); // history untouched
+  });
+
   it("Undo/Redo toolbar buttons reflect and drive history state", () => {
     const store = new EditorStore();
     render(<EditorShell store={store} onNewProject={() => {}} />);

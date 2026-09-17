@@ -72,14 +72,21 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
 
   // docs/specs/10-undo-redo.md — Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z, except while a text
   // field has focus (renaming a layer, a numeric input) so the browser's own text-undo
-  // isn't hijacked.
+  // isn't hijacked. While a Thread Path draft is in progress, plain Ctrl/Cmd+Z retracts
+  // its last vertex instead (same as ArrowLeft, docs/specs/12-thread-editor.md) since
+  // the draft itself isn't in the undo history yet (only committed on finish).
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== "z") return;
       if (isTextEntryTarget(e.target)) return;
       e.preventDefault();
-      if (e.shiftKey) store.redo();
-      else store.undo();
+      if (e.shiftKey) {
+        store.redo();
+      } else if (store.getState().threadDraft) {
+        store.retractThreadDraft();
+      } else {
+        store.undo();
+      }
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);

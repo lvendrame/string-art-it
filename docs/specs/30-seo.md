@@ -42,7 +42,7 @@ Four new sections render inline in the `!entered` branch of `App.tsx`, around th
 - **How it works** (`LandingHowItWorks`) — a 4-step numbered process (set up board → place pins → connect threads → export/print) matching the real app flow.
 - **FAQ** (`LandingFAQ`) — a data-driven Q&A list (`faqContent.ts`, following the same typed-keys + generic-renderer split as the in-app Help content's `HelpSection`/`HelpItem` pattern), including a purely definitional "What is string art?" entry.
 
-All four reuse only documented design-system tokens (`18-design-system.md`) — no new colors, radii, fonts, or animation. All copy lives in a new `landing` i18n namespace, authored in full for `en`; the other 4 locales currently carry the English copy verbatim as a placeholder (a known gap, not a translation).
+All four reuse only documented design-system tokens (`18-design-system.md`) — no new colors, radii, fonts, or animation. All copy lives in a new `landing` i18n namespace, authored in full for all 5 locales (`en`/`pt-BR`/`es`/`fr`/`de`).
 
 ## Test Cases
 
@@ -88,5 +88,5 @@ Feature: Landing content
   Scenario: Landing content is i18n-driven
     Given the app loads with a non-English locale selected
     Then BoardSetup's own strings are translated
-    And the landing sections render (English placeholder copy where a locale's landing.json has not yet been translated)
+    And the landing sections render fully translated copy in that locale
 ```

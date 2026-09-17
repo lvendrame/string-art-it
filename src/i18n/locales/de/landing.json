@@ -1,38 +1,38 @@
 {
   "hero": {
-    "title": "Design String Art Online — Free String Art Editor & Generator",
-    "subtitle": "Turn a circle, oval, rectangle, square, or triangle into a pin-and-thread string art pattern, right in your browser. Place pins, connect threads across layers, and print a ready-to-build template — free, with no signup and no download."
+    "title": "String Art online gestalten — Kostenloser String-Art-Editor & Generator",
+    "subtitle": "Verwandeln Sie einen Kreis, ein Oval, ein Rechteck, ein Quadrat oder ein Dreieck direkt im Browser in ein String-Art-Muster aus Nägeln und Fäden. Setzen Sie Nägel, verbinden Sie Fäden über mehrere Ebenen und drucken Sie eine baufertige Vorlage — kostenlos, ohne Anmeldung und ohne Download."
   },
   "features": {
-    "heading": "What you can do",
+    "heading": "Was Sie tun können",
     "items": {
-      "shapes": { "title": "Any board shape", "description": "Start from a circle, oval, rectangle, square, or triangle with your own physical dimensions." },
-      "pins": { "title": "Precise pin placement", "description": "Distribute pins evenly along lines, arcs, polygons, and stars with exact spacing control." },
-      "threads": { "title": "Multi-layer threading", "description": "Connect pins with single- or multi-colour threads, organised across separate thread layers." },
-      "layers": { "title": "Pin & thread layers", "description": "Keep pins and threads organised in their own layers, with visibility and locking." },
-      "undo": { "title": "Full undo history", "description": "Every change is undoable and redoable, so you can experiment freely." },
-      "print": { "title": "Print-ready templates", "description": "Export a print-ready template with pin numbers and guides for building the real thing." }
+      "shapes": { "title": "Jede Brettform", "description": "Starten Sie mit einem Kreis, Oval, Rechteck, Quadrat oder Dreieck in Ihren eigenen realen Maßen." },
+      "pins": { "title": "Präzise Nagelplatzierung", "description": "Verteilen Sie Nägel gleichmäßig entlang von Linien, Bögen, Polygonen und Sternen mit exakter Abstandskontrolle." },
+      "threads": { "title": "Mehrschichtige Fäden", "description": "Verbinden Sie Nägel mit ein- oder mehrfarbigen Fäden, organisiert in getrennten Fadenebenen." },
+      "layers": { "title": "Nagel- & Fadenebenen", "description": "Halten Sie Nägel und Fäden in eigenen Ebenen organisiert, mit Sichtbarkeit und Sperrung." },
+      "undo": { "title": "Vollständiger Rückgängig-Verlauf", "description": "Jede Änderung kann rückgängig gemacht und wiederhergestellt werden, damit Sie frei experimentieren können." },
+      "print": { "title": "Druckfertige Vorlagen", "description": "Exportieren Sie eine druckfertige Vorlage mit Nagelnummern und Hilfslinien zum Nachbauen." }
     }
   },
   "howItWorks": {
-    "heading": "How it works",
+    "heading": "So funktioniert's",
     "steps": {
-      "setup": { "title": "Set up your board", "description": "Choose a shape and enter its real-world dimensions and appearance." },
-      "pins": { "title": "Place your pins", "description": "Draw pin paths with precise, evenly spaced pin placement." },
-      "threads": { "title": "Connect the threads", "description": "Draw thread paths between pins across as many layers as you like." },
-      "print": { "title": "Export & print", "description": "Print a build template, or save your project to keep working on it later." }
+      "setup": { "title": "Brett einrichten", "description": "Wählen Sie eine Form und geben Sie die realen Maße und das Aussehen an." },
+      "pins": { "title": "Nägel platzieren", "description": "Zeichnen Sie Nagelpfade mit präziser, gleichmäßiger Nagelplatzierung." },
+      "threads": { "title": "Fäden verbinden", "description": "Zeichnen Sie Fadenpfade zwischen Nägeln über beliebig viele Ebenen." },
+      "print": { "title": "Exportieren & drucken", "description": "Drucken Sie eine Bauvorlage, oder speichern Sie Ihr Projekt, um später weiterzuarbeiten." }
     }
   },
   "faq": {
-    "heading": "Frequently asked questions",
+    "heading": "Häufig gestellte Fragen",
     "items": {
-      "whatIsStringArt": { "question": "What is string art?", "answer": "String art is a technique where thread or string is wound between pins or nails arranged on a board to form geometric patterns and images. StringArtIt lets you design that pin-and-thread layout digitally before building it physically." },
-      "isFree": { "question": "Is StringArtIt free to use?", "answer": "Yes. StringArtIt runs entirely in your browser and is free to use, with no signup required." },
-      "needsAccount": { "question": "Do I need to create an account?", "answer": "No account is needed. Your project stays in your browser, and you can save it to a file to reopen later." },
-      "shapes": { "question": "What board shapes are supported?", "answer": "Circle, oval, rectangle, square, and triangle boards, each with custom real-world dimensions and appearance." },
-      "print": { "question": "Can I print a template to build the real string art?", "answer": "Yes. The Print Preview generates a build template showing pins, guides, and pin numbers, printable at 1:1 scale or fit to page." },
-      "saveProject": { "question": "Can I save my project and come back later?", "answer": "Yes. You can save your project to a file and reopen it later, and an autosave will offer to restore unsaved work if you leave the page." },
-      "symmetry": { "question": "Does StringArtIt support symmetrical patterns?", "answer": "Yes. Horizontal, vertical, both, and radial symmetry tools let you draw once and generate mirrored or radial copies automatically." }
+      "whatIsStringArt": { "question": "Was ist String Art?", "answer": "String Art ist eine Technik, bei der Faden zwischen auf einem Brett angeordneten Nägeln oder Stiften gespannt wird, um geometrische Muster und Bilder zu erzeugen. Mit StringArtIt können Sie dieses Nagel-und-Faden-Layout digital entwerfen, bevor Sie es physisch nachbauen." },
+      "isFree": { "question": "Ist StringArtIt kostenlos?", "answer": "Ja. StringArtIt läuft vollständig in Ihrem Browser und ist kostenlos nutzbar, ohne Anmeldung." },
+      "needsAccount": { "question": "Muss ich ein Konto erstellen?", "answer": "Es ist kein Konto erforderlich. Ihr Projekt bleibt in Ihrem Browser, und Sie können es als Datei speichern, um es später wieder zu öffnen." },
+      "shapes": { "question": "Welche Brettformen werden unterstützt?", "answer": "Kreis-, Oval-, Rechteck-, Quadrat- und Dreieck-Bretter, jeweils mit individuellen realen Maßen und individuellem Aussehen." },
+      "print": { "question": "Kann ich eine Vorlage drucken, um das echte String Art zu bauen?", "answer": "Ja. Die Druckvorschau erzeugt eine Bauvorlage mit Nägeln, Hilfslinien und Nagelnummern, druckbar im Maßstab 1:1 oder seitenangepasst." },
+      "saveProject": { "question": "Kann ich mein Projekt speichern und später weiterarbeiten?", "answer": "Ja. Sie können Ihr Projekt in einer Datei speichern und später wieder öffnen, und eine automatische Speicherung bietet an, nicht gespeicherte Arbeit wiederherzustellen, falls Sie die Seite verlassen." },
+      "symmetry": { "question": "Unterstützt StringArtIt symmetrische Muster?", "answer": "Ja. Werkzeuge für horizontale, vertikale, beidseitige und radiale Symmetrie lassen Sie einmal zeichnen und automatisch gespiegelte oder radiale Kopien erzeugen." }
     }
   }
 }

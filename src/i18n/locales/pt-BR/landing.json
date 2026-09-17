@@ -1,38 +1,38 @@
 {
   "hero": {
-    "title": "Design String Art Online — Free String Art Editor & Generator",
-    "subtitle": "Turn a circle, oval, rectangle, square, or triangle into a pin-and-thread string art pattern, right in your browser. Place pins, connect threads across layers, and print a ready-to-build template — free, with no signup and no download."
+    "title": "Crie String Art Online — Editor e Gerador de String Art Gratuito",
+    "subtitle": "Transforme um círculo, oval, retângulo, quadrado ou triângulo em um padrão de string art com pinos e linhas, direto no seu navegador. Posicione pinos, conecte linhas em camadas e imprima um molde pronto para construir — grátis, sem cadastro e sem download."
   },
   "features": {
-    "heading": "What you can do",
+    "heading": "O que você pode fazer",
     "items": {
-      "shapes": { "title": "Any board shape", "description": "Start from a circle, oval, rectangle, square, or triangle with your own physical dimensions." },
-      "pins": { "title": "Precise pin placement", "description": "Distribute pins evenly along lines, arcs, polygons, and stars with exact spacing control." },
-      "threads": { "title": "Multi-layer threading", "description": "Connect pins with single- or multi-colour threads, organised across separate thread layers." },
-      "layers": { "title": "Pin & thread layers", "description": "Keep pins and threads organised in their own layers, with visibility and locking." },
-      "undo": { "title": "Full undo history", "description": "Every change is undoable and redoable, so you can experiment freely." },
-      "print": { "title": "Print-ready templates", "description": "Export a print-ready template with pin numbers and guides for building the real thing." }
+      "shapes": { "title": "Qualquer formato de quadro", "description": "Comece com um círculo, oval, retângulo, quadrado ou triângulo com suas próprias dimensões físicas." },
+      "pins": { "title": "Posicionamento preciso de pinos", "description": "Distribua pinos uniformemente ao longo de linhas, arcos, polígonos e estrelas com controle exato de espaçamento." },
+      "threads": { "title": "Linhas em múltiplas camadas", "description": "Conecte pinos com linhas de uma ou várias cores, organizadas em camadas de linha separadas." },
+      "layers": { "title": "Camadas de pinos e linhas", "description": "Mantenha pinos e linhas organizados em suas próprias camadas, com visibilidade e bloqueio." },
+      "undo": { "title": "Histórico completo de desfazer", "description": "Toda alteração pode ser desfeita e refeita, para você experimentar livremente." },
+      "print": { "title": "Moldes prontos para impressão", "description": "Exporte um molde pronto para impressão com números de pinos e guias para construir o modelo real." }
     }
   },
   "howItWorks": {
-    "heading": "How it works",
+    "heading": "Como funciona",
     "steps": {
-      "setup": { "title": "Set up your board", "description": "Choose a shape and enter its real-world dimensions and appearance." },
-      "pins": { "title": "Place your pins", "description": "Draw pin paths with precise, evenly spaced pin placement." },
-      "threads": { "title": "Connect the threads", "description": "Draw thread paths between pins across as many layers as you like." },
-      "print": { "title": "Export & print", "description": "Print a build template, or save your project to keep working on it later." }
+      "setup": { "title": "Configure seu quadro", "description": "Escolha um formato e informe suas dimensões reais e aparência." },
+      "pins": { "title": "Posicione seus pinos", "description": "Desenhe caminhos de pinos com posicionamento preciso e uniforme." },
+      "threads": { "title": "Conecte as linhas", "description": "Desenhe caminhos de linha entre os pinos em quantas camadas quiser." },
+      "print": { "title": "Exporte e imprima", "description": "Imprima um molde de construção, ou salve seu projeto para continuar depois." }
     }
   },
   "faq": {
-    "heading": "Frequently asked questions",
+    "heading": "Perguntas frequentes",
     "items": {
-      "whatIsStringArt": { "question": "What is string art?", "answer": "String art is a technique where thread or string is wound between pins or nails arranged on a board to form geometric patterns and images. StringArtIt lets you design that pin-and-thread layout digitally before building it physically." },
-      "isFree": { "question": "Is StringArtIt free to use?", "answer": "Yes. StringArtIt runs entirely in your browser and is free to use, with no signup required." },
-      "needsAccount": { "question": "Do I need to create an account?", "answer": "No account is needed. Your project stays in your browser, and you can save it to a file to reopen later." },
-      "shapes": { "question": "What board shapes are supported?", "answer": "Circle, oval, rectangle, square, and triangle boards, each with custom real-world dimensions and appearance." },
-      "print": { "question": "Can I print a template to build the real string art?", "answer": "Yes. The Print Preview generates a build template showing pins, guides, and pin numbers, printable at 1:1 scale or fit to page." },
-      "saveProject": { "question": "Can I save my project and come back later?", "answer": "Yes. You can save your project to a file and reopen it later, and an autosave will offer to restore unsaved work if you leave the page." },
-      "symmetry": { "question": "Does StringArtIt support symmetrical patterns?", "answer": "Yes. Horizontal, vertical, both, and radial symmetry tools let you draw once and generate mirrored or radial copies automatically." }
+      "whatIsStringArt": { "question": "O que é string art?", "answer": "String art é uma técnica em que um fio ou linha é enrolado entre pinos ou pregos dispostos em um quadro, formando padrões geométricos e imagens. O StringArtIt permite desenhar esse layout de pinos e linhas digitalmente antes de construí-lo fisicamente." },
+      "isFree": { "question": "O StringArtIt é gratuito?", "answer": "Sim. O StringArtIt funciona totalmente no seu navegador e é gratuito, sem necessidade de cadastro." },
+      "needsAccount": { "question": "Preciso criar uma conta?", "answer": "Não é necessária nenhuma conta. Seu projeto fica no seu navegador, e você pode salvá-lo em um arquivo para reabrir depois." },
+      "shapes": { "question": "Quais formatos de quadro são suportados?", "answer": "Quadros em círculo, oval, retângulo, quadrado e triângulo, cada um com dimensões e aparência personalizadas." },
+      "print": { "question": "Posso imprimir um molde para construir o string art de verdade?", "answer": "Sim. A Pré-visualização de Impressão gera um molde de construção mostrando pinos, guias e números de pinos, imprimível em escala 1:1 ou ajustado à página." },
+      "saveProject": { "question": "Posso salvar meu projeto e continuar depois?", "answer": "Sim. Você pode salvar seu projeto em um arquivo e reabri-lo depois, e um salvamento automático vai oferecer para restaurar um trabalho não salvo caso você saia da página." },
+      "symmetry": { "question": "O StringArtIt suporta padrões simétricos?", "answer": "Sim. As ferramentas de simetria horizontal, vertical, ambas e radial permitem desenhar uma vez e gerar cópias espelhadas ou radiais automaticamente." }
     }
   }
 }

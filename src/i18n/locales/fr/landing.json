@@ -1,38 +1,38 @@
 {
   "hero": {
-    "title": "Design String Art Online — Free String Art Editor & Generator",
-    "subtitle": "Turn a circle, oval, rectangle, square, or triangle into a pin-and-thread string art pattern, right in your browser. Place pins, connect threads across layers, and print a ready-to-build template — free, with no signup and no download."
+    "title": "Créez du String Art en ligne — Éditeur et générateur de string art gratuit",
+    "subtitle": "Transformez un cercle, un ovale, un rectangle, un carré ou un triangle en un motif de string art à base de clous et de fils, directement dans votre navigateur. Placez des clous, reliez des fils sur plusieurs calques et imprimez un gabarit prêt à construire — gratuit, sans inscription ni téléchargement."
   },
   "features": {
-    "heading": "What you can do",
+    "heading": "Ce que vous pouvez faire",
     "items": {
-      "shapes": { "title": "Any board shape", "description": "Start from a circle, oval, rectangle, square, or triangle with your own physical dimensions." },
-      "pins": { "title": "Precise pin placement", "description": "Distribute pins evenly along lines, arcs, polygons, and stars with exact spacing control." },
-      "threads": { "title": "Multi-layer threading", "description": "Connect pins with single- or multi-colour threads, organised across separate thread layers." },
-      "layers": { "title": "Pin & thread layers", "description": "Keep pins and threads organised in their own layers, with visibility and locking." },
-      "undo": { "title": "Full undo history", "description": "Every change is undoable and redoable, so you can experiment freely." },
-      "print": { "title": "Print-ready templates", "description": "Export a print-ready template with pin numbers and guides for building the real thing." }
+      "shapes": { "title": "Toutes les formes de plateau", "description": "Partez d'un cercle, d'un ovale, d'un rectangle, d'un carré ou d'un triangle avec vos propres dimensions réelles." },
+      "pins": { "title": "Placement précis des clous", "description": "Répartissez les clous uniformément le long de lignes, d'arcs, de polygones et d'étoiles avec un contrôle exact de l'espacement." },
+      "threads": { "title": "Fils sur plusieurs calques", "description": "Reliez les clous avec des fils unis ou multicolores, organisés sur des calques de fil distincts." },
+      "layers": { "title": "Calques de clous et de fils", "description": "Gardez les clous et les fils organisés dans leurs propres calques, avec visibilité et verrouillage." },
+      "undo": { "title": "Historique complet d'annulation", "description": "Chaque modification peut être annulée et rétablie, pour expérimenter librement." },
+      "print": { "title": "Gabarits prêts à imprimer", "description": "Exportez un gabarit prêt à imprimer avec la numérotation des clous et des repères pour construire la pièce réelle." }
     }
   },
   "howItWorks": {
-    "heading": "How it works",
+    "heading": "Comment ça marche",
     "steps": {
-      "setup": { "title": "Set up your board", "description": "Choose a shape and enter its real-world dimensions and appearance." },
-      "pins": { "title": "Place your pins", "description": "Draw pin paths with precise, evenly spaced pin placement." },
-      "threads": { "title": "Connect the threads", "description": "Draw thread paths between pins across as many layers as you like." },
-      "print": { "title": "Export & print", "description": "Print a build template, or save your project to keep working on it later." }
+      "setup": { "title": "Configurez votre plateau", "description": "Choisissez une forme et indiquez ses dimensions réelles et son apparence." },
+      "pins": { "title": "Placez vos clous", "description": "Tracez des chemins de clous avec un placement précis et régulier." },
+      "threads": { "title": "Reliez les fils", "description": "Tracez des chemins de fil entre les clous, sur autant de calques que vous le souhaitez." },
+      "print": { "title": "Exportez et imprimez", "description": "Imprimez un gabarit de construction, ou enregistrez votre projet pour continuer plus tard." }
     }
   },
   "faq": {
-    "heading": "Frequently asked questions",
+    "heading": "Questions fréquentes",
     "items": {
-      "whatIsStringArt": { "question": "What is string art?", "answer": "String art is a technique where thread or string is wound between pins or nails arranged on a board to form geometric patterns and images. StringArtIt lets you design that pin-and-thread layout digitally before building it physically." },
-      "isFree": { "question": "Is StringArtIt free to use?", "answer": "Yes. StringArtIt runs entirely in your browser and is free to use, with no signup required." },
-      "needsAccount": { "question": "Do I need to create an account?", "answer": "No account is needed. Your project stays in your browser, and you can save it to a file to reopen later." },
-      "shapes": { "question": "What board shapes are supported?", "answer": "Circle, oval, rectangle, square, and triangle boards, each with custom real-world dimensions and appearance." },
-      "print": { "question": "Can I print a template to build the real string art?", "answer": "Yes. The Print Preview generates a build template showing pins, guides, and pin numbers, printable at 1:1 scale or fit to page." },
-      "saveProject": { "question": "Can I save my project and come back later?", "answer": "Yes. You can save your project to a file and reopen it later, and an autosave will offer to restore unsaved work if you leave the page." },
-      "symmetry": { "question": "Does StringArtIt support symmetrical patterns?", "answer": "Yes. Horizontal, vertical, both, and radial symmetry tools let you draw once and generate mirrored or radial copies automatically." }
+      "whatIsStringArt": { "question": "Qu'est-ce que le string art ?", "answer": "Le string art est une technique où du fil est tendu entre des clous ou des pointes disposés sur un plateau pour former des motifs géométriques et des images. StringArtIt vous permet de concevoir numériquement cette disposition de clous et de fils avant de la construire physiquement." },
+      "isFree": { "question": "StringArtIt est-il gratuit ?", "answer": "Oui. StringArtIt fonctionne entièrement dans votre navigateur et est gratuit, sans inscription requise." },
+      "needsAccount": { "question": "Dois-je créer un compte ?", "answer": "Aucun compte n'est nécessaire. Votre projet reste dans votre navigateur, et vous pouvez l'enregistrer dans un fichier pour le rouvrir plus tard." },
+      "shapes": { "question": "Quelles formes de plateau sont prises en charge ?", "answer": "Des plateaux en cercle, ovale, rectangle, carré et triangle, chacun avec des dimensions et une apparence personnalisées." },
+      "print": { "question": "Puis-je imprimer un gabarit pour construire le string art réel ?", "answer": "Oui. L'aperçu avant impression génère un gabarit de construction montrant les clous, les repères et leur numérotation, imprimable à l'échelle 1:1 ou ajusté à la page." },
+      "saveProject": { "question": "Puis-je enregistrer mon projet et y revenir plus tard ?", "answer": "Oui. Vous pouvez enregistrer votre projet dans un fichier et le rouvrir plus tard, et une sauvegarde automatique proposera de restaurer un travail non enregistré si vous quittez la page." },
+      "symmetry": { "question": "StringArtIt prend-il en charge les motifs symétriques ?", "answer": "Oui. Les outils de symétrie horizontale, verticale, les deux, et radiale permettent de dessiner une seule fois puis de générer automatiquement des copies miroir ou radiales." }
     }
   }
 }

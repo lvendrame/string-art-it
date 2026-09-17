@@ -301,11 +301,36 @@ describe("buildGeneratorPattern — maurer-rose", () => {
 });
 
 describe("buildGeneratorPattern — comet", () => {
-  it("builds one circle with `layers` shrinking offset-alternation threads", () => {
-    const result = buildGeneratorPattern({ patternId: "comet", n: 80, layers: 5, firstLayerSize: 20, layerDistance: 3, rotation: 0 }, ctx);
+  it("builds one freehand pin path with `layers` shrinking offset-alternation threads", () => {
+    const result = buildGeneratorPattern({ patternId: "comet", n: 80, layers: 5, firstLayerSize: 20, layerDistance: 3, clusterStrength: 0.7, distortion: 0.38, rotation: 0 }, ctx);
     expect(result.pinPaths).toHaveLength(1);
+    expect(result.pinPaths[0].geometry.type).toBe("freehand");
+    expect(result.pinPaths[0].pins).toHaveLength(80);
     expect(result.threadPaths).toHaveLength(5);
     expect(allPinIdsValid(result)).toBe(true);
+  });
+
+  it("clusters nail angles near the tail direction rather than spacing them uniformly", () => {
+    const result = buildGeneratorPattern({ patternId: "comet", n: 40, layers: 1, firstLayerSize: 10, layerDistance: 1, clusterStrength: 0.8, distortion: 0, rotation: 0 }, ctx);
+    const pins = result.pinPaths[0].pins;
+    const angle = (p: { x: number; y: number }) => Math.atan2(p.y - ctx.center.y, p.x - ctx.center.x);
+    const gaps = pins.map((p, i) => {
+      const next = pins[(i + 1) % pins.length];
+      let d = angle(next) - angle(p);
+      while (d < 0) d += 2 * Math.PI;
+      while (d > Math.PI) d -= 2 * Math.PI;
+      return Math.abs(d);
+    });
+    expect(Math.max(...gaps)).toBeGreaterThan(Math.min(...gaps) * 3); // non-uniform
+  });
+
+  it("distortion squashes the y-radius, producing an ellipse (x extent > y extent)", () => {
+    const result = buildGeneratorPattern({ patternId: "comet", n: 40, layers: 1, firstLayerSize: 10, layerDistance: 1, clusterStrength: 0, distortion: 0.5, rotation: 0 }, ctx);
+    const pins = result.pinPaths[0].pins;
+    const xExtent = Math.max(...pins.map((p) => p.x)) - Math.min(...pins.map((p) => p.x));
+    const yExtent = Math.max(...pins.map((p) => p.y)) - Math.min(...pins.map((p) => p.y));
+    expect(xExtent).toBeCloseTo(2 * ctx.maxRadius, 5);
+    expect(yExtent).toBeCloseTo(2 * ctx.maxRadius * 0.5, 5);
   });
 });
 

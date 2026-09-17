@@ -169,7 +169,9 @@
       "nailsPerCircle": "Nägel pro Kreis",
       "nailsPerLine": "Nägel pro Linie",
       "gap": "Abstand",
-      "layerDistance": "Ebenenabstand"
+      "layerDistance": "Ebenenabstand",
+      "clusterStrength": "Clusterstärke",
+      "distortion": "Verzerrung"
     },
     "generate": "Erzeugen",
     "regenerate": "Neu erzeugen",

@@ -1,5 +1,6 @@
 import {
   asymmetryZigzag,
+  clusterFraction,
   cometLayerSequences,
   connectTwoSidesLocalIndices,
   mandalaLayerSequences,
@@ -88,7 +89,7 @@ export type GeneratorParams =
   | { patternId: "assymetry"; circleNails: number; startFraction: number; endFraction: number; reverse: boolean; rotation: number }
   | { patternId: "spiral"; n: number; repetition: number; innerLength: number; rotation: number }
   | { patternId: "maurer-rose"; N: number; maxSteps: number; angleDegrees: number; rotation: number }
-  | { patternId: "comet"; n: number; layers: number; firstLayerSize: number; layerDistance: number; rotation: number }
+  | { patternId: "comet"; n: number; layers: number; firstLayerSize: number; layerDistance: number; clusterStrength: number; distortion: number; rotation: number }
   | { patternId: "flower-of-life"; depth: number; layerAngle: number; rotation: number; ringEnabled: boolean; ringNails: number; ringBase: number }
   | { patternId: "lotus"; sides: number; nailsPerCircle: number; radiusRatio: number; rotation: number }
   | { patternId: "crosses"; nailsPerLine: number; gap: number; rotation: number };
@@ -655,22 +656,43 @@ function buildMaurerRose(params: Extract<GeneratorParams, { patternId: "maurer-r
   return { pinPaths: [pinPath], threadPaths: [threadPath] };
 }
 
-// Comet — one circle, `layers` offset-alternation passes (cometLayerSequences) whose
-// offset shrinks per layer (by `layerDistance`); each layer's own run length is
-// derived from that offset, not set independently, which is what gives the
-// accumulated result its tapering "tail". `rotation` applied as an index shift, same
-// rationale as Spiral.
+// Comet — one ELLIPSE (not a circle — confirmed against a reference render's own nail
+// coordinates, which fit an ellipse equation to within 0.7%; `distortion` controls its
+// eccentricity, `yRadius = maxRadius*(1-distortion)` against a fixed `xRadius =
+// maxRadius`), `layers` offset-alternation passes (cometLayerSequences) whose offset
+// shrinks per layer (by `layerDistance`); each layer's own run length is derived from
+// that offset, not set independently, which is what gives the accumulated result its
+// tapering "tail". Nails are NOT evenly spaced around the ellipse either —
+// `clusterFraction` (comet.ts) clusters them near the tail direction (angle 0, before
+// `rotation`) and spreads them out near the opposite side (also confirmed against the
+// same reference nail coordinates — clearly non-uniform angular density). Built
+// directly into `pins[]` (freehand-bypass, same architecture as Spirals/Vortex/Maurer
+// Rose) since the pins are exact computed positions, not evenly resampled.
 function buildComet(params: Extract<GeneratorParams, { patternId: "comet" }>, ctx: GeneratorBuildContext): GeneratorBuildResult {
-  const { n, layers, firstLayerSize, layerDistance, rotation } = params;
-  const geometry: PinPathGeometry = { type: "circle", center: ctx.center, radius: ctx.maxRadius };
-  const spacing = spacingForPinCount(circlePerimeter(ctx.maxRadius), n);
-  const pinPath = createPinPath(geometry, spacing, ctx.pinStyle);
-  const shift = Math.round((rotation / (2 * Math.PI)) * n);
+  const { n, layers, firstLayerSize, layerDistance, clusterStrength, distortion, rotation } = params;
+  const xRadius = ctx.maxRadius;
+  const yRadius = ctx.maxRadius * (1 - Math.max(0, Math.min(0.9, distortion)));
+  const points: Point[] = Array.from({ length: n }, (_, i) => {
+    const angle = rotation + clusterFraction(i / n, clusterStrength) * 2 * Math.PI;
+    return { x: ctx.center.x + xRadius * Math.cos(angle), y: ctx.center.y + yRadius * Math.sin(angle) };
+  });
+  const pins: Pin[] = points.map((p) => ({ id: nextPinId(), ...p }));
+  const pinPath: PinPath = {
+    id: nextPathId(),
+    geometry: { type: "freehand", points },
+    requestedSpacing: circlePerimeter(ctx.maxRadius) / Math.max(1, n),
+    actualSpacing: circlePerimeter(ctx.maxRadius) / Math.max(1, n),
+    pins,
+    guideVisible: ctx.pinStyle.guideVisible,
+    colour: ctx.pinStyle.colour,
+    diameter: ctx.pinStyle.diameter,
+    symmetry: NO_SYMMETRY,
+  };
   const palette = ctx.threadDefaults.colours.length > 0 ? ctx.threadDefaults.colours : ["#5b8def"];
   const layerSeqs = cometLayerSequences(n, layers, firstLayerSize, layerDistance);
   const threadPaths = layerSeqs.map((layer, i) =>
     createThreadPath(
-      layer.localIndices.map((idx) => pinPath.pins[((idx + shift) % n + n) % n].id),
+      layer.localIndices.map((idx) => pins[idx].id),
       [palette[i % palette.length]],
       ctx.threadDefaults.width,
       ctx.threadDefaults.twistPitch,
@@ -906,7 +928,7 @@ export const GENERATOR_PATTERNS: Record<GeneratorPatternId, GeneratorPatternDef>
   comet: {
     id: "comet",
     labelKey: "comet",
-    defaultParams: { patternId: "comet", n: 150, layers: 15, firstLayerSize: 70, layerDistance: 3, rotation: 0 },
+    defaultParams: { patternId: "comet", n: 150, layers: 15, firstLayerSize: 70, layerDistance: 3, clusterStrength: 0.7, distortion: 0.38, rotation: 0 },
   },
   "flower-of-life": {
     id: "flower-of-life",

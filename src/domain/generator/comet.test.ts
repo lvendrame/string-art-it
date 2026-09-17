@@ -1,5 +1,34 @@
 import { describe, expect, it } from "vitest";
-import { cometLayerSequences } from "./comet";
+import { clusterFraction, cometLayerSequences } from "./comet";
+
+describe("clusterFraction", () => {
+  it("is the identity when strength is 0", () => {
+    for (const t of [0.1, 0.25, 0.5, 0.75, 0.9]) expect(clusterFraction(t, 0)).toBeCloseTo(t, 9);
+  });
+
+  it("is a no-op at the fixed points 0, 0.5, and 1", () => {
+    expect(clusterFraction(0, 0.8)).toBeCloseTo(0, 9);
+    expect(clusterFraction(0.5, 0.8)).toBeCloseTo(0.5, 9);
+    expect(clusterFraction(1, 0.8)).toBeCloseTo(1, 9);
+  });
+
+  it("compresses values near the ends (clustering) as strength increases", () => {
+    // t=0.1 should map CLOSER to 0 (more compressed) as strength rises.
+    const low = clusterFraction(0.1, 0.2);
+    const high = clusterFraction(0.1, 1);
+    expect(high).toBeLessThan(low);
+    expect(low).toBeLessThan(0.1);
+  });
+
+  it("stays within [0, 1] for any input in that range", () => {
+    for (let i = 0; i <= 10; i += 1) {
+      const t = i / 10;
+      const v = clusterFraction(t, 0.7);
+      expect(v).toBeGreaterThanOrEqual(0);
+      expect(v).toBeLessThanOrEqual(1);
+    }
+  });
+});
 
 describe("cometLayerSequences", () => {
   it("throws for non-positive n or layers", () => {

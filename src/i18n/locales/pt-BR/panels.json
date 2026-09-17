@@ -169,7 +169,9 @@
       "nailsPerCircle": "Pregos por círculo",
       "nailsPerLine": "Pregos por linha",
       "gap": "Espaçamento",
-      "layerDistance": "Distância entre camadas"
+      "layerDistance": "Distância entre camadas",
+      "clusterStrength": "Intensidade de agrupamento",
+      "distortion": "Distorção"
     },
     "generate": "Gerar",
     "regenerate": "Regerar",

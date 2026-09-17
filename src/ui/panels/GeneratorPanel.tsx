@@ -347,6 +347,8 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
             <NumberField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={40} onChange={(v) => set("layers", v)} />
             <NumberField label={t("generatorPanel.fields.firstLayerSize")} value={params.firstLayerSize} min={2} max={200} onChange={(v) => set("firstLayerSize", v)} />
             <NumberField label={t("generatorPanel.fields.layerDistance")} value={params.layerDistance} min={1} max={200} onChange={(v) => set("layerDistance", v)} />
+            <NumberField label={t("generatorPanel.fields.clusterStrength")} value={params.clusterStrength} min={0} max={1} step={0.05} onChange={(v) => set("clusterStrength", v)} />
+            <NumberField label={t("generatorPanel.fields.distortion")} value={params.distortion} min={0} max={0.9} step={0.02} onChange={(v) => set("distortion", v)} />
             <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
           </>
         )}

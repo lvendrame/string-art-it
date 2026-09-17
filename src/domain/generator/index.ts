@@ -9,4 +9,4 @@ export { waveLayerSequences, type WaveLayerSequence } from "./wave";
 export { asymmetryZigzag, type AsymmetryNode } from "./asymmetryZigzag";
 export { spiralDecayingWalk } from "./spiralWalk";
 export { maurerRosePoints } from "./maurerRose";
-export { cometLayerSequences, type CometLayerSequence } from "./comet";
+export { clusterFraction, cometLayerSequences, type CometLayerSequence } from "./comet";

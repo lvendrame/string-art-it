@@ -169,7 +169,9 @@
       "nailsPerCircle": "Nails per circle",
       "nailsPerLine": "Nails per line",
       "gap": "Gap",
-      "layerDistance": "Layer distance"
+      "layerDistance": "Layer distance",
+      "clusterStrength": "Cluster strength",
+      "distortion": "Distortion"
     },
     "generate": "Generate",
     "regenerate": "Re-generate",

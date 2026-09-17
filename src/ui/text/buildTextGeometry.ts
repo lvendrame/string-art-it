@@ -1,7 +1,5 @@
 import type { PinPathGeometry } from "../../application/document";
 import type { Point } from "../../domain/paths";
-import { ensureFontLoaded } from "../../infrastructure/fonts/fontLoader";
-import { getTextContours } from "../../infrastructure/fonts/textContours";
 import type { FontWeight } from "../../infrastructure/fonts/fontCatalog";
 
 export type TextPinPathGeometry = Extract<PinPathGeometry, { type: "text" }>;
@@ -24,6 +22,13 @@ export async function buildTextGeometry(
   size: number,
   letterSpacing: number,
 ): Promise<TextPinPathGeometry> {
+  // opentype.js (~230KB) is only needed once a user actually places a Text Pin Path,
+  // so it's dynamically imported here rather than pulled into the main bundle that
+  // every visitor downloads on load.
+  const [{ ensureFontLoaded }, { getTextContours }] = await Promise.all([
+    import("../../infrastructure/fonts/fontLoader"),
+    import("../../infrastructure/fonts/textContours"),
+  ]);
   const font = await ensureFontLoaded(fontId, weight, italic);
   const localContours = getTextContours(font, text, size, letterSpacing);
   const contours = localContours.map((contour) => contour.map((p) => ({ x: p.x + origin.x, y: p.y + origin.y })));

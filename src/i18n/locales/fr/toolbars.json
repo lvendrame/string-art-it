@@ -9,11 +9,26 @@
       "pins": "Broches"
     },
     "tools": {
-      "select": { "label": "Sélectionner", "tooltip": "Cliquez, Alt/Cmd-cliquez, ou faites glisser un rectangle pour sélectionner des Tracés de Broches ou des Broches." },
-      "move": { "label": "Déplacer", "tooltip": "Faites glisser pour translater la sélection." },
-      "rotate": { "label": "Rotation", "tooltip": "Faites glisser vers la gauche ou la droite depuis n'importe quel point pour faire tourner la sélection autour de ce point." },
-      "scale": { "label": "Échelle", "tooltip": "Faites glisser vers la gauche ou la droite pour redimensionner la sélection autour de son centroïde." },
-      "merge": { "label": "Fusionner", "tooltip": "Combine la sélection actuelle en une seule — fusionne les Tracés de Broches sélectionnés (mode Tracé de Broches) ou les broches sélectionnées (mode Broches)." }
+      "select": {
+        "label": "Sélectionner",
+        "tooltip": "Cliquez, Alt/Cmd-cliquez, ou faites glisser un rectangle pour sélectionner des Tracés de Broches ou des Broches."
+      },
+      "move": {
+        "label": "Déplacer",
+        "tooltip": "Faites glisser pour translater la sélection."
+      },
+      "rotate": {
+        "label": "Rotation",
+        "tooltip": "Faites glisser vers la gauche ou la droite depuis n'importe quel point pour faire tourner la sélection autour de ce point."
+      },
+      "scale": {
+        "label": "Échelle",
+        "tooltip": "Faites glisser vers la gauche ou la droite pour redimensionner la sélection autour de son centroïde."
+      },
+      "merge": {
+        "label": "Fusionner",
+        "tooltip": "Combine la sélection actuelle en une seule — fusionne les Tracés de Broches sélectionnés (mode Tracé de Broches) ou les broches sélectionnées (mode Broches)."
+      }
     }
   },
   "pinToolbar": {
@@ -100,7 +115,21 @@
       "star": "Étoile",
       "freestyle": "Libre",
       "starOfDavid": "Étoile de David",
-      "spirals": "Spirales"
+      "spirals": "Spirales",
+      "wave": "Vague",
+      "hexagonSpades": "Piques Hexagonaux",
+      "danceOfPlanets": "Danse des Planètes",
+      "sun": "Soleil",
+      "vortex": "Vortex",
+      "polygon": "Polygone",
+      "flower": "Fleur",
+      "assymetry": "Asymétrie",
+      "spiral": "Spirale",
+      "maurerRose": "Rose de Maurer",
+      "comet": "Comète",
+      "flowerOfLife": "Fleur de Vie",
+      "lotus": "Lotus",
+      "crosses": "Croix"
     }
   }
 }

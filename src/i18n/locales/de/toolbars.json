@@ -9,11 +9,26 @@
       "pins": "Stifte"
     },
     "tools": {
-      "select": { "label": "Auswählen", "tooltip": "Klicken, Alt/Cmd-Klick oder ein Rechteck aufziehen, um Stiftpfade oder Stifte auszuwählen." },
-      "move": { "label": "Verschieben", "tooltip": "Ziehen, um die Auswahl zu verschieben." },
-      "rotate": { "label": "Drehung", "tooltip": "Von einem beliebigen Punkt nach links oder rechts ziehen, um die Auswahl um diesen Punkt zu drehen." },
-      "scale": { "label": "Skalieren", "tooltip": "Nach links oder rechts ziehen, um die Auswahl um ihren Schwerpunkt zu skalieren." },
-      "merge": { "label": "Zusammenführen", "tooltip": "Führt die aktuelle Auswahl zu einer zusammen — verschmilzt die ausgewählten Stiftpfade (Stiftpfad-Modus) oder die ausgewählten Stifte (Stifte-Modus)." }
+      "select": {
+        "label": "Auswählen",
+        "tooltip": "Klicken, Alt/Cmd-Klick oder ein Rechteck aufziehen, um Stiftpfade oder Stifte auszuwählen."
+      },
+      "move": {
+        "label": "Verschieben",
+        "tooltip": "Ziehen, um die Auswahl zu verschieben."
+      },
+      "rotate": {
+        "label": "Drehung",
+        "tooltip": "Von einem beliebigen Punkt nach links oder rechts ziehen, um die Auswahl um diesen Punkt zu drehen."
+      },
+      "scale": {
+        "label": "Skalieren",
+        "tooltip": "Nach links oder rechts ziehen, um die Auswahl um ihren Schwerpunkt zu skalieren."
+      },
+      "merge": {
+        "label": "Zusammenführen",
+        "tooltip": "Führt die aktuelle Auswahl zu einer zusammen — verschmilzt die ausgewählten Stiftpfade (Stiftpfad-Modus) oder die ausgewählten Stifte (Stifte-Modus)."
+      }
     }
   },
   "pinToolbar": {
@@ -100,7 +115,21 @@
       "star": "Stern",
       "freestyle": "Freistil",
       "starOfDavid": "Davidstern",
-      "spirals": "Spiralen"
+      "spirals": "Spiralen",
+      "wave": "Welle",
+      "hexagonSpades": "Sechseck-Spaten",
+      "danceOfPlanets": "Tanz der Planeten",
+      "sun": "Sonne",
+      "vortex": "Wirbel",
+      "polygon": "Vieleck",
+      "flower": "Blume",
+      "assymetry": "Asymmetrie",
+      "spiral": "Spirale",
+      "maurerRose": "Maurer-Rose",
+      "comet": "Komet",
+      "flowerOfLife": "Blume des Lebens",
+      "lotus": "Lotus",
+      "crosses": "Kreuze"
     }
   }
 }

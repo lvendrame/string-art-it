@@ -9,11 +9,26 @@
       "pins": "Pins"
     },
     "tools": {
-      "select": { "label": "Select", "tooltip": "Click, Alt/Cmd-click, or drag a rectangle to select Pin Paths or Pins." },
-      "move": { "label": "Move", "tooltip": "Drag to translate the selection." },
-      "rotate": { "label": "Rotation", "tooltip": "Drag left or right from any point to rotate the selection around that point." },
-      "scale": { "label": "Scale", "tooltip": "Drag left or right to scale the selection about its centroid." },
-      "merge": { "label": "Merge", "tooltip": "Combine the current selection into one — merges the selected Pin Paths (Pin Path mode) or the selected pins (Pins mode)." }
+      "select": {
+        "label": "Select",
+        "tooltip": "Click, Alt/Cmd-click, or drag a rectangle to select Pin Paths or Pins."
+      },
+      "move": {
+        "label": "Move",
+        "tooltip": "Drag to translate the selection."
+      },
+      "rotate": {
+        "label": "Rotation",
+        "tooltip": "Drag left or right from any point to rotate the selection around that point."
+      },
+      "scale": {
+        "label": "Scale",
+        "tooltip": "Drag left or right to scale the selection about its centroid."
+      },
+      "merge": {
+        "label": "Merge",
+        "tooltip": "Combine the current selection into one — merges the selected Pin Paths (Pin Path mode) or the selected pins (Pins mode)."
+      }
     }
   },
   "pinToolbar": {
@@ -100,7 +115,21 @@
       "star": "Star",
       "freestyle": "Freestyle",
       "starOfDavid": "Star of David",
-      "spirals": "Spirals"
+      "spirals": "Spirals",
+      "wave": "Wave",
+      "hexagonSpades": "Hexagon Spades",
+      "danceOfPlanets": "Dance of Planets",
+      "sun": "Sun",
+      "vortex": "Vortex",
+      "polygon": "Polygon",
+      "flower": "Flower",
+      "assymetry": "Assymetry",
+      "spiral": "Spiral",
+      "maurerRose": "Maurer Rose",
+      "comet": "Comet",
+      "flowerOfLife": "Flower of Life",
+      "lotus": "Lotus",
+      "crosses": "Crosses"
     }
   }
 }

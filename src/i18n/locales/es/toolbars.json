@@ -9,11 +9,26 @@
       "pins": "Pines"
     },
     "tools": {
-      "select": { "label": "Seleccionar", "tooltip": "Haz clic, Alt/Cmd-clic, o arrastra un rectángulo para seleccionar Trazados de Pines o Pines." },
-      "move": { "label": "Mover", "tooltip": "Arrastra para trasladar la selección." },
-      "rotate": { "label": "Rotación", "tooltip": "Arrastra hacia la izquierda o derecha desde cualquier punto para girar la selección alrededor de ese punto." },
-      "scale": { "label": "Escala", "tooltip": "Arrastra hacia la izquierda o derecha para escalar la selección alrededor de su centroide." },
-      "merge": { "label": "Combinar", "tooltip": "Combina la selección actual en una sola — combina los Trazados de Pines seleccionados (modo Trazado de Pines) o los pines seleccionados (modo Pines)." }
+      "select": {
+        "label": "Seleccionar",
+        "tooltip": "Haz clic, Alt/Cmd-clic, o arrastra un rectángulo para seleccionar Trazados de Pines o Pines."
+      },
+      "move": {
+        "label": "Mover",
+        "tooltip": "Arrastra para trasladar la selección."
+      },
+      "rotate": {
+        "label": "Rotación",
+        "tooltip": "Arrastra hacia la izquierda o derecha desde cualquier punto para girar la selección alrededor de ese punto."
+      },
+      "scale": {
+        "label": "Escala",
+        "tooltip": "Arrastra hacia la izquierda o derecha para escalar la selección alrededor de su centroide."
+      },
+      "merge": {
+        "label": "Combinar",
+        "tooltip": "Combina la selección actual en una sola — combina los Trazados de Pines seleccionados (modo Trazado de Pines) o los pines seleccionados (modo Pines)."
+      }
     }
   },
   "pinToolbar": {
@@ -100,7 +115,21 @@
       "star": "Estrella",
       "freestyle": "Libre",
       "starOfDavid": "Estrella de David",
-      "spirals": "Espirales"
+      "spirals": "Espirales",
+      "wave": "Onda",
+      "hexagonSpades": "Espadas Hexagonales",
+      "danceOfPlanets": "Danza de los Planetas",
+      "sun": "Sol",
+      "vortex": "Vórtice",
+      "polygon": "Polígono",
+      "flower": "Flor",
+      "assymetry": "Asimetría",
+      "spiral": "Espiral",
+      "maurerRose": "Rosa de Maurer",
+      "comet": "Cometa",
+      "flowerOfLife": "Flor de la Vida",
+      "lotus": "Loto",
+      "crosses": "Cruces"
     }
   }
 }

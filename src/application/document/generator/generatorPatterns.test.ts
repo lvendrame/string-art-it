@@ -175,6 +175,164 @@ describe("buildGeneratorPattern — spirals", () => {
   });
 });
 
+function allPinIdsValid(result: { pinPaths: { pins: { id: string }[] }[]; threadPaths: { pinIds: string[] }[] }): boolean {
+  const validIds = new Set(result.pinPaths.flatMap((p) => p.pins.map((pin) => pin.id)));
+  return result.threadPaths.every((t) => t.pinIds.every((id) => validIds.has(id)));
+}
+
+describe("buildGeneratorPattern — wave", () => {
+  it("produces exactly n pins on one circle and layers thread paths of 2*layerFill indices each", () => {
+    const result = buildGeneratorPattern({ patternId: "wave", n: 100, base: 3, layers: 4, layerFill: 20, layerSpread: 10 }, ctx);
+    expect(result.pinPaths).toHaveLength(1);
+    expect(result.pinPaths[0].pins).toHaveLength(100);
+    expect(result.threadPaths).toHaveLength(4);
+    for (const t of result.threadPaths) expect(t.pinIds).toHaveLength(40);
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+});
+
+describe("buildGeneratorPattern — hexagon-spades", () => {
+  it("builds 6 triangle tiles (no hub), 18 Thread Paths total (6 tiles * 3 sides)", () => {
+    const result = buildGeneratorPattern({ patternId: "hexagon-spades", depth: 5, layerAngle: 0.05, rotation: 0, mirrorTiling: false }, ctx);
+    expect(result.pinPaths).toHaveLength(6);
+    expect(result.threadPaths).toHaveLength(18);
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+});
+
+describe("buildGeneratorPattern — dance-of-planets", () => {
+  it("builds 2 concentric pin paths and round-robins them into one thread, repeated `rounds` times", () => {
+    const result = buildGeneratorPattern(
+      { patternId: "dance-of-planets", outerType: "circle", outerNails: 40, outerSides: 6, innerType: "circle", innerNails: 20, innerSides: 6, innerSizeRatio: 0.4, rounds: 2, reverse: false, rotation: 0 },
+      ctx,
+    );
+    expect(result.pinPaths).toHaveLength(2);
+    expect(result.threadPaths).toHaveLength(1);
+    expect(result.threadPaths[0].pinIds).toHaveLength(2 * (Math.max(40, 20) * 2));
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+
+  it("supports a regular-polygon outer/inner ring", () => {
+    const result = buildGeneratorPattern(
+      { patternId: "dance-of-planets", outerType: "polygon", outerNails: 30, outerSides: 5, innerType: "polygon", innerNails: 18, innerSides: 3, innerSizeRatio: 0.3, rounds: 1, reverse: true, rotation: 0 },
+      ctx,
+    );
+    expect(result.pinPaths[0].geometry.type).toBe("regular-polygon");
+    expect(result.pinPaths[1].geometry.type).toBe("regular-polygon");
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+});
+
+describe("buildGeneratorPattern — sun", () => {
+  it("builds the base star's pin/thread paths plus `layers` extra shrinking rings", () => {
+    const starOnly = buildGeneratorPattern({ patternId: "star", sideNails: 10, starPoints: 5, starOuterRatio: 1, starInnerRatio: 0, rotation: 0 }, ctx);
+    const result = buildGeneratorPattern({ patternId: "sun", sideNails: 10, starPoints: 5, starOuterRatio: 1, starInnerRatio: 0, rotation: 0, layers: 3, layerSpread: 0.1 }, ctx);
+    expect(result.pinPaths).toHaveLength(starOnly.pinPaths.length + 3);
+    expect(result.threadPaths).toHaveLength(starOnly.threadPaths.length + 3);
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+});
+
+describe("buildGeneratorPattern — vortex", () => {
+  it("builds one freehand pin path (sides*layers pins) with one closed-outline thread per level", () => {
+    const result = buildGeneratorPattern({ patternId: "vortex", sides: 5, layers: 6, layerAngle: 0.05, rotation: 0 }, ctx);
+    expect(result.pinPaths).toHaveLength(1);
+    expect(result.pinPaths[0].pins).toHaveLength(5 * 6);
+    expect(result.threadPaths).toHaveLength(6);
+    for (const t of result.threadPaths) expect(t.pinIds).toHaveLength(6); // sides + 1 (closed loop)
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+});
+
+describe("buildGeneratorPattern — polygon", () => {
+  it("builds sides*nailsPerSide pins on one regular-polygon and one thread per side", () => {
+    const result = buildGeneratorPattern({ patternId: "polygon", sides: 6, nailsPerSide: 10, bezierStep: 2, rotation: 0 }, ctx);
+    expect(result.pinPaths).toHaveLength(1);
+    expect(result.pinPaths[0].pins).toHaveLength(60);
+    expect(result.threadPaths).toHaveLength(6);
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+});
+
+describe("buildGeneratorPattern — flower", () => {
+  it("builds `layers` rotated polygon copies, each with its own `sides` threads", () => {
+    const result = buildGeneratorPattern({ patternId: "flower", sides: 5, nailsPerSide: 8, layers: 3, rotation: 0 }, ctx);
+    expect(result.pinPaths).toHaveLength(3);
+    expect(result.threadPaths).toHaveLength(3 * 5);
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+});
+
+describe("buildGeneratorPattern — assymetry", () => {
+  it("builds 1 circle + 1 spoke line, woven into a single continuous thread", () => {
+    const result = buildGeneratorPattern({ patternId: "assymetry", circleNails: 30, startFraction: 0, endFraction: 1, reverse: false, rotation: 0 }, ctx);
+    expect(result.pinPaths).toHaveLength(2);
+    expect(result.threadPaths).toHaveLength(1);
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+});
+
+describe("buildGeneratorPattern — spiral", () => {
+  it("builds one circle threaded as a single continuous decaying-span walk", () => {
+    const result = buildGeneratorPattern({ patternId: "spiral", n: 60, repetition: 2, innerLength: 3, rotation: 0 }, ctx);
+    expect(result.pinPaths).toHaveLength(1);
+    expect(result.pinPaths[0].pins).toHaveLength(60);
+    expect(result.threadPaths).toHaveLength(1);
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+});
+
+describe("buildGeneratorPattern — maurer-rose", () => {
+  it("builds one freehand pin path with maxSteps+1 curve-sampled pins, threaded sequentially", () => {
+    const result = buildGeneratorPattern({ patternId: "maurer-rose", N: 7, maxSteps: 90, angleDegrees: 71, rotation: 0 }, ctx);
+    expect(result.pinPaths).toHaveLength(1);
+    expect(result.pinPaths[0].geometry.type).toBe("freehand");
+    expect(result.pinPaths[0].pins).toHaveLength(91);
+    expect(result.threadPaths).toHaveLength(1);
+    expect(result.threadPaths[0].pinIds).toEqual(result.pinPaths[0].pins.map((p) => p.id));
+  });
+});
+
+describe("buildGeneratorPattern — comet", () => {
+  it("builds one circle with `layers` shrinking offset-alternation threads", () => {
+    const result = buildGeneratorPattern({ patternId: "comet", n: 80, layers: 5, firstLayerSize: 20, distance: 15, rotation: 0 }, ctx);
+    expect(result.pinPaths).toHaveLength(1);
+    expect(result.threadPaths).toHaveLength(5);
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+});
+
+describe("buildGeneratorPattern — flower-of-life", () => {
+  it("builds the 6-tile ring plus an optional outer ring circle when ringEnabled", () => {
+    const withoutRing = buildGeneratorPattern({ patternId: "flower-of-life", depth: 5, layerAngle: 0.05, rotation: 0, ringEnabled: false, ringNails: 100, ringBase: 2 }, ctx);
+    expect(withoutRing.pinPaths).toHaveLength(6);
+    expect(withoutRing.threadPaths).toHaveLength(18);
+
+    const withRing = buildGeneratorPattern({ patternId: "flower-of-life", depth: 5, layerAngle: 0.05, rotation: 0, ringEnabled: true, ringNails: 100, ringBase: 2 }, ctx);
+    expect(withRing.pinPaths).toHaveLength(7);
+    expect(withRing.threadPaths).toHaveLength(19);
+    expect(allPinIdsValid(withRing)).toBe(true);
+  });
+});
+
+describe("buildGeneratorPattern — lotus", () => {
+  it("builds `sides` circles and one round-robin thread per adjacent pair", () => {
+    const result = buildGeneratorPattern({ patternId: "lotus", sides: 6, nailsPerCircle: 20, radiusRatio: 0.5, rotation: 0 }, ctx);
+    expect(result.pinPaths).toHaveLength(6);
+    expect(result.threadPaths).toHaveLength(6);
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+});
+
+describe("buildGeneratorPattern — crosses", () => {
+  it("builds 4 lines ('#' grid) and one thread per of the 4 crossing pairs", () => {
+    const result = buildGeneratorPattern({ patternId: "crosses", nailsPerLine: 15, gap: 0.15, rotation: 0 }, ctx);
+    expect(result.pinPaths).toHaveLength(4);
+    expect(result.threadPaths).toHaveLength(4);
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+});
+
 describe("maxGeneratorColours", () => {
   it("mandala caps at its own layers count", () => {
     expect(maxGeneratorColours({ patternId: "mandala", n: 10, base: 2, layers: 7 } satisfies GeneratorParams)).toBe(7);
@@ -198,9 +356,31 @@ describe("maxGeneratorColours", () => {
 });
 
 describe("GENERATOR_PATTERNS registry", () => {
-  it("has exactly the 5 curated patterns, each with matching id/defaultParams.patternId", () => {
+  it("has exactly the 19 researched patterns, each with matching id/defaultParams.patternId", () => {
     const ids = Object.keys(GENERATOR_PATTERNS).sort();
-    expect(ids).toEqual(["freestyle", "mandala", "spirals", "star", "star-of-david"]);
+    expect(ids).toEqual(
+      [
+        "assymetry",
+        "comet",
+        "crosses",
+        "dance-of-planets",
+        "flower",
+        "flower-of-life",
+        "freestyle",
+        "hexagon-spades",
+        "lotus",
+        "mandala",
+        "maurer-rose",
+        "polygon",
+        "spiral",
+        "spirals",
+        "star",
+        "star-of-david",
+        "sun",
+        "vortex",
+        "wave",
+      ].sort(),
+    );
     for (const [id, def] of Object.entries(GENERATOR_PATTERNS)) {
       expect(def.id).toBe(id);
       expect(def.defaultParams.patternId).toBe(id);

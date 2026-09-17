@@ -9,11 +9,26 @@
       "pins": "Pinos"
     },
     "tools": {
-      "select": { "label": "Selecionar", "tooltip": "Clique, Alt/Cmd-clique, ou arraste um retângulo para selecionar Caminhos de Pinos ou Pinos." },
-      "move": { "label": "Mover", "tooltip": "Arraste para transladar a seleção." },
-      "rotate": { "label": "Rotação", "tooltip": "Arraste para a esquerda ou direita a partir de qualquer ponto para girar a seleção em torno desse ponto." },
-      "scale": { "label": "Escala", "tooltip": "Arraste para a esquerda ou direita para redimensionar a seleção em torno de seu centroide." },
-      "merge": { "label": "Mesclar", "tooltip": "Combina a seleção atual em uma só — mescla os Caminhos de Pinos selecionados (modo Caminho de Pinos) ou os pinos selecionados (modo Pinos)." }
+      "select": {
+        "label": "Selecionar",
+        "tooltip": "Clique, Alt/Cmd-clique, ou arraste um retângulo para selecionar Caminhos de Pinos ou Pinos."
+      },
+      "move": {
+        "label": "Mover",
+        "tooltip": "Arraste para transladar a seleção."
+      },
+      "rotate": {
+        "label": "Rotação",
+        "tooltip": "Arraste para a esquerda ou direita a partir de qualquer ponto para girar a seleção em torno desse ponto."
+      },
+      "scale": {
+        "label": "Escala",
+        "tooltip": "Arraste para a esquerda ou direita para redimensionar a seleção em torno de seu centroide."
+      },
+      "merge": {
+        "label": "Mesclar",
+        "tooltip": "Combina a seleção atual em uma só — mescla os Caminhos de Pinos selecionados (modo Caminho de Pinos) ou os pinos selecionados (modo Pinos)."
+      }
     }
   },
   "pinToolbar": {
@@ -100,7 +115,21 @@
       "star": "Estrela",
       "freestyle": "Livre",
       "starOfDavid": "Estrela de Davi",
-      "spirals": "Espirais"
+      "spirals": "Espirais",
+      "wave": "Onda",
+      "hexagonSpades": "Espadas Hexagonais",
+      "danceOfPlanets": "Dança dos Planetas",
+      "sun": "Sol",
+      "vortex": "Vórtice",
+      "polygon": "Polígono",
+      "flower": "Flor",
+      "assymetry": "Assimetria",
+      "spiral": "Espiral",
+      "maurerRose": "Rosa de Maurer",
+      "comet": "Cometa",
+      "flowerOfLife": "Flor da Vida",
+      "lotus": "Lótus",
+      "crosses": "Cruzes"
     }
   }
 }

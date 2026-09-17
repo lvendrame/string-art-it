@@ -24,6 +24,30 @@ function updateFreestyleCircle(circles: FreestyleCircleParams[], index: number, 
   return circles.map((c, i) => (i === index ? { ...c, ...patch } : c));
 }
 
+function SelectField({ label, value, options, onChange }: { label: string; value: string; options: { value: string; label: string }[]; onChange: (value: string) => void }) {
+  return (
+    <label style={FIELD_LABEL_STYLE}>
+      {label}
+      <select value={value} onChange={(e) => onChange(e.target.value)} style={{ ...FIELD_INPUT_STYLE, width: "auto" }}>
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function CheckboxField({ label, checked, onChange }: { label: string; checked: boolean; onChange: (checked: boolean) => void }) {
+  return (
+    <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, color: "var(--text-secondary)" }}>
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+      {label}
+    </label>
+  );
+}
+
 // docs/specs/32-generator-mode.md — pattern/param SELECTION is local, ephemeral UI
 // state, not document state: it's discarded on Re-generate (a fresh draft replaces the
 // old one wholesale) and on leaving Generator mode entirely (EditorStore.setMode drops
@@ -194,6 +218,173 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
               />
             </div>
           ))}
+
+        {params.patternId === "wave" && (
+          <>
+            <NumberField label={t("generatorPanel.fields.n")} value={params.n} min={3} max={400} onChange={(v) => set("n", v)} />
+            <NumberField label={t("generatorPanel.fields.base")} value={params.base} min={2} max={99} onChange={(v) => set("base", v)} />
+            <NumberField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={20} onChange={(v) => set("layers", v)} />
+            <NumberField label={t("generatorPanel.fields.layerFill")} value={params.layerFill} min={1} max={400} onChange={(v) => set("layerFill", v)} />
+            <NumberField label={t("generatorPanel.fields.layerSpread")} value={params.layerSpread} min={0} max={200} onChange={(v) => set("layerSpread", v)} />
+          </>
+        )}
+
+        {params.patternId === "hexagon-spades" && (
+          <>
+            <NumberField label={t("generatorPanel.fields.depth")} value={params.depth} min={1} max={40} onChange={(v) => set("depth", v)} />
+            <NumberField label={t("generatorPanel.fields.layerAngle")} value={params.layerAngle} min={0.02} max={0.15} step={0.001} onChange={(v) => set("layerAngle", v)} />
+            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <CheckboxField
+              label={t("generatorPanel.fields.mirrorTiling")}
+              checked={params.mirrorTiling}
+              onChange={(v) => setParams((p) => (p.patternId === "hexagon-spades" ? { ...p, mirrorTiling: v } : p))}
+            />
+          </>
+        )}
+
+        {params.patternId === "dance-of-planets" && (
+          <>
+            <SelectField
+              label={t("generatorPanel.fields.outerType")}
+              value={params.outerType}
+              options={[
+                { value: "circle", label: t("generatorPanel.fields.shapeCircle") },
+                { value: "polygon", label: t("generatorPanel.fields.shapePolygon") },
+              ]}
+              onChange={(v) => setParams((p) => (p.patternId === "dance-of-planets" ? { ...p, outerType: v as "circle" | "polygon" } : p))}
+            />
+            <NumberField label={t("generatorPanel.fields.outerNails")} value={params.outerNails} min={3} max={400} onChange={(v) => set("outerNails", v)} />
+            {params.outerType === "polygon" && <NumberField label={t("generatorPanel.fields.outerSides")} value={params.outerSides} min={3} max={20} onChange={(v) => set("outerSides", v)} />}
+            <SelectField
+              label={t("generatorPanel.fields.innerType")}
+              value={params.innerType}
+              options={[
+                { value: "circle", label: t("generatorPanel.fields.shapeCircle") },
+                { value: "polygon", label: t("generatorPanel.fields.shapePolygon") },
+              ]}
+              onChange={(v) => setParams((p) => (p.patternId === "dance-of-planets" ? { ...p, innerType: v as "circle" | "polygon" } : p))}
+            />
+            <NumberField label={t("generatorPanel.fields.innerNails")} value={params.innerNails} min={3} max={400} onChange={(v) => set("innerNails", v)} />
+            {params.innerType === "polygon" && <NumberField label={t("generatorPanel.fields.innerSides")} value={params.innerSides} min={3} max={20} onChange={(v) => set("innerSides", v)} />}
+            <NumberField label={t("generatorPanel.fields.innerSizeRatio")} value={params.innerSizeRatio} min={0.05} max={0.95} step={0.05} onChange={(v) => set("innerSizeRatio", v)} />
+            <NumberField label={t("generatorPanel.fields.rounds")} value={params.rounds} min={1} max={20} onChange={(v) => set("rounds", v)} />
+            <CheckboxField label={t("generatorPanel.fields.reverse")} checked={params.reverse} onChange={(v) => setParams((p) => (p.patternId === "dance-of-planets" ? { ...p, reverse: v } : p))} />
+            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+          </>
+        )}
+
+        {params.patternId === "sun" && (
+          <>
+            <NumberField label={t("generatorPanel.fields.sideNails")} value={params.sideNails} min={2} max={200} onChange={(v) => set("sideNails", v)} />
+            <NumberField label={t("generatorPanel.fields.starPoints")} value={params.starPoints} min={3} max={20} onChange={(v) => set("starPoints", v)} />
+            <NumberField label={t("generatorPanel.fields.starOuterRatio")} value={params.starOuterRatio} min={0.1} max={1} step={0.05} onChange={(v) => set("starOuterRatio", v)} />
+            <NumberField label={t("generatorPanel.fields.starInnerRatio")} value={params.starInnerRatio} min={0} max={0.95} step={0.05} onChange={(v) => set("starInnerRatio", v)} />
+            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <NumberField label={t("generatorPanel.fields.layers")} value={params.layers} min={0} max={10} onChange={(v) => set("layers", v)} />
+            <NumberField label={t("generatorPanel.fields.layerSpread")} value={params.layerSpread} min={0} max={0.3} step={0.01} onChange={(v) => set("layerSpread", v)} />
+          </>
+        )}
+
+        {params.patternId === "vortex" && (
+          <>
+            <NumberField label={t("generatorPanel.fields.sides")} value={params.sides} min={3} max={20} onChange={(v) => set("sides", v)} />
+            <NumberField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={40} onChange={(v) => set("layers", v)} />
+            <NumberField label={t("generatorPanel.fields.layerAngle")} value={params.layerAngle} min={0.01} max={0.2} step={0.005} onChange={(v) => set("layerAngle", v)} />
+            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+          </>
+        )}
+
+        {params.patternId === "polygon" && (
+          <>
+            <NumberField label={t("generatorPanel.fields.sides")} value={params.sides} min={3} max={20} onChange={(v) => set("sides", v)} />
+            <NumberField label={t("generatorPanel.fields.nailsPerSide")} value={params.nailsPerSide} min={2} max={100} onChange={(v) => set("nailsPerSide", v)} />
+            <NumberField label={t("generatorPanel.fields.bezierStep")} value={params.bezierStep} min={1} max={19} onChange={(v) => set("bezierStep", v)} />
+            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+          </>
+        )}
+
+        {params.patternId === "flower" && (
+          <>
+            <NumberField label={t("generatorPanel.fields.sides")} value={params.sides} min={3} max={20} onChange={(v) => set("sides", v)} />
+            <NumberField label={t("generatorPanel.fields.nailsPerSide")} value={params.nailsPerSide} min={2} max={100} onChange={(v) => set("nailsPerSide", v)} />
+            <NumberField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={20} onChange={(v) => set("layers", v)} />
+            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+          </>
+        )}
+
+        {params.patternId === "assymetry" && (
+          <>
+            <NumberField label={t("generatorPanel.fields.circleNails")} value={params.circleNails} min={3} max={400} onChange={(v) => set("circleNails", v)} />
+            <NumberField label={t("generatorPanel.fields.startFraction")} value={params.startFraction} min={0} max={1} step={0.05} onChange={(v) => set("startFraction", v)} />
+            <NumberField label={t("generatorPanel.fields.endFraction")} value={params.endFraction} min={0} max={1} step={0.05} onChange={(v) => set("endFraction", v)} />
+            <CheckboxField label={t("generatorPanel.fields.reverse")} checked={params.reverse} onChange={(v) => setParams((p) => (p.patternId === "assymetry" ? { ...p, reverse: v } : p))} />
+            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+          </>
+        )}
+
+        {params.patternId === "spiral" && (
+          <>
+            <NumberField label={t("generatorPanel.fields.n")} value={params.n} min={10} max={400} onChange={(v) => set("n", v)} />
+            <NumberField label={t("generatorPanel.fields.repetition")} value={params.repetition} min={1} max={20} onChange={(v) => set("repetition", v)} />
+            <NumberField label={t("generatorPanel.fields.innerLength")} value={params.innerLength} min={1} max={100} onChange={(v) => set("innerLength", v)} />
+            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+          </>
+        )}
+
+        {params.patternId === "maurer-rose" && (
+          <>
+            <NumberField label={t("generatorPanel.fields.N")} value={params.N} min={1} max={30} onChange={(v) => set("N", v)} />
+            <NumberField label={t("generatorPanel.fields.maxSteps")} value={params.maxSteps} min={10} max={720} onChange={(v) => set("maxSteps", v)} />
+            <NumberField label={t("generatorPanel.fields.angleDegrees")} value={params.angleDegrees} min={1} max={180} step={1} onChange={(v) => set("angleDegrees", v)} />
+            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+          </>
+        )}
+
+        {params.patternId === "comet" && (
+          <>
+            <NumberField label={t("generatorPanel.fields.n")} value={params.n} min={10} max={400} onChange={(v) => set("n", v)} />
+            <NumberField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={40} onChange={(v) => set("layers", v)} />
+            <NumberField label={t("generatorPanel.fields.firstLayerSize")} value={params.firstLayerSize} min={2} max={200} onChange={(v) => set("firstLayerSize", v)} />
+            <NumberField label={t("generatorPanel.fields.distance")} value={params.distance} min={1} max={200} onChange={(v) => set("distance", v)} />
+            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+          </>
+        )}
+
+        {params.patternId === "flower-of-life" && (
+          <>
+            <NumberField label={t("generatorPanel.fields.depth")} value={params.depth} min={1} max={40} onChange={(v) => set("depth", v)} />
+            <NumberField label={t("generatorPanel.fields.layerAngle")} value={params.layerAngle} min={0.02} max={0.15} step={0.001} onChange={(v) => set("layerAngle", v)} />
+            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <CheckboxField
+              label={t("generatorPanel.fields.ringEnabled")}
+              checked={params.ringEnabled}
+              onChange={(v) => setParams((p) => (p.patternId === "flower-of-life" ? { ...p, ringEnabled: v } : p))}
+            />
+            {params.ringEnabled && (
+              <>
+                <NumberField label={t("generatorPanel.fields.ringNails")} value={params.ringNails} min={3} max={400} onChange={(v) => set("ringNails", v)} />
+                <NumberField label={t("generatorPanel.fields.ringBase")} value={params.ringBase} min={2} max={99} onChange={(v) => set("ringBase", v)} />
+              </>
+            )}
+          </>
+        )}
+
+        {params.patternId === "lotus" && (
+          <>
+            <NumberField label={t("generatorPanel.fields.sides")} value={params.sides} min={3} max={20} onChange={(v) => set("sides", v)} />
+            <NumberField label={t("generatorPanel.fields.nailsPerCircle")} value={params.nailsPerCircle} min={3} max={200} onChange={(v) => set("nailsPerCircle", v)} />
+            <NumberField label={t("generatorPanel.fields.radiusRatio")} value={params.radiusRatio} min={0.1} max={0.9} step={0.05} onChange={(v) => set("radiusRatio", v)} />
+            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+          </>
+        )}
+
+        {params.patternId === "crosses" && (
+          <>
+            <NumberField label={t("generatorPanel.fields.nailsPerLine")} value={params.nailsPerLine} min={2} max={100} onChange={(v) => set("nailsPerLine", v)} />
+            <NumberField label={t("generatorPanel.fields.gap")} value={params.gap} min={0.02} max={0.4} step={0.01} onChange={(v) => set("gap", v)} />
+            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+          </>
+        )}
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

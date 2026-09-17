@@ -4,7 +4,7 @@
 
 Add a sixth Editor mode, **Generate**, that auto-creates pins and threads from a chosen mathematical pattern and its parameters — instead of drawing shapes and threading pins by hand. The user picks a pattern from a dropdown, sets its parameters, and clicks **Generate** to preview a pin+thread pattern on the board; **Re-generate** replaces that preview; **Confirm** turns the preview into two brand-new, permanent Pin/Thread Layers.
 
-This spec was researched against a read-only analysis of a competitor app's 19 built-in generator patterns (`~/projects/pocs/research_string_art`, not part of this repository). The finding that shaped this spec's scope: **all 19 researched patterns are pure parametric math** — pins built from circle/line/polygon primitives (single or composite: e.g. a hexagram from two overlapping triangles) or, for 2 of the 19, sampled along a closed-form parametric curve. None require a hand-drawn/freehand fallback in the "couldn't figure out the shape" sense, and none require image/photo input or greedy optimization. This spec ships the **engine** (pattern registry + Generate/Re-generate/Confirm workflow) and a **curated set of 5 patterns**, one representative of each engine capability; the other 14 researched patterns are architecturally identical (same registry shape) and are a follow-up milestone, not built here (see Scope below).
+This spec was researched against a read-only analysis of a competitor app's 19 built-in generator patterns (`~/projects/pocs/research_string_art`, not part of this repository). The finding that shaped this spec's scope: **all 19 researched patterns are pure parametric math** — pins built from circle/line/polygon primitives (single or composite: e.g. a hexagram from two overlapping triangles) or, for 2 of the 19, sampled along a closed-form parametric curve. None require a hand-drawn/freehand fallback in the "couldn't figure out the shape" sense, and none require image/photo input or greedy optimization. This spec ships the **engine** (pattern registry + Generate/Re-generate/Confirm workflow), a first **curated set of 5 patterns** (M25), and the remaining **14 patterns** (M26) — all 19 researched patterns are now built (see Scope below).
 
 ## Pin-count vs. pin-spacing
 
@@ -25,6 +25,27 @@ Every other pin-creating path in this app ([07-pin-geometry-engine.md](./07-pin-
 All five threading rules reduce to pure index arithmetic over already-built pins (`src/domain/generator/roundRobin.ts`, `mandala.ts`, `nestedPolygon.ts`), matching the research finding that every one of the 19 researched patterns threads this way — never by re-deriving geometry mid-traversal.
 
 **Deliberate simplification, stated plainly:** these are original formulas *inspired by* the researched competitor's pattern names and general shapes, not byte-identical reproductions of its exact traversal (which, for e.g. Star, branches on odd/even side count and uses reflected round indices — extra complexity that changes which of two visually similar conventions is used, not whether the pattern is achievable). Mathematical techniques like "connect pin i to pin i·k mod n" are generic string-art methods documented across many hobbyist sources, not unique IP.
+
+## The 14 M26 patterns
+
+Built the same milestone after M25 shipped, reusing M25's engine and primitives wherever a pattern's general technique matched one already built (`buildTileFans`/`tileRingLayout` generalized from Star of David's own tile-ring construction; `twoRayZigzag` generalized from Star's own spoke↔circle zigzag), and adding small original functions only where nothing existing fit. Same approach as the 5 curated patterns above: each is an *original* implementation of the researched pattern's general documented technique, not a byte-identical reproduction — a few (Flower of Life, Crosses, Assymetry) ship deliberately simplified versions, called out below.
+
+| Pattern | Pin layout | Threading | Parameters | Scope note |
+|---|---|---|---|---|
+| **Wave** | One circle, `n` pins (same primitive as Mandala) | Generalizes Mandala's modular-multiplication traversal (`waveLayerSequences`) to a *partial* pass per layer: only `layerFill` of the `n` connections, starting at a rotating `layerSpread`-position offset each layer — full coverage (`layerFill=n`, `layerSpread=0`) degenerates back to a Mandala layer | `n` (3–400), `base` (2–99), `layers` (1–20), `layerFill` (1–400), `layerSpread` (0–200) | — |
+| **Hexagon Spades** | The same 6-triangle ring as Star of David's own tiles (`tileRingLayout(6, 3, …)`), with no central hexagon hub | One adjacent-side fan per tile side (`connectTwoSidesLocalIndices`, shared with Star of David) — 6 tiles × 3 sides = 18 Thread Paths | `depth` (1–40), `layerAngle` (0.02–0.15), `rotation`, `mirrorTiling` | — |
+| **Dance of Planets** | Two concentric rings, each independently a circle or `regular-polygon` Pin Path | `roundRobinSequence([outerCount, innerCount])`, repeated `rounds` times; `reverse` walks the inner ring backward, which is what makes the two rings appear to counter-rotate | `outerType`/`outerNails`/`outerSides`, `innerType`/`innerNails`/`innerSides`/`innerSizeRatio`, `rounds` (1–20), `reverse`, `rotation` | — |
+| **Sun** | Reuses Star's own spoke-wheel construction verbatim for the base shape, plus `layers` extra shrinking concentric circles | Star's own 3-zigzags-per-point threading, unchanged, plus one simple base-2 modular self-weave per extra ring | Star's own params + `layers` (0–10), `layerSpread` (0–0.3) | Simplified: extra "rays" are decorative shrinking rings with their own light self-weave, not additional native-star geometry |
+| **Vortex** | A single nested-polygon spiral (`nestedPolygonLevels`/`nestedPolygonVertices`, the primitive Star of David's tiles use), corners only | One closed-polygon-outline Thread Path per level, coloured per level | `sides` (3–20), `layers` (1–40), `layerAngle` (0.01–0.2), `rotation` | Simplified: threads level outlines only, not per-edge interior density |
+| **Polygon** | One `regular-polygon` Pin Path, `sides·nailsPerSide` pins (vertex-anchored: side `s`'s pins are local indices `s·nailsPerSide … s·nailsPerSide+nailsPerSide-1`) | `twoRayZigzag` between side `s` and side `(s+bezierStep) mod sides`, one Thread Path per side | `sides` (3–20), `nailsPerSide` (2–100), `bezierStep` (1–19), `rotation` | — |
+| **Flower** | `layers` rotated copies of Polygon's own geometry, same radius, increasing rotation offset per copy | `twoRayZigzag` per layer per side (reuses Polygon's own weave) | `sides` (3–20), `nailsPerSide` (2–100), `layers` (1–20), `rotation` | — |
+| **Assymetry** | One circle + one spoke line (the same line-geometry construction Star's spokes use) | `asymmetryZigzag`: one continuous zigzag over the circle+spoke's combined index space, advancing from `startFraction` and walking backward from `endFraction` to meet in the middle; `reverse` swaps direction | `circleNails` (3–400), `startFraction`/`endFraction` (0–1), `reverse`, `rotation` | Simplified: a single configurable pass, not the researched pattern's 3 parallel default passes |
+| **Spiral** | One circle, `n` pins | `spiralDecayingWalk`: a single continuous walk whose chord span starts near `n/2` and shrinks to `innerLength` each of `repetition` passes | `n` (10–400), `repetition` (1–20), `innerLength` (1–100), `rotation` | — |
+| **Maurer Rose** | Curve-sampled points from the classic public Maurer-rose formula (`maurerRosePoints`; Peter M. Maurer, 1987 — a well-known general construction, not any app's proprietary algorithm), built directly into pins (freehand-bypass, same architecture as Spirals) | Sequential: connect every sampled point in generation order, one continuous Thread Path | `N` (1–30, petal count), `maxSteps` (10–720), `angleDegrees` (1–180), `rotation` | — |
+| **Comet** | One circle, `n` pins | `cometLayerSequences`: `layers` offset-alternation passes, connecting `i` to `i+d`; both the run length and offset `d` shrink linearly per layer, tapering like a comet's tail | `n` (10–400), `layers` (1–40), `firstLayerSize` (2–200), `distance` (1–200), `rotation` | Simplified: one linear shrink mode, not the researched pattern's two selectable modes |
+| **Flower of Life** | The same 6-triangle ring as Hexagon Spades, plus an optional outer ring circle with its own base-`ringBase` modular self-weave | Same tile fans as Hexagon Spades (18 Thread Paths), plus 1 more when the ring is enabled | `depth` (1–40), `layerAngle` (0.02–0.15), `rotation`, `ringEnabled`, `ringNails` (3–400), `ringBase` (2–99) | Simplified: the researched pattern is a `6·levels²`-tile hex-grid; this ships a fixed 6-tile ring + optional ring, stated plainly |
+| **Lotus** | `sides` circles placed evenly around a helper circle (Freestyle's own circle-placement idea, arranged evenly instead of freely) | `roundRobinSequence` per *adjacent pair* of circles (not all circles together, unlike Freestyle) — one Thread Path per pair | `sides` (3–20), `nailsPerCircle` (3–200), `radiusRatio` (0.1–0.9), `rotation` | Simplified: no centre-point patch handling, no "remove sections" control |
+| **Crosses** | An original 4-line "#" grid (2 lines each direction, the same line-geometry construction as Assymetry/Star's spokes) | `twoRayZigzag` across each of the 4 crossing pairs — one Thread Path per pair | `nailsPerLine` (2–100), `gap` (0.02–0.4), `rotation` | Simplified/original layout: the researched pattern is a fixed 10-line (4 long + 6 crossbar) arrangement; this ships a simpler original 4-line grid with the same crossing-weave character |
 
 **Post-ship correction (Star of David):** the first implementation modelled this pattern as two flat overlapping triangles round-robin-threaded together — topologically wrong, not just visually plainer. A side-by-side comparison against a live reference render (the same competitor app this spec's research was based on) showed the real construction is 7 independently-threaded nested-polygon tiles (1 hexagon + 6 triangles), each spiralling inward through `depth` shrinking/twisting copies of itself — that's what produces the dense inward swirl, not a flat outline. Re-derived from first principles and cross-checked numerically against the reference render's actual nail coordinates (radii and angles only — no source code or artwork was copied into this codebase): the outer tip radius equals the board's inscribed radius `R0` exactly, the central hexagon's own vertex radius is exactly `R0/√3`, and each triangle tile sits exactly 30° off the nearest hexagon vertex (centred on a hexagon edge) — all three facts matched this rebuild's formulas before any code changed to fit them.
 
@@ -47,7 +68,10 @@ Pattern/parameter *selection* itself (which pattern is picked, what its fields c
   - **Mandala**: `layers` (each layer is already its own Thread Path).
   - **Star of David**: a fixed `24` (6 hexagon sides + 6 triangles × 3 sides), independent of `depth`/`mirrorTiling`.
   - **Star**: `3·starPoints` — 2 spoke↔circle zigzags + 1 adjacent-spoke zigzag per point (see the pattern table above).
-  - **Freestyle, Spirals**: `1` — each threads as one continuous Thread Path (round-robin across circles, or visiting every sampled point in sequence); splitting either into independently-coloured runs would change what they draw, not just how they're coloured, so a 2nd colour would never be used by anything.
+  - **Freestyle, Spirals, Dance of Planets, Assymetry, Spiral, Maurer Rose**: `1` — each threads as one continuous Thread Path; splitting any of them into independently-coloured runs would change what they draw, not just how they're coloured, so a 2nd colour would never be used by anything.
+  - **Wave, Vortex, Comet**: `layers` (each layer/level is its own Thread Path, same rule as Mandala).
+  - **Hexagon Spades**: a fixed `18` (6 tiles × 3 sides). **Flower of Life**: `18 + 1` when its optional outer ring is enabled, else `18`.
+  - **Sun**: `3·starPoints + layers` (Star's own run count plus one extra ring per `layers`). **Polygon, Lotus**: `sides`. **Flower**: `sides·layers`. **Crosses**: a fixed `4` (one per crossing pair).
   - `+` is disabled once the palette reaches this cap; `−` is disabled at 1 colour (a pattern always has at least one).
 - **Assignment rule: cycle by run index.** Run `i`'s Thread Path gets `colours[i % paletteLength]` as its *single* colour — never the whole palette handed to one Thread Path (that would render as a multi-strand twist within one run, per [12-thread-editor.md](./12-thread-editor.md)'s existing 1/2/3-colour twist rendering, a different feature). This is "each different colour is a different thread": a colour is only ever applied to a whole separate Thread Path, never blended into a shared multi-strand twist.
 - The palette is `GeneratorPanel`'s own local UI state, passed explicitly into `EditorStore.generatePattern(params, colours)` — **not** read from or written to `state.threadDefaults.colours` (the global Thread-mode drawing default), so picking Generator colours never leaks into the next hand-drawn Thread Path's colour, and vice versa.
@@ -56,7 +80,7 @@ Pattern/parameter *selection* itself (which pattern is picked, what its fields c
 
 ## Scope
 
-- **This milestone ships 5 patterns** (Mandala, Star, Freestyle, Star of David, Spirals) — chosen to exercise every engine capability: single-shape modular math, a 2-shape composite, an N-shape composite, and the curve-sampled/freehand case. The other 14 patterns researched (Assymetry, Spiral, Wave, Vortex, Polygon, Flower, Maurer Rose, Flower of Life, Comet, Sun, Lotus, Dance of Planets, Crosses, Hexagon Spades) use the identical registry/engine shape and are a follow-up milestone, not built here — same MVP/Phase-2 split this project already uses ([00-overview-and-scope.md](./00-overview-and-scope.md)).
+- **M25 shipped 5 patterns** (Mandala, Star, Freestyle, Star of David, Spirals) — chosen to exercise every engine capability: single-shape modular math, a 2-shape composite, an N-shape composite, and the curve-sampled/freehand case. **M26 shipped the remaining 14** (Wave, Hexagon Spades, Dance of Planets, Sun, Vortex, Polygon, Flower, Assymetry, Spiral, Maurer Rose, Comet, Flower of Life, Lotus, Crosses) on the identical registry/engine shape — all 19 researched patterns are now built.
 - **No image/photo-to-string-art mode** is in scope or was requested — the competitor research confirms none of its 19 patterns are image-based either. That would be a categorically different feature (image processing + greedy chord selection), not an extension of this engine.
 - Confirm always creates new layers; it never offers to merge a generated pattern into an existing layer. A user who wants that can do it manually afterward with the existing Merge action ([26-edit-mode-multi-select.md](./26-edit-mode-multi-select.md)).
 - The Generator mode's pins/threads are not integrated with Symmetry ([06-symmetry.md](./06-symmetry.md)) — patterns construct their own composite/rotated geometry directly and are not eligible for the Symmetry panel's mirror/radial config (same as every other non-Pin-mode object in the app).
@@ -175,4 +199,84 @@ Feature: Discarding an uncommitted draft
     Given a draft was discarded by leaving Generator mode
     When the user switches back to Generator mode
     Then no draft or preview is shown
+
+Feature: Generating the M26 patterns
+
+  Scenario: Wave builds a partial-coverage traversal per layer
+    Given Generator mode is active with the Wave pattern (n=100, layers=4, layerFill=20)
+    When the user clicks Generate
+    Then the draft has one circle Pin Path with 100 pins
+    And the draft has 4 Thread Paths, each with 40 pin ids (2*layerFill)
+
+  Scenario: Hexagon Spades builds 6 triangle tiles with no hub
+    Given Generator mode is active with the Hexagon Spades pattern (depth=8)
+    When the user clicks Generate
+    Then the draft has 6 Pin Paths (no central hexagon)
+    And the draft has 18 Thread Paths (6 tiles * 3 sides)
+
+  Scenario: Dance of Planets round-robins two concentric rings for `rounds` passes
+    Given Generator mode is active with the Dance of Planets pattern (outerNails=120, innerNails=60, rounds=2)
+    When the user clicks Generate
+    Then the draft has 2 Pin Paths and exactly 1 Thread Path
+    And reverse=true walks the inner ring's pin order backward
+
+  Scenario: Sun layers extra shrinking rings on top of Star's own shape
+    Given Generator mode is active with the Sun pattern (layers=3)
+    When the user clicks Generate
+    Then the draft has Star's own Pin/Thread Paths plus 3 more of each
+
+  Scenario: Vortex threads each nested-polygon level as a closed outline
+    Given Generator mode is active with the Vortex pattern (sides=5, layers=6)
+    When the user clicks Generate
+    Then the draft has one freehand Pin Path with 30 pins (sides*layers)
+    And the draft has 6 Thread Paths, each a closed loop of sides+1 pin ids
+
+  Scenario: Polygon curve-stitches each side against another side
+    Given Generator mode is active with the Polygon pattern (sides=6, nailsPerSide=10)
+    When the user clicks Generate
+    Then the draft has one regular-polygon Pin Path with 60 pins
+    And the draft has 6 Thread Paths, one per side
+
+  Scenario: Flower layers rotated copies of Polygon's own weave
+    Given Generator mode is active with the Flower pattern (sides=5, layers=3)
+    When the user clicks Generate
+    Then the draft has 3 Pin Paths
+    And the draft has 15 Thread Paths (sides * layers)
+
+  Scenario: Assymetry weaves a single pass across the circle and spoke's combined space
+    Given Generator mode is active with the Assymetry pattern
+    When the user clicks Generate
+    Then the draft has 2 Pin Paths (1 circle + 1 spoke) and exactly 1 Thread Path
+
+  Scenario: Spiral threads one decaying-span continuous walk
+    Given Generator mode is active with the Spiral pattern (n=60, repetition=2, innerLength=3)
+    When the user clicks Generate
+    Then the draft has one circle Pin Path with 60 pins and exactly 1 Thread Path
+
+  Scenario: Maurer Rose samples the public rose-curve formula into freehand pins
+    Given Generator mode is active with the Maurer Rose pattern (maxSteps=90)
+    When the user clicks Generate
+    Then the draft's freehand Pin Path has exactly 91 pins (maxSteps+1)
+    And the single Thread Path visits them in sampled order
+
+  Scenario: Comet's layers taper via a shrinking offset and run length
+    Given Generator mode is active with the Comet pattern (layers=5)
+    When the user clicks Generate
+    Then the draft has one circle Pin Path and 5 Thread Paths
+
+  Scenario: Flower of Life's outer ring is optional
+    Given Generator mode is active with the Flower of Life pattern (ringEnabled=false)
+    Then the draft has 6 Pin Paths and 18 Thread Paths
+    When the user enables ringEnabled
+    Then the draft has 7 Pin Paths and 19 Thread Paths
+
+  Scenario: Lotus threads only adjacent circle pairs
+    Given Generator mode is active with the Lotus pattern (sides=6)
+    When the user clicks Generate
+    Then the draft has 6 circle Pin Paths and 6 Thread Paths (one per adjacent pair)
+
+  Scenario: Crosses weaves each of the 4 crossing pairs in a "#" grid
+    Given Generator mode is active with the Crosses pattern
+    When the user clicks Generate
+    Then the draft has 4 line Pin Paths (2 per direction) and 4 Thread Paths
 ```

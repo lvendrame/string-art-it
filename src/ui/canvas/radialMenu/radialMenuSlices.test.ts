@@ -66,4 +66,13 @@ describe("getRadialMenuSliceIds", () => {
     const state = new EditorStore({ mode: "play" }).getState();
     expect(getRadialMenuSliceIds(state)).toEqual(["playFirst", "playPrevious", "playToggle", "playNext", "playLast"]);
   });
+
+  // docs/specs/32-generator-mode.md — no radial-menu slice set was requested for
+  // Generator mode; this asserts the deliberate empty result rather than letting a
+  // future refactor silently regress it back to a missing switch case (which would
+  // crash RadialContextMenu.tsx's sliceIds.map, since it has no `default`).
+  it("Generate mode: no slices", () => {
+    const state = new EditorStore({ mode: "generate" }).getState();
+    expect(getRadialMenuSliceIds(state)).toEqual([]);
+  });
 });

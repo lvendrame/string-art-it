@@ -29,12 +29,18 @@ export interface HelpTab {
 // docs/specs/20-help.md — maps the live EditorMode to the Help tab shown by default
 // when the modal opens, so Help always opens "on the thing you're doing." Layers and
 // Keyboard & Mouse have no corresponding EditorMode, so they're simply never a target.
+// docs/specs/32-generator-mode.md added a 6th Editor mode with no matching Help tab of
+// its own yet (out of scope for that milestone — see its Scope section) — mapped to
+// "edit" for now, same as the pre-existing HELP_TABS[0].id fallback this Record exists
+// to make explicit, so opening Help from Generator mode still lands somewhere sensible
+// rather than needing a runtime `??` to paper over a missing key.
 export const MODE_TO_HELP_TAB: Record<EditorMode, HelpTabId> = {
   select: "edit",
   pin: "pin",
   thread: "thread",
   pan: "pan",
   play: "play",
+  generate: "edit",
 };
 
 // Labels below reuse docs/conventions/ui-patterns.md's data-driven-content pattern,

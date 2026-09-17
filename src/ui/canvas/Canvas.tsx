@@ -22,6 +22,7 @@ import { StatusBar } from "./StatusBar";
 import { BoardLayer } from "./BoardLayer";
 import { GridLayer } from "./GridLayer";
 import { GridSnapIndicator } from "./GridSnapIndicator";
+import { GeneratorPreviewOverlay } from "./GeneratorPreviewOverlay";
 import { PinLayersView } from "./PinLayersView";
 import { SymmetryOverlay } from "./SymmetryOverlay";
 import { ThreadLayersView } from "./ThreadLayersView";
@@ -371,6 +372,10 @@ export function Canvas({ store }: { store: EditorStore }) {
             pinLayers={state.pinLayers}
             selectedPathIds={selectedPathIds}
           />
+
+          {state.mode === "generate" && state.generatorDraft && (
+            <GeneratorPreviewOverlay pinPaths={state.generatorDraft.pinPaths} threadPaths={state.generatorDraft.threadPaths} />
+          )}
 
           {state.mode === "pin" && (
             <SymmetryOverlay config={activeSymmetry} />

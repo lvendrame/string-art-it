@@ -91,5 +91,16 @@
     "cut": "Schneiden",
     "back": "Zurück",
     "next": "Weiter"
+  },
+  "generatorToolbar": {
+    "sectionTitle": "Generator",
+    "patternLabel": "Muster",
+    "patterns": {
+      "mandala": "Mandala",
+      "star": "Stern",
+      "freestyle": "Freistil",
+      "starOfDavid": "Davidstern",
+      "spirals": "Spiralen"
+    }
   }
 }

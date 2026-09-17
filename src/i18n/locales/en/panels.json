@@ -116,5 +116,29 @@
     "threadLength": "Thread length",
     "pinsVisited": "Pins visited",
     "colours": "Colours"
+  },
+  "generatorPanel": {
+    "fields": {
+      "n": "Pins",
+      "base": "Base",
+      "layers": "Layers",
+      "circleNails": "Circle nails",
+      "starPoints": "Star points",
+      "starOuterRatio": "Star outer size",
+      "starInnerRatio": "Star inner size",
+      "rotation": "Rotation",
+      "nailsPerSide": "Nails per side",
+      "arms": "Arms",
+      "nailsPerSpiral": "Nails per spiral",
+      "totalAngleTurns": "Turns",
+      "circleN": "Circle {{n}}",
+      "nails": "Nails",
+      "radiusRatio": "Radius",
+      "centerXRatio": "Centre X",
+      "centerYRatio": "Centre Y"
+    },
+    "generate": "Generate",
+    "regenerate": "Re-generate",
+    "confirm": "Confirm"
   }
 }

@@ -116,5 +116,29 @@
     "threadLength": "Longueur du fil",
     "pinsVisited": "Broches visitées",
     "colours": "Couleurs"
+  },
+  "generatorPanel": {
+    "fields": {
+      "n": "Clous",
+      "base": "Base",
+      "layers": "Couches",
+      "circleNails": "Clous du cercle",
+      "starPoints": "Pointes de l'étoile",
+      "starOuterRatio": "Taille externe",
+      "starInnerRatio": "Taille interne",
+      "rotation": "Rotation",
+      "nailsPerSide": "Clous par côté",
+      "arms": "Bras",
+      "nailsPerSpiral": "Clous par spirale",
+      "totalAngleTurns": "Tours",
+      "circleN": "Cercle {{n}}",
+      "nails": "Clous",
+      "radiusRatio": "Rayon",
+      "centerXRatio": "Centre X",
+      "centerYRatio": "Centre Y"
+    },
+    "generate": "Générer",
+    "regenerate": "Régénérer",
+    "confirm": "Confirmer"
   }
 }

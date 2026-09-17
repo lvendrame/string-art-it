@@ -305,7 +305,12 @@ export function nextPinId(): string {
   return nextId("pin");
 }
 
-function nextPathId(): string {
+// Exported alongside nextPinId for the same reason (docs/specs/32-generator-mode.md):
+// callers that construct a PinPath's pins directly instead of through distributePins —
+// currently only the Spirals generator pattern, whose pins are exact parametric-curve
+// samples that arc-length resampling would silently move — still need real, correctly-
+// prefixed ids.
+export function nextPathId(): string {
   return nextId("pinpath");
 }
 

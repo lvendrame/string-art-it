@@ -15,6 +15,7 @@ import type {
   ThreadDefaults,
   ThreadTool,
 } from "./EditorState";
+import { buildGeneratorPattern, GENERATOR_PATTERN_NAMES, maxInscribedRadius, type GeneratorParams } from "./generator/generatorPatterns";
 import {
   addPinPathToLayers,
   createPinLayer,
@@ -120,6 +121,7 @@ export class EditorStore {
       threadDraft: null,
       layerPanelTab: "pin",
       printSettings: defaultPrintSettings(),
+      generatorDraft: null,
       ...initial,
     };
   }
@@ -204,6 +206,11 @@ export class EditorStore {
   // values, same as picking a draw tool (setPinTool) — landing on the Pin tab, whether
   // by clicking it directly or by picking a tool while already there, always starts
   // from a known baseline rather than whatever was last dialled in.
+  //
+  // docs/specs/32-generator-mode.md: leaving Generator mode with an uncommitted
+  // generatorDraft discards it — nothing was ever committed to history, so there's
+  // nothing to lose, same non-undoable-transient-state precedent as an abandoned
+  // Thread Path draft (escapeThreadDraft/cancelThreadDraft).
   setMode(mode: EditorMode): void {
     const layerPanelTab = mode === "pin" || mode === "thread" ? mode : this.state.layerPanelTab;
     let { selection } = this.state;
@@ -219,6 +226,7 @@ export class EditorStore {
       layerPanelTab,
       selection,
       ...(mode === "pin" ? { pinDefaults: DEFAULT_PIN_DEFAULTS, symmetryDefaults: NO_SYMMETRY } : {}),
+      ...(mode !== "generate" && this.state.generatorDraft ? { generatorDraft: null } : {}),
     };
     this.notify();
   }
@@ -983,6 +991,55 @@ export class EditorStore {
     this.notify();
   }
 
+  // --- Generator mode (docs/specs/32-generator-mode.md) ---
+
+  // Generate/Re-generate: builds a fresh draft from `params`, replacing whatever draft
+  // (if any) already existed — non-undoable, same as extending/retracting a Thread
+  // Path draft, since nothing here has been committed to the document yet. Board centre
+  // is always the origin (docs/specs/03-board-configuration.md — board geometry is
+  // always centred at (0,0)); maxInscribedRadius keeps every pattern safely inside the
+  // board regardless of its shape.
+  generatePattern(params: GeneratorParams): void {
+    const { pinPaths, threadPaths } = buildGeneratorPattern(params, {
+      center: { x: 0, y: 0 },
+      maxRadius: maxInscribedRadius(this.state.board),
+      pinStyle: this.state.pinDefaults,
+      threadDefaults: this.state.threadDefaults,
+    });
+    this.state = { ...this.state, generatorDraft: { params, pinPaths, threadPaths } };
+    this.notify();
+  }
+
+  // Confirm: the ONLY undoable step in the whole Generate -> Confirm flow. Always
+  // creates two brand-new permanent layers (never merges into an existing layer, so
+  // there's no locked-layer check to make — same one-SetValueCommand<{pinLayers,
+  // threadLayers}> bundling shape as commitPinPathWithReattach/commitSelectionMerge).
+  // Active-layer selection is switched afterward via the existing transient setters
+  // (non-undoable), same precedent as addPinLayer/addThreadLayer switching the active
+  // layer right after their own undoable creation Command.
+  confirmGeneratedPattern(): void {
+    const draft = this.state.generatorDraft;
+    if (!draft) return;
+    const name = `Generated — ${GENERATOR_PATTERN_NAMES[draft.params.patternId]}`;
+    const newPinLayer: PinLayer = { ...createPinLayer(name), pinPaths: draft.pinPaths };
+    const newThreadLayer: ThreadLayer = { ...createThreadLayer(name), threadPaths: draft.threadPaths };
+    const prev = { pinLayers: this.state.pinLayers, threadLayers: this.state.threadLayers };
+    const next = { pinLayers: [...this.state.pinLayers, newPinLayer], threadLayers: [...this.state.threadLayers, newThreadLayer] };
+    const command = new SetValueCommand<typeof next>(
+      (v) => {
+        this.state = { ...this.state, ...v };
+        this.notify();
+      },
+      prev,
+      next,
+    );
+    this.history.run(command);
+    this.state = { ...this.state, generatorDraft: null };
+    this.notify();
+    this.setActivePinLayer(newPinLayer.id);
+    this.setActiveThreadLayer(newThreadLayer.id);
+  }
+
   // --- Persistence (docs/specs/16-persistence.md) ---
 
   toProjectFile(): ProjectFile {
@@ -1011,6 +1068,7 @@ export class EditorStore {
       selectTool: "select",
       selectGranularity: "path",
       threadDraft: null,
+      generatorDraft: null,
     };
     this.notify();
   }

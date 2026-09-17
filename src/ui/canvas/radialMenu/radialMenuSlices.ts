@@ -55,5 +55,13 @@ export function getRadialMenuSliceIds(state: EditorState): RadialMenuSliceId[] {
       return ["panFit", "panZoomIn", "panZoomOut"];
     case "play":
       return ["playFirst", "playPrevious", "playToggle", "playNext", "playLast"];
+    // docs/specs/32-generator-mode.md — Generate/Re-generate/Confirm are explicit
+    // GeneratorPanel buttons, not quick canvas gestures; no radial-menu slice set was
+    // requested for this mode, so right-click opens an empty (0-slice) menu rather than
+    // silently doing nothing or crashing (this switch has no `default`, so every
+    // EditorMode must be handled explicitly — found by re-checking every mode-aware
+    // switch after adding Generator mode, not just the ones this milestone touched).
+    case "generate":
+      return [];
   }
 }

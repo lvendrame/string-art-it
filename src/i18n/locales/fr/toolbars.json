@@ -91,5 +91,16 @@
     "cut": "Couper",
     "back": "Retour",
     "next": "Suivant"
+  },
+  "generatorToolbar": {
+    "sectionTitle": "Générateur",
+    "patternLabel": "Motif",
+    "patterns": {
+      "mandala": "Mandala",
+      "star": "Étoile",
+      "freestyle": "Libre",
+      "starOfDavid": "Étoile de David",
+      "spirals": "Spirales"
+    }
   }
 }

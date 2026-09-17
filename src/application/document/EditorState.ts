@@ -1,13 +1,16 @@
 import type { Viewport } from "../../domain/transforms";
 import type { Board } from "./board";
+import type { GeneratorParams } from "./generator/generatorPatterns";
 import type { PinLayer } from "./pinLayer";
-import type { PinStyle } from "./pinPath";
+import type { PinPath, PinStyle } from "./pinPath";
 import type { SymmetryConfig } from "./symmetryConfig";
 import type { ThreadLayer } from "./threadLayer";
+import type { ThreadPath } from "./threadPath";
 import type { PrintSettings } from "./printSettings";
 
-// docs/specs/06-canvas-and-viewport.md §Editor Modes; docs/specs/19-play-mode.md
-export type EditorMode = "select" | "pin" | "thread" | "pan" | "play";
+// docs/specs/06-canvas-and-viewport.md §Editor Modes; docs/specs/19-play-mode.md;
+// docs/specs/32-generator-mode.md
+export type EditorMode = "select" | "pin" | "thread" | "pan" | "play" | "generate";
 
 export interface GridSettings {
   gapX: number;
@@ -90,6 +93,12 @@ export interface ThreadDefaults {
 // transient, non-undoable interaction state; only a committed ThreadPath is undoable.
 export type ThreadDraft = { pinIds: string[] } | null;
 
+// docs/specs/32-generator-mode.md — the current Generate/Re-generate result, not yet
+// Confirmed. Transient and non-undoable, same shape/rationale as ThreadDraft above:
+// Generate/Re-generate freely overwrite it (there's nothing mid-draft to undo back to),
+// and only Confirm (which creates real, permanent layers) reaches the undo history.
+export type GeneratorDraft = { params: GeneratorParams; pinPaths: PinPath[]; threadPaths: ThreadPath[] } | null;
+
 export interface EditorState {
   board: Board;
   mode: EditorMode;
@@ -111,4 +120,5 @@ export interface EditorState {
   threadDraft: ThreadDraft;
   layerPanelTab: "pin" | "thread";
   printSettings: PrintSettings;
+  generatorDraft: GeneratorDraft;
 }

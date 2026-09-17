@@ -1,4 +1,4 @@
-import { Hand, MousePointer2, Pin as PinIcon, Play, Spline } from "lucide-react";
+import { Hand, MousePointer2, Pin as PinIcon, Play, Spline, Wand2 } from "lucide-react";
 import type { ComponentType } from "react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
@@ -9,6 +9,7 @@ function modes(t: TFunction<["common", "toolbars"]>): { id: EditorMode; label: s
     { id: "select", label: t("modes.select", { ns: "common" }), icon: MousePointer2 },
     { id: "pin", label: t("modes.pin", { ns: "common" }), icon: PinIcon },
     { id: "thread", label: t("modes.thread", { ns: "common" }), icon: Spline },
+    { id: "generate", label: t("modes.generate", { ns: "common" }), icon: Wand2 },
     { id: "pan", label: t("modes.pan", { ns: "common" }), icon: Hand },
     { id: "play", label: t("modes.play", { ns: "common" }), icon: Play },
   ];

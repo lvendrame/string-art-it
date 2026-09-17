@@ -22,6 +22,24 @@ export function closestIntervalCount(perimeter: number, requestedSpacing: number
   return diffHi < diffLo ? hi : lo;
 }
 
+// docs/specs/32-generator-mode.md — Generator patterns are pin-COUNT-driven (e.g.
+// Mandala's `n`), while distributeClosedPath/distributePathPerVertex are spacing-
+// driven. This is the inverse: a `requestedSpacing` that makes closestIntervalCount
+// land on EXACTLY `count`, not just close to it (a generator pattern's thread indices
+// assume an exact pin count — an off-by-one here would silently misroute threads).
+//
+// A naive `perimeter / count` is NOT safe to hand straight to closestIntervalCount:
+// re-dividing perimeter by that exact spacing can land a hair below the integer count
+// due to floating-point error, and `Math.floor` would then round DOWN to `count - 1`.
+// Biasing the spacing very slightly smaller pushes `perimeter / spacing` to just above
+// `count` instead of landing exactly on it — `Math.floor` then reliably reads `count`,
+// and `count` stays the closer candidate to `Math.ceil`'s `count + 1` by construction
+// (the bias is 1e-9 relative, i.e. astronomically closer to `count`).
+export function spacingForPinCount(length: number, count: number): number {
+  if (count <= 0) throw new Error("count must be positive");
+  return (length / count) * (1 - 1e-9);
+}
+
 export interface ClosedDistribution {
   points: Point[];
   actualSpacing: number;

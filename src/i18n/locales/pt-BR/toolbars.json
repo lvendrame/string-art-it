@@ -91,5 +91,16 @@
     "cut": "Cortar",
     "back": "Voltar",
     "next": "Avançar"
+  },
+  "generatorToolbar": {
+    "sectionTitle": "Gerador",
+    "patternLabel": "Padrão",
+    "patterns": {
+      "mandala": "Mandala",
+      "star": "Estrela",
+      "freestyle": "Livre",
+      "starOfDavid": "Estrela de Davi",
+      "spirals": "Espirais"
+    }
   }
 }

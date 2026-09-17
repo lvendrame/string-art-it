@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { LineSegment } from "./LineSegment";
 import { CircularArcSegment } from "./CircularArcSegment";
-import { distributeOpenPath, distributeClosedPath, distributePathPerVertex, closestIntervalCount } from "./distribution";
+import { distributeOpenPath, distributeClosedPath, distributePathPerVertex, closestIntervalCount, spacingForPinCount } from "./distribution";
 import type { Path } from "./types";
 
 function openLine(length: number): Path {
@@ -69,6 +69,33 @@ describe("closestIntervalCount", () => {
 
   it("spacing larger than perimeter collapses to a single interval", () => {
     expect(closestIntervalCount(5, 20)).toBe(1);
+  });
+});
+
+describe("spacingForPinCount", () => {
+  it("round-trips to the exact requested count on a closed circle, across a wide range", () => {
+    const perimeters = [1, 6.28318, 31, 100, 314.159];
+    const counts = [3, 4, 5, 7, 16, 40, 99, 180, 200, 399];
+    for (const perimeter of perimeters) {
+      for (const count of counts) {
+        const spacing = spacingForPinCount(perimeter, count);
+        const result = distributeClosedPath(closedLoopOfPerimeter(perimeter), spacing);
+        expect(result.n).toBe(count);
+      }
+    }
+  });
+
+  it("round-trips to the exact requested count per edge of a regular polygon (vertex-anchored)", () => {
+    for (const nailsPerSide of [2, 3, 6, 10, 40]) {
+      const spacing = spacingForPinCount(3.5, nailsPerSide);
+      const result = distributePathPerVertex(regularHexagon(3.5), spacing);
+      // vertex-anchored: 1 vertex + (nailsPerSide - 1) interior pins per edge, 6 edges.
+      expect(result.n).toBe(6 * nailsPerSide);
+    }
+  });
+
+  it("rejects a non-positive count", () => {
+    expect(() => spacingForPinCount(10, 0)).toThrow();
   });
 });
 

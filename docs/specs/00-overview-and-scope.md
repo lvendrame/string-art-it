@@ -81,6 +81,7 @@ The application must allow users to:
 | Text pin path | [29-text-pin-path.md](./29-text-pin-path.md) |
 | SEO (meta, structured data, landing content) | [30-seo.md](./30-seo.md) |
 | WebMCP agent tools | [31-webmcp-agent-tools.md](./31-webmcp-agent-tools.md) |
+| Generator mode (auto pin+thread pattern generation) | [32-generator-mode.md](./32-generator-mode.md) |
 
 ## MVP Scope
 

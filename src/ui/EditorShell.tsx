@@ -17,6 +17,7 @@ import { SelectToolbar } from "./toolbars/SelectToolbar";
 import { PlayToolbar } from "./toolbars/PlayToolbar";
 import { usePlaybackTransport } from "./toolbars/usePlaybackTransport";
 import { useVideoExport } from "./toolbars/useVideoExport";
+import { GeneratorPanel } from "./panels/GeneratorPanel";
 import { PinPropertiesPanel } from "./panels/PinPropertiesPanel";
 import { SelectionPanel } from "./panels/SelectionPanel";
 import { ThreadPropertiesPanel } from "./panels/ThreadPropertiesPanel";
@@ -183,6 +184,11 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
         {state.mode === "play" && (
           <div style={{ width: 248, flex: "0 0 auto", background: "var(--bg-panel)", borderRight: "1px solid var(--border)", overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 20 }}>
             <PlayToolbar transport={transport} totalFrames={totalFrames} videoExport={videoExport} />
+          </div>
+        )}
+        {state.mode === "generate" && (
+          <div style={{ width: 248, flex: "0 0 auto", background: "var(--bg-panel)", borderRight: "1px solid var(--border)", overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 20 }}>
+            <GeneratorPanel store={store} />
           </div>
         )}
         <div ref={canvasAreaRef} style={{ flex: 1, minWidth: 0, display: "flex", position: "relative" }} onContextMenu={handleCanvasAreaContextMenu}>

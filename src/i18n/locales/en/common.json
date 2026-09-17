@@ -6,6 +6,7 @@
     "select": "Edit",
     "pin": "Pin",
     "thread": "Thread",
+    "generate": "Generate",
     "pan": "Pan",
     "play": "Play"
   },

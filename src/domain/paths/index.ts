@@ -8,5 +8,6 @@ export {
   distributeClosedPath,
   distributePathPerVertex,
   closestIntervalCount,
+  spacingForPinCount,
   type ClosedDistribution,
 } from "./distribution";

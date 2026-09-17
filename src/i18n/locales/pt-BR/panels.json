@@ -116,5 +116,29 @@
     "threadLength": "Comprimento da linha",
     "pinsVisited": "Pinos visitados",
     "colours": "Cores"
+  },
+  "generatorPanel": {
+    "fields": {
+      "n": "Pinos",
+      "base": "Base",
+      "layers": "Camadas",
+      "circleNails": "Pinos do círculo",
+      "starPoints": "Pontas da estrela",
+      "starOuterRatio": "Tamanho externo",
+      "starInnerRatio": "Tamanho interno",
+      "rotation": "Rotação",
+      "nailsPerSide": "Pinos por lado",
+      "arms": "Braços",
+      "nailsPerSpiral": "Pinos por espiral",
+      "totalAngleTurns": "Voltas",
+      "circleN": "Círculo {{n}}",
+      "nails": "Pinos",
+      "radiusRatio": "Raio",
+      "centerXRatio": "Centro X",
+      "centerYRatio": "Centro Y"
+    },
+    "generate": "Gerar",
+    "regenerate": "Regerar",
+    "confirm": "Confirmar"
   }
 }

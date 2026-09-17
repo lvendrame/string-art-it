@@ -33,6 +33,8 @@ export {
   createPinPath,
   recomputePinPath,
   distributePins,
+  nextPinId,
+  nextPathId,
   isVertexAnchoredGeometry,
   translateGeometry,
   rotateGeometry,
@@ -123,6 +125,18 @@ export {
   type ThreadPathStatistics,
   type ProjectThreadTotals,
 } from "./statistics";
+export {
+  GENERATOR_PATTERNS,
+  GENERATOR_PATTERN_NAMES,
+  buildGeneratorPattern,
+  maxInscribedRadius,
+  type GeneratorPatternId,
+  type GeneratorParams,
+  type FreestyleCircleParams,
+  type GeneratorPatternDef,
+  type GeneratorBuildContext,
+  type GeneratorBuildResult,
+} from "./generator/generatorPatterns";
 export {
   CURRENT_PROJECT_VERSION,
   serializeProject,

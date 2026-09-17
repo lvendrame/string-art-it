@@ -1,4 +1,4 @@
-import { mandalaLayerSequences, roundRobinSequence, spiralArmPoints } from "../../../domain/generator";
+import { connectTwoSidesLocalIndices, mandalaLayerSequences, nestedPolygonLevels, nestedPolygonVertices, roundRobinSequence, spiralArmPoints } from "../../../domain/generator";
 import { spacingForPinCount, type Point } from "../../../domain/paths";
 import type { Board } from "../board";
 import { createPinPath, geometryToPath, nextPathId, nextPinId, type Pin, type PinPath, type PinPathGeometry, type PinStyle } from "../pinPath";
@@ -25,7 +25,7 @@ export type GeneratorParams =
   | { patternId: "mandala"; n: number; base: number; layers: number }
   | { patternId: "star"; circleNails: number; starPoints: number; starOuterRatio: number; starInnerRatio: number; rotation: number }
   | { patternId: "freestyle"; circles: FreestyleCircleParams[] }
-  | { patternId: "star-of-david"; nailsPerSide: number; rotation: number }
+  | { patternId: "star-of-david"; depth: number; layerAngle: number; rotation: number; mirrorTiling: boolean }
   | { patternId: "spirals"; arms: number; nailsPerSpiral: number; totalAngleTurns: number; rotation: number };
 
 export interface GeneratorBuildContext {
@@ -63,6 +63,30 @@ export function maxInscribedRadius(board: Board): number {
       return Math.min(d.width ?? 60, d.height ?? 40) / 2;
     case "triangle":
       return Math.min(d.side ?? d.base ?? 50, d.height ?? 30) / 3;
+  }
+}
+
+// docs/specs/32-generator-mode.md §Multicolor — the largest number of distinct colours
+// a pattern's CURRENT parameters can actually put to use, i.e. how many independent
+// Thread Path "runs" it will produce. Mandala's runs are its `layers` (each layer is
+// already its own Thread Path, cycling colour[i % paletteLength] — see buildMandala);
+// Star of David's are fixed by construction (6 hexagon sides + 6 triangles × 3 sides =
+// 24), independent of `depth`/`mirrorTiling`. Star, Freestyle, and Spirals each thread
+// as ONE continuous Thread Path (weaving between shapes, or visiting every sampled
+// point in sequence) — splitting any of them into independently-coloured runs would
+// change what they draw, not just how they're coloured, so they cap at 1: adding a
+// second colour there would never be used by anything (see GeneratorPanel, which grows
+// its colour palette from a `+` button, disabled once this cap is reached).
+export function maxGeneratorColours(params: GeneratorParams): number {
+  switch (params.patternId) {
+    case "mandala":
+      return Math.max(1, params.layers);
+    case "star":
+    case "freestyle":
+    case "spirals":
+      return 1;
+    case "star-of-david":
+      return 24;
   }
 }
 
@@ -143,29 +167,92 @@ function buildFreestyle(params: Extract<GeneratorParams, { patternId: "freestyle
   return { pinPaths, threadPaths: pinIds.length >= 2 ? [threadPath] : [] };
 }
 
-// Two equilateral triangles rotated 60° apart, sharing a centre — the standard
-// construction of a hexagram/Star of David (verified: an equilateral triangle has
-// 120°-rotational self-symmetry, so a 60° offset is the minimal rotation producing the
-// genuinely "opposite-pointing" second triangle, not a no-op).
-function buildStarOfDavid(params: Extract<GeneratorParams, { patternId: "star-of-david" }>, ctx: GeneratorBuildContext): GeneratorBuildResult {
-  const triangleAGeometry: PinPathGeometry = { type: "regular-polygon", center: ctx.center, radius: ctx.maxRadius, sides: 3, rotation: params.rotation };
-  const triangleBGeometry: PinPathGeometry = {
-    type: "regular-polygon",
-    center: ctx.center,
-    radius: ctx.maxRadius,
-    sides: 3,
-    rotation: params.rotation + Math.PI / 3,
-  };
-  const spacingA = spacingForPinCount(firstEdgeLength(triangleAGeometry), params.nailsPerSide);
-  const spacingB = spacingForPinCount(firstEdgeLength(triangleBGeometry), params.nailsPerSide);
-  const triangleA = createPinPath(triangleAGeometry, spacingA, ctx.pinStyle);
-  const triangleB = createPinPath(triangleBGeometry, spacingB, ctx.pinStyle);
+interface StarOfDavidTile {
+  sides: number;
+  center: Point;
+  baseRotation: number;
+  direction: 1 | -1;
+}
 
-  const sequence = roundRobinSequence([triangleA.pins.length, triangleB.pins.length]);
-  const paths = [triangleA, triangleB];
-  const pinIds = sequence.map((s) => paths[s.groupIndex].pins[s.localIndex].id);
-  const threadPath = createThreadPath(pinIds, ctx.threadDefaults.colours, ctx.threadDefaults.width, ctx.threadDefaults.twistPitch);
-  return { pinPaths: [triangleA, triangleB], threadPaths: [threadPath] };
+// Seven tiles — one central hexagon plus six equilateral triangles arranged around it,
+// each on its own nested-polygon spiral (docs/specs/32-generator-mode.md). This is the
+// actual construction (verified against a real reference render's nail coordinates: the
+// outer tip radius equals R0, the central hexagon's own vertex radius is exactly
+// R0/√3, and each triangle's centre sits exactly 30° off the nearest hexagon vertex —
+// i.e. centred on a hexagon EDGE, not a vertex, which is what makes the six triangles'
+// outward tips interleave with the hexagon's own vertices into a proper 6-pointed
+// silhouette instead of a flat hexagon outline). NOT two flat overlapping triangles —
+// that was this pattern's original (incorrect) implementation, replaced after visual
+// comparison against a real reference render showed it wasn't even the right topology,
+// let alone the nested-spiral fill.
+function buildStarOfDavidTiles(rotation: number, mirrorTiling: boolean, maxRadius: number, center: Point): StarOfDavidTile[] {
+  const innerHexRadius = maxRadius / Math.sqrt(3);
+  const triangleRadius = maxRadius / 3;
+  const helperRadius = innerHexRadius * Math.cos(Math.PI / 6) + triangleRadius / 2; // == 2*maxRadius/3
+
+  const tiles: StarOfDavidTile[] = [{ sides: 6, center, baseRotation: rotation, direction: 1 }];
+  for (let t = 0; t < 6; t += 1) {
+    // +30° (π/6) so each triangle centres on a hexagon EDGE, not a vertex.
+    const positionAngle = rotation + Math.PI / 6 + (t * Math.PI) / 3 - Math.PI / 2;
+    const tileCenter: Point = {
+      x: center.x + helperRadius * Math.cos(positionAngle),
+      y: center.y + helperRadius * Math.sin(positionAngle),
+    };
+    // Same angular term as positionAngle (minus its vertex-convention -π/2, which
+    // buildTilePinPath's own nestedPolygonVertices call re-applies) so the triangle's
+    // own vertex 0 points straight outward, away from the shared centre.
+    tiles.push({ sides: 3, center: tileCenter, baseRotation: rotation + Math.PI / 6 + (t * Math.PI) / 3, direction: mirrorTiling ? 1 : -1 });
+  }
+  return tiles;
+}
+
+function buildTilePinPath(tile: StarOfDavidTile, baseRadius: number, layerAngle: number, depth: number, ctx: GeneratorBuildContext): PinPath {
+  const levels = nestedPolygonLevels(tile.sides, baseRadius, tile.baseRotation, layerAngle, depth, tile.direction);
+  const points = nestedPolygonVertices(tile.center, tile.sides, levels);
+  const pins: Pin[] = points.map((p) => ({ id: nextPinId(), ...p }));
+  return {
+    id: nextPathId(),
+    geometry: { type: "freehand", points },
+    // Representative placeholder, same rationale as Spirals below — a subsequent Pin
+    // distance edit re-running distributePins on this freehand geometry needs SOME
+    // positive spacing, not an exact one (the real pin positions are already final).
+    requestedSpacing: baseRadius / Math.max(1, depth),
+    actualSpacing: baseRadius / Math.max(1, depth),
+    pins,
+    guideVisible: ctx.pinStyle.guideVisible,
+    colour: ctx.pinStyle.colour,
+    diameter: ctx.pinStyle.diameter,
+    symmetry: NO_SYMMETRY,
+  };
+}
+
+function buildStarOfDavid(params: Extract<GeneratorParams, { patternId: "star-of-david" }>, ctx: GeneratorBuildContext): GeneratorBuildResult {
+  const { depth, layerAngle, rotation, mirrorTiling } = params;
+  const innerHexRadius = ctx.maxRadius / Math.sqrt(3);
+  const triangleRadius = ctx.maxRadius / 3;
+  const tiles = buildStarOfDavidTiles(rotation, mirrorTiling, ctx.maxRadius, ctx.center);
+
+  const pinPaths = tiles.map((tile) => buildTilePinPath(tile, tile.sides === 6 ? innerHexRadius : triangleRadius, layerAngle, depth, ctx));
+
+  // One Thread Path per (tile, side) adjacent-side fan — matches this pattern's
+  // researched multi-colour default (docs/specs/32-generator-mode.md), so each side of
+  // each tile is independently recolourable afterward via the Thread Properties panel.
+  // Each run gets ONE colour, cycling through the palette by run index (same rule as
+  // Mandala's layers, docs/specs/32-generator-mode.md §Multicolor) — never the whole
+  // palette handed to one Thread Path, which would render as a multi-strand TWIST
+  // within that single run instead of colouring separate runs differently.
+  const palette = ctx.threadDefaults.colours.length > 0 ? ctx.threadDefaults.colours : ["#5b8def"];
+  const threadPaths: ThreadPath[] = [];
+  tiles.forEach((tile, tileIndex) => {
+    const path = pinPaths[tileIndex];
+    for (let s = 0; s < tile.sides; s += 1) {
+      const localIndices = connectTwoSidesLocalIndices(tile.sides, depth, s);
+      const pinIds = localIndices.map((i) => path.pins[i].id);
+      threadPaths.push(createThreadPath(pinIds, [palette[threadPaths.length % palette.length]], ctx.threadDefaults.width, ctx.threadDefaults.twistPitch));
+    }
+  });
+
+  return { pinPaths, threadPaths };
 }
 
 // Spirals is the one pattern whose pins are exact parametric-curve samples (docs/specs/
@@ -249,7 +336,7 @@ export const GENERATOR_PATTERNS: Record<GeneratorPatternId, GeneratorPatternDef>
   "star-of-david": {
     id: "star-of-david",
     labelKey: "starOfDavid",
-    defaultParams: { patternId: "star-of-david", nailsPerSide: 20, rotation: 0 },
+    defaultParams: { patternId: "star-of-david", depth: 10, layerAngle: 0.063, rotation: 0, mirrorTiling: false },
   },
   spirals: {
     id: "spirals",

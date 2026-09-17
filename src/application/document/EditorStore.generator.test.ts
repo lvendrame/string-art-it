@@ -7,7 +7,7 @@ const MANDALA_PARAMS: GeneratorParams = { patternId: "mandala", n: 40, base: 3, 
 describe("EditorStore — Generator mode (docs/specs/32-generator-mode.md)", () => {
   it("generatePattern builds a draft and is NOT recorded in history", () => {
     const store = new EditorStore();
-    store.generatePattern(MANDALA_PARAMS);
+    store.generatePattern(MANDALA_PARAMS, ["#5b8def"]);
     const draft = store.getState().generatorDraft;
     expect(draft).not.toBeNull();
     expect(draft?.pinPaths).toHaveLength(1);
@@ -17,10 +17,10 @@ describe("EditorStore — Generator mode (docs/specs/32-generator-mode.md)", () 
 
   it("generatePattern again (Re-generate) fully replaces the previous draft", () => {
     const store = new EditorStore();
-    store.generatePattern(MANDALA_PARAMS);
+    store.generatePattern(MANDALA_PARAMS, ["#5b8def"]);
     const firstPinIds = store.getState().generatorDraft?.pinPaths[0].pins.map((p) => p.id);
 
-    store.generatePattern({ patternId: "mandala", n: 20, base: 3, layers: 1 });
+    store.generatePattern({ patternId: "mandala", n: 20, base: 3, layers: 1 }, ["#5b8def"]);
     const draft = store.getState().generatorDraft;
     expect(draft?.pinPaths[0].pins).toHaveLength(20);
     const secondPinIds = draft?.pinPaths[0].pins.map((p) => p.id);
@@ -31,7 +31,7 @@ describe("EditorStore — Generator mode (docs/specs/32-generator-mode.md)", () 
   it("switching Editor mode away from generate discards an uncommitted draft", () => {
     const store = new EditorStore();
     store.setMode("generate");
-    store.generatePattern(MANDALA_PARAMS);
+    store.generatePattern(MANDALA_PARAMS, ["#5b8def"]);
     expect(store.getState().generatorDraft).not.toBeNull();
 
     store.setMode("select");
@@ -41,7 +41,7 @@ describe("EditorStore — Generator mode (docs/specs/32-generator-mode.md)", () 
   it("re-entering generate mode does not resurrect a discarded draft", () => {
     const store = new EditorStore();
     store.setMode("generate");
-    store.generatePattern(MANDALA_PARAMS);
+    store.generatePattern(MANDALA_PARAMS, ["#5b8def"]);
     store.setMode("pin");
     store.setMode("generate");
     expect(store.getState().generatorDraft).toBeNull();
@@ -60,7 +60,7 @@ describe("EditorStore — Generator mode (docs/specs/32-generator-mode.md)", () 
     const pinLayersBefore = store.getState().pinLayers.length;
     const threadLayersBefore = store.getState().threadLayers.length;
 
-    store.generatePattern(MANDALA_PARAMS);
+    store.generatePattern(MANDALA_PARAMS, ["#5b8def"]);
     store.confirmGeneratedPattern();
 
     const state = store.getState();
@@ -83,7 +83,7 @@ describe("EditorStore — Generator mode (docs/specs/32-generator-mode.md)", () 
     const store = new EditorStore();
     const originalPinLayerId = store.getState().activePinLayerId;
     store.togglePinLayerLocked(originalPinLayerId);
-    store.generatePattern(MANDALA_PARAMS);
+    store.generatePattern(MANDALA_PARAMS, ["#5b8def"]);
     store.confirmGeneratedPattern();
     const state = store.getState();
     const originalLayer = state.pinLayers.find((l) => l.id === originalPinLayerId);

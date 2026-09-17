@@ -135,10 +135,18 @@
       "nails": "Nails",
       "radiusRatio": "Radius",
       "centerXRatio": "Centre X",
-      "centerYRatio": "Centre Y"
+      "centerYRatio": "Centre Y",
+      "depth": "Nested levels",
+      "layerAngle": "Layer angle",
+      "mirrorTiling": "Mirror tiling"
     },
     "generate": "Generate",
     "regenerate": "Re-generate",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "coloursSectionTitle": "Colours",
+    "colourN": "Colour {{n}}",
+    "addColour": "Add colour",
+    "removeColour": "Remove last colour",
+    "coloursMax": "Up to {{max}} for this pattern"
   }
 }

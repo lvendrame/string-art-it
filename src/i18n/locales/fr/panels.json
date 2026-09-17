@@ -135,10 +135,18 @@
       "nails": "Clous",
       "radiusRatio": "Rayon",
       "centerXRatio": "Centre X",
-      "centerYRatio": "Centre Y"
+      "centerYRatio": "Centre Y",
+      "depth": "Niveaux imbriqués",
+      "layerAngle": "Angle de couche",
+      "mirrorTiling": "Pavage en miroir"
     },
     "generate": "Générer",
     "regenerate": "Régénérer",
-    "confirm": "Confirmer"
+    "confirm": "Confirmer",
+    "coloursSectionTitle": "Couleurs",
+    "colourN": "Couleur {{n}}",
+    "addColour": "Ajouter une couleur",
+    "removeColour": "Retirer la dernière couleur",
+    "coloursMax": "Jusqu'à {{max}} pour ce motif"
   }
 }

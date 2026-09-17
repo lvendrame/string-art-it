@@ -8,7 +8,7 @@ This spec was researched against a read-only analysis of a competitor app's 19 b
 
 ## Pin-count vs. pin-spacing
 
-Every other pin-creating path in this app ([07-pin-geometry-engine.md](./07-pin-geometry-engine.md)) is **spacing-driven**: the user requests a physical gap (e.g. "1cm"), and the engine derives however many pins that implies. Generator patterns are **count-driven** instead (Mandala's `n`, Star of David's `nailsPerSide`) — a pattern's thread-index math assumes an *exact* pin count, so an off-by-one would silently misroute threads.
+Every other pin-creating path in this app ([07-pin-geometry-engine.md](./07-pin-geometry-engine.md)) is **spacing-driven**: the user requests a physical gap (e.g. "1cm"), and the engine derives however many pins that implies. Generator patterns are **count-driven** instead (Mandala's `n`, Star's `circleNails`) — a pattern's thread-index math assumes an *exact* pin count, so an off-by-one would silently misroute threads. (Star of David is the one pattern that sidesteps this entirely — its nested-polygon tiles are built directly from computed vertex points, the same "pins ARE the computed positions" technique Spirals uses, since a fixed vertex count per nested level matters more than matching a physical spacing.)
 
 `spacingForPinCount(length, count)` (`src/domain/paths/distribution.ts`) bridges the two: it derives a `requestedSpacing` that makes `distributeClosedPath`/`distributePathPerVertex`'s existing closest-interval-count algorithm land on *exactly* `count`, not just close to it, by biasing the spacing a hair smaller than the naive `length / count` (a floating-point safety margin — re-dividing the naive value can land a hair *below* the integer count and round down). Every generator pattern in this spec goes through this helper before calling the existing `createPinPath`, so pin distribution stays entirely inside the established engine — no new distribution algorithm was written.
 
@@ -19,12 +19,14 @@ Every other pin-creating path in this app ([07-pin-geometry-engine.md](./07-pin-
 | **Mandala** | One circle, `n` pins | For layer `L` (angular shift `floor(n/layers)·L`): for every pin `i`, connect it to pin `(i·base) mod n`. Each layer is its own Thread Path/colour. | `n` (3–400), `base` (2–99), `layers` (1–20) |
 | **Star** | One circle (`circleNails` pins) + one Star shape (existing `"star"` `PinPathGeometry`, `starPoints` points) | Round-robin: alternately visit the next pin of the circle, then the next pin of the star (wrapping the shorter one) | `circleNails` (5–300), `starPoints` (3–20), `starOuterRatio`/`starInnerRatio` (fractions of the board's inscribed radius), `rotation` |
 | **Freestyle** | Up to 3 independent circles, each positioned/sized as a fraction of the board | Round-robin across every *enabled* circle: visit pin `r mod count` of each, for `r` from 0 to the largest enabled circle's pin count | Per circle: enabled, `nails`, `radiusRatio`, `centerXRatio`, `centerYRatio` |
-| **Star of David** | Two equilateral triangles (`"regular-polygon"`, 3 sides), the second rotated 60° from the first — the standard two-overlapping-triangles construction of a hexagram | Round-robin across the two triangles' pins, same primitive as Star/Freestyle | `nailsPerSide` (2–100), `rotation` |
+| **Star of David** | 7 tiles — 1 central hexagon + 6 equilateral triangles centred on its 6 edges (each triangle's centre 30° off the nearest hexagon vertex, at radius `2·R0/3`; hexagon vertex radius `R0/√3`; triangle vertex radius `R0/3`, where `R0` is the board's inscribed radius) — each tile expanded into `depth` nested, shrinking-and-twisting copies of itself (`nestedPolygonLevels`), pins at every vertex of every nested copy | Per tile, per side: an alternating-parity fan across all `depth` nested levels (`connectTwoSidesLocalIndices`) — one Thread Path per `(tile, side)`, 6 + 6·3 = 24 total | `depth` (1–40, nested levels per tile), `layerAngle` (0.02–0.15, twist/shrink rate per level), `rotation`, `mirrorTiling` (flips the triangles' twist direction) |
 | **Spirals** | `arms` polar-curve arms, `nailsPerSpiral` pins each, sampled directly (not resampled) into a `"freehand"` `PinPathGeometry` — the one pattern demonstrating the curve-sampled/freehand case | Sequential: connect every sampled pin in generation order (arm-major → inner, radial-step-major → outer), one continuous Thread Path | `arms` (2–20), `nailsPerSpiral` (3–300), `totalAngleTurns`, `rotation` |
 
-All five threading rules reduce to pure index arithmetic over already-built pins (`src/domain/generator/roundRobin.ts`, `mandala.ts`), matching the research finding that every one of the 19 researched patterns threads this way — never by re-deriving geometry mid-traversal.
+All five threading rules reduce to pure index arithmetic over already-built pins (`src/domain/generator/roundRobin.ts`, `mandala.ts`, `nestedPolygon.ts`), matching the research finding that every one of the 19 researched patterns threads this way — never by re-deriving geometry mid-traversal.
 
 **Deliberate simplification, stated plainly:** these are original formulas *inspired by* the researched competitor's pattern names and general shapes, not byte-identical reproductions of its exact traversal (which, for e.g. Star, branches on odd/even side count and uses reflected round indices — extra complexity that changes which of two visually similar conventions is used, not whether the pattern is achievable). Mathematical techniques like "connect pin i to pin i·k mod n" are generic string-art methods documented across many hobbyist sources, not unique IP.
+
+**Post-ship correction (Star of David):** the first implementation modelled this pattern as two flat overlapping triangles round-robin-threaded together — topologically wrong, not just visually plainer. A side-by-side comparison against a live reference render (the same competitor app this spec's research was based on) showed the real construction is 7 independently-threaded nested-polygon tiles (1 hexagon + 6 triangles), each spiralling inward through `depth` shrinking/twisting copies of itself — that's what produces the dense inward swirl, not a flat outline. Re-derived from first principles and cross-checked numerically against the reference render's actual nail coordinates (radii and angles only — no source code or artwork was copied into this codebase): the outer tip radius equals the board's inscribed radius `R0` exactly, the central hexagon's own vertex radius is exactly `R0/√3`, and each triangle tile sits exactly 30° off the nearest hexagon vertex (centred on a hexagon edge) — all three facts matched this rebuild's formulas before any code changed to fit them.
 
 ## Draft / Confirm state machine
 
@@ -36,6 +38,20 @@ All five threading rules reduce to pure index arithmetic over already-built pins
 - Loading a project (Open / autosave restore) also discards any in-progress draft, same as it already does for an in-progress Thread Path draft.
 
 Pattern/parameter *selection* itself (which pattern is picked, what its fields currently say) is ordinary local UI state in `GeneratorPanel`, not document state — it resets on Re-generate anyway (a param edit is meant to change the next generated result) and is discarded along with the draft on leaving Generator mode, so there's nothing here worth persisting through `EditorStore`.
+
+## Multicolor
+
+`GeneratorPanel` holds an editable colour palette — one swatch per colour, plus `+`/`−` buttons to add/remove the last colour — analogous to `ThreadPropertiesPanel`'s existing 1/2/3-colour picker but variable-length rather than fixed at 3, since a generator pattern's useful colour count varies per pattern (and, for Mandala, per parameter).
+
+- **Cap, not a fixed number.** `maxGeneratorColours(params)` (`src/application/document/generator/generatorPatterns.ts`) returns the largest number of colours a pattern's *current* parameters can actually put to use — the count of independent Thread Path "runs" it will produce:
+  - **Mandala**: `layers` (each layer is already its own Thread Path).
+  - **Star of David**: a fixed `24` (6 hexagon sides + 6 triangles × 3 sides), independent of `depth`/`mirrorTiling`.
+  - **Star, Freestyle, Spirals**: `1` — each threads as one continuous Thread Path (weaving between shapes, or visiting every sampled point in sequence); splitting any of them into independently-coloured runs would change what they draw, not just how they're coloured, so a 2nd colour would never be used by anything.
+  - `+` is disabled once the palette reaches this cap; `−` is disabled at 1 colour (a pattern always has at least one).
+- **Assignment rule: cycle by run index.** Run `i`'s Thread Path gets `colours[i % paletteLength]` as its *single* colour — never the whole palette handed to one Thread Path (that would render as a multi-strand twist within one run, per [12-thread-editor.md](./12-thread-editor.md)'s existing 1/2/3-colour twist rendering, a different feature). This is "each different colour is a different thread": a colour is only ever applied to a whole separate Thread Path, never blended into a shared multi-strand twist.
+- The palette is `GeneratorPanel`'s own local UI state, passed explicitly into `EditorStore.generatePattern(params, colours)` — **not** read from or written to `state.threadDefaults.colours` (the global Thread-mode drawing default), so picking Generator colours never leaks into the next hand-drawn Thread Path's colour, and vice versa.
+- Switching pattern, or lowering a parameter the cap depends on (e.g. Mandala's `layers`), clamps the *displayed and generated* palette down to the new cap without discarding hidden entries — raising the parameter back up restores the colours already picked rather than re-rolling from scratch.
+- A new swatch (`+`) is seeded with the next colour from a small built-in preset (same auto-pick precedent as `ThreadPropertiesPanel`'s `PALETTE`), not left blank or repeating the previous swatch.
 
 ## Scope
 
@@ -79,6 +95,35 @@ Feature: Generating a pattern
     When the user clicks Generate
     Then the draft's freehand Pin Path has exactly (80-1)*3 pins
     And each pin sits at its computed radius/angle, unmoved by arc-length resampling
+
+Feature: Multicolor palette
+
+  Scenario: The palette starts at 1 colour and Add is capped by the pattern's run count
+    Given Generator mode is active with the Mandala pattern and layers=1
+    Then exactly 1 colour swatch is shown
+    And the Add-colour button is disabled
+
+  Scenario: Raising a cap-driving parameter enables adding more colours
+    Given Generator mode is active with the Mandala pattern
+    When the user sets layers to 3
+    Then the Add-colour button is enabled
+    And clicking it up to 3 times adds up to 3 swatches, then disables Add again
+
+  Scenario: Remove always drops the last swatch and stops at 1
+    Given the palette has 2 colours
+    When the user clicks Remove
+    Then the palette has 1 colour
+    And the Remove button is now disabled
+
+  Scenario: Switching to a single-run pattern clamps the visible palette to 1
+    Given the palette has 3 colours under the Mandala pattern
+    When the user switches to the Star pattern
+    Then only 1 colour swatch is shown
+
+  Scenario: Generate colours each run from the palette, cycling by index
+    Given Generator mode is active with the Mandala pattern, layers=3, and a 2-colour palette
+    When the user clicks Generate
+    Then the 3 generated Thread Paths' colours are [palette[0], palette[1], palette[0]]
 
 Feature: Confirming a generated pattern
 

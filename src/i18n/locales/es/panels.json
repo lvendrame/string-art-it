@@ -135,10 +135,18 @@
       "nails": "Pines",
       "radiusRatio": "Radio",
       "centerXRatio": "Centro X",
-      "centerYRatio": "Centro Y"
+      "centerYRatio": "Centro Y",
+      "depth": "Niveles anidados",
+      "layerAngle": "Ángulo de capa",
+      "mirrorTiling": "Mosaico espejado"
     },
     "generate": "Generar",
     "regenerate": "Regenerar",
-    "confirm": "Confirmar"
+    "confirm": "Confirmar",
+    "coloursSectionTitle": "Colores",
+    "colourN": "Color {{n}}",
+    "addColour": "Añadir color",
+    "removeColour": "Quitar último color",
+    "coloursMax": "Hasta {{max}} para este patrón"
   }
 }

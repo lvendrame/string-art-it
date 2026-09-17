@@ -1,11 +1,15 @@
 import { useState, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
-import { GENERATOR_PATTERNS, type EditorStore, type FreestyleCircleParams, type GeneratorParams, type GeneratorPatternId } from "../../application/document";
+import { GENERATOR_PATTERNS, maxGeneratorColours, type EditorStore, type FreestyleCircleParams, type GeneratorParams, type GeneratorPatternId } from "../../application/document";
 import { GeneratorToolbar } from "../toolbars/GeneratorToolbar";
 import { useEditorState } from "../useEditorStore";
 
 const FIELD_LABEL_STYLE: CSSProperties = { display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11.5, color: "var(--text-secondary)" };
 const FIELD_INPUT_STYLE: CSSProperties = { width: 60, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "3px 6px" };
+
+// Same auto-pick palette precedent as ThreadPropertiesPanel.tsx's colour-count buttons
+// — a new swatch (the `+` button) is seeded from here rather than left blank/repeated.
+const PALETTE = ["#5b8def", "#edeff7", "#e8b449", "#d96c6c", "#8fd6c8", "#c792ea", "#7ee787", "#ff9e64"];
 
 function NumberField({ label, value, min, max, step, onChange }: { label: string; value: number; min?: number; max?: number; step?: number; onChange: (value: number) => void }) {
   return (
@@ -30,6 +34,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
   const state = useEditorState(store);
   const [patternId, setPatternId] = useState<GeneratorPatternId>("mandala");
   const [params, setParams] = useState<GeneratorParams>(GENERATOR_PATTERNS.mandala.defaultParams);
+  const [colours, setColours] = useState<string[]>(() => [store.getState().threadDefaults.colours[0] ?? PALETTE[0]]);
   const draft = state.generatorDraft;
 
   function changePattern(id: GeneratorPatternId) {
@@ -39,6 +44,28 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
 
   function set<K extends string>(key: K, value: number) {
     setParams((p) => ({ ...p, [key]: value }) as GeneratorParams);
+  }
+
+  // docs/specs/32-generator-mode.md §Multicolor — `colours` can hold more entries than
+  // the CURRENT pattern/params can use (e.g. switching from Mandala with 5 layers/
+  // colours down to Star, capped at 1) — clamped here for display/generation rather
+  // than eagerly truncated in state, so raising `layers` back up later restores the
+  // colours the user already picked instead of re-rolling from PALETTE.
+  const maxColours = maxGeneratorColours(params);
+  const visibleColours = colours.slice(0, Math.max(1, maxColours));
+
+  function addColour() {
+    if (visibleColours.length >= maxColours) return;
+    setColours([...visibleColours, PALETTE[visibleColours.length % PALETTE.length]]);
+  }
+
+  function removeColour() {
+    if (visibleColours.length <= 1) return;
+    setColours(visibleColours.slice(0, -1));
+  }
+
+  function setColourAt(index: number, value: string) {
+    setColours(visibleColours.map((c, i) => (i === index ? value : c)));
   }
 
   return (
@@ -66,8 +93,17 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
 
         {params.patternId === "star-of-david" && (
           <>
-            <NumberField label={t("generatorPanel.fields.nailsPerSide")} value={params.nailsPerSide} min={2} max={100} onChange={(v) => set("nailsPerSide", v)} />
+            <NumberField label={t("generatorPanel.fields.depth")} value={params.depth} min={1} max={40} onChange={(v) => set("depth", v)} />
+            <NumberField label={t("generatorPanel.fields.layerAngle")} value={params.layerAngle} min={0.02} max={0.15} step={0.001} onChange={(v) => set("layerAngle", v)} />
             <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, color: "var(--text-secondary)" }}>
+              <input
+                type="checkbox"
+                checked={params.mirrorTiling}
+                onChange={(e) => setParams((p) => (p.patternId === "star-of-david" ? { ...p, mirrorTiling: e.target.checked } : p))}
+              />
+              {t("generatorPanel.fields.mirrorTiling")}
+            </label>
           </>
         )}
 
@@ -127,7 +163,50 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <button className="btn btn-active" style={{ width: "100%", justifyContent: "center", borderRadius: "var(--radius-sm)", padding: "9px 4px", fontSize: 12, fontWeight: 700 }} onClick={() => store.generatePattern(params)}>
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
+          {t("generatorPanel.coloursSectionTitle")}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+          {visibleColours.map((c, i) => (
+            <input
+              key={i}
+              type="color"
+              aria-label={t("generatorPanel.colourN", { n: i + 1 })}
+              value={c}
+              onChange={(e) => setColourAt(i, e.target.value)}
+              style={{ width: 24, height: 24, border: "1px solid var(--border-strong)", borderRadius: 5, background: "none", padding: 0 }}
+            />
+          ))}
+          <button
+            className="btn"
+            aria-label={t("generatorPanel.addColour")}
+            disabled={visibleColours.length >= maxColours}
+            onClick={addColour}
+            style={{ width: 24, height: 24, padding: 0, justifyContent: "center", borderRadius: 5, fontSize: 14, fontWeight: 700 }}
+          >
+            +
+          </button>
+          <button
+            className="btn"
+            aria-label={t("generatorPanel.removeColour")}
+            disabled={visibleColours.length <= 1}
+            onClick={removeColour}
+            style={{ width: 24, height: 24, padding: 0, justifyContent: "center", borderRadius: 5, fontSize: 14, fontWeight: 700 }}
+          >
+            −
+          </button>
+        </div>
+        {maxColours > 1 && (
+          <div style={{ fontSize: 10.5, color: "var(--text-tertiary)" }}>{t("generatorPanel.coloursMax", { max: maxColours })}</div>
+        )}
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <button
+          className="btn btn-active"
+          style={{ width: "100%", justifyContent: "center", borderRadius: "var(--radius-sm)", padding: "9px 4px", fontSize: 12, fontWeight: 700 }}
+          onClick={() => store.generatePattern(params, visibleColours)}
+        >
           {draft ? t("generatorPanel.regenerate") : t("generatorPanel.generate")}
         </button>
         {draft && (

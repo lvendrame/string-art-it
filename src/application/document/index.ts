@@ -130,6 +130,7 @@ export {
   GENERATOR_PATTERN_NAMES,
   buildGeneratorPattern,
   maxInscribedRadius,
+  maxGeneratorColours,
   type GeneratorPatternId,
   type GeneratorParams,
   type FreestyleCircleParams,

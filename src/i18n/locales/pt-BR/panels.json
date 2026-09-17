@@ -135,10 +135,18 @@
       "nails": "Pinos",
       "radiusRatio": "Raio",
       "centerXRatio": "Centro X",
-      "centerYRatio": "Centro Y"
+      "centerYRatio": "Centro Y",
+      "depth": "Níveis aninhados",
+      "layerAngle": "Ângulo da camada",
+      "mirrorTiling": "Espelhar ladrilhos"
     },
     "generate": "Gerar",
     "regenerate": "Regerar",
-    "confirm": "Confirmar"
+    "confirm": "Confirmar",
+    "coloursSectionTitle": "Cores",
+    "colourN": "Cor {{n}}",
+    "addColour": "Adicionar cor",
+    "removeColour": "Remover última cor",
+    "coloursMax": "Até {{max}} para este padrão"
   }
 }

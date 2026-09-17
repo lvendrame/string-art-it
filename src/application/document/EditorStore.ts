@@ -999,12 +999,19 @@ export class EditorStore {
   // is always the origin (docs/specs/03-board-configuration.md — board geometry is
   // always centred at (0,0)); maxInscribedRadius keeps every pattern safely inside the
   // board regardless of its shape.
-  generatePattern(params: GeneratorParams): void {
+  //
+  // `colours` is GeneratorPanel's own multicolour palette (docs/specs/32-generator-
+  // mode.md §Multicolor) — deliberately passed in per-call rather than read from
+  // `state.threadDefaults.colours` directly: that field is the global Thread-mode
+  // drawing default, and overwriting it here would leak into the next hand-drawn
+  // thread's colour. Width/twist pitch are NOT part of this feature and still come
+  // from the shared thread defaults.
+  generatePattern(params: GeneratorParams, colours: string[]): void {
     const { pinPaths, threadPaths } = buildGeneratorPattern(params, {
       center: { x: 0, y: 0 },
       maxRadius: maxInscribedRadius(this.state.board),
       pinStyle: this.state.pinDefaults,
-      threadDefaults: this.state.threadDefaults,
+      threadDefaults: { ...this.state.threadDefaults, colours },
     });
     this.state = { ...this.state, generatorDraft: { params, pinPaths, threadPaths } };
     this.notify();

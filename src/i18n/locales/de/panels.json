@@ -135,10 +135,18 @@
       "nails": "Stifte",
       "radiusRatio": "Radius",
       "centerXRatio": "Mitte X",
-      "centerYRatio": "Mitte Y"
+      "centerYRatio": "Mitte Y",
+      "depth": "Verschachtelte Ebenen",
+      "layerAngle": "Ebenenwinkel",
+      "mirrorTiling": "Spiegelkachelung"
     },
     "generate": "Erzeugen",
     "regenerate": "Neu erzeugen",
-    "confirm": "Bestätigen"
+    "confirm": "Bestätigen",
+    "coloursSectionTitle": "Farben",
+    "colourN": "Farbe {{n}}",
+    "addColour": "Farbe hinzufügen",
+    "removeColour": "Letzte Farbe entfernen",
+    "coloursMax": "Bis zu {{max}} für dieses Muster"
   }
 }

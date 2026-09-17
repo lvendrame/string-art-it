@@ -147,6 +147,7 @@
     "colourN": "Colour {{n}}",
     "addColour": "Add colour",
     "removeColour": "Remove last colour",
-    "coloursMax": "Up to {{max}} for this pattern"
+    "coloursMax": "Up to {{max}} for this pattern",
+    "liveHint": "Updates live as you change settings"
   }
 }

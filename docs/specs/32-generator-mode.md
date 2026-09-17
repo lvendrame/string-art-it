@@ -30,8 +30,8 @@ All five threading rules reduce to pure index arithmetic over already-built pins
 
 ## Draft / Confirm state machine
 
-- **Generate** (`EditorStore.generatePattern(params)`): builds a fresh `{ params, pinPaths, threadPaths }` draft from the current pattern/parameters, replacing any existing draft outright. **Non-undoable** — same transient-interaction-state treatment as an in-progress Thread Path draft ([12-thread-editor.md](./12-thread-editor.md)): nothing here is committed to the document yet, so there is nothing meaningful to step back to mid-draft.
-- **Re-generate**: the same `generatePattern` call, fired again (the button's label is driven by whether a draft currently exists — `"Generate"` when none, `"Re-generate"` once one does). Fully replaces the previous draft; nothing from the old draft survives.
+- **Generate** (`EditorStore.generatePattern(params, colours)`): builds a fresh `{ params, pinPaths, threadPaths }` draft from the current pattern/parameters/palette, replacing any existing draft outright. **Non-undoable** — same transient-interaction-state treatment as an in-progress Thread Path draft ([12-thread-editor.md](./12-thread-editor.md)): nothing here is committed to the document yet, so there is nothing meaningful to step back to mid-draft. Requires an explicit click the first time (the `Generate` button, shown only while no draft exists) — editing fields before that first click only changes local UI state, nothing is computed yet.
+- **Live auto-apply (no "Re-generate" button).** Once a draft exists, `Generate` is replaced by a short "updates live" hint: any later pattern switch, parameter edit, or palette change re-runs `generatePattern` automatically, debounced ~300ms so a fast run of edits (typing a multi-digit number, several palette clicks) only recomputes once, from the final values — never on every intermediate keystroke. Fully replaces the previous draft each time; nothing from the old draft survives. (Earlier versions of this spec had an explicit `Re-generate` button doing the same thing on click; removed in favour of live auto-apply per direct user request, since every pattern here is a pure deterministic function of its parameters — there's never a reason to keep stale output on screen instead of the current settings' real result.)
 - **Preview**: while a draft exists, its pins and threads render on the canvas at reduced opacity (`GeneratorPreviewOverlay`, reusing the existing `PinPathVisual`/`ThreadPathVisual` renderers) so it visibly reads as "not yet part of the document," on top of every real layer.
 - **Confirm** (`EditorStore.confirmGeneratedPattern()`): the **only undoable step** in the whole flow. Always creates two **brand-new** permanent layers (named `"Generated — <Pattern Name>"`) holding the draft's pin/thread paths, appended in one bundled `SetValueCommand<{pinLayers, threadLayers}>` — a single Undo afterward removes both layers together. Confirm never merges into or otherwise touches an existing layer, so there is no locked-layer check to make. The newly created layers become the active Pin/Thread layers afterward (a non-undoable pointer switch, same precedent as `addPinLayer`/`addThreadLayer` switching the active layer right after their own undoable creation).
 - **Leaving Generator mode** with an uncommitted draft discards it (`EditorStore.setMode`) — nothing was ever committed, so there is nothing to lose. Re-entering Generator mode later never resurrects a discarded draft.
@@ -72,17 +72,24 @@ Feature: Generating a pattern
     And the draft is rendered as a preview on the canvas
     And the action is not recorded in the undo history
 
-  Scenario: The Generate button becomes Re-generate once a draft exists
+  Scenario: The Generate button disappears once a draft exists
     Given no draft currently exists
-    Then the action button reads "Generate"
+    Then a "Generate" button is shown and no draft/preview exists
     When the user clicks it
-    Then the action button reads "Re-generate"
+    Then the "Generate" button is replaced by a live-update hint and a Confirm button
 
-  Scenario: Re-generate fully replaces the previous draft
+  Scenario: Editing a field live auto-applies (debounced), fully replacing the previous draft
     Given a Mandala draft with n=180 exists
-    When the user changes n to 60 and clicks Re-generate
+    When the user changes n to 60
+    Then the draft still has 180 pins immediately (not yet applied)
+    When ~300ms pass with no further edits
     Then the draft now has exactly 60 pins
     And none of the previous 180 pins remain in the draft
+
+  Scenario: A fast run of edits only regenerates once, from the final value
+    Given a draft exists
+    When the user changes a field's value three times within 300ms of each other
+    Then only one regeneration happens, using the last value typed
 
   Scenario: Composite patterns build multiple Pin Paths in one draft
     Given Generator mode is active with the Star pattern
@@ -132,7 +139,7 @@ Feature: Confirming a generated pattern
     When the user clicks Confirm
     Then a new Pin Layer and a new Thread Layer are appended to the document
     And the draft is cleared
-    And the Re-generate button reverts to reading "Generate"
+    And the live-update hint is replaced by a "Generate" button again
     And the Confirm button disappears
     And a single Undo removes both new layers together
 

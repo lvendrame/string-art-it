@@ -147,6 +147,7 @@
     "colourN": "Color {{n}}",
     "addColour": "Añadir color",
     "removeColour": "Quitar último color",
-    "coloursMax": "Hasta {{max}} para este patrón"
+    "coloursMax": "Hasta {{max}} para este patrón",
+    "liveHint": "Se actualiza en vivo al cambiar los ajustes"
   }
 }

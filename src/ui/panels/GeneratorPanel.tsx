@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import { GENERATOR_PATTERNS, maxGeneratorColours, type EditorStore, type FreestyleCircleParams, type GeneratorParams, type GeneratorPatternId } from "../../application/document";
 import { GeneratorToolbar } from "../toolbars/GeneratorToolbar";
@@ -52,7 +52,12 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
   // than eagerly truncated in state, so raising `layers` back up later restores the
   // colours the user already picked instead of re-rolling from PALETTE.
   const maxColours = maxGeneratorColours(params);
-  const visibleColours = colours.slice(0, Math.max(1, maxColours));
+  // Memoized (not just sliced inline) so its reference stays stable across renders
+  // that don't actually change the palette or cap — the auto-apply effect below keys
+  // off this reference, and an unmemoized new array every render would reset its
+  // debounce timer forever (including after generatePattern's own store update
+  // triggers a re-render), regenerating in an endless loop even with no user input.
+  const visibleColours = useMemo(() => colours.slice(0, Math.max(1, maxColours)), [colours, maxColours]);
 
   function addColour() {
     if (visibleColours.length >= maxColours) return;
@@ -66,6 +71,35 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
 
   function setColourAt(index: number, value: string) {
     setColours(visibleColours.map((c, i) => (i === index ? value : c)));
+  }
+
+  // docs/specs/32-generator-mode.md — once the user has generated at least once
+  // (`draft` exists), every later pattern/param/colour edit re-generates automatically
+  // instead of requiring an explicit "Re-generate" click, debounced so a fast run of
+  // keystrokes (typing a 3-digit number, dragging... ) doesn't recompute on every
+  // partial value. `justGeneratedRef` suppresses the ONE redundant immediate re-run
+  // this effect would otherwise fire right after the manual Generate click below (same
+  // params/colours, already applied) — every SUBSEQUENT real edit still debounces
+  // normally. Skipped entirely while `draft` is null: editing fields before the first
+  // Generate click must not auto-generate anything.
+  const justGeneratedRef = useRef(false);
+  const hasDraft = draft !== null;
+
+  useEffect(() => {
+    if (!hasDraft) return;
+    if (justGeneratedRef.current) {
+      justGeneratedRef.current = false;
+      return;
+    }
+    const timer = setTimeout(() => {
+      store.generatePattern(params, visibleColours);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [hasDraft, params, visibleColours, store]);
+
+  function handleGenerateClick() {
+    justGeneratedRef.current = true;
+    store.generatePattern(params, visibleColours);
   }
 
   return (
@@ -202,17 +236,22 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <button
-          className="btn btn-active"
-          style={{ width: "100%", justifyContent: "center", borderRadius: "var(--radius-sm)", padding: "9px 4px", fontSize: 12, fontWeight: 700 }}
-          onClick={() => store.generatePattern(params, visibleColours)}
-        >
-          {draft ? t("generatorPanel.regenerate") : t("generatorPanel.generate")}
-        </button>
-        {draft && (
-          <button className="btn" style={{ width: "100%", justifyContent: "center", borderRadius: "var(--radius-sm)", padding: "9px 4px", fontSize: 12, fontWeight: 700 }} onClick={() => store.confirmGeneratedPattern()}>
-            {t("generatorPanel.confirm")}
+        {!draft && (
+          <button
+            className="btn btn-active"
+            style={{ width: "100%", justifyContent: "center", borderRadius: "var(--radius-sm)", padding: "9px 4px", fontSize: 12, fontWeight: 700 }}
+            onClick={handleGenerateClick}
+          >
+            {t("generatorPanel.generate")}
           </button>
+        )}
+        {draft && (
+          <>
+            <div style={{ fontSize: 10.5, color: "var(--text-tertiary)", textAlign: "center" }}>{t("generatorPanel.liveHint")}</div>
+            <button className="btn" style={{ width: "100%", justifyContent: "center", borderRadius: "var(--radius-sm)", padding: "9px 4px", fontSize: 12, fontWeight: 700 }} onClick={() => store.confirmGeneratedPattern()}>
+              {t("generatorPanel.confirm")}
+            </button>
+          </>
         )}
       </div>
     </div>

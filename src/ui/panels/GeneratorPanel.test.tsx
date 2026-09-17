@@ -1,5 +1,5 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { render, screen, fireEvent, act } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { EditorStore } from "../../application/document";
 import { GeneratorPanel } from "./GeneratorPanel";
 
@@ -14,7 +14,7 @@ describe("GeneratorPanel", () => {
     expect(screen.getByLabelText("Layers")).toHaveValue(1);
   });
 
-  it("Generate creates a draft and the button becomes Re-generate; Confirm appears", () => {
+  it("Generate creates a draft; the Generate button disappears and Confirm appears", () => {
     const store = new EditorStore();
     render(<GeneratorPanel store={store} />);
 
@@ -22,16 +22,61 @@ describe("GeneratorPanel", () => {
     fireEvent.click(screen.getByRole("button", { name: "Generate" }));
 
     expect(store.getState().generatorDraft?.pinPaths[0].pins).toHaveLength(180);
-    expect(screen.getByRole("button", { name: "Re-generate" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Generate" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Confirm" })).toBeInTheDocument();
   });
 
-  it("editing a field before Re-generate changes the next draft", () => {
+  it("editing a field before the first Generate click changes what gets generated", () => {
     const store = new EditorStore();
     render(<GeneratorPanel store={store} />);
     fireEvent.change(screen.getByLabelText("Pins"), { target: { value: "40" } });
     fireEvent.click(screen.getByRole("button", { name: "Generate" }));
     expect(store.getState().generatorDraft?.pinPaths[0].pins).toHaveLength(40);
+  });
+
+  // docs/specs/32-generator-mode.md §Live auto-apply — once a draft exists, editing a
+  // field re-generates automatically (debounced), with no "Re-generate" button.
+  describe("live auto-apply after the first Generate", () => {
+    beforeEach(() => vi.useFakeTimers());
+    afterEach(() => vi.useRealTimers());
+
+    it("does not change the draft synchronously; applies after the debounce", () => {
+      const store = new EditorStore();
+      render(<GeneratorPanel store={store} />);
+      fireEvent.click(screen.getByRole("button", { name: "Generate" }));
+      expect(store.getState().generatorDraft?.pinPaths[0].pins).toHaveLength(180);
+
+      fireEvent.change(screen.getByLabelText("Pins"), { target: { value: "40" } });
+      expect(store.getState().generatorDraft?.pinPaths[0].pins).toHaveLength(180); // not yet
+
+      act(() => vi.advanceTimersByTime(300));
+      expect(store.getState().generatorDraft?.pinPaths[0].pins).toHaveLength(40);
+    });
+
+    it("never shows a Generate/Re-generate button once a draft exists", () => {
+      const store = new EditorStore();
+      render(<GeneratorPanel store={store} />);
+      fireEvent.click(screen.getByRole("button", { name: "Generate" }));
+      fireEvent.change(screen.getByLabelText("Pins"), { target: { value: "40" } });
+      act(() => vi.advanceTimersByTime(300));
+      expect(screen.queryByRole("button", { name: "Generate" })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "Re-generate" })).not.toBeInTheDocument();
+    });
+
+    it("a rapid run of edits only regenerates once, from the final value", () => {
+      const store = new EditorStore();
+      render(<GeneratorPanel store={store} />);
+      fireEvent.click(screen.getByRole("button", { name: "Generate" }));
+
+      fireEvent.change(screen.getByLabelText("Pins"), { target: { value: "5" } });
+      act(() => vi.advanceTimersByTime(100));
+      fireEvent.change(screen.getByLabelText("Pins"), { target: { value: "50" } });
+      act(() => vi.advanceTimersByTime(100));
+      fireEvent.change(screen.getByLabelText("Pins"), { target: { value: "60" } });
+      act(() => vi.advanceTimersByTime(300));
+
+      expect(store.getState().generatorDraft?.pinPaths[0].pins).toHaveLength(60);
+    });
   });
 
   it("switching pattern resets fields to that pattern's own defaults", () => {

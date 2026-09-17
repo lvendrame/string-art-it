@@ -147,6 +147,7 @@
     "colourN": "Cor {{n}}",
     "addColour": "Adicionar cor",
     "removeColour": "Remover última cor",
-    "coloursMax": "Até {{max}} para este padrão"
+    "coloursMax": "Até {{max}} para este padrão",
+    "liveHint": "Atualiza automaticamente ao mudar as opções"
   }
 }

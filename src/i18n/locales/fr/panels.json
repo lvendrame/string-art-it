@@ -147,6 +147,7 @@
     "colourN": "Couleur {{n}}",
     "addColour": "Ajouter une couleur",
     "removeColour": "Retirer la dernière couleur",
-    "coloursMax": "Jusqu'à {{max}} pour ce motif"
+    "coloursMax": "Jusqu'à {{max}} pour ce motif",
+    "liveHint": "Se met à jour automatiquement à chaque changement"
   }
 }

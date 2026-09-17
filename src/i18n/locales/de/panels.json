@@ -147,6 +147,7 @@
     "colourN": "Farbe {{n}}",
     "addColour": "Farbe hinzufügen",
     "removeColour": "Letzte Farbe entfernen",
-    "coloursMax": "Bis zu {{max}} für dieses Muster"
+    "coloursMax": "Bis zu {{max}} für dieses Muster",
+    "liveHint": "Aktualisiert sich live bei jeder Änderung"
   }
 }

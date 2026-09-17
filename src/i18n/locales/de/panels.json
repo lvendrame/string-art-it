@@ -123,6 +123,7 @@
       "base": "Basis",
       "layers": "Ebenen",
       "circleNails": "Kreisstifte",
+      "sideNails": "Stifte pro Seite",
       "starPoints": "Sternspitzen",
       "starOuterRatio": "Äußere Größe",
       "starInnerRatio": "Innere Größe",

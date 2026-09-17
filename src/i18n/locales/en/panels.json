@@ -123,6 +123,7 @@
       "base": "Base",
       "layers": "Layers",
       "circleNails": "Circle nails",
+      "sideNails": "Nails per side",
       "starPoints": "Star points",
       "starOuterRatio": "Star outer size",
       "starInnerRatio": "Star inner size",

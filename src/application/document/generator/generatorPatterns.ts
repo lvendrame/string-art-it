@@ -1,7 +1,7 @@
-import { connectTwoSidesLocalIndices, mandalaLayerSequences, nestedPolygonLevels, nestedPolygonVertices, roundRobinSequence, spiralArmPoints } from "../../../domain/generator";
+import { connectTwoSidesLocalIndices, mandalaLayerSequences, nestedPolygonLevels, nestedPolygonVertices, roundRobinSequence, spiralArmPoints, starAdjacentSpokeZigzag, starSpokeCircleZigzag } from "../../../domain/generator";
 import { spacingForPinCount, type Point } from "../../../domain/paths";
 import type { Board } from "../board";
-import { createPinPath, geometryToPath, nextPathId, nextPinId, type Pin, type PinPath, type PinPathGeometry, type PinStyle } from "../pinPath";
+import { createPinPath, nextPathId, nextPinId, type Pin, type PinPath, type PinPathGeometry, type PinStyle } from "../pinPath";
 import { createThreadPath, type ThreadPath } from "../threadPath";
 import { NO_SYMMETRY } from "../symmetryConfig";
 import type { ThreadDefaults } from "../EditorState";
@@ -23,7 +23,7 @@ export interface FreestyleCircleParams {
 
 export type GeneratorParams =
   | { patternId: "mandala"; n: number; base: number; layers: number }
-  | { patternId: "star"; circleNails: number; starPoints: number; starOuterRatio: number; starInnerRatio: number; rotation: number }
+  | { patternId: "star"; sideNails: number; starPoints: number; starOuterRatio: number; starInnerRatio: number; rotation: number }
   | { patternId: "freestyle"; circles: FreestyleCircleParams[] }
   | { patternId: "star-of-david"; depth: number; layerAngle: number; rotation: number; mirrorTiling: boolean }
   | { patternId: "spirals"; arms: number; nailsPerSpiral: number; totalAngleTurns: number; rotation: number };
@@ -71,17 +71,22 @@ export function maxInscribedRadius(board: Board): number {
 // Thread Path "runs" it will produce. Mandala's runs are its `layers` (each layer is
 // already its own Thread Path, cycling colour[i % paletteLength] — see buildMandala);
 // Star of David's are fixed by construction (6 hexagon sides + 6 triangles × 3 sides =
-// 24), independent of `depth`/`mirrorTiling`. Star, Freestyle, and Spirals each thread
-// as ONE continuous Thread Path (weaving between shapes, or visiting every sampled
-// point in sequence) — splitting any of them into independently-coloured runs would
-// change what they draw, not just how they're coloured, so they cap at 1: adding a
-// second colour there would never be used by anything (see GeneratorPanel, which grows
-// its colour palette from a `+` button, disabled once this cap is reached).
+// 24), independent of `depth`/`mirrorTiling`. Star runs one curve-stitch fan per point
+// (`starPoints` spokes, each fanned against its own local arc of circle pins — see
+// buildStar). Freestyle and Spirals each thread as ONE continuous Thread Path (round-
+// robin across circles, or visiting every sampled point in sequence) — splitting
+// either into independently-coloured runs would change what they draw, not just how
+// they're coloured, so they cap at 1: adding a second colour there would never be used
+// by anything (see GeneratorPanel, which grows its colour palette from a `+` button,
+// disabled once this cap is reached).
 export function maxGeneratorColours(params: GeneratorParams): number {
   switch (params.patternId) {
     case "mandala":
       return Math.max(1, params.layers);
     case "star":
+      // 2 spoke↔circle zigzags per point + 1 adjacent-spoke zigzag per point (see
+      // buildStar) — 3*starPoints Thread Paths total.
+      return params.starPoints * 3;
     case "freestyle":
     case "spirals":
       return 1;
@@ -92,17 +97,6 @@ export function maxGeneratorColours(params: GeneratorParams): number {
 
 function circlePerimeter(radius: number): number {
   return 2 * Math.PI * radius;
-}
-
-// Vertex-anchored shapes (regular-polygon/star/polygram) distribute pins PER EDGE
-// (docs/specs/07-pin-geometry-engine.md §Vertex-Anchored Pin Distribution); every edge
-// of the regular shapes this module builds is congruent by construction, so one edge's
-// length is enough to derive the spacing that yields an exact nails-per-side count.
-function firstEdgeLength(geometry: PinPathGeometry): number {
-  const path = geometryToPath(geometry);
-  const segment = path.segments[0];
-  if (!segment) throw new Error("geometry has no segments");
-  return segment.length();
 }
 
 function buildMandala(params: Extract<GeneratorParams, { patternId: "mandala" }>, ctx: GeneratorBuildContext): GeneratorBuildResult {
@@ -125,31 +119,72 @@ function buildMandala(params: Extract<GeneratorParams, { patternId: "mandala" }>
   return { pinPaths: [pinPath], threadPaths };
 }
 
+// A "spoke wheel" star, not a pointed-polygon outline: `starPoints` straight spokes
+// radiate from the board centre out to the rim, each carrying `sideNails` pins — plus
+// one outer circle. Each spoke is curve-stitched (docs/specs/32-generator-mode.md
+// §Star — the classic "connect ray point k to point count-1-k of a nearby second ray"
+// parabola technique) against its OWN local arc of circle pins (the `sideNails-1`
+// circle pins nearest that spoke, not the whole ring) — this is what makes every point
+// look genuinely different from its neighbours: each is an independent local curve,
+// not a shared global weave or a concentric nested spiral.
+//
+// Earlier attempts at this pattern under-shot the connectivity — a flat star round-
+// robinned uniformly against the whole circle, then a nested/concentric star, then a
+// single curve-stitch fan per point, all visually too sparse/uniform. This version
+// layers three independent zigzags per neighbouring pair instead of one
+// (`starSpokeCircleZigzag`/`starAdjacentSpokeZigzag`, `src/domain/generator/
+// starWeave.ts`): two curve-stitch sweeps between a spoke and the circle (one toward
+// each neighbouring point, both pivoting on the shared boundary pin between them) plus
+// a third directly between the two adjacent spokes, bypassing the circle. Denser and
+// more textured than a single fan, while each pass is still just the same generic
+// "connect ray point k to a nearby point on a second ray" curve-stitch idea used
+// elsewhere in this engine — an original design for this pattern, not a reproduction
+// of any specific reference implementation.
 function buildStar(params: Extract<GeneratorParams, { patternId: "star" }>, ctx: GeneratorBuildContext): GeneratorBuildResult {
+  const { starPoints, sideNails, starOuterRatio, starInnerRatio, rotation } = params;
+  const innerRadius = ctx.maxRadius * starInnerRatio;
+  const outerRadius = ctx.maxRadius * starOuterRatio;
+
   const circleGeometry: PinPathGeometry = { type: "circle", center: ctx.center, radius: ctx.maxRadius };
-  const circleSpacing = spacingForPinCount(circlePerimeter(ctx.maxRadius), params.circleNails);
+  // Matches the spoke/arc proportions this pattern's geometry uses: an arc of
+  // `sideNails - 1` circle pins allocated per spoke, `starPoints` spokes total.
+  const circleSpacing = spacingForPinCount(circlePerimeter(ctx.maxRadius), starPoints * (sideNails - 1));
   const circlePath = createPinPath(circleGeometry, circleSpacing, ctx.pinStyle);
 
-  const starGeometry: PinPathGeometry = {
-    type: "star",
-    center: ctx.center,
-    outerRadius: ctx.maxRadius * params.starOuterRatio,
-    innerRadius: ctx.maxRadius * params.starInnerRatio,
-    points: params.starPoints,
-    rotation: params.rotation,
-  };
-  // "starNails" here means nails per star edge (there are 2*points congruent edges),
-  // mirroring the app's own Pin Distance convention rather than a raw total — the
-  // control the GeneratorPanel exposes for this pattern is circleNails only, so the
-  // star side reuses circleNails as a reasonable per-edge default via the same helper.
-  const starSpacing = spacingForPinCount(firstEdgeLength(starGeometry), Math.max(2, Math.round(params.circleNails / params.starPoints)));
-  const starPath = createPinPath(starGeometry, starSpacing, ctx.pinStyle);
+  const spokePaths: PinPath[] = [];
+  for (let s = 0; s < starPoints; s += 1) {
+    // No -π/2 top-of-circle offset here (unlike every other pattern's vertexAt-style
+    // convention): must align with the circle's OWN angle-0 start (pointAtDistance(0)
+    // on CircularArcSegment is at angle 0, i.e. straight right, not top) so spoke s's
+    // local arc below actually sits next to spoke s, not offset by a quarter turn.
+    const angle = rotation + (2 * Math.PI * s) / starPoints;
+    const start: Point = { x: ctx.center.x + innerRadius * Math.cos(angle), y: ctx.center.y + innerRadius * Math.sin(angle) };
+    const end: Point = { x: ctx.center.x + outerRadius * Math.cos(angle), y: ctx.center.y + outerRadius * Math.sin(angle) };
+    const spokeGeometry: PinPathGeometry = { type: "line", start, end };
+    // Vertex-anchored (a "line" is in VERTEX_ANCHORED_TYPES) forces BOTH endpoints —
+    // spacingForPinCount(length, sideNails - 1) yields exactly `sideNails` pins
+    // (1 vertex + (n-1) interior pins per the app's own open-path distribution rule).
+    const spokeSpacing = spacingForPinCount(outerRadius - innerRadius, sideNails - 1);
+    spokePaths.push(createPinPath(spokeGeometry, spokeSpacing, ctx.pinStyle));
+  }
 
-  const sequence = roundRobinSequence([circlePath.pins.length, starPath.pins.length]);
-  const paths = [circlePath, starPath];
-  const pinIds = sequence.map((s) => paths[s.groupIndex].pins[s.localIndex].id);
-  const threadPath = createThreadPath(pinIds, ctx.threadDefaults.colours, ctx.threadDefaults.width, ctx.threadDefaults.twistPitch);
-  return { pinPaths: [circlePath, starPath], threadPaths: [threadPath] };
+  const palette = ctx.threadDefaults.colours.length > 0 ? ctx.threadDefaults.colours : ["#5b8def"];
+  const resolve = (node: { kind: "circle"; index: number } | { kind: "spoke"; spoke: number; index: number }): string =>
+    node.kind === "circle" ? circlePath.pins[node.index].id : spokePaths[node.spoke].pins[node.index].id;
+
+  const threadPaths: ThreadPath[] = [];
+  for (let s = 0; s < starPoints; s += 1) {
+    for (const direction of [1, -1] as const) {
+      const pinIds = starSpokeCircleZigzag(starPoints, sideNails, s, direction).map(resolve);
+      threadPaths.push(createThreadPath(pinIds, [palette[threadPaths.length % palette.length]], ctx.threadDefaults.width, ctx.threadDefaults.twistPitch));
+    }
+  }
+  for (let s = 0; s < starPoints; s += 1) {
+    const pinIds = starAdjacentSpokeZigzag(sideNails, s, (s + 1) % starPoints).map(resolve);
+    threadPaths.push(createThreadPath(pinIds, [palette[threadPaths.length % palette.length]], ctx.threadDefaults.width, ctx.threadDefaults.twistPitch));
+  }
+
+  return { pinPaths: [circlePath, ...spokePaths], threadPaths };
 }
 
 function buildFreestyle(params: Extract<GeneratorParams, { patternId: "freestyle" }>, ctx: GeneratorBuildContext): GeneratorBuildResult {
@@ -319,7 +354,7 @@ export const GENERATOR_PATTERNS: Record<GeneratorPatternId, GeneratorPatternDef>
   star: {
     id: "star",
     labelKey: "star",
-    defaultParams: { patternId: "star", circleNails: 120, starPoints: 5, starOuterRatio: 1, starInnerRatio: 0.4, rotation: 0 },
+    defaultParams: { patternId: "star", sideNails: 24, starPoints: 5, starOuterRatio: 1, starInnerRatio: 0, rotation: 0 },
   },
   freestyle: {
     id: "freestyle",

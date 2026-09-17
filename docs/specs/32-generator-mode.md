@@ -17,7 +17,7 @@ Every other pin-creating path in this app ([07-pin-geometry-engine.md](./07-pin-
 | Pattern | Pin layout | Threading | Parameters |
 |---|---|---|---|
 | **Mandala** | One circle, `n` pins | For layer `L` (angular shift `floor(n/layers)·L`): for every pin `i`, connect it to pin `(i·base) mod n`. Each layer is its own Thread Path/colour. | `n` (3–400), `base` (2–99), `layers` (1–20) |
-| **Star** | One circle (`circleNails` pins) + one Star shape (existing `"star"` `PinPathGeometry`, `starPoints` points) | Round-robin: alternately visit the next pin of the circle, then the next pin of the star (wrapping the shorter one) | `circleNails` (5–300), `starPoints` (3–20), `starOuterRatio`/`starInnerRatio` (fractions of the board's inscribed radius), `rotation` |
+| **Star** | A "spoke wheel," not a pointed-polygon outline: `starPoints` straight spokes (`"line"` `PinPathGeometry`, `sideNails` pins each) radiating from the board centre to the rim, plus one outer circle whose pin count (`starPoints·(sideNails-1)`) is derived from `sideNails` rather than set independently | THREE interleaved zigzag Thread Paths per neighbouring pair: 2 spoke↔circle zigzags per point (`starSpokeCircleZigzag`, one sweeping toward each neighbouring point, both pivoting on the shared boundary pin between them) + 1 direct spoke-to-spoke zigzag per adjacent pair (`starAdjacentSpokeZigzag`, bypassing the circle entirely) — a denser, more textured elaboration of the same curve-stitch idea Star of David and the earlier single-fan design already use. `3·starPoints` Thread Paths total | `sideNails` (2–200), `starPoints` (3–20), `starOuterRatio`/`starInnerRatio` (rim/hub radius as fractions of the board's inscribed radius), `rotation` |
 | **Freestyle** | Up to 3 independent circles, each positioned/sized as a fraction of the board | Round-robin across every *enabled* circle: visit pin `r mod count` of each, for `r` from 0 to the largest enabled circle's pin count | Per circle: enabled, `nails`, `radiusRatio`, `centerXRatio`, `centerYRatio` |
 | **Star of David** | 7 tiles — 1 central hexagon + 6 equilateral triangles centred on its 6 edges (each triangle's centre 30° off the nearest hexagon vertex, at radius `2·R0/3`; hexagon vertex radius `R0/√3`; triangle vertex radius `R0/3`, where `R0` is the board's inscribed radius) — each tile expanded into `depth` nested, shrinking-and-twisting copies of itself (`nestedPolygonLevels`), pins at every vertex of every nested copy | Per tile, per side: an alternating-parity fan across all `depth` nested levels (`connectTwoSidesLocalIndices`) — one Thread Path per `(tile, side)`, 6 + 6·3 = 24 total | `depth` (1–40, nested levels per tile), `layerAngle` (0.02–0.15, twist/shrink rate per level), `rotation`, `mirrorTiling` (flips the triangles' twist direction) |
 | **Spirals** | `arms` polar-curve arms, `nailsPerSpiral` pins each, sampled directly (not resampled) into a `"freehand"` `PinPathGeometry` — the one pattern demonstrating the curve-sampled/freehand case | Sequential: connect every sampled pin in generation order (arm-major → inner, radial-step-major → outer), one continuous Thread Path | `arms` (2–20), `nailsPerSpiral` (3–300), `totalAngleTurns`, `rotation` |
@@ -46,7 +46,8 @@ Pattern/parameter *selection* itself (which pattern is picked, what its fields c
 - **Cap, not a fixed number.** `maxGeneratorColours(params)` (`src/application/document/generator/generatorPatterns.ts`) returns the largest number of colours a pattern's *current* parameters can actually put to use — the count of independent Thread Path "runs" it will produce:
   - **Mandala**: `layers` (each layer is already its own Thread Path).
   - **Star of David**: a fixed `24` (6 hexagon sides + 6 triangles × 3 sides), independent of `depth`/`mirrorTiling`.
-  - **Star, Freestyle, Spirals**: `1` — each threads as one continuous Thread Path (weaving between shapes, or visiting every sampled point in sequence); splitting any of them into independently-coloured runs would change what they draw, not just how they're coloured, so a 2nd colour would never be used by anything.
+  - **Star**: `3·starPoints` — 2 spoke↔circle zigzags + 1 adjacent-spoke zigzag per point (see the pattern table above).
+  - **Freestyle, Spirals**: `1` — each threads as one continuous Thread Path (round-robin across circles, or visiting every sampled point in sequence); splitting either into independently-coloured runs would change what they draw, not just how they're coloured, so a 2nd colour would never be used by anything.
   - `+` is disabled once the palette reaches this cap; `−` is disabled at 1 colour (a pattern always has at least one).
 - **Assignment rule: cycle by run index.** Run `i`'s Thread Path gets `colours[i % paletteLength]` as its *single* colour — never the whole palette handed to one Thread Path (that would render as a multi-strand twist within one run, per [12-thread-editor.md](./12-thread-editor.md)'s existing 1/2/3-colour twist rendering, a different feature). This is "each different colour is a different thread": a colour is only ever applied to a whole separate Thread Path, never blended into a shared multi-strand twist.
 - The palette is `GeneratorPanel`'s own local UI state, passed explicitly into `EditorStore.generatePattern(params, colours)` — **not** read from or written to `state.threadDefaults.colours` (the global Thread-mode drawing default), so picking Generator colours never leaks into the next hand-drawn Thread Path's colour, and vice versa.
@@ -94,8 +95,14 @@ Feature: Generating a pattern
   Scenario: Composite patterns build multiple Pin Paths in one draft
     Given Generator mode is active with the Star pattern
     When the user clicks Generate
-    Then the draft contains one circle Pin Path and one star Pin Path
-    And a single Thread Path weaves pins from both
+    Then the draft contains one circle Pin Path and starPoints spoke (line) Pin Paths
+
+  Scenario: Each point is woven from three local zigzags, not one shared weave
+    Given Generator mode is active with the Star pattern (starPoints=5, sideNails=8)
+    When the user clicks Generate
+    Then the draft has exactly 15 Thread Paths (3 per point)
+    And each point's 2 spoke↔circle Thread Paths only ever touch that spoke's pins and circle pins
+    And each point's adjacent-spoke Thread Path only ever touches its own two neighbouring spokes
 
   Scenario: Spirals places pins via formula, not distributeClosedPath resampling
     Given Generator mode is active with the Spirals pattern (arms=3, nailsPerSpiral=80)

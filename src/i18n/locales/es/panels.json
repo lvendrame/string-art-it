@@ -123,6 +123,7 @@
       "base": "Base",
       "layers": "Capas",
       "circleNails": "Pines del círculo",
+      "sideNails": "Pines por lado",
       "starPoints": "Puntas de estrella",
       "starOuterRatio": "Tamaño externo",
       "starInnerRatio": "Tamaño interno",

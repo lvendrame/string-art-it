@@ -123,6 +123,7 @@
       "base": "Base",
       "layers": "Couches",
       "circleNails": "Clous du cercle",
+      "sideNails": "Clous par côté",
       "starPoints": "Pointes de l'étoile",
       "starOuterRatio": "Taille externe",
       "starInnerRatio": "Taille interne",

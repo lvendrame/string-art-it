@@ -43,17 +43,65 @@ describe("buildGeneratorPattern — mandala", () => {
 });
 
 describe("buildGeneratorPattern — star", () => {
-  it("produces a circle pin path + a star pin path, and a single thread weaving both", () => {
-    const result = buildGeneratorPattern({ patternId: "star", circleNails: 100, starPoints: 5, starOuterRatio: 1, starInnerRatio: 0.4, rotation: 0 }, ctx);
-    expect(result.pinPaths).toHaveLength(2);
+  it("produces 1 circle pin path + starPoints spoke (line) pin paths, each with sideNails pins", () => {
+    const sideNails = 12;
+    const result = buildGeneratorPattern({ patternId: "star", sideNails, starPoints: 5, starOuterRatio: 1, starInnerRatio: 0, rotation: 0 }, ctx);
+    expect(result.pinPaths).toHaveLength(1 + 5);
     expect(result.pinPaths[0].geometry.type).toBe("circle");
-    expect(result.pinPaths[0].pins).toHaveLength(100);
-    expect(result.pinPaths[1].geometry.type).toBe("star");
-    // 2*points congruent edges, 20 nails/edge (round(100/5))
-    expect(result.pinPaths[1].pins).toHaveLength(2 * 5 * 20);
-    expect(result.threadPaths).toHaveLength(1);
-    const allIds = new Set([...result.pinPaths[0].pins, ...result.pinPaths[1].pins].map((p) => p.id));
-    for (const id of result.threadPaths[0].pinIds) expect(allIds.has(id)).toBe(true);
+    expect(result.pinPaths[0].pins).toHaveLength(5 * (sideNails - 1));
+    for (const spoke of result.pinPaths.slice(1)) {
+      expect(spoke.geometry.type).toBe("line");
+      expect(spoke.pins).toHaveLength(sideNails);
+    }
+  });
+
+  it("threads 3 zigzags per point (2 spoke↔circle + 1 adjacent-spoke), each 2*(sideNails-1)+1 pin ids", () => {
+    const sideNails = 8;
+    const starPoints = 5;
+    const result = buildGeneratorPattern({ patternId: "star", sideNails, starPoints, starOuterRatio: 1, starInnerRatio: 0, rotation: 0 }, ctx);
+    expect(result.threadPaths).toHaveLength(starPoints * 3);
+    for (const t of result.threadPaths) expect(t.pinIds).toHaveLength(2 * (sideNails - 1) + 1);
+  });
+
+  it("the 2 spoke↔circle zigzags per point only ever touch that spoke and circle pins (never another spoke)", () => {
+    const sideNails = 6;
+    const starPoints = 4;
+    const result = buildGeneratorPattern({ patternId: "star", sideNails, starPoints, starOuterRatio: 1, starInnerRatio: 0, rotation: 0 }, ctx);
+    const circleIds = new Set(result.pinPaths[0].pins.map((p) => p.id));
+    for (let s = 0; s < starPoints; s += 1) {
+      const spokeIds = new Set(result.pinPaths[s + 1].pins.map((p) => p.id));
+      for (const t of result.threadPaths.slice(s * 2, s * 2 + 2)) {
+        for (const id of t.pinIds) expect(spokeIds.has(id) || circleIds.has(id)).toBe(true);
+      }
+    }
+  });
+
+  it("the adjacent-spoke zigzag (last starPoints threads) only ever touches its own 2 neighbouring spokes", () => {
+    const sideNails = 6;
+    const starPoints = 4;
+    const result = buildGeneratorPattern({ patternId: "star", sideNails, starPoints, starOuterRatio: 1, starInnerRatio: 0, rotation: 0 }, ctx);
+    const adjacentThreads = result.threadPaths.slice(starPoints * 2);
+    expect(adjacentThreads).toHaveLength(starPoints);
+    adjacentThreads.forEach((t, s) => {
+      const s2 = (s + 1) % starPoints;
+      const allowed = new Set([...result.pinPaths[s + 1].pins.map((p) => p.id), ...result.pinPaths[s2 + 1].pins.map((p) => p.id)]);
+      for (const id of t.pinIds) expect(allowed.has(id)).toBe(true);
+    });
+  });
+
+  it("every emitted pin id is a real id from one of the pin paths", () => {
+    const result = buildGeneratorPattern({ patternId: "star", sideNails: 10, starPoints: 5, starOuterRatio: 1, starInnerRatio: 0, rotation: 0 }, ctx);
+    const allIds = new Set(result.pinPaths.flatMap((p) => p.pins.map((pin) => pin.id)));
+    for (const t of result.threadPaths) for (const id of t.pinIds) expect(allIds.has(id)).toBe(true);
+  });
+
+  it("each spoke spans from starInnerRatio*R0 to starOuterRatio*R0 from the board centre", () => {
+    const result = buildGeneratorPattern({ patternId: "star", sideNails: 10, starPoints: 5, starOuterRatio: 0.9, starInnerRatio: 0.2, rotation: 0 }, ctx);
+    for (const spoke of result.pinPaths.slice(1)) {
+      const dists = spoke.pins.map((p) => Math.hypot(p.x - ctx.center.x, p.y - ctx.center.y));
+      expect(Math.max(...dists)).toBeCloseTo(ctx.maxRadius * 0.9, 6);
+      expect(Math.min(...dists)).toBeCloseTo(ctx.maxRadius * 0.2, 6);
+    }
   });
 });
 
@@ -133,8 +181,12 @@ describe("maxGeneratorColours", () => {
     expect(maxGeneratorColours({ patternId: "mandala", n: 10, base: 2, layers: 1 } satisfies GeneratorParams)).toBe(1);
   });
 
-  it("star, freestyle, and spirals cap at 1 (each threads as one continuous run)", () => {
-    expect(maxGeneratorColours({ patternId: "star", circleNails: 10, starPoints: 5, starOuterRatio: 1, starInnerRatio: 0.4, rotation: 0 } satisfies GeneratorParams)).toBe(1);
+  it("star caps at 3*starPoints (2 spoke↔circle zigzags + 1 adjacent-spoke zigzag per point)", () => {
+    expect(maxGeneratorColours({ patternId: "star", sideNails: 10, starPoints: 5, starOuterRatio: 1, starInnerRatio: 0, rotation: 0 } satisfies GeneratorParams)).toBe(15);
+    expect(maxGeneratorColours({ patternId: "star", sideNails: 10, starPoints: 8, starOuterRatio: 1, starInnerRatio: 0, rotation: 0 } satisfies GeneratorParams)).toBe(24);
+  });
+
+  it("freestyle and spirals cap at 1 (each threads as one continuous run)", () => {
     expect(maxGeneratorColours({ patternId: "freestyle", circles: [] } satisfies GeneratorParams)).toBe(1);
     expect(maxGeneratorColours({ patternId: "spirals", arms: 5, nailsPerSpiral: 20, totalAngleTurns: 0.5, rotation: 0 } satisfies GeneratorParams)).toBe(1);
   });

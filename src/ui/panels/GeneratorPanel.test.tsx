@@ -152,7 +152,7 @@ describe("GeneratorPanel", () => {
       fireEvent.click(screen.getByRole("button", { name: "Add colour" }));
       expect(screen.getAllByLabelText(/^Colour \d$/)).toHaveLength(3);
 
-      fireEvent.change(screen.getByRole("combobox", { name: "Pattern" }), { target: { value: "star" } });
+      fireEvent.change(screen.getByRole("combobox", { name: "Pattern" }), { target: { value: "spirals" } });
       expect(screen.getAllByLabelText(/^Colour \d$/)).toHaveLength(1);
     });
 

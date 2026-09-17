@@ -117,10 +117,10 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
 
         {params.patternId === "star" && (
           <>
-            <NumberField label={t("generatorPanel.fields.circleNails")} value={params.circleNails} min={5} max={300} onChange={(v) => set("circleNails", v)} />
+            <NumberField label={t("generatorPanel.fields.sideNails")} value={params.sideNails} min={2} max={200} onChange={(v) => set("sideNails", v)} />
             <NumberField label={t("generatorPanel.fields.starPoints")} value={params.starPoints} min={3} max={20} onChange={(v) => set("starPoints", v)} />
             <NumberField label={t("generatorPanel.fields.starOuterRatio")} value={params.starOuterRatio} min={0.1} max={1} step={0.05} onChange={(v) => set("starOuterRatio", v)} />
-            <NumberField label={t("generatorPanel.fields.starInnerRatio")} value={params.starInnerRatio} min={0.05} max={0.95} step={0.05} onChange={(v) => set("starInnerRatio", v)} />
+            <NumberField label={t("generatorPanel.fields.starInnerRatio")} value={params.starInnerRatio} min={0} max={0.95} step={0.05} onChange={(v) => set("starInnerRatio", v)} />
             <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
           </>
         )}

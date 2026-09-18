@@ -59,6 +59,18 @@ button {
   border-color: var(--border-strong);
 }
 
+.btn:disabled {
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.btn:disabled:hover {
+  background: var(--bg-panel-2);
+  color: var(--text-tertiary);
+  border-color: var(--border);
+}
+
 .btn-active {
   background: var(--accent-soft);
   color: var(--accent);

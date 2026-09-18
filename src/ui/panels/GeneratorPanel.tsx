@@ -94,8 +94,9 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
   }
 
   // docs/specs/32-generator-mode.md — once the user has generated at least once
-  // (`draft` exists), every later pattern/param/colour edit re-generates automatically
-  // instead of requiring an explicit "Re-generate" click, debounced so a fast run of
+  // (`draft` exists), every later pattern/param/colour/thread-width edit re-generates
+  // automatically instead of requiring an explicit "Re-generate" click, debounced so a
+  // fast run of
   // keystrokes (typing a 3-digit number, dragging... ) doesn't recompute on every
   // partial value. `justGeneratedRef` suppresses the ONE redundant immediate re-run
   // this effect would otherwise fire right after the manual Generate click below (same
@@ -115,7 +116,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
       store.generatePattern(params, visibleColours);
     }, 300);
     return () => clearTimeout(timer);
-  }, [hasDraft, params, visibleColours, store]);
+  }, [hasDraft, params, visibleColours, state.threadDefaults.width, store]);
 
   function handleGenerateClick() {
     justGeneratedRef.current = true;
@@ -446,26 +447,24 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
             {t("generatorPanel.coloursSectionTitle")}
           </span>
           <span style={{ display: "flex", gap: 6 }}>
-            {visibleColours.length < maxColours && (
-              <button
-                className="btn"
-                aria-label={t("generatorPanel.addColour")}
-                onClick={addColour}
-                style={{ width: 24, height: 24, padding: 0, justifyContent: "center", borderRadius: 5, fontSize: 14, fontWeight: 700 }}
-              >
-                +
-              </button>
-            )}
-            {visibleColours.length > 1 && (
-              <button
-                className="btn"
-                aria-label={t("generatorPanel.removeColour")}
-                onClick={removeColour}
-                style={{ width: 24, height: 24, padding: 0, justifyContent: "center", borderRadius: 5, fontSize: 14, fontWeight: 700 }}
-              >
-                −
-              </button>
-            )}
+            <button
+              className="btn"
+              aria-label={t("generatorPanel.addColour")}
+              disabled={visibleColours.length >= maxColours}
+              onClick={addColour}
+              style={{ width: 24, height: 24, padding: 0, justifyContent: "center", borderRadius: 5, fontSize: 14, fontWeight: 700 }}
+            >
+              +
+            </button>
+            <button
+              className="btn"
+              aria-label={t("generatorPanel.removeColour")}
+              disabled={visibleColours.length <= 1}
+              onClick={removeColour}
+              style={{ width: 24, height: 24, padding: 0, justifyContent: "center", borderRadius: 5, fontSize: 14, fontWeight: 700 }}
+            >
+              −
+            </button>
           </span>
         </legend>
         <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>

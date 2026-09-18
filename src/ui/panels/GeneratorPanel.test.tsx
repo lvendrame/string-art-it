@@ -110,40 +110,40 @@ describe("GeneratorPanel", () => {
 
   // docs/specs/32-generator-mode.md §Multicolor
   describe("multicolor palette", () => {
-    it("starts with exactly 1 colour; Add and Remove are both hidden at the pattern's cap (Mandala defaults to layers=1)", () => {
+    it("starts with exactly 1 colour; Add is disabled at the pattern's cap (Mandala defaults to layers=1)", () => {
       const store = new EditorStore();
       render(<GeneratorPanel store={store} />);
       expect(screen.getAllByLabelText(/^Colour \d$/)).toHaveLength(1);
-      expect(screen.queryByRole("button", { name: "Add colour" })).not.toBeInTheDocument();
-      expect(screen.queryByRole("button", { name: "Remove last colour" })).not.toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Add colour" })).toBeDisabled();
+      expect(screen.getByRole("button", { name: "Remove last colour" })).toBeDisabled();
     });
 
-    it("Add appears once layers > 1, and adds swatches up to that cap", () => {
+    it("Add is enabled once layers > 1, and adds swatches up to that cap", () => {
       const store = new EditorStore();
       render(<GeneratorPanel store={store} />);
       fireEvent.change(screen.getByLabelText("Layers"), { target: { value: "3" } });
 
       const addBtn = screen.getByRole("button", { name: "Add colour" });
-      expect(addBtn).toBeInTheDocument();
+      expect(addBtn).not.toBeDisabled();
       fireEvent.click(addBtn);
       expect(screen.getAllByLabelText(/^Colour \d$/)).toHaveLength(2);
-      fireEvent.click(screen.getByRole("button", { name: "Add colour" }));
+      fireEvent.click(addBtn);
       expect(screen.getAllByLabelText(/^Colour \d$/)).toHaveLength(3);
-      expect(screen.queryByRole("button", { name: "Add colour" })).not.toBeInTheDocument(); // capped at layers=3
+      expect(addBtn).toBeDisabled(); // capped at layers=3
     });
 
-    it("both Add and Remove are present at once when count is strictly between 1 and the cap", () => {
+    it("both Add and Remove are enabled at once when count is strictly between 1 and the cap", () => {
       const store = new EditorStore();
       render(<GeneratorPanel store={store} />);
       fireEvent.change(screen.getByLabelText("Layers"), { target: { value: "3" } });
       fireEvent.click(screen.getByRole("button", { name: "Add colour" }));
       expect(screen.getAllByLabelText(/^Colour \d$/)).toHaveLength(2);
 
-      expect(screen.getByRole("button", { name: "Add colour" })).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: "Remove last colour" })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Add colour" })).not.toBeDisabled();
+      expect(screen.getByRole("button", { name: "Remove last colour" })).not.toBeDisabled();
     });
 
-    it("Remove drops the last swatch; hidden again at 1", () => {
+    it("Remove drops the last swatch; disabled again at 1", () => {
       const store = new EditorStore();
       render(<GeneratorPanel store={store} />);
       fireEvent.change(screen.getByLabelText("Layers"), { target: { value: "2" } });
@@ -152,7 +152,7 @@ describe("GeneratorPanel", () => {
 
       fireEvent.click(screen.getByRole("button", { name: "Remove last colour" }));
       expect(screen.getAllByLabelText(/^Colour \d$/)).toHaveLength(1);
-      expect(screen.queryByRole("button", { name: "Remove last colour" })).not.toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Remove last colour" })).toBeDisabled();
     });
 
     it("switching to a 1-colour-max pattern visually clamps the swatches shown", () => {
@@ -200,5 +200,22 @@ describe("GeneratorPanel", () => {
     expect(store.getState().threadDefaults.width).toBe(1.5);
     fireEvent.change(screen.getByLabelText("Thread width"), { target: { value: "3" } });
     expect(store.getState().threadDefaults.width).toBe(3);
+  });
+
+  // Regression: changing thread width after the first Generate must re-run the draft
+  // (like every other field) so the preview actually redraws with the new width —
+  // width previously wasn't a dependency of the live auto-apply effect.
+  it("changing thread width after Generate re-applies the draft with the new width", () => {
+    vi.useFakeTimers();
+    const store = new EditorStore();
+    render(<GeneratorPanel store={store} />);
+    fireEvent.click(screen.getByRole("button", { name: "Generate" }));
+    expect(store.getState().generatorDraft?.threadPaths[0].width).toBe(1.5);
+
+    fireEvent.change(screen.getByLabelText("Thread width"), { target: { value: "4" } });
+    act(() => vi.advanceTimersByTime(300));
+
+    expect(store.getState().generatorDraft?.threadPaths[0].width).toBe(4);
+    vi.useRealTimers();
   });
 });

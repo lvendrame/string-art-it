@@ -181,7 +181,8 @@
       "removeSections": "Remove sections",
       "renderCenter": "Render centre",
       "centerRadius": "Centre radius",
-      "radialColor": "Radial colour"
+      "radialColor": "Radial colour",
+      "threadWidth": "Thread width"
     },
     "generate": "Generate",
     "regenerate": "Re-generate",

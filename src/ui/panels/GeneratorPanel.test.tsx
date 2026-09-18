@@ -9,9 +9,9 @@ describe("GeneratorPanel", () => {
     const store = new EditorStore();
     render(<GeneratorPanel store={store} />);
     expect(screen.getByRole("combobox", { name: "Pattern" })).toHaveValue("mandala");
-    expect(screen.getByLabelText("Pins")).toHaveValue(180);
-    expect(screen.getByLabelText("Base")).toHaveValue(2);
-    expect(screen.getByLabelText("Layers")).toHaveValue(1);
+    expect(screen.getByLabelText("Pins")).toHaveValue("180");
+    expect(screen.getByLabelText("Base")).toHaveValue("2");
+    expect(screen.getByLabelText("Layers")).toHaveValue("1");
   });
 
   it("Generate creates a draft; the Generate button disappears and Confirm appears", () => {
@@ -83,8 +83,8 @@ describe("GeneratorPanel", () => {
     const store = new EditorStore();
     render(<GeneratorPanel store={store} />);
     fireEvent.change(screen.getByRole("combobox", { name: "Pattern" }), { target: { value: "spirals" } });
-    expect(screen.getByLabelText("Arms")).toHaveValue(3);
-    expect(screen.getByLabelText("Nails per spiral")).toHaveValue(80);
+    expect(screen.getByLabelText("Arms")).toHaveValue("3");
+    expect(screen.getByLabelText("Nails per spiral")).toHaveValue("80");
   });
 
   it("Confirm commits the draft and the panel reverts to Generate with no Confirm button", () => {
@@ -110,29 +110,40 @@ describe("GeneratorPanel", () => {
 
   // docs/specs/32-generator-mode.md §Multicolor
   describe("multicolor palette", () => {
-    it("starts with exactly 1 colour; Add is disabled at the pattern's cap (Mandala defaults to layers=1)", () => {
+    it("starts with exactly 1 colour; Add and Remove are both hidden at the pattern's cap (Mandala defaults to layers=1)", () => {
       const store = new EditorStore();
       render(<GeneratorPanel store={store} />);
       expect(screen.getAllByLabelText(/^Colour \d$/)).toHaveLength(1);
-      expect(screen.getByRole("button", { name: "Add colour" })).toBeDisabled();
-      expect(screen.getByRole("button", { name: "Remove last colour" })).toBeDisabled();
+      expect(screen.queryByRole("button", { name: "Add colour" })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "Remove last colour" })).not.toBeInTheDocument();
     });
 
-    it("Add is enabled once layers > 1, and adds swatches up to that cap", () => {
+    it("Add appears once layers > 1, and adds swatches up to that cap", () => {
       const store = new EditorStore();
       render(<GeneratorPanel store={store} />);
       fireEvent.change(screen.getByLabelText("Layers"), { target: { value: "3" } });
 
       const addBtn = screen.getByRole("button", { name: "Add colour" });
-      expect(addBtn).not.toBeDisabled();
+      expect(addBtn).toBeInTheDocument();
       fireEvent.click(addBtn);
       expect(screen.getAllByLabelText(/^Colour \d$/)).toHaveLength(2);
-      fireEvent.click(addBtn);
+      fireEvent.click(screen.getByRole("button", { name: "Add colour" }));
       expect(screen.getAllByLabelText(/^Colour \d$/)).toHaveLength(3);
-      expect(addBtn).toBeDisabled(); // capped at layers=3
+      expect(screen.queryByRole("button", { name: "Add colour" })).not.toBeInTheDocument(); // capped at layers=3
     });
 
-    it("Remove drops the last swatch; disabled again at 1", () => {
+    it("both Add and Remove are present at once when count is strictly between 1 and the cap", () => {
+      const store = new EditorStore();
+      render(<GeneratorPanel store={store} />);
+      fireEvent.change(screen.getByLabelText("Layers"), { target: { value: "3" } });
+      fireEvent.click(screen.getByRole("button", { name: "Add colour" }));
+      expect(screen.getAllByLabelText(/^Colour \d$/)).toHaveLength(2);
+
+      expect(screen.getByRole("button", { name: "Add colour" })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Remove last colour" })).toBeInTheDocument();
+    });
+
+    it("Remove drops the last swatch; hidden again at 1", () => {
       const store = new EditorStore();
       render(<GeneratorPanel store={store} />);
       fireEvent.change(screen.getByLabelText("Layers"), { target: { value: "2" } });
@@ -141,7 +152,7 @@ describe("GeneratorPanel", () => {
 
       fireEvent.click(screen.getByRole("button", { name: "Remove last colour" }));
       expect(screen.getAllByLabelText(/^Colour \d$/)).toHaveLength(1);
-      expect(screen.getByRole("button", { name: "Remove last colour" })).toBeDisabled();
+      expect(screen.queryByRole("button", { name: "Remove last colour" })).not.toBeInTheDocument();
     });
 
     it("switching to a 1-colour-max pattern visually clamps the swatches shown", () => {
@@ -170,5 +181,24 @@ describe("GeneratorPanel", () => {
       const threadColours = store.getState().generatorDraft?.threadPaths.map((t) => t.colours);
       expect(threadColours).toEqual([["#111111"], ["#222222"], ["#111111"]]);
     });
+  });
+
+  it("renders pattern-param fields as range sliders with the expected bounds", () => {
+    const store = new EditorStore();
+    render(<GeneratorPanel store={store} />);
+    const pinsInput = screen.getByLabelText("Pins") as HTMLInputElement;
+    expect(pinsInput.type).toBe("range");
+    expect(pinsInput.min).toBe("3");
+    expect(pinsInput.max).toBe("400");
+  });
+
+  // docs/specs/32-generator-mode.md — thread width is intentionally shared with Thread
+  // mode's own field via store.setThreadProperty, not generator-scoped.
+  it("the thread-width slider writes through to the shared threadDefaults.width", () => {
+    const store = new EditorStore();
+    render(<GeneratorPanel store={store} />);
+    expect(store.getState().threadDefaults.width).toBe(1.5);
+    fireEvent.change(screen.getByLabelText("Thread width"), { target: { value: "3" } });
+    expect(store.getState().threadDefaults.width).toBe(3);
   });
 });

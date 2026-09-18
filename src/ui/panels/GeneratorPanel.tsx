@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { GENERATOR_PATTERNS, maxGeneratorColours, type AssymetryLayerParams, type EditorStore, type FreestyleCircleParams, type GeneratorParams, type GeneratorPatternId } from "../../application/document";
 import { GeneratorToolbar } from "../toolbars/GeneratorToolbar";
 import { useEditorState } from "../useEditorStore";
+import { SliderField } from "./fields/SliderField";
 
 const FIELD_LABEL_STYLE: CSSProperties = { display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11.5, color: "var(--text-secondary)" };
 const FIELD_INPUT_STYLE: CSSProperties = { width: 60, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "3px 6px" };
@@ -10,15 +11,6 @@ const FIELD_INPUT_STYLE: CSSProperties = { width: 60, background: "var(--bg-pane
 // Same auto-pick palette precedent as ThreadPropertiesPanel.tsx's colour-count buttons
 // — a new swatch (the `+` button) is seeded from here rather than left blank/repeated.
 const PALETTE = ["#5b8def", "#edeff7", "#e8b449", "#d96c6c", "#8fd6c8", "#c792ea", "#7ee787", "#ff9e64"];
-
-function NumberField({ label, value, min, max, step, onChange }: { label: string; value: number; min?: number; max?: number; step?: number; onChange: (value: number) => void }) {
-  return (
-    <label style={FIELD_LABEL_STYLE}>
-      {label}
-      <input type="number" className="mono" min={min} max={max} step={step} value={value} onChange={(e) => onChange(Number(e.target.value))} style={FIELD_INPUT_STYLE} />
-    </label>
-  );
-}
 
 function updateFreestyleCircle(circles: FreestyleCircleParams[], index: number, patch: Partial<FreestyleCircleParams>): FreestyleCircleParams[] {
   return circles.map((c, i) => (i === index ? { ...c, ...patch } : c));
@@ -137,27 +129,27 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 8, background: "var(--bg-app)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 10 }}>
         {params.patternId === "mandala" && (
           <>
-            <NumberField label={t("generatorPanel.fields.n")} value={params.n} min={3} max={400} onChange={(v) => set("n", v)} />
-            <NumberField label={t("generatorPanel.fields.base")} value={params.base} min={2} max={99} onChange={(v) => set("base", v)} />
-            <NumberField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={20} onChange={(v) => set("layers", v)} />
+            <SliderField label={t("generatorPanel.fields.n")} value={params.n} min={3} max={400} onChange={(v) => set("n", v)} />
+            <SliderField label={t("generatorPanel.fields.base")} value={params.base} min={2} max={99} onChange={(v) => set("base", v)} />
+            <SliderField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={20} onChange={(v) => set("layers", v)} />
           </>
         )}
 
         {params.patternId === "star" && (
           <>
-            <NumberField label={t("generatorPanel.fields.sideNails")} value={params.sideNails} min={2} max={200} onChange={(v) => set("sideNails", v)} />
-            <NumberField label={t("generatorPanel.fields.starPoints")} value={params.starPoints} min={3} max={20} onChange={(v) => set("starPoints", v)} />
-            <NumberField label={t("generatorPanel.fields.starOuterRatio")} value={params.starOuterRatio} min={0.1} max={1} step={0.05} onChange={(v) => set("starOuterRatio", v)} />
-            <NumberField label={t("generatorPanel.fields.starInnerRatio")} value={params.starInnerRatio} min={0} max={0.95} step={0.05} onChange={(v) => set("starInnerRatio", v)} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <SliderField label={t("generatorPanel.fields.sideNails")} value={params.sideNails} min={2} max={200} onChange={(v) => set("sideNails", v)} />
+            <SliderField label={t("generatorPanel.fields.starPoints")} value={params.starPoints} min={3} max={20} onChange={(v) => set("starPoints", v)} />
+            <SliderField label={t("generatorPanel.fields.starOuterRatio")} value={params.starOuterRatio} min={0.1} max={1} step={0.05} onChange={(v) => set("starOuterRatio", v)} />
+            <SliderField label={t("generatorPanel.fields.starInnerRatio")} value={params.starInnerRatio} min={0} max={0.95} step={0.05} onChange={(v) => set("starInnerRatio", v)} />
+            <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
           </>
         )}
 
         {params.patternId === "star-of-david" && (
           <>
-            <NumberField label={t("generatorPanel.fields.depth")} value={params.depth} min={1} max={40} onChange={(v) => set("depth", v)} />
-            <NumberField label={t("generatorPanel.fields.layerAngle")} value={params.layerAngle} min={0.02} max={0.15} step={0.001} onChange={(v) => set("layerAngle", v)} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <SliderField label={t("generatorPanel.fields.depth")} value={params.depth} min={1} max={40} onChange={(v) => set("depth", v)} />
+            <SliderField label={t("generatorPanel.fields.layerAngle")} value={params.layerAngle} min={0.02} max={0.15} step={0.001} onChange={(v) => set("layerAngle", v)} />
+            <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
             <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, color: "var(--text-secondary)" }}>
               <input
                 type="checkbox"
@@ -171,10 +163,10 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
 
         {params.patternId === "spirals" && (
           <>
-            <NumberField label={t("generatorPanel.fields.arms")} value={params.arms} min={2} max={20} onChange={(v) => set("arms", v)} />
-            <NumberField label={t("generatorPanel.fields.nailsPerSpiral")} value={params.nailsPerSpiral} min={3} max={300} onChange={(v) => set("nailsPerSpiral", v)} />
-            <NumberField label={t("generatorPanel.fields.totalAngleTurns")} value={params.totalAngleTurns} min={0} max={5} step={0.05} onChange={(v) => set("totalAngleTurns", v)} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <SliderField label={t("generatorPanel.fields.arms")} value={params.arms} min={2} max={20} onChange={(v) => set("arms", v)} />
+            <SliderField label={t("generatorPanel.fields.nailsPerSpiral")} value={params.nailsPerSpiral} min={3} max={300} onChange={(v) => set("nailsPerSpiral", v)} />
+            <SliderField label={t("generatorPanel.fields.totalAngleTurns")} value={params.totalAngleTurns} min={0} max={5} step={0.05} onChange={(v) => set("totalAngleTurns", v)} />
+            <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
           </>
         )}
 
@@ -189,14 +181,14 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
                 />
                 {t("generatorPanel.fields.circleN", { n: i + 1 })}
               </label>
-              <NumberField
+              <SliderField
                 label={t("generatorPanel.fields.nails")}
                 value={circle.nails}
                 min={1}
                 max={300}
                 onChange={(v) => setParams((p) => (p.patternId === "freestyle" ? { ...p, circles: updateFreestyleCircle(p.circles, i, { nails: v }) } : p))}
               />
-              <NumberField
+              <SliderField
                 label={t("generatorPanel.fields.radiusRatio")}
                 value={circle.radiusRatio}
                 min={0.05}
@@ -204,7 +196,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
                 step={0.05}
                 onChange={(v) => setParams((p) => (p.patternId === "freestyle" ? { ...p, circles: updateFreestyleCircle(p.circles, i, { radiusRatio: v }) } : p))}
               />
-              <NumberField
+              <SliderField
                 label={t("generatorPanel.fields.centerXRatio")}
                 value={circle.centerXRatio}
                 min={-1}
@@ -212,7 +204,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
                 step={0.05}
                 onChange={(v) => setParams((p) => (p.patternId === "freestyle" ? { ...p, circles: updateFreestyleCircle(p.circles, i, { centerXRatio: v }) } : p))}
               />
-              <NumberField
+              <SliderField
                 label={t("generatorPanel.fields.centerYRatio")}
                 value={circle.centerYRatio}
                 min={-1}
@@ -225,19 +217,19 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
 
         {params.patternId === "wave" && (
           <>
-            <NumberField label={t("generatorPanel.fields.n")} value={params.n} min={3} max={400} onChange={(v) => set("n", v)} />
-            <NumberField label={t("generatorPanel.fields.base")} value={params.base} min={2} max={99} onChange={(v) => set("base", v)} />
-            <NumberField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={20} onChange={(v) => set("layers", v)} />
-            <NumberField label={t("generatorPanel.fields.layerFill")} value={params.layerFill} min={1} max={400} onChange={(v) => set("layerFill", v)} />
-            <NumberField label={t("generatorPanel.fields.layerSpread")} value={params.layerSpread} min={0} max={200} onChange={(v) => set("layerSpread", v)} />
+            <SliderField label={t("generatorPanel.fields.n")} value={params.n} min={3} max={400} onChange={(v) => set("n", v)} />
+            <SliderField label={t("generatorPanel.fields.base")} value={params.base} min={2} max={99} onChange={(v) => set("base", v)} />
+            <SliderField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={20} onChange={(v) => set("layers", v)} />
+            <SliderField label={t("generatorPanel.fields.layerFill")} value={params.layerFill} min={1} max={400} onChange={(v) => set("layerFill", v)} />
+            <SliderField label={t("generatorPanel.fields.layerSpread")} value={params.layerSpread} min={0} max={200} onChange={(v) => set("layerSpread", v)} />
           </>
         )}
 
         {params.patternId === "hexagon-spades" && (
           <>
-            <NumberField label={t("generatorPanel.fields.depth")} value={params.depth} min={1} max={40} onChange={(v) => set("depth", v)} />
-            <NumberField label={t("generatorPanel.fields.layerAngle")} value={params.layerAngle} min={0.02} max={0.15} step={0.001} onChange={(v) => set("layerAngle", v)} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <SliderField label={t("generatorPanel.fields.depth")} value={params.depth} min={1} max={40} onChange={(v) => set("depth", v)} />
+            <SliderField label={t("generatorPanel.fields.layerAngle")} value={params.layerAngle} min={0.02} max={0.15} step={0.001} onChange={(v) => set("layerAngle", v)} />
+            <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
             <CheckboxField
               label={t("generatorPanel.fields.mirrorTiling")}
               checked={params.mirrorTiling}
@@ -257,8 +249,8 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
               ]}
               onChange={(v) => setParams((p) => (p.patternId === "dance-of-planets" ? { ...p, outerType: v as "circle" | "polygon" } : p))}
             />
-            <NumberField label={t("generatorPanel.fields.outerNails")} value={params.outerNails} min={3} max={400} onChange={(v) => set("outerNails", v)} />
-            {params.outerType === "polygon" && <NumberField label={t("generatorPanel.fields.outerSides")} value={params.outerSides} min={3} max={20} onChange={(v) => set("outerSides", v)} />}
+            <SliderField label={t("generatorPanel.fields.outerNails")} value={params.outerNails} min={3} max={400} onChange={(v) => set("outerNails", v)} />
+            {params.outerType === "polygon" && <SliderField label={t("generatorPanel.fields.outerSides")} value={params.outerSides} min={3} max={20} onChange={(v) => set("outerSides", v)} />}
             <SelectField
               label={t("generatorPanel.fields.innerType")}
               value={params.innerType}
@@ -268,59 +260,59 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
               ]}
               onChange={(v) => setParams((p) => (p.patternId === "dance-of-planets" ? { ...p, innerType: v as "circle" | "polygon" } : p))}
             />
-            <NumberField label={t("generatorPanel.fields.innerNails")} value={params.innerNails} min={3} max={400} onChange={(v) => set("innerNails", v)} />
-            {params.innerType === "polygon" && <NumberField label={t("generatorPanel.fields.innerSides")} value={params.innerSides} min={3} max={20} onChange={(v) => set("innerSides", v)} />}
-            <NumberField label={t("generatorPanel.fields.innerSizeRatio")} value={params.innerSizeRatio} min={0.05} max={0.95} step={0.05} onChange={(v) => set("innerSizeRatio", v)} />
-            <NumberField label={t("generatorPanel.fields.rounds")} value={params.rounds} min={1} max={20} onChange={(v) => set("rounds", v)} />
+            <SliderField label={t("generatorPanel.fields.innerNails")} value={params.innerNails} min={3} max={400} onChange={(v) => set("innerNails", v)} />
+            {params.innerType === "polygon" && <SliderField label={t("generatorPanel.fields.innerSides")} value={params.innerSides} min={3} max={20} onChange={(v) => set("innerSides", v)} />}
+            <SliderField label={t("generatorPanel.fields.innerSizeRatio")} value={params.innerSizeRatio} min={0.05} max={0.95} step={0.05} onChange={(v) => set("innerSizeRatio", v)} />
+            <SliderField label={t("generatorPanel.fields.rounds")} value={params.rounds} min={1} max={20} onChange={(v) => set("rounds", v)} />
             <CheckboxField label={t("generatorPanel.fields.reverse")} checked={params.reverse} onChange={(v) => setParams((p) => (p.patternId === "dance-of-planets" ? { ...p, reverse: v } : p))} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
           </>
         )}
 
         {params.patternId === "sun" && (
           <>
-            <NumberField label={t("generatorPanel.fields.sideNails")} value={params.sideNails} min={2} max={200} onChange={(v) => set("sideNails", v)} />
-            <NumberField label={t("generatorPanel.fields.starPoints")} value={params.starPoints} min={3} max={20} onChange={(v) => set("starPoints", v)} />
-            <NumberField label={t("generatorPanel.fields.starOuterRatio")} value={params.starOuterRatio} min={0.1} max={1} step={0.05} onChange={(v) => set("starOuterRatio", v)} />
-            <NumberField label={t("generatorPanel.fields.starInnerRatio")} value={params.starInnerRatio} min={0} max={0.95} step={0.05} onChange={(v) => set("starInnerRatio", v)} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
-            <NumberField label={t("generatorPanel.fields.layers")} value={params.layers} min={0} max={10} onChange={(v) => set("layers", v)} />
-            <NumberField label={t("generatorPanel.fields.layerSpread")} value={params.layerSpread} min={0} max={0.3} step={0.01} onChange={(v) => set("layerSpread", v)} />
+            <SliderField label={t("generatorPanel.fields.sideNails")} value={params.sideNails} min={2} max={200} onChange={(v) => set("sideNails", v)} />
+            <SliderField label={t("generatorPanel.fields.starPoints")} value={params.starPoints} min={3} max={20} onChange={(v) => set("starPoints", v)} />
+            <SliderField label={t("generatorPanel.fields.starOuterRatio")} value={params.starOuterRatio} min={0.1} max={1} step={0.05} onChange={(v) => set("starOuterRatio", v)} />
+            <SliderField label={t("generatorPanel.fields.starInnerRatio")} value={params.starInnerRatio} min={0} max={0.95} step={0.05} onChange={(v) => set("starInnerRatio", v)} />
+            <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <SliderField label={t("generatorPanel.fields.layers")} value={params.layers} min={0} max={10} onChange={(v) => set("layers", v)} />
+            <SliderField label={t("generatorPanel.fields.layerSpread")} value={params.layerSpread} min={0} max={0.3} step={0.01} onChange={(v) => set("layerSpread", v)} />
           </>
         )}
 
         {params.patternId === "vortex" && (
           <>
-            <NumberField label={t("generatorPanel.fields.sides")} value={params.sides} min={3} max={10} onChange={(v) => set("sides", v)} />
-            <NumberField label={t("generatorPanel.fields.nailsPerSide")} value={params.nailsPerSide} min={3} max={200} onChange={(v) => set("nailsPerSide", v)} />
-            <NumberField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={40} onChange={(v) => set("layers", v)} />
-            <NumberField label={t("generatorPanel.fields.layerAngle")} value={params.layerAngle} min={0.01} max={0.2} step={0.005} onChange={(v) => set("layerAngle", v)} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <SliderField label={t("generatorPanel.fields.sides")} value={params.sides} min={3} max={10} onChange={(v) => set("sides", v)} />
+            <SliderField label={t("generatorPanel.fields.nailsPerSide")} value={params.nailsPerSide} min={3} max={200} onChange={(v) => set("nailsPerSide", v)} />
+            <SliderField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={40} onChange={(v) => set("layers", v)} />
+            <SliderField label={t("generatorPanel.fields.layerAngle")} value={params.layerAngle} min={0.01} max={0.2} step={0.005} onChange={(v) => set("layerAngle", v)} />
+            <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
           </>
         )}
 
         {params.patternId === "polygon" && (
           <>
-            <NumberField label={t("generatorPanel.fields.sides")} value={params.sides} min={3} max={20} onChange={(v) => set("sides", v)} />
-            <NumberField label={t("generatorPanel.fields.nailsPerSide")} value={params.nailsPerSide} min={2} max={100} onChange={(v) => set("nailsPerSide", v)} />
-            <NumberField label={t("generatorPanel.fields.bezierStep")} value={params.bezierStep} min={1} max={19} onChange={(v) => set("bezierStep", v)} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <SliderField label={t("generatorPanel.fields.sides")} value={params.sides} min={3} max={20} onChange={(v) => set("sides", v)} />
+            <SliderField label={t("generatorPanel.fields.nailsPerSide")} value={params.nailsPerSide} min={2} max={100} onChange={(v) => set("nailsPerSide", v)} />
+            <SliderField label={t("generatorPanel.fields.bezierStep")} value={params.bezierStep} min={1} max={19} onChange={(v) => set("bezierStep", v)} />
+            <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
           </>
         )}
 
         {params.patternId === "flower" && (
           <>
-            <NumberField label={t("generatorPanel.fields.sides")} value={params.sides} min={3} max={20} onChange={(v) => set("sides", v)} />
-            <NumberField label={t("generatorPanel.fields.nailsPerSide")} value={params.nailsPerSide} min={2} max={100} onChange={(v) => set("nailsPerSide", v)} />
-            <NumberField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={20} onChange={(v) => set("layers", v)} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <SliderField label={t("generatorPanel.fields.sides")} value={params.sides} min={3} max={20} onChange={(v) => set("sides", v)} />
+            <SliderField label={t("generatorPanel.fields.nailsPerSide")} value={params.nailsPerSide} min={2} max={100} onChange={(v) => set("nailsPerSide", v)} />
+            <SliderField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={20} onChange={(v) => set("layers", v)} />
+            <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
           </>
         )}
 
         {params.patternId === "assymetry" && (
           <>
-            <NumberField label={t("generatorPanel.fields.circleNails")} value={params.circleNails} min={3} max={400} onChange={(v) => set("circleNails", v)} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <SliderField label={t("generatorPanel.fields.circleNails")} value={params.circleNails} min={3} max={400} onChange={(v) => set("circleNails", v)} />
+            <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
             {params.layers.map((layer, i) => (
               <div key={i} style={{ display: "flex", flexDirection: "column", gap: 6, paddingTop: 8, borderTop: "1px solid var(--border)" }}>
                 <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, color: "var(--text-secondary)", fontWeight: 600 }}>
@@ -331,7 +323,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
                   />
                   {t("generatorPanel.fields.layerN", { n: i + 1 })}
                 </label>
-                <NumberField
+                <SliderField
                   label={t("generatorPanel.fields.startFraction")}
                   value={layer.start}
                   min={0}
@@ -339,7 +331,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
                   step={0.005}
                   onChange={(v) => setParams((p) => (p.patternId === "assymetry" ? { ...p, layers: updateAssymetryLayer(p.layers, i, { start: v }) } : p))}
                 />
-                <NumberField
+                <SliderField
                   label={t("generatorPanel.fields.endFraction")}
                   value={layer.end}
                   min={0}
@@ -359,39 +351,39 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
 
         {params.patternId === "spiral" && (
           <>
-            <NumberField label={t("generatorPanel.fields.n")} value={params.n} min={10} max={400} onChange={(v) => set("n", v)} />
-            <NumberField label={t("generatorPanel.fields.repetition")} value={params.repetition} min={1} max={20} onChange={(v) => set("repetition", v)} />
-            <NumberField label={t("generatorPanel.fields.innerLength")} value={params.innerLength} min={1} max={100} onChange={(v) => set("innerLength", v)} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <SliderField label={t("generatorPanel.fields.n")} value={params.n} min={10} max={400} onChange={(v) => set("n", v)} />
+            <SliderField label={t("generatorPanel.fields.repetition")} value={params.repetition} min={1} max={20} onChange={(v) => set("repetition", v)} />
+            <SliderField label={t("generatorPanel.fields.innerLength")} value={params.innerLength} min={1} max={100} onChange={(v) => set("innerLength", v)} />
+            <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
           </>
         )}
 
         {params.patternId === "maurer-rose" && (
           <>
-            <NumberField label={t("generatorPanel.fields.N")} value={params.N} min={1} max={30} onChange={(v) => set("N", v)} />
-            <NumberField label={t("generatorPanel.fields.maxSteps")} value={params.maxSteps} min={10} max={720} onChange={(v) => set("maxSteps", v)} />
-            <NumberField label={t("generatorPanel.fields.angleDegrees")} value={params.angleDegrees} min={1} max={180} step={1} onChange={(v) => set("angleDegrees", v)} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <SliderField label={t("generatorPanel.fields.N")} value={params.N} min={1} max={30} onChange={(v) => set("N", v)} />
+            <SliderField label={t("generatorPanel.fields.maxSteps")} value={params.maxSteps} min={10} max={720} onChange={(v) => set("maxSteps", v)} />
+            <SliderField label={t("generatorPanel.fields.angleDegrees")} value={params.angleDegrees} min={1} max={180} step={1} onChange={(v) => set("angleDegrees", v)} />
+            <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
           </>
         )}
 
         {params.patternId === "comet" && (
           <>
-            <NumberField label={t("generatorPanel.fields.n")} value={params.n} min={10} max={400} onChange={(v) => set("n", v)} />
-            <NumberField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={40} onChange={(v) => set("layers", v)} />
-            <NumberField label={t("generatorPanel.fields.firstLayerSize")} value={params.firstLayerSize} min={2} max={200} onChange={(v) => set("firstLayerSize", v)} />
-            <NumberField label={t("generatorPanel.fields.layerDistance")} value={params.layerDistance} min={1} max={200} onChange={(v) => set("layerDistance", v)} />
-            <NumberField label={t("generatorPanel.fields.clusterStrength")} value={params.clusterStrength} min={0} max={1} step={0.05} onChange={(v) => set("clusterStrength", v)} />
-            <NumberField label={t("generatorPanel.fields.distortion")} value={params.distortion} min={0} max={0.9} step={0.02} onChange={(v) => set("distortion", v)} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <SliderField label={t("generatorPanel.fields.n")} value={params.n} min={10} max={400} onChange={(v) => set("n", v)} />
+            <SliderField label={t("generatorPanel.fields.layers")} value={params.layers} min={1} max={40} onChange={(v) => set("layers", v)} />
+            <SliderField label={t("generatorPanel.fields.firstLayerSize")} value={params.firstLayerSize} min={2} max={200} onChange={(v) => set("firstLayerSize", v)} />
+            <SliderField label={t("generatorPanel.fields.layerDistance")} value={params.layerDistance} min={1} max={200} onChange={(v) => set("layerDistance", v)} />
+            <SliderField label={t("generatorPanel.fields.clusterStrength")} value={params.clusterStrength} min={0} max={1} step={0.05} onChange={(v) => set("clusterStrength", v)} />
+            <SliderField label={t("generatorPanel.fields.distortion")} value={params.distortion} min={0} max={0.9} step={0.02} onChange={(v) => set("distortion", v)} />
+            <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
           </>
         )}
 
         {params.patternId === "flower-of-life" && (
           <>
-            <NumberField label={t("generatorPanel.fields.levels")} value={params.levels} min={1} max={6} onChange={(v) => set("levels", v)} />
-            <NumberField label={t("generatorPanel.fields.density")} value={params.density} min={2} max={30} onChange={(v) => set("density", v)} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <SliderField label={t("generatorPanel.fields.levels")} value={params.levels} min={1} max={6} onChange={(v) => set("levels", v)} />
+            <SliderField label={t("generatorPanel.fields.density")} value={params.density} min={2} max={30} onChange={(v) => set("density", v)} />
+            <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
             <CheckboxField
               label={t("generatorPanel.fields.ringEnabled")}
               checked={params.ringEnabled}
@@ -399,8 +391,8 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
             />
             {params.ringEnabled && (
               <>
-                <NumberField label={t("generatorPanel.fields.ringNails")} value={params.ringNails} min={3} max={400} onChange={(v) => set("ringNails", v)} />
-                <NumberField label={t("generatorPanel.fields.ringBase")} value={params.ringBase} min={2} max={99} onChange={(v) => set("ringBase", v)} />
+                <SliderField label={t("generatorPanel.fields.ringNails")} value={params.ringNails} min={3} max={400} onChange={(v) => set("ringNails", v)} />
+                <SliderField label={t("generatorPanel.fields.ringBase")} value={params.ringBase} min={2} max={99} onChange={(v) => set("ringBase", v)} />
               </>
             )}
           </>
@@ -408,7 +400,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
 
         {params.patternId === "crosses" && (
           <>
-            <NumberField label={t("generatorPanel.fields.nailsPerLine")} value={params.nailsPerLine} min={2} max={100} onChange={(v) => set("nailsPerLine", v)} />
+            <SliderField label={t("generatorPanel.fields.nailsPerLine")} value={params.nailsPerLine} min={2} max={100} onChange={(v) => set("nailsPerLine", v)} />
             <SelectField
               label={t("generatorPanel.fields.orientation")}
               value={params.orientation}
@@ -418,24 +410,24 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
               ]}
               onChange={(v) => setParams((p) => (p.patternId === "crosses" ? { ...p, orientation: v as "vertical" | "horizontal" } : p))}
             />
-            <NumberField label={t("generatorPanel.fields.gap")} value={params.gap} min={0} max={1} step={0.01} onChange={(v) => set("gap", v)} />
-            <NumberField label={t("generatorPanel.fields.sidesRotation")} value={params.sidesRotation} min={-1.57} max={1.57} step={0.02} onChange={(v) => set("sidesRotation", v)} />
+            <SliderField label={t("generatorPanel.fields.gap")} value={params.gap} min={0} max={1} step={0.01} onChange={(v) => set("gap", v)} />
+            <SliderField label={t("generatorPanel.fields.sidesRotation")} value={params.sidesRotation} min={-1.57} max={1.57} step={0.02} onChange={(v) => set("sidesRotation", v)} />
           </>
         )}
 
         {params.patternId === "lotus" && (
           <>
-            <NumberField label={t("generatorPanel.fields.sides")} value={params.sides} min={5} max={64} onChange={(v) => set("sides", v)} />
-            <NumberField label={t("generatorPanel.fields.density")} value={params.density} min={1} max={30} onChange={(v) => set("density", v)} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
-            <NumberField label={t("generatorPanel.fields.removeSections")} value={params.removeSections} min={0} max={1} step={0.02} onChange={(v) => set("removeSections", v)} />
+            <SliderField label={t("generatorPanel.fields.sides")} value={params.sides} min={5} max={64} onChange={(v) => set("sides", v)} />
+            <SliderField label={t("generatorPanel.fields.density")} value={params.density} min={1} max={30} onChange={(v) => set("density", v)} />
+            <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <SliderField label={t("generatorPanel.fields.removeSections")} value={params.removeSections} min={0} max={1} step={0.02} onChange={(v) => set("removeSections", v)} />
             <CheckboxField
               label={t("generatorPanel.fields.renderCenter")}
               checked={params.renderCenter}
               onChange={(v) => setParams((p) => (p.patternId === "lotus" ? { ...p, renderCenter: v } : p))}
             />
             {params.renderCenter && (
-              <NumberField label={t("generatorPanel.fields.centerRadius")} value={params.centerRadius} min={0} max={1} step={0.02} onChange={(v) => set("centerRadius", v)} />
+              <SliderField label={t("generatorPanel.fields.centerRadius")} value={params.centerRadius} min={0} max={1} step={0.02} onChange={(v) => set("centerRadius", v)} />
             )}
             <CheckboxField
               label={t("generatorPanel.fields.radialColor")}
@@ -446,10 +438,36 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
         )}
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-          {t("generatorPanel.coloursSectionTitle")}
-        </div>
+      <fieldset
+        style={{ display: "flex", flexDirection: "column", gap: 8, margin: 0, background: "var(--bg-app)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 10 }}
+      >
+        <legend style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", padding: 0 }}>
+          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
+            {t("generatorPanel.coloursSectionTitle")}
+          </span>
+          <span style={{ display: "flex", gap: 6 }}>
+            {visibleColours.length < maxColours && (
+              <button
+                className="btn"
+                aria-label={t("generatorPanel.addColour")}
+                onClick={addColour}
+                style={{ width: 24, height: 24, padding: 0, justifyContent: "center", borderRadius: 5, fontSize: 14, fontWeight: 700 }}
+              >
+                +
+              </button>
+            )}
+            {visibleColours.length > 1 && (
+              <button
+                className="btn"
+                aria-label={t("generatorPanel.removeColour")}
+                onClick={removeColour}
+                style={{ width: 24, height: 24, padding: 0, justifyContent: "center", borderRadius: 5, fontSize: 14, fontWeight: 700 }}
+              >
+                −
+              </button>
+            )}
+          </span>
+        </legend>
         <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
           {visibleColours.map((c, i) => (
             <input
@@ -461,29 +479,24 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
               style={{ width: 24, height: 24, border: "1px solid var(--border-strong)", borderRadius: 5, background: "none", padding: 0 }}
             />
           ))}
-          <button
-            className="btn"
-            aria-label={t("generatorPanel.addColour")}
-            disabled={visibleColours.length >= maxColours}
-            onClick={addColour}
-            style={{ width: 24, height: 24, padding: 0, justifyContent: "center", borderRadius: 5, fontSize: 14, fontWeight: 700 }}
-          >
-            +
-          </button>
-          <button
-            className="btn"
-            aria-label={t("generatorPanel.removeColour")}
-            disabled={visibleColours.length <= 1}
-            onClick={removeColour}
-            style={{ width: 24, height: 24, padding: 0, justifyContent: "center", borderRadius: 5, fontSize: 14, fontWeight: 700 }}
-          >
-            −
-          </button>
         </div>
         {maxColours > 1 && (
           <div style={{ fontSize: 10.5, color: "var(--text-tertiary)" }}>{t("generatorPanel.coloursMax", { max: maxColours })}</div>
         )}
-      </div>
+      </fieldset>
+
+      {/* docs/specs/32-generator-mode.md — intentionally shared with Thread mode's own
+          width field (ThreadPropertiesPanel), not generator-scoped: generatePattern()
+          always inherits threadDefaults.width unchanged, so editing it here is the same
+          global default Thread mode edits, not a per-generation override. */}
+      <SliderField
+        label={t("generatorPanel.fields.threadWidth")}
+        value={state.threadDefaults.width}
+        min={0.5}
+        max={5}
+        step={0.5}
+        onChange={(v) => store.setThreadProperty({ width: v })}
+      />
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {!draft && (

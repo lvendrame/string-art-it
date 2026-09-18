@@ -181,7 +181,8 @@
       "removeSections": "Abschnitte entfernen",
       "renderCenter": "Zentrum anzeigen",
       "centerRadius": "Zentrumsradius",
-      "radialColor": "Radiale Farbe"
+      "radialColor": "Radiale Farbe",
+      "threadWidth": "Fadenbreite"
     },
     "generate": "Erzeugen",
     "regenerate": "Neu erzeugen",

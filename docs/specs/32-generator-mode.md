@@ -84,11 +84,17 @@ Pattern/parameter *selection* itself (which pattern is picked, what its fields c
   - **Hexagon Spades**: a fixed `18` (6 tiles × 3 sides). **Flower of Life**: `18 + 1` when its optional outer ring is enabled, else `18`.
   - **Sun**: `3·starPoints + layers` (Star's own run count plus one extra ring per `layers`). **Polygon**: `sides`. **Flower**: `sides·layers`. **Crosses**: a fixed `10` (one per spine-segment/row pair).
   - **Lotus**: `sides` (one colour group per petal circle) when `radialColor` is off, or the removable-section span (`ceil(sides/2) - removedSections - (renderCenter ? 1 : 2)`) when it's on — one Thread Path per `(petal circle, section)` patch, grouped into a colour by whichever of the two the current toggle picks.
-  - `+` is disabled once the palette reaches this cap; `−` is disabled at 1 colour (a pattern always has at least one).
+  - `+` is hidden (not merely disabled) once the palette reaches this cap; `−` is hidden at 1 colour (a pattern always has at least one) — per [18-design-system.md](./18-design-system.md)'s Fieldset/legend grouping convention, since reaching the cap/floor is a normal, expected state, not a transient/error one.
 - **Assignment rule: cycle by run index.** Run `i`'s Thread Path gets `colours[i % paletteLength]` as its *single* colour — never the whole palette handed to one Thread Path (that would render as a multi-strand twist within one run, per [12-thread-editor.md](./12-thread-editor.md)'s existing 1/2/3-colour twist rendering, a different feature). This is "each different colour is a different thread": a colour is only ever applied to a whole separate Thread Path, never blended into a shared multi-strand twist.
 - The palette is `GeneratorPanel`'s own local UI state, passed explicitly into `EditorStore.generatePattern(params, colours)` — **not** read from or written to `state.threadDefaults.colours` (the global Thread-mode drawing default), so picking Generator colours never leaks into the next hand-drawn Thread Path's colour, and vice versa.
 - Switching pattern, or lowering a parameter the cap depends on (e.g. Mandala's `layers`), clamps the *displayed and generated* palette down to the new cap without discarding hidden entries — raising the parameter back up restores the colours already picked rather than re-rolling from scratch.
 - A new swatch (`+`) is seeded with the next colour from a small built-in preset (same auto-pick precedent as `ThreadPropertiesPanel`'s `PALETTE`), not left blank or repeating the previous swatch.
+
+## Panel controls
+
+- Every pattern-parameter field renders as a Slider ([18-design-system.md](./18-design-system.md) §Slider (range input)) rather than a plain number box — bounds and steps are unchanged from the original number inputs, only the control shape changed.
+- The colour palette section is a Fieldset/legend group ([18-design-system.md](./18-design-system.md) §Fieldset/legend grouping): the section title and the `+`/`−` buttons share the legend's first row (buttons right-aligned), with the colour swatches in the row(s) beneath.
+- A thread-width Slider (0.5–5, step 0.5) sits below the colour section, writing directly to `state.threadDefaults.width` via `store.setThreadProperty({ width })` — the same shared state `ThreadPropertiesPanel`'s own width field edits in Thread mode. This is **intentionally shared global state, not generator-scoped**: `generatePattern` already always inherits `threadDefaults.width` unchanged (only `colours` is generator-local), so exposing width here is just a second entry point onto the same default, not a new per-generation parameter.
 
 ## Scope
 

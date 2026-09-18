@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { threadPathStatistics, type EditorStore } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
+import { SliderField } from "./fields/SliderField";
 
 const PALETTE = ["#5b8def", "#edeff7", "#e8b449", "#d96c6c", "#8fd6c8"];
 
@@ -54,18 +55,14 @@ export function ThreadPropertiesPanel({ store }: { store: EditorStore }) {
         ))}
       </div>
 
-      <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)", marginTop: 4 }}>
-        {t("threadPropertiesPanel.width")}
-        <input
-          type="number"
-          className="mono"
-          min={0.5}
-          step={0.5}
-          value={values.width}
-          onChange={(e) => store.setThreadProperty({ width: Number(e.target.value) })}
-          style={{ width: 60, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "4px 6px" }}
-        />
-      </label>
+      <SliderField
+        label={t("threadPropertiesPanel.width")}
+        value={values.width}
+        min={0.5}
+        max={5}
+        step={0.5}
+        onChange={(v) => store.setThreadProperty({ width: v })}
+      />
 
       {colours.length > 1 && (
         <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>

@@ -181,7 +181,8 @@
       "removeSections": "Remover seções",
       "renderCenter": "Mostrar centro",
       "centerRadius": "Raio do centro",
-      "radialColor": "Cor radial"
+      "radialColor": "Cor radial",
+      "threadWidth": "Espessura do fio"
     },
     "generate": "Gerar",
     "regenerate": "Regerar",

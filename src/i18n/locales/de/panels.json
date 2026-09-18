@@ -177,7 +177,11 @@
       "orientation": "Ausrichtung",
       "orientationVertical": "Vertikal",
       "orientationHorizontal": "Horizontal",
-      "sidesRotation": "Seitenrotation"
+      "sidesRotation": "Seitenrotation",
+      "removeSections": "Abschnitte entfernen",
+      "renderCenter": "Zentrum anzeigen",
+      "centerRadius": "Zentrumsradius",
+      "radialColor": "Radiale Farbe"
     },
     "generate": "Erzeugen",
     "regenerate": "Neu erzeugen",

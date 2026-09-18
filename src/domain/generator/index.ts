@@ -14,3 +14,21 @@ export { flowerPetalWeave, type FlowerPetalNode } from "./flowerWeave";
 export { danceOfPlanetsWalk, type DanceOfPlanetsNode } from "./danceOfPlanetsWalk";
 export { hexFlowerGrid, type HexFlowerCell } from "./hexFlowerGrid";
 export { crossesWeave, type CrossesWeaveNode } from "./crossesWeave";
+export {
+  lotusSectionsCount,
+  lotusMaxRemovableSections,
+  lotusRemovedSectionsCount,
+  lotusFit,
+  lotusPetalCenter,
+  lotusPetalPoint,
+  lotusCenterCirclePoint,
+  lotusMaxCenterRadius,
+  lotusGeneratePatches,
+  lotusPatchColorIndex,
+  lotusColourGroupCount,
+  lotusDrawPatch,
+  lotusGetStepCount,
+  type LotusFit,
+  type LotusNode,
+  type LotusPatch,
+} from "./lotus";

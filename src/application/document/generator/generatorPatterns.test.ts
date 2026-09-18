@@ -393,6 +393,55 @@ describe("buildGeneratorPattern — crosses", () => {
   });
 });
 
+describe("buildGeneratorPattern — lotus", () => {
+  it("builds `sides` petal pin paths plus one centre pin path, every pin id referenced by a thread is real", () => {
+    const result = buildGeneratorPattern(
+      { patternId: "lotus", sides: 12, density: 8, rotation: 0, removeSections: 0, renderCenter: true, centerRadius: 1, radialColor: false },
+      ctx,
+    );
+    expect(result.pinPaths).toHaveLength(13); // 12 petals + 1 centre circle
+    expect(result.pinPaths[12].pins).toHaveLength(12); // centreRadius > 0 => an s-nail centre circle
+    expect(result.threadPaths.length).toBeGreaterThan(0);
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+
+  it("centerRadius=0 collapses the centre pin path to a single pin at the board centre", () => {
+    const result = buildGeneratorPattern(
+      { patternId: "lotus", sides: 12, density: 8, rotation: 0, removeSections: 0, renderCenter: true, centerRadius: 0, radialColor: false },
+      ctx,
+    );
+    expect(result.pinPaths[12].pins).toHaveLength(1);
+    expect(result.pinPaths[12].pins[0]).toMatchObject(ctx.center);
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+
+  it("renderCenter=false drops the centre pin path entirely (sides petal paths only)", () => {
+    const result = buildGeneratorPattern(
+      { patternId: "lotus", sides: 12, density: 8, rotation: 0, removeSections: 0, renderCenter: false, centerRadius: 1, radialColor: false },
+      ctx,
+    );
+    expect(result.pinPaths).toHaveLength(12);
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+
+  it("removing sections still produces a valid pattern (partial-arc petal circles)", () => {
+    const result = buildGeneratorPattern(
+      { patternId: "lotus", sides: 18, density: 15, rotation: 0, removeSections: 0.5, renderCenter: true, centerRadius: 1, radialColor: false },
+      ctx,
+    );
+    expect(result.pinPaths.length).toBeGreaterThan(0);
+    expect(result.threadPaths.length).toBeGreaterThan(0);
+    expect(allPinIdsValid(result)).toBe(true);
+  });
+
+  it("radialColor changes which patches share a colour without changing the thread count", () => {
+    const base = { patternId: "lotus" as const, sides: 12, density: 8, rotation: 0, removeSections: 0.5, renderCenter: true, centerRadius: 1 };
+    const bySide = buildGeneratorPattern({ ...base, radialColor: false }, ctx);
+    const bySection = buildGeneratorPattern({ ...base, radialColor: true }, ctx);
+    expect(bySection.threadPaths).toHaveLength(bySide.threadPaths.length);
+  });
+});
+
 describe("maxGeneratorColours", () => {
   it("mandala caps at its own layers count", () => {
     expect(maxGeneratorColours({ patternId: "mandala", n: 10, base: 2, layers: 7 } satisfies GeneratorParams)).toBe(7);
@@ -413,10 +462,17 @@ describe("maxGeneratorColours", () => {
     expect(maxGeneratorColours({ patternId: "star-of-david", depth: 1, layerAngle: 0.063, rotation: 0, mirrorTiling: false } satisfies GeneratorParams)).toBe(24);
     expect(maxGeneratorColours({ patternId: "star-of-david", depth: 40, layerAngle: 0.1, rotation: 1, mirrorTiling: true } satisfies GeneratorParams)).toBe(24);
   });
+
+  it("lotus caps at `sides` groups (non-radial) or the removable section span (radial)", () => {
+    const base = { patternId: "lotus" as const, sides: 18, density: 15, rotation: 0, removeSections: 0.5, renderCenter: true, centerRadius: 1 };
+    expect(maxGeneratorColours({ ...base, radialColor: false } satisfies GeneratorParams)).toBe(18);
+    // sections=9, removed=round(0.5*6)=3, lastSection=9-1=8 => group count = 8-3 = 5
+    expect(maxGeneratorColours({ ...base, radialColor: true } satisfies GeneratorParams)).toBe(5);
+  });
 });
 
 describe("GENERATOR_PATTERNS registry", () => {
-  it("has exactly the 18 researched patterns, each with matching id/defaultParams.patternId", () => {
+  it("has exactly the 19 researched patterns, each with matching id/defaultParams.patternId", () => {
     const ids = Object.keys(GENERATOR_PATTERNS).sort();
     expect(ids).toEqual(
       [
@@ -428,6 +484,7 @@ describe("GENERATOR_PATTERNS registry", () => {
         "flower-of-life",
         "freestyle",
         "hexagon-spades",
+        "lotus",
         "mandala",
         "maurer-rose",
         "polygon",

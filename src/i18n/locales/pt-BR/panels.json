@@ -177,7 +177,11 @@
       "orientation": "Orientação",
       "orientationVertical": "Vertical",
       "orientationHorizontal": "Horizontal",
-      "sidesRotation": "Rotação dos lados"
+      "sidesRotation": "Rotação dos lados",
+      "removeSections": "Remover seções",
+      "renderCenter": "Mostrar centro",
+      "centerRadius": "Raio do centro",
+      "radialColor": "Cor radial"
     },
     "generate": "Gerar",
     "regenerate": "Regerar",

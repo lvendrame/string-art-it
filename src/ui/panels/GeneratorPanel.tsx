@@ -422,6 +422,28 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
             <NumberField label={t("generatorPanel.fields.sidesRotation")} value={params.sidesRotation} min={-1.57} max={1.57} step={0.02} onChange={(v) => set("sidesRotation", v)} />
           </>
         )}
+
+        {params.patternId === "lotus" && (
+          <>
+            <NumberField label={t("generatorPanel.fields.sides")} value={params.sides} min={5} max={64} onChange={(v) => set("sides", v)} />
+            <NumberField label={t("generatorPanel.fields.density")} value={params.density} min={1} max={30} onChange={(v) => set("density", v)} />
+            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <NumberField label={t("generatorPanel.fields.removeSections")} value={params.removeSections} min={0} max={1} step={0.02} onChange={(v) => set("removeSections", v)} />
+            <CheckboxField
+              label={t("generatorPanel.fields.renderCenter")}
+              checked={params.renderCenter}
+              onChange={(v) => setParams((p) => (p.patternId === "lotus" ? { ...p, renderCenter: v } : p))}
+            />
+            {params.renderCenter && (
+              <NumberField label={t("generatorPanel.fields.centerRadius")} value={params.centerRadius} min={0} max={1} step={0.02} onChange={(v) => set("centerRadius", v)} />
+            )}
+            <CheckboxField
+              label={t("generatorPanel.fields.radialColor")}
+              checked={params.radialColor}
+              onChange={(v) => setParams((p) => (p.patternId === "lotus" ? { ...p, radialColor: v } : p))}
+            />
+          </>
+        )}
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

@@ -7,6 +7,17 @@ import {
   flowerPetalWeave,
   hexFlowerGrid,
   connectTwoSidesLocalIndices,
+  lotusCenterCirclePoint,
+  lotusColourGroupCount,
+  lotusDrawPatch,
+  lotusFit,
+  lotusGeneratePatches,
+  lotusMaxCenterRadius,
+  lotusPatchColorIndex,
+  lotusPetalCenter,
+  lotusPetalPoint,
+  lotusRemovedSectionsCount,
+  lotusSectionsCount,
   mandalaLayerSequences,
   maurerRosePoints,
   nestedPolygonLevels,
@@ -22,6 +33,7 @@ import {
   type AsymmetryNode,
   type CrossesWeaveNode,
   type FlowerPetalNode,
+  type LotusNode,
   type RayZigzagNode,
   type TileRingTile,
 } from "../../../domain/generator";
@@ -55,7 +67,8 @@ export type GeneratorPatternId =
   | "maurer-rose"
   | "comet"
   | "flower-of-life"
-  | "crosses";
+  | "crosses"
+  | "lotus";
 
 export interface FreestyleCircleParams {
   enabled: boolean;
@@ -102,7 +115,8 @@ export type GeneratorParams =
   | { patternId: "maurer-rose"; N: number; maxSteps: number; angleDegrees: number; rotation: number }
   | { patternId: "comet"; n: number; layers: number; firstLayerSize: number; layerDistance: number; clusterStrength: number; distortion: number; rotation: number }
   | { patternId: "flower-of-life"; levels: number; density: number; rotation: number; ringEnabled: boolean; ringNails: number; ringBase: number }
-  | { patternId: "crosses"; nailsPerLine: number; orientation: "vertical" | "horizontal"; gap: number; sidesRotation: number };
+  | { patternId: "crosses"; nailsPerLine: number; orientation: "vertical" | "horizontal"; gap: number; sidesRotation: number }
+  | { patternId: "lotus"; sides: number; density: number; rotation: number; removeSections: number; renderCenter: boolean; centerRadius: number; radialColor: boolean };
 
 export interface GeneratorBuildContext {
   center: Point;
@@ -194,6 +208,11 @@ export function maxGeneratorColours(params: GeneratorParams): number {
       return 6 * params.levels * params.levels + (params.ringEnabled ? 1 : 0);
     case "crosses":
       return 10;
+    case "lotus": {
+      const sections = lotusSectionsCount(params.sides);
+      const removed = lotusRemovedSectionsCount(params.sides, params.removeSections);
+      return lotusColourGroupCount(params.sides, sections, removed, params.renderCenter, params.radialColor);
+    }
   }
 }
 
@@ -915,6 +934,108 @@ function buildCrosses(params: Extract<GeneratorParams, { patternId: "crosses" }>
   return { pinPaths, threadPaths };
 }
 
+// Lotus — `sides` overlapping "petal" circles arranged around a helper circle (docs/
+// specs/32-generator-mode.md, re-derived from a math write-up of the researched
+// reference implementation — see src/domain/generator/lotus.ts's own header comment).
+// Pins are built directly from the domain layer's exact index-addressed formulas
+// (freehand-bypass, same architecture as Spirals/Comet/Maurer Rose) rather than through
+// createPinPath/distributePins, since a partial petal-circle arc's endpoint-inclusive
+// spacing rule doesn't match this app's own arc-length distribution. Two earlier
+// attempts at this pattern were abandoned as visually wrong even working from the same
+// source math — this version keeps geometry/traversal in small, independently unit-
+// tested pure functions specifically to make the index arithmetic verifiable rather
+// than judged by eye alone (see lotus.test.ts). This engine drops the reference's own
+// canvas-margin concept (this app's generator context has none) and its
+// "Render center nails" cosmetic toggle (per the source's own documentation, it hides
+// some interior petal nails from rendering without changing which strings are drawn —
+// a pure display detail, not part of the pattern's shape).
+function buildLotus(params: Extract<GeneratorParams, { patternId: "lotus" }>, ctx: GeneratorBuildContext): GeneratorBuildResult {
+  const { sides, density, rotation, removeSections, renderCenter, centerRadius, radialColor } = params;
+  const sections = lotusSectionsCount(sides);
+  const removed = lotusRemovedSectionsCount(sides, removeSections);
+  // Half of the board's max inscribed radius: the helper circle (petal centres) and
+  // each petal circle share this same pre-fit radius, so a petal reaches from the
+  // pattern's centre out to the board's own rim (docs/specs/32-generator-mode.md).
+  const maxPetalRadius = ctx.maxRadius / 2;
+  const fit = lotusFit(sides, density, maxPetalRadius, removed);
+
+  const petalCenters: Point[] = Array.from({ length: sides }, (_, j) => lotusPetalCenter(sides, rotation, fit.radius, ctx.center, j));
+  const petalPaths: PinPath[] = petalCenters.map((center, j) => {
+    const points: Point[] = Array.from({ length: fit.N }, (_, k) => lotusPetalPoint(fit, sides, rotation, center, j, k));
+    const pins: Pin[] = points.map((p) => ({ id: nextPinId(), ...p }));
+    return {
+      id: nextPathId(),
+      geometry: { type: "freehand", points },
+      requestedSpacing: fit.radius / Math.max(1, fit.N),
+      actualSpacing: fit.radius / Math.max(1, fit.N),
+      pins,
+      guideVisible: ctx.pinStyle.guideVisible,
+      colour: ctx.pinStyle.colour,
+      diameter: ctx.pinStyle.diameter,
+      symmetry: NO_SYMMETRY,
+    };
+  });
+
+  // "Render center": off = no centre anchor at all; on with centerRadius=0 = a single
+  // pin at the origin; on with centerRadius>0 = an s-nail centre circle sized as a
+  // fraction of how far the outer patches actually reach in (lotusMaxCenterRadius).
+  const hasCenterCircle = renderCenter && centerRadius > 0;
+  let centerPath: PinPath | null = null;
+  if (renderCenter) {
+    const points: Point[] = hasCenterCircle
+      ? Array.from({ length: sides }, (_, k) =>
+          lotusCenterCirclePoint(sides, rotation, centerRadius * lotusMaxCenterRadius(fit, sides, rotation, ctx.center, sections, removed), ctx.center, k),
+        )
+      : [ctx.center];
+    const pins: Pin[] = points.map((p) => ({ id: nextPinId(), ...p }));
+    centerPath = {
+      id: nextPathId(),
+      geometry: { type: "freehand", points },
+      requestedSpacing: Math.max(1e-6, fit.radius / sides),
+      actualSpacing: Math.max(1e-6, fit.radius / sides),
+      pins,
+      guideVisible: ctx.pinStyle.guideVisible,
+      colour: ctx.pinStyle.colour,
+      diameter: ctx.pinStyle.diameter,
+      symmetry: NO_SYMMETRY,
+    };
+  }
+
+  const resolve = (node: LotusNode): string => {
+    if (node.kind === "petal") return petalPaths[node.circle].pins[node.index].id;
+    if (!centerPath) throw new Error("lotus: a centre node was generated without a centre pin path");
+    return centerPath.pins[node.index].id;
+  };
+
+  const palette = ctx.threadDefaults.colours.length > 0 ? ctx.threadDefaults.colours : ["#5b8def"];
+  const patches = lotusGeneratePatches(sides, removed, sections, renderCenter, radialColor);
+  const threadPaths: ThreadPath[] = [];
+  for (const patch of patches) {
+    const { target, fan1, fan2 } = lotusDrawPatch(sides, fit.p, fit.N, removed, sections, hasCenterCircle, patch);
+    const sources = [...fan1, ...fan2];
+    if (sources.length === 0) continue;
+    // One continuous Thread Path per patch: both fans converge on `target`, so the
+    // thread revisits it between every consecutive source — a fan with more than 2
+    // leaves has no single trail through it without retracing the shared point.
+    // Visually identical to N disjoint segments (same straight lines, same pixels),
+    // just grouped into one recolourable run per patch, this app's own established
+    // "one Thread Path per shared colour" convention — at the cost of roughly
+    // doubling the reported thread length for patches with more than 2 sources.
+    const nodes: LotusNode[] = [];
+    sources.forEach((source, i) => {
+      if (i > 0) nodes.push(target);
+      nodes.push(source);
+    });
+    const pinIds = nodes.map(resolve);
+    if (pinIds.length < 2) continue;
+    const colourIndex = lotusPatchColorIndex(patch, removed, radialColor);
+    threadPaths.push(createThreadPath(pinIds, [palette[colourIndex % palette.length]], ctx.threadDefaults.width, ctx.threadDefaults.twistPitch));
+  }
+
+  const pinPaths = centerPath ? [...petalPaths, centerPath] : petalPaths;
+  return { pinPaths, threadPaths };
+}
+
 // A plain English default layer NAME for each pattern (used to seed the two permanent
 // layers Confirm creates, e.g. "Generated — Mandala") — deliberately not translated: it
 // only seeds an editable text field (`PinLayer.name`/`ThreadLayer.name`), same as this
@@ -940,6 +1061,7 @@ export const GENERATOR_PATTERN_NAMES: Record<GeneratorPatternId, string> = {
   comet: "Comet",
   "flower-of-life": "Flower of Life",
   crosses: "Crosses",
+  lotus: "Lotus",
 };
 
 export const GENERATOR_PATTERNS: Record<GeneratorPatternId, GeneratorPatternDef> = {
@@ -1061,6 +1183,11 @@ export const GENERATOR_PATTERNS: Record<GeneratorPatternId, GeneratorPatternDef>
     labelKey: "crosses",
     defaultParams: { patternId: "crosses", nailsPerLine: 25, orientation: "vertical", gap: 0.27, sidesRotation: 0 },
   },
+  lotus: {
+    id: "lotus",
+    labelKey: "lotus",
+    defaultParams: { patternId: "lotus", sides: 18, density: 15, rotation: 0, removeSections: 4 / 7, renderCenter: true, centerRadius: 1, radialColor: false },
+  },
 };
 
 // The single dispatch point every build*() function above funnels through — a plain
@@ -1106,5 +1233,7 @@ export function buildGeneratorPattern(params: GeneratorParams, ctx: GeneratorBui
       return buildFlowerOfLife(params, ctx);
     case "crosses":
       return buildCrosses(params, ctx);
+    case "lotus":
+      return buildLotus(params, ctx);
   }
 }

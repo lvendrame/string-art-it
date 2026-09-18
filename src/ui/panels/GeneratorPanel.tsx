@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
-import { GENERATOR_PATTERNS, maxGeneratorColours, type EditorStore, type FreestyleCircleParams, type GeneratorParams, type GeneratorPatternId } from "../../application/document";
+import { GENERATOR_PATTERNS, maxGeneratorColours, type AssymetryLayerParams, type EditorStore, type FreestyleCircleParams, type GeneratorParams, type GeneratorPatternId } from "../../application/document";
 import { GeneratorToolbar } from "../toolbars/GeneratorToolbar";
 import { useEditorState } from "../useEditorStore";
 
@@ -22,6 +22,10 @@ function NumberField({ label, value, min, max, step, onChange }: { label: string
 
 function updateFreestyleCircle(circles: FreestyleCircleParams[], index: number, patch: Partial<FreestyleCircleParams>): FreestyleCircleParams[] {
   return circles.map((c, i) => (i === index ? { ...c, ...patch } : c));
+}
+
+function updateAssymetryLayer(layers: AssymetryLayerParams[], index: number, patch: Partial<AssymetryLayerParams>): AssymetryLayerParams[] {
+  return layers.map((l, i) => (i === index ? { ...l, ...patch } : l));
 }
 
 function SelectField({ label, value, options, onChange }: { label: string; value: string; options: { value: string; label: string }[]; onChange: (value: string) => void }) {
@@ -316,10 +320,40 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
         {params.patternId === "assymetry" && (
           <>
             <NumberField label={t("generatorPanel.fields.circleNails")} value={params.circleNails} min={3} max={400} onChange={(v) => set("circleNails", v)} />
-            <NumberField label={t("generatorPanel.fields.startFraction")} value={params.startFraction} min={0} max={1} step={0.05} onChange={(v) => set("startFraction", v)} />
-            <NumberField label={t("generatorPanel.fields.endFraction")} value={params.endFraction} min={0} max={1} step={0.05} onChange={(v) => set("endFraction", v)} />
-            <CheckboxField label={t("generatorPanel.fields.reverse")} checked={params.reverse} onChange={(v) => setParams((p) => (p.patternId === "assymetry" ? { ...p, reverse: v } : p))} />
             <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            {params.layers.map((layer, i) => (
+              <div key={i} style={{ display: "flex", flexDirection: "column", gap: 6, paddingTop: 8, borderTop: "1px solid var(--border)" }}>
+                <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, color: "var(--text-secondary)", fontWeight: 600 }}>
+                  <input
+                    type="checkbox"
+                    checked={layer.enabled}
+                    onChange={(e) => setParams((p) => (p.patternId === "assymetry" ? { ...p, layers: updateAssymetryLayer(p.layers, i, { enabled: e.target.checked }) } : p))}
+                  />
+                  {t("generatorPanel.fields.layerN", { n: i + 1 })}
+                </label>
+                <NumberField
+                  label={t("generatorPanel.fields.startFraction")}
+                  value={layer.start}
+                  min={0}
+                  max={1}
+                  step={0.005}
+                  onChange={(v) => setParams((p) => (p.patternId === "assymetry" ? { ...p, layers: updateAssymetryLayer(p.layers, i, { start: v }) } : p))}
+                />
+                <NumberField
+                  label={t("generatorPanel.fields.endFraction")}
+                  value={layer.end}
+                  min={0}
+                  max={1}
+                  step={0.005}
+                  onChange={(v) => setParams((p) => (p.patternId === "assymetry" ? { ...p, layers: updateAssymetryLayer(p.layers, i, { end: v }) } : p))}
+                />
+                <CheckboxField
+                  label={t("generatorPanel.fields.reverse")}
+                  checked={layer.reverse}
+                  onChange={(v) => setParams((p) => (p.patternId === "assymetry" ? { ...p, layers: updateAssymetryLayer(p.layers, i, { reverse: v }) } : p))}
+                />
+              </div>
+            ))}
           </>
         )}
 
@@ -355,8 +389,8 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
 
         {params.patternId === "flower-of-life" && (
           <>
-            <NumberField label={t("generatorPanel.fields.depth")} value={params.depth} min={1} max={40} onChange={(v) => set("depth", v)} />
-            <NumberField label={t("generatorPanel.fields.layerAngle")} value={params.layerAngle} min={0.02} max={0.15} step={0.001} onChange={(v) => set("layerAngle", v)} />
+            <NumberField label={t("generatorPanel.fields.levels")} value={params.levels} min={1} max={6} onChange={(v) => set("levels", v)} />
+            <NumberField label={t("generatorPanel.fields.density")} value={params.density} min={2} max={30} onChange={(v) => set("density", v)} />
             <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
             <CheckboxField
               label={t("generatorPanel.fields.ringEnabled")}
@@ -372,20 +406,20 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
           </>
         )}
 
-        {params.patternId === "lotus" && (
-          <>
-            <NumberField label={t("generatorPanel.fields.sides")} value={params.sides} min={3} max={20} onChange={(v) => set("sides", v)} />
-            <NumberField label={t("generatorPanel.fields.nailsPerCircle")} value={params.nailsPerCircle} min={3} max={200} onChange={(v) => set("nailsPerCircle", v)} />
-            <NumberField label={t("generatorPanel.fields.radiusRatio")} value={params.radiusRatio} min={0.1} max={0.9} step={0.05} onChange={(v) => set("radiusRatio", v)} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
-          </>
-        )}
-
         {params.patternId === "crosses" && (
           <>
             <NumberField label={t("generatorPanel.fields.nailsPerLine")} value={params.nailsPerLine} min={2} max={100} onChange={(v) => set("nailsPerLine", v)} />
-            <NumberField label={t("generatorPanel.fields.gap")} value={params.gap} min={0.02} max={0.4} step={0.01} onChange={(v) => set("gap", v)} />
-            <NumberField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
+            <SelectField
+              label={t("generatorPanel.fields.orientation")}
+              value={params.orientation}
+              options={[
+                { value: "vertical", label: t("generatorPanel.fields.orientationVertical") },
+                { value: "horizontal", label: t("generatorPanel.fields.orientationHorizontal") },
+              ]}
+              onChange={(v) => setParams((p) => (p.patternId === "crosses" ? { ...p, orientation: v as "vertical" | "horizontal" } : p))}
+            />
+            <NumberField label={t("generatorPanel.fields.gap")} value={params.gap} min={0} max={1} step={0.01} onChange={(v) => set("gap", v)} />
+            <NumberField label={t("generatorPanel.fields.sidesRotation")} value={params.sidesRotation} min={-1.57} max={1.57} step={0.02} onChange={(v) => set("sidesRotation", v)} />
           </>
         )}
       </div>

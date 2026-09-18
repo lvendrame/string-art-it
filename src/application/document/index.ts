@@ -134,6 +134,7 @@ export {
   type GeneratorPatternId,
   type GeneratorParams,
   type FreestyleCircleParams,
+  type AssymetryLayerParams,
   type GeneratorPatternDef,
   type GeneratorBuildContext,
   type GeneratorBuildResult,

@@ -10,3 +10,7 @@ export { asymmetryZigzag, type AsymmetryNode } from "./asymmetryZigzag";
 export { spiralDecayingWalk } from "./spiralWalk";
 export { maurerRosePoints } from "./maurerRose";
 export { clusterFraction, cometLayerSequences, type CometLayerSequence } from "./comet";
+export { flowerPetalWeave, type FlowerPetalNode } from "./flowerWeave";
+export { danceOfPlanetsWalk, type DanceOfPlanetsNode } from "./danceOfPlanetsWalk";
+export { hexFlowerGrid, type HexFlowerCell } from "./hexFlowerGrid";
+export { crossesWeave, type CrossesWeaveNode } from "./crossesWeave";

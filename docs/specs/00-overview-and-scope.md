@@ -82,6 +82,7 @@ The application must allow users to:
 | SEO (meta, structured data, landing content) | [30-seo.md](./30-seo.md) |
 | WebMCP agent tools | [31-webmcp-agent-tools.md](./31-webmcp-agent-tools.md) |
 | Generator mode (auto pin+thread pattern generation) | [32-generator-mode.md](./32-generator-mode.md) |
+| Pin Path tool (click-per-vertex free-form polygon) | [33-pin-path-tool.md](./33-pin-path-tool.md) |
 
 ## MVP Scope
 

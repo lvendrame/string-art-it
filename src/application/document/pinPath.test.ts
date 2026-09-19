@@ -61,6 +61,20 @@ describe("createPinPath — closed path", () => {
     }
   });
 
+  it("polygon (Path tool) is vertex-anchored: all clicked vertices are present, closing edge counted once", () => {
+    // docs/specs/33-pin-path-tool.md: a 4x4 square drawn as 4 clicked vertices, same
+    // shape as the rectangle test above, but via the free-form "polygon" geometry.
+    const path = createPinPath(
+      { type: "polygon", points: [{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 4, y: 4 }, { x: 0, y: 4 }] },
+      1,
+      STYLE,
+    );
+    expect(path.pins).toHaveLength(16); // 4 edges * closestIntervalCount(4, 1)=4, no duplicate seam pin
+    for (const vertex of [{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 4, y: 4 }, { x: 0, y: 4 }]) {
+      expect(path.pins.some((p) => p.x === vertex.x && p.y === vertex.y)).toBe(true);
+    }
+  });
+
   it("regular polygon (hexagon) is vertex-anchored: all 6 vertices are present in the pins", () => {
     const geometry = { type: "regular-polygon" as const, center: { x: 0, y: 0 }, radius: 5, sides: 6, rotation: 0 };
     const path = createPinPath(geometry, 2, STYLE);
@@ -116,6 +130,7 @@ describe("scaleGeometryAboutPivot", () => {
       { type: "star" as const, center: { x: 0, y: 0 }, outerRadius: 6, innerRadius: 3, points: 5, rotation: 0 },
       { type: "polygram" as const, center: { x: 0, y: 0 }, radius: 6, points: 7, skip: 2, rotation: 0 },
       { type: "freehand" as const, points: [{ x: 0, y: 0 }, { x: 5, y: 2 }, { x: 3, y: 7 }] },
+      { type: "polygon" as const, points: [{ x: 0, y: 0 }, { x: 5, y: 2 }, { x: 3, y: 7 }] },
     ];
     for (const geometry of geometries) {
       const factor = 1.7;

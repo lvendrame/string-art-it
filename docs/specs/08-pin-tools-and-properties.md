@@ -6,7 +6,7 @@ Define the drawing tools available in Pin mode, pin/guide properties, the shape 
 
 ## Pin Drawing Tools
 
-**Basic tools:** Line, Arc, Ellipse, Circle, Rectangle, Square
+**Basic tools:** Line, Arc, Ellipse, Circle, Rectangle, Square, Freehand, Text, Path (click-per-vertex free-form polygon — see [33-pin-path-tool.md](./33-pin-path-tool.md))
 
 **Polygon / Star dropdown** — one toolbar control (`Polygon / Star ▼`) instead of many separate icons:
 
@@ -67,7 +67,7 @@ Colour:   Black
 
 ### Tool Switching
 
-Picking any Pin tool (a shape/Freehand/Text draw tool, Eraser, or Path Eraser) clears a live Pin Path/Pins selection — the tool is about to act on the canvas, not continue editing the selected object (see [09-selection-and-editing.md](./09-selection-and-editing.md)). Picking a shape/Freehand/Text draw tool additionally resets the pin properties above (Spacing, Colour, Diameter, Guide visibility) and symmetry ([06-symmetry.md](./06-symmetry.md)) back to their defaults — Eraser and Path Eraser leave the defaults untouched, since they aren't shape tools.
+Picking any Pin tool (a shape/Freehand/Path/Text draw tool, Eraser, or Path Eraser) clears a live Pin Path/Pins selection — the tool is about to act on the canvas, not continue editing the selected object (see [09-selection-and-editing.md](./09-selection-and-editing.md)). Picking a shape/Freehand/Path/Text draw tool additionally resets the pin properties above (Spacing, Colour, Diameter, Guide visibility) and symmetry ([06-symmetry.md](./06-symmetry.md)) back to their defaults — Eraser and Path Eraser leave the defaults untouched, since they aren't shape tools.
 
 Switching into Pin mode itself — e.g. clicking the Pin tab — also resets the pin properties and symmetry back to their defaults, unconditionally (regardless of which Pin tool was last active). This keeps "land on the Pin tab" behaviour consistent whether the user gets there by clicking the tab or by picking a draw tool while already in it.
 

@@ -32,8 +32,8 @@ describe("getRadialMenuSliceIds", () => {
     expect(getRadialMenuSliceIds(state)).toEqual(["select", "move", "rotate", "scale", "merge"]);
   });
 
-  it("Pin mode: the nine basic tools, Polygon/Star family excluded", () => {
-    const state = new EditorStore({ mode: "pin" }).getState();
+  it("Pin mode: the ten basic tools, Polygon/Star family excluded", () => {
+    const state = new EditorStore({ mode: "pin", polygonDraft: null }).getState();
     expect(getRadialMenuSliceIds(state)).toEqual([
       "pinLine",
       "pinArc",
@@ -42,9 +42,15 @@ describe("getRadialMenuSliceIds", () => {
       "pinRectangle",
       "pinSquare",
       "pinFreehand",
+      "pinPath",
       "pinEraser",
       "pinPathEraser",
     ]);
+  });
+
+  it("Pin mode: Path tool draft slice set entirely replaces the normal set", () => {
+    const state = new EditorStore({ mode: "pin", polygonDraft: { points: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }] } }).getState();
+    expect(getRadialMenuSliceIds(state)).toEqual(["polygonCut", "polygonBack", "polygonCancel"]);
   });
 
   it("Thread mode: normal slice set with no draft in progress", () => {

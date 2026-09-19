@@ -110,11 +110,11 @@ Rectangle, Square, and the regular-polygon/Star/Polygram family do **not** use c
 
 ## Vertex-Anchored Pin Distribution
 
-Applies to **Line, Rectangle, Square, regular polygons (Pentagon/Hexagon/Octagon/...), Stars, and Polygrams** — every shape whose guide path *is* its vertices, where each segment of the path is a real edge between two real corners.
+Applies to **Line, Rectangle, Square, regular polygons (Pentagon/Hexagon/Octagon/...), Stars, Polygrams, and the Path tool's free-form Polygon** ([33-pin-path-tool.md](./33-pin-path-tool.md)) — every shape whose guide path *is* its vertices, where each segment of the path is a real edge between two real corners.
 
 Every vertex always receives a pin. The pins **between** two consecutive vertices are distributed independently along that one edge, using the same closest-integer-interval-count rule as [Closed-Path Pin Distribution](#closed-path-pin-distribution) (`N` chosen so `edgeLength / N` is closest to the requested spacing), scoped to that single edge instead of the whole path. Spacing does **not** carry over across a corner — each edge starts its own closest-N approximation fresh.
 
-For a closed shape (Rectangle, Square, regular polygon, Star, Polygram), the last edge's end vertex is the first edge's start vertex, so it is counted once — no duplicate seam pin, same guarantee as the closed-path algorithm.
+For a closed shape (Rectangle, Square, regular polygon, Star, Polygram, Path-tool Polygon), the last edge's end vertex is the first edge's start vertex, so it is counted once — no duplicate seam pin, same guarantee as the closed-path algorithm.
 
 For the one open case (Line, a single edge with two vertices), **both** endpoints are always pinned — this differs from [Open-Path Pin Distribution](#open-path-pin-distribution)'s floor-division rule, which never forces the end pin.
 

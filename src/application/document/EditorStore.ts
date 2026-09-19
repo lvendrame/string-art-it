@@ -15,6 +15,7 @@ import type {
   ThreadDefaults,
   ThreadTool,
 } from "./EditorState";
+import type { Point } from "../../domain/paths";
 import { buildGeneratorPattern, GENERATOR_PATTERN_NAMES, maxInscribedRadius, type GeneratorParams } from "./generator/generatorPatterns";
 import {
   addPinPathToLayers,
@@ -122,6 +123,7 @@ export class EditorStore {
       layerPanelTab: "pin",
       printSettings: defaultPrintSettings(),
       generatorDraft: null,
+      polygonDraft: null,
       ...initial,
     };
   }
@@ -227,6 +229,10 @@ export class EditorStore {
       selection,
       ...(mode === "pin" ? { pinDefaults: DEFAULT_PIN_DEFAULTS, symmetryDefaults: NO_SYMMETRY } : {}),
       ...(mode !== "generate" && this.state.generatorDraft ? { generatorDraft: null } : {}),
+      // docs/specs/33-pin-path-tool.md: leaving Pin mode with an uncommitted
+      // polygonDraft discards it, same non-undoable-transient-state precedent as
+      // generatorDraft/threadDraft above.
+      ...(mode !== "pin" && this.state.polygonDraft ? { polygonDraft: null } : {}),
     };
     this.notify();
   }
@@ -258,6 +264,9 @@ export class EditorStore {
       pinTool: tool,
       selection,
       ...(isPinDrawTool(tool) ? { pinDefaults: DEFAULT_PIN_DEFAULTS, symmetryDefaults: NO_SYMMETRY } : {}),
+      // docs/specs/33-pin-path-tool.md: switching away from the Path tool with an
+      // uncommitted polygonDraft discards it, matching setMode's mode-exit cleanup.
+      ...(tool !== "polygon" && this.state.polygonDraft ? { polygonDraft: null } : {}),
     };
     this.notify();
   }
@@ -307,6 +316,62 @@ export class EditorStore {
     this.setMode("select");
     this.select({ type: "pinPaths", refs: [{ layerId, pathId: pinPath.id }] });
     return pinPath.id;
+  }
+
+  // docs/specs/33-pin-path-tool.md — the Path tool's click-per-vertex draft. First
+  // click starts it; each further click extends it. Hit-testing the click against the
+  // first vertex (to close by clicking back on it) is a UI-layer concern (same
+  // "snap pipeline/hit-testing lives in the UI layer" split as Thread's
+  // nearestThreadInsertionPin) — the caller decides whether a click extends the draft
+  // or should instead call finishPolygonDraft.
+  extendPolygonDraft(point: Point): void {
+    const draft = this.state.polygonDraft;
+    this.state = { ...this.state, polygonDraft: { points: draft ? [...draft.points, point] : [point] } };
+    this.notify();
+  }
+
+  // Left Arrow / "Back" (radial menu) while drafting: undo the last vertex. Removing
+  // the only remaining vertex cancels the whole draft outright, same rule as
+  // retractThreadDraft.
+  retractPolygonDraft(): void {
+    const draft = this.state.polygonDraft;
+    if (!draft) return;
+    const points = draft.points.slice(0, -1);
+    this.state = { ...this.state, polygonDraft: points.length > 0 ? { points } : null };
+    this.notify();
+  }
+
+  // Clears the draft, then commits it as a real closed Pin Path IF it has enough
+  // vertices to form one (docs/specs/33-pin-path-tool.md: fewer than 3 can't be a
+  // polygon, so it's silently discarded instead — same "discard below a minimum"
+  // shape as commitThreadDraft's <2 case). Routes through the same generic addPinPath
+  // every other shape tool uses (which already no-ops on a locked layer) — no bespoke
+  // Command needed for plain path creation.
+  private commitPolygonDraft(layerId: string): void {
+    const draft = this.state.polygonDraft;
+    this.state = { ...this.state, polygonDraft: null };
+    this.notify();
+    if (draft && draft.points.length >= 3) this.addPinPath(layerId, { type: "polygon", points: draft.points });
+  }
+
+  // "Cut" (radial menu): finish the draft now, same call whether reached via the menu
+  // or by clicking back on the first vertex (docs/specs/33-pin-path-tool.md).
+  finishPolygonDraft(layerId: string): void {
+    this.commitPolygonDraft(layerId);
+  }
+
+  // Esc: same finish-or-discard behaviour as Cut, per this tool's spec (unlike Thread,
+  // where Esc and right-click-Cut differ on very short drafts).
+  escapePolygonDraft(layerId: string): void {
+    this.commitPolygonDraft(layerId);
+  }
+
+  // "Cancel" (radial menu only, no keyboard shortcut): hard discard, no commit
+  // attempt at any vertex count — mirrors cancelThreadDraft.
+  cancelPolygonDraft(): void {
+    if (!this.state.polygonDraft) return;
+    this.state = { ...this.state, polygonDraft: null };
+    this.notify();
   }
 
   // docs/specs/06-symmetry.md: symmetry is set while drawing (bakes into new Pin

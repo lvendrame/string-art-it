@@ -41,6 +41,7 @@
       "rectangle": "Ret.",
       "square": "Quadrado",
       "freehand": "Livre",
+      "path": "Caminho",
       "text": "Texto"
     },
     "eraser": "Borracha",
@@ -105,7 +106,8 @@
   "radialMenu": {
     "cut": "Cortar",
     "back": "Voltar",
-    "next": "Avançar"
+    "next": "Avançar",
+    "cancel": "Cancelar"
   },
   "generatorToolbar": {
     "sectionTitle": "Gerador",

@@ -27,9 +27,15 @@ A sixth slice, **Commit Merge**, appears only when `selectTool === "merge" && me
 
 ### Pin (`mode === "pin"`)
 
-Line, Arc, Ellipse, Circle, Rect, Square, Freehand, Eraser, Path Eraser — each calls `EditorStore.setPinTool(...)`, identical to `PinToolbar`'s basic-tools row.
+Two mutually exclusive slice sets depending on `polygonDraft` ([33-pin-path-tool.md](./33-pin-path-tool.md)) — the same draft-mode swap shape as Thread below:
 
-The Polygon/Star family (Pentagon, Hexagon, Octagon, Star-5/6/8, Pentagram, Heptagram, Octagram — `PinToolbar`'s dropdown) is **deliberately excluded**. Adding nine more slices would make the ring too dense to scan quickly at a glance; that family stays toolbar-only. See [Scope limits](#scope-limits).
+- **Normal** (`polygonDraft === null`): Line, Arc, Ellipse, Circle, Rect, Square, Freehand, Path, Eraser, Path Eraser — each calls `EditorStore.setPinTool(...)`, identical to `PinToolbar`'s basic-tools row.
+- **Path tool draft in progress** (`polygonDraft !== null`): Cut, Back, Cancel — entirely replaces the normal set.
+  - **Cut** → `EditorStore.finishPolygonDraft(activePinLayerId)` — finishes the draft now, discarding it silently if it has fewer than 3 vertices.
+  - **Back** → `EditorStore.retractPolygonDraft()` — same as pressing `ArrowLeft`.
+  - **Cancel** → `EditorStore.cancelPolygonDraft()` — hard discard at any vertex count, no commit attempt. Unlike Thread's draft set, Path has no "Next" pattern-follow slice and Thread has no "Cancel" slice — the two draft sets are shaped independently around what each tool actually needs.
+
+The Polygon/Star family (Pentagon, Hexagon, Octagon, Star-5/6/8, Pentagram, Heptagram, Octagram — `PinToolbar`'s dropdown) is **deliberately excluded** from the normal set. Adding nine more slices would make the ring too dense to scan quickly at a glance; that family stays toolbar-only. See [Scope limits](#scope-limits).
 
 ### Thread (`mode === "thread"`)
 
@@ -97,10 +103,30 @@ Feature: Edit mode slices
 Feature: Pin mode slices
 
   Scenario: Pin tool slices
-    Given mode is Pin
+    Given mode is Pin and no Path tool draft is in progress
     When the user right-clicks the canvas
-    Then the menu shows exactly Line, Arc, Ellipse, Circle, Rect, Square, Freehand, Eraser, Path Eraser
+    Then the menu shows exactly Line, Arc, Ellipse, Circle, Rect, Square, Freehand, Path, Eraser, Path Eraser
     And selecting any of them sets that as the active Pin tool
+
+  Scenario: Path draft slice set replaces the normal set
+    Given mode is Pin and a Path tool draft is in progress
+    When the user right-clicks the canvas
+    Then the menu shows exactly Cut, Back, Cancel — the normal Pin tool slices do not appear
+
+  Scenario: Cut finishes the Path draft
+    Given a Path tool draft with 3 or more vertices is in progress
+    When the user right-clicks and selects Cut
+    Then the draft finishes into a real closed Pin Path, identical to pressing Escape
+
+  Scenario: Back retracts the last vertex of the Path draft
+    Given a Path tool draft is in progress
+    When the user right-clicks and selects Back
+    Then the draft's last vertex is removed, identical to pressing ArrowLeft
+
+  Scenario: Cancel discards the Path draft outright
+    Given a Path tool draft with any number of vertices is in progress
+    When the user right-clicks and selects Cancel
+    Then the draft is discarded and no Pin Path is created, even if it had 3 or more vertices
 
 Feature: Thread mode slices
 

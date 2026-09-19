@@ -29,6 +29,8 @@ import {
   Spline,
   Square,
   Trash2,
+  Waypoints,
+  X,
   ZoomIn,
   ZoomOut,
 } from "lucide-react";
@@ -94,6 +96,8 @@ function buildDescriptor(
       return { icon: Square, tooltip: t("pinToolbar.basicTools.square"), onSelect: () => store.setPinTool("square") };
     case "pinFreehand":
       return { icon: PenTool, tooltip: t("pinToolbar.basicTools.freehand"), onSelect: () => store.setPinTool("freehand") };
+    case "pinPath":
+      return { icon: Waypoints, tooltip: t("pinToolbar.basicTools.path"), onSelect: () => store.setPinTool("polygon") };
     case "pinEraser":
       return { icon: Eraser, tooltip: t("pinToolbar.eraser"), onSelect: () => store.setPinTool("eraser") };
     case "pinPathEraser":
@@ -110,6 +114,12 @@ function buildDescriptor(
       return { icon: ArrowLeft, tooltip: t("radialMenu.back"), onSelect: () => store.retractThreadDraft() };
     case "threadNext":
       return { icon: ArrowRight, tooltip: t("radialMenu.next"), onSelect: () => store.advanceThreadDraftByPattern() };
+    case "polygonCut":
+      return { icon: Scissors, tooltip: t("radialMenu.cut"), onSelect: () => store.finishPolygonDraft(state.activePinLayerId) };
+    case "polygonBack":
+      return { icon: ArrowLeft, tooltip: t("radialMenu.back"), onSelect: () => store.retractPolygonDraft() };
+    case "polygonCancel":
+      return { icon: X, tooltip: t("radialMenu.cancel"), onSelect: () => store.cancelPolygonDraft() };
     case "panFit":
       return { icon: Maximize, tooltip: t("canvasToolbar.fit"), onSelect: () => store.setViewport(fitViewportForBoard(state.board)) };
     case "panZoomIn":

@@ -40,7 +40,7 @@ The editor is laid out as:
 - **Zoom**: `−`/`+` buttons in the canvas toolbar, or **Fit** to frame the whole board.
 - **Grid**: toggle visibility and snapping independently (a hidden grid can still snap). Configure gap X/Y, colour, and opacity.
 - **Snap**: with grid-snap on, the canvas shows a small ring at the grid point your cursor will land on. With pin-snap on (default), the nearest pin always wins over the grid.
-- **Right-click**: opens a radial context menu, icon-only with tooltips, whose slices match the current mode — Select/Move/Rotate/Scale/Merge in Select mode, the Pin drawing tools in Pin mode, Draw/Eraser/Segment in Thread mode (or Cut/Back/Next while a thread draft is in progress), Fit/Zoom In/Zoom Out in Pan mode, and the playback transport in Play mode. Escape or a click outside the menu closes it without acting.
+- **Right-click**: opens a radial context menu, icon-only with tooltips, whose slices match the current mode — Select/Move/Rotate/Scale/Merge in Select mode, the Pin drawing tools in Pin mode (or Cut/Back/Cancel while a Path tool draft is in progress), Draw/Eraser/Segment in Thread mode (or Cut/Back/Next while a thread draft is in progress), Fit/Zoom In/Zoom Out in Pan mode, and the playback transport in Play mode. Escape or a click outside the menu closes it without acting.
 
 ## Select mode
 
@@ -60,9 +60,12 @@ Pick a tool in the left panel, then draw on the canvas:
 | Arc | Click the start point, click the end point, then move the cursor and click again to set how much the arc bulges. |
 | Ellipse, Circle, Rectangle, Square | Click and drag from one corner to the opposite corner. **Hold Alt while dragging** an ellipse to force a circle, or a rectangle to force a square. |
 | Pentagon, Hexagon, Octagon, 5/6/8-point star, Pentagram, Heptagram, Octagram | Pick from the "Polygon / Star" dropdown, then click and drag **from the centre outward** to set the radius. |
+| Path | Click to drop vertices one at a time; each click extends a live preview segment to the cursor. |
 | Eraser | Click a pin to remove it (also removes any thread segments that referenced it). |
 
 While drawing, the status bar shows live measurements (perimeter/length, pin count, actual spacing). Pin spacing, diameter, and guide-line visibility for the *next* shape you draw are set in the left panel before you start.
+
+The **Path** tool finishes into a closed Pin Path (last vertex connects back to the first) three ways: press **Esc**, pick **Cut** from the right-click radial menu, or click back on the first vertex (highlighted once you're close enough, and only once you've placed at least 3 vertices). **ArrowLeft**, or **Back** in the radial menu, undoes the last vertex — removing the only remaining one cancels the draft entirely. **Cancel** in the radial menu discards the whole draft at any point, with no attempt to keep it. Finishing with fewer than 3 vertices placed is silently discarded, since that can't form a real polygon.
 
 ### Symmetry
 

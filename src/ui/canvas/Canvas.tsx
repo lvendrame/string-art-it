@@ -38,6 +38,7 @@ import { useSnappedPointer } from "./useSnappedPointer";
 import { usePanInteraction } from "./usePanInteraction";
 import { usePinDrawing } from "./usePinDrawing";
 import { useFreehandDrawing } from "./useFreehandDrawing";
+import { usePolygonDrawing } from "./usePolygonDrawing";
 import { useThreadDrawing } from "./useThreadDrawing";
 import { useSelectTool } from "./useSelectTool";
 import { useMoveTool } from "./useMoveTool";
@@ -110,6 +111,7 @@ const PIN_TOOL_CURSORS: Record<PinTool, string> = {
   heptagram: "crosshair",
   octagram: "crosshair",
   freehand: "crosshair",
+  polygon: "crosshair",
   text: "text",
   eraser: ERASER_CURSOR,
   "path-eraser": TRASH_CURSOR,
@@ -150,6 +152,7 @@ export function Canvas({ store }: { store: EditorStore }) {
   const pan = usePanInteraction(store);
   const pinDrawing = usePinDrawing(store, layerId);
   const freehandDrawing = useFreehandDrawing(store, layerId);
+  const polygonDrawing = usePolygonDrawing(store, state, layerId);
   const threadDrawing = useThreadDrawing(
     store,
     state,
@@ -218,6 +221,11 @@ export function Canvas({ store }: { store: EditorStore }) {
 
     if (state.pinTool === "freehand") {
       freehandDrawing.handleMouseDown(point);
+      return;
+    }
+
+    if (state.pinTool === "polygon") {
+      polygonDrawing.handleMouseDown(point, maxDist);
       return;
     }
 
@@ -299,7 +307,20 @@ export function Canvas({ store }: { store: EditorStore }) {
     state.pinTool === "freehand" && freehandDrawing.points.length >= 2
       ? { type: "freehand", points: freehandDrawing.points }
       : null;
-  const activePreviewGeometry = previewGeometry ?? freehandPreviewGeometry;
+  // docs/specs/33-pin-path-tool.md — the confirmed vertices plus a live segment to the
+  // cursor. Rendered as "freehand" (an OPEN polyline) purely for this dashed preview:
+  // the real committed geometry is "polygon" (closed), built by finishPolygonDraft —
+  // showing it open here is deliberate, so the not-yet-closed edge isn't drawn as if
+  // already confirmed.
+  const polygonPreviewGeometry: PinPathGeometry | null =
+    state.pinTool === "polygon" && state.polygonDraft
+      ? { type: "freehand", points: cursorDoc ? [...state.polygonDraft.points, cursorDoc] : state.polygonDraft.points }
+      : null;
+  const activePreviewGeometry = previewGeometry ?? freehandPreviewGeometry ?? polygonPreviewGeometry;
+  const polygonCloseCandidate =
+    polygonDrawing.closeTarget && cursorDoc && Math.hypot(cursorDoc.x - polygonDrawing.closeTarget.x, cursorDoc.y - polygonDrawing.closeTarget.y) <= maxDist
+      ? polygonDrawing.closeTarget
+      : null;
   const selectedPathIds =
     state.selection.type === "pinPaths" ? state.selection.refs.map((r) => r.pathId) : [];
   const selectedPinIds =
@@ -383,6 +404,20 @@ export function Canvas({ store }: { store: EditorStore }) {
 
           {state.mode === "pin" && cursorSnapSource === "grid" && cursorDoc && (
             <GridSnapIndicator point={cursorDoc} />
+          )}
+
+          {/* docs/specs/33-pin-path-tool.md — hovering near the Path draft's first
+              vertex highlights it as the "click here to close" target. */}
+          {polygonCloseCandidate && (
+            <circle
+              cx={polygonCloseCandidate.x}
+              cy={polygonCloseCandidate.y}
+              r={0.35}
+              fill="none"
+              stroke="#e8b449"
+              strokeWidth={0.07}
+              data-testid="polygon-close-candidate"
+            />
           )}
 
           {activePreviewGeometry && (

@@ -1,4 +1,4 @@
-import { Circle, Ellipse, Eraser, Minus, PenTool, RectangleHorizontal, Shapes, Spline, Square, Trash2, Type } from "lucide-react";
+import { Circle, Ellipse, Eraser, Minus, PenTool, RectangleHorizontal, Shapes, Spline, Square, Trash2, Type, Waypoints } from "lucide-react";
 import type { ComponentType } from "react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
@@ -14,6 +14,7 @@ function basicTools(t: TFunction<"toolbars">): { id: PinTool; label: string; ico
     { id: "rectangle", label: t("pinToolbar.basicTools.rectangle"), icon: RectangleHorizontal },
     { id: "square", label: t("pinToolbar.basicTools.square"), icon: Square },
     { id: "freehand", label: t("pinToolbar.basicTools.freehand"), icon: PenTool },
+    { id: "polygon", label: t("pinToolbar.basicTools.path"), icon: Waypoints },
     { id: "text", label: t("pinToolbar.basicTools.text"), icon: Type },
   ];
 }

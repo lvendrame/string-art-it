@@ -41,6 +41,7 @@
       "rectangle": "Rck.",
       "square": "Quadrat",
       "freehand": "Freihand",
+      "path": "Pfad",
       "text": "Text"
     },
     "eraser": "Radierer",
@@ -105,7 +106,8 @@
   "radialMenu": {
     "cut": "Schneiden",
     "back": "Zurück",
-    "next": "Weiter"
+    "next": "Weiter",
+    "cancel": "Abbrechen"
   },
   "generatorToolbar": {
     "sectionTitle": "Generator",

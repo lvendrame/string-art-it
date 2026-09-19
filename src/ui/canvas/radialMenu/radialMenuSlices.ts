@@ -18,8 +18,12 @@ export type RadialMenuSliceId =
   | "pinRectangle"
   | "pinSquare"
   | "pinFreehand"
+  | "pinPath"
   | "pinEraser"
   | "pinPathEraser"
+  | "polygonCut"
+  | "polygonBack"
+  | "polygonCancel"
   | "threadDraw"
   | "threadEraser"
   | "threadSegment"
@@ -45,8 +49,13 @@ export function getRadialMenuSliceIds(state: EditorState): RadialMenuSliceId[] {
       if (canCommitSelectionMerge(state.selection)) slices.push("merge");
       return slices;
     }
+    // docs/specs/33-pin-path-tool.md — same draft-mode slice swap shape as Thread
+    // below: a Path tool draft in progress replaces the normal pin-tool slice set
+    // with Cut/Back/Cancel rather than adding to it.
     case "pin":
-      return ["pinLine", "pinArc", "pinEllipse", "pinCircle", "pinRectangle", "pinSquare", "pinFreehand", "pinEraser", "pinPathEraser"];
+      return state.polygonDraft !== null
+        ? ["polygonCut", "polygonBack", "polygonCancel"]
+        : ["pinLine", "pinArc", "pinEllipse", "pinCircle", "pinRectangle", "pinSquare", "pinFreehand", "pinPath", "pinEraser", "pinPathEraser"];
     case "thread":
       return state.threadDraft !== null
         ? ["threadCut", "threadBack", "threadNext"]

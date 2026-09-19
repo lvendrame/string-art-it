@@ -1,4 +1,5 @@
 import type { Viewport } from "../../domain/transforms";
+import type { Point } from "../../domain/paths";
 import type { Board } from "./board";
 import type { GeneratorParams } from "./generator/generatorPatterns";
 import type { PinLayer } from "./pinLayer";
@@ -44,6 +45,7 @@ export type PinTool =
   | "heptagram"
   | "octagram"
   | "freehand"
+  | "polygon"
   | "text"
   | "eraser"
   | "path-eraser";
@@ -99,6 +101,11 @@ export type ThreadDraft = { pinIds: string[] } | null;
 // and only Confirm (which creates real, permanent layers) reaches the undo history.
 export type GeneratorDraft = { params: GeneratorParams; pinPaths: PinPath[]; threadPaths: ThreadPath[] } | null;
 
+// docs/specs/33-pin-path-tool.md — the in-progress Path tool draft (click-per-vertex
+// free-form polygon). Transient, non-undoable, same treatment as ThreadDraft above:
+// only the final commit (a real closed Pin Path) reaches the undo history.
+export type PolygonDraft = { points: Point[] } | null;
+
 export interface EditorState {
   board: Board;
   mode: EditorMode;
@@ -121,4 +128,5 @@ export interface EditorState {
   layerPanelTab: "pin" | "thread";
   printSettings: PrintSettings;
   generatorDraft: GeneratorDraft;
+  polygonDraft: PolygonDraft;
 }

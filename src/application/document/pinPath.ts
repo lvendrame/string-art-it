@@ -29,6 +29,12 @@ export type PinPathGeometry =
   | { type: "star"; center: Point; outerRadius: number; innerRadius: number; points: number; rotation: number }
   | { type: "polygram"; center: Point; radius: number; points: number; skip: number; rotation: number }
   | { type: "freehand"; points: Point[] }
+  // docs/specs/33-pin-path-tool.md — the Path tool's click-per-vertex free-form
+  // polygon. Unlike "freehand" (arbitrary sampled cursor points, continuous
+  // distribution), these ARE real corners the user deliberately clicked, so it's
+  // vertex-anchored (see VERTEX_ANCHORED_TYPES below) and always closed (last point
+  // connects back to the first via closedPolylineShape).
+  | { type: "polygon"; points: Point[] }
   // docs/specs/29-text-pin-path.md. `contours` is a DERIVED CACHE — the flattened, already
   // font-resolved+positioned outline points (one array per closed loop; a hole letter like
   // "o" or a disconnected piece like "i"'s dot contributes more than one), the same way
@@ -72,6 +78,8 @@ export function geometryToPath(geometry: PinPathGeometry): Path {
       return polygramShape(geometry.center, geometry.radius, geometry.points, geometry.skip, geometry.rotation);
     case "freehand":
       return freehandShape(geometry.points);
+    case "polygon":
+      return closedPolylineShape(geometry.points);
     case "text":
       // Text has no single continuous Path — it's N closed contours (see the "text"
       // PinPathGeometry variant's doc comment above). Callers that need geometry as
@@ -107,6 +115,7 @@ export function translateGeometry(geometry: PinPathGeometry, delta: Point): PinP
     case "square":
       return { ...geometry, position: translatePoint(geometry.position, delta) };
     case "freehand":
+    case "polygon":
       return { ...geometry, points: geometry.points.map((p) => translatePoint(p, delta)) };
     case "text":
       // Same treatment as freehand: contours are absolute points, so Move just shifts
@@ -155,6 +164,7 @@ export function rotateGeometry(geometry: PinPathGeometry, pivot: Point, theta: n
       return { ...geometry, position: { x: newCenter.x - half, y: newCenter.y - half }, rotation: geometry.rotation + theta };
     }
     case "freehand":
+    case "polygon":
       return { ...geometry, points: geometry.points.map((p) => rotatePoint(p, pivot, theta)) };
     case "text":
       // Same treatment as freehand: rotate the baked contour points directly rather
@@ -190,7 +200,8 @@ export function geometryCenter(geometry: PinPathGeometry): Point {
       return { x: geometry.position.x + geometry.width / 2, y: geometry.position.y + geometry.height / 2 };
     case "square":
       return { x: geometry.position.x + geometry.side / 2, y: geometry.position.y + geometry.side / 2 };
-    case "freehand": {
+    case "freehand":
+    case "polygon": {
       const pts = geometry.points;
       return { x: pts.reduce((s, p) => s + p.x, 0) / pts.length, y: pts.reduce((s, p) => s + p.y, 0) / pts.length };
     }
@@ -264,6 +275,7 @@ export function scaleGeometryAboutPivot(geometry: PinPathGeometry, pivot: Point,
     case "polygram":
       return { ...geometry, center: scalePoint(geometry.center, pivot, factor), radius: geometry.radius * factor };
     case "freehand":
+    case "polygon":
       return { ...geometry, points: geometry.points.map((p) => scalePoint(p, pivot, factor)) };
     case "text":
       // Same treatment as freehand/rotate above: scale the baked contour points
@@ -324,10 +336,11 @@ export function clonePinPath(path: PinPath): PinPath {
 // docs/specs/07-pin-geometry-engine.md §Continuous Pin Spacing Through Corners —
 // carve-out: shapes whose guide *is* its vertices (a straight edge between two real
 // corners) get a pin at every corner instead, with each edge's interior pins
-// independently approximated to the requested spacing. Curved shapes (Arc/Circle/
-// Ellipse) and Freehand (whose "vertices" are arbitrary sampled cursor points, not
-// meaningful corners) keep the continuous whole-path distribution.
-export const VERTEX_ANCHORED_TYPES = new Set<PinPathGeometry["type"]>(["line", "rectangle", "square", "regular-polygon", "star", "polygram"]);
+// independently approximated to the requested spacing. "polygon" (docs/specs/33-pin-
+// path-tool.md's Path tool) belongs here too — its points ARE deliberately clicked
+// corners, unlike Freehand's arbitrary sampled cursor points. Curved shapes (Arc/
+// Circle/Ellipse) and Freehand keep the continuous whole-path distribution.
+export const VERTEX_ANCHORED_TYPES = new Set<PinPathGeometry["type"]>(["line", "rectangle", "square", "regular-polygon", "star", "polygram", "polygon"]);
 
 export function isVertexAnchoredGeometry(type: PinPathGeometry["type"]): boolean {
   return VERTEX_ANCHORED_TYPES.has(type);

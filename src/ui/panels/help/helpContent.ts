@@ -90,6 +90,7 @@ export const HELP_TABS: HelpTab[] = [
           { labelKey: "pin.drawingTools.rect.label", descriptionKey: "pin.drawingTools.rect.description" },
           { labelKey: "pin.drawingTools.square.label", descriptionKey: "pin.drawingTools.square.description" },
           { labelKey: "pin.drawingTools.freehand.label", descriptionKey: "pin.drawingTools.freehand.description" },
+          { labelKey: "pin.drawingTools.path.label", descriptionKey: "pin.drawingTools.path.description" },
           { labelKey: "pin.drawingTools.eraser.label", descriptionKey: "pin.drawingTools.eraser.description" },
           { labelKey: "pin.drawingTools.pathEraser.label", descriptionKey: "pin.drawingTools.pathEraser.description" },
           { labelKey: "pin.drawingTools.polygonStar.label", descriptionKey: "pin.drawingTools.polygonStar.description" },

@@ -16,6 +16,6 @@ describe("App — entering the editor fits the viewport to the board", () => {
     fireEvent.click(screen.getByRole("button", { name: "Continue to Editor" }));
 
     const expectedPercent = Math.round(zoomToPercent(fitViewportForBoard(createDefaultBoard()).zoom));
-    expect(screen.getByText(`${expectedPercent}%`)).toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: "Zoom level" })).toHaveValue(`${expectedPercent}%`);
   });
 });

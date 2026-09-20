@@ -102,6 +102,8 @@
     "gridOpacity": "Rastertransparenz",
     "zoomOut": "Verkleinern",
     "zoomIn": "Vergrößern",
+    "zoomLevel": "Zoomstufe",
+    "zoomOptions": "Zoom-Voreinstellungen",
     "fit": "Einpassen"
   },
   "radialMenu": {

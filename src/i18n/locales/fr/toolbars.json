@@ -102,6 +102,8 @@
     "gridOpacity": "Opacité de la grille",
     "zoomOut": "Zoom arrière",
     "zoomIn": "Zoom avant",
+    "zoomLevel": "Niveau de zoom",
+    "zoomOptions": "Préréglages de zoom",
     "fit": "Ajuster"
   },
   "radialMenu": {

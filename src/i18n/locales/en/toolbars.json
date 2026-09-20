@@ -102,6 +102,8 @@
     "gridOpacity": "Grid opacity",
     "zoomOut": "Zoom out",
     "zoomIn": "Zoom in",
+    "zoomLevel": "Zoom level",
+    "zoomOptions": "Zoom presets",
     "fit": "Fit"
   },
   "radialMenu": {

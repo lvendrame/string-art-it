@@ -102,6 +102,8 @@
     "gridOpacity": "Opacidade da grade",
     "zoomOut": "Diminuir zoom",
     "zoomIn": "Aumentar zoom",
+    "zoomLevel": "Nível de zoom",
+    "zoomOptions": "Predefinições de zoom",
     "fit": "Ajustar"
   },
   "radialMenu": {

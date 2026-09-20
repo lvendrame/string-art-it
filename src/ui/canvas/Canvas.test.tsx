@@ -269,8 +269,8 @@ describe("Canvas", () => {
     render(<Canvas store={store} />);
 
     fireEvent.click(screen.getByRole("button", { name: "Fit" }));
-    const zoomLabel = screen.getByText(/%$/);
-    const displayedPercent = Number(zoomLabel.textContent!.replace("%", ""));
+    const zoomInput = screen.getByRole("combobox", { name: "Zoom level" }) as HTMLInputElement;
+    const displayedPercent = Number(zoomInput.value.replace("%", ""));
     const actualPercent = (store.getState().viewport.zoom / (96 / 2.54)) * 100;
 
     expect(displayedPercent).toBe(Math.round(actualPercent));

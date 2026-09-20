@@ -3,12 +3,12 @@ import { useTranslation } from "react-i18next";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import type { EditorStore } from "../../application/document";
-import { zoomToPercent } from "../../domain/transforms";
 import { useEditorState } from "../useEditorStore";
 import { fitViewportForBoard } from "./boardViewport";
 import { ChangeBackgroundPopover } from "./ChangeBackgroundPopover";
 import { GridSettingsPopover } from "./GridSettingsPopover";
 import { VIEWPORT_CENTER, zoomInStep, zoomOutStep } from "./zoomSteps";
+import { ZoomControl } from "./ZoomControl";
 
 const CANVAS_TOOLBAR_TOOLTIP_ID = "canvas-toolbar-tooltip";
 
@@ -46,7 +46,7 @@ export function CanvasToolbar({ store }: { store: EditorStore }) {
       <button aria-label={t("canvasToolbar.zoomOut")} className="btn mono" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={() => store.setViewport(zoomOutStep(viewport, VIEWPORT_CENTER))}>
         <ZoomOut size={14} />
       </button>
-      <span className="mono" style={{ fontSize: 12, width: 46, textAlign: "center" }}>{Math.round(zoomToPercent(viewport.zoom))}%</span>
+      <ZoomControl store={store} viewport={viewport} />
       <button aria-label={t("canvasToolbar.zoomIn")} className="btn mono" style={{ borderRadius: 8, padding: "6px 10px", fontSize: 12 }} onClick={() => store.setViewport(zoomInStep(viewport, VIEWPORT_CENTER))}>
         <ZoomIn size={14} />
       </button>

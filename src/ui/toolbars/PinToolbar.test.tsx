@@ -8,7 +8,7 @@ describe("PinToolbar", () => {
     const store = new EditorStore();
     render(<PinToolbar store={store} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Text" }));
+    fireEvent.click(screen.getByRole("button", { name: "Text [T]" }));
 
     expect(store.getState().pinTool).toBe("text");
   });
@@ -17,7 +17,7 @@ describe("PinToolbar", () => {
     const store = new EditorStore();
     render(<PinToolbar store={store} />);
 
-    const textButton = screen.getByRole("button", { name: "Text" });
+    const textButton = screen.getByRole("button", { name: "Text [T]" });
     expect(textButton.className).not.toContain("btn-active");
 
     fireEvent.click(textButton);

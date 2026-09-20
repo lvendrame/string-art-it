@@ -32,10 +32,10 @@ export function PlayToolbar({ transport, totalFrames, videoExport }: { transport
       </div>
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
-        <button className="btn" disabled={disabled} onClick={transport.first} aria-label={t("playToolbar.firstFrame")} data-tooltip-id={PLAY_TOOLBAR_TOOLTIP_ID} data-tooltip-content={t("playToolbar.firstFrame")} style={STEP_BUTTON_STYLE}>
+        <button className="btn" disabled={disabled} onClick={transport.first} aria-label={t("playToolbar.firstFrame")} data-tooltip-id={PLAY_TOOLBAR_TOOLTIP_ID} data-tooltip-content={`${t("playToolbar.firstFrame")} [F]`} style={STEP_BUTTON_STYLE}>
           <SkipBack size={15} />
         </button>
-        <button className="btn" disabled={disabled} onClick={transport.previous} aria-label={t("playToolbar.previousFrame")} data-tooltip-id={PLAY_TOOLBAR_TOOLTIP_ID} data-tooltip-content={t("playToolbar.previousFrame")} style={STEP_BUTTON_STYLE}>
+        <button className="btn" disabled={disabled} onClick={transport.previous} aria-label={t("playToolbar.previousFrame")} data-tooltip-id={PLAY_TOOLBAR_TOOLTIP_ID} data-tooltip-content={`${t("playToolbar.previousFrame")} [P]`} style={STEP_BUTTON_STYLE}>
           <ChevronLeft size={15} />
         </button>
         <button
@@ -44,15 +44,15 @@ export function PlayToolbar({ transport, totalFrames, videoExport }: { transport
           onClick={() => (transport.isPlaying ? transport.pause() : transport.play())}
           aria-label={transport.isPlaying ? t("playToolbar.pause") : t("playToolbar.play")}
           data-tooltip-id={PLAY_TOOLBAR_TOOLTIP_ID}
-          data-tooltip-content={transport.isPlaying ? t("playToolbar.pause") : totalFrames > 0 && transport.frame >= totalFrames ? t("playToolbar.playRestart") : t("playToolbar.play")}
+          data-tooltip-content={`${transport.isPlaying ? t("playToolbar.pause") : totalFrames > 0 && transport.frame >= totalFrames ? t("playToolbar.playRestart") : t("playToolbar.play")} [Space]`}
           style={{ justifyContent: "center", borderRadius: "var(--radius-md)", padding: 12, ...(transport.isPlaying ? {} : { background: "var(--accent)", color: "#fff", borderColor: "var(--accent)" }) }}
         >
           {transport.isPlaying ? <Pause size={20} /> : <PlayIcon size={20} />}
         </button>
-        <button className="btn" disabled={disabled} onClick={transport.next} aria-label={t("playToolbar.nextFrame")} data-tooltip-id={PLAY_TOOLBAR_TOOLTIP_ID} data-tooltip-content={t("playToolbar.nextFrame")} style={STEP_BUTTON_STYLE}>
+        <button className="btn" disabled={disabled} onClick={transport.next} aria-label={t("playToolbar.nextFrame")} data-tooltip-id={PLAY_TOOLBAR_TOOLTIP_ID} data-tooltip-content={`${t("playToolbar.nextFrame")} [N]`} style={STEP_BUTTON_STYLE}>
           <ChevronRight size={15} />
         </button>
-        <button className="btn" disabled={disabled} onClick={transport.last} aria-label={t("playToolbar.lastFrame")} data-tooltip-id={PLAY_TOOLBAR_TOOLTIP_ID} data-tooltip-content={t("playToolbar.lastFrame")} style={STEP_BUTTON_STYLE}>
+        <button className="btn" disabled={disabled} onClick={transport.last} aria-label={t("playToolbar.lastFrame")} data-tooltip-id={PLAY_TOOLBAR_TOOLTIP_ID} data-tooltip-content={`${t("playToolbar.lastFrame")} [L]`} style={STEP_BUTTON_STYLE}>
           <SkipForward size={15} />
         </button>
       </div>
@@ -96,7 +96,7 @@ export function PlayToolbar({ transport, totalFrames, videoExport }: { transport
         style={{ justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}
       >
         <Video size={14} />
-        {videoExport.isExporting ? t("playToolbar.exporting", { progress: videoExport.progress, total: totalFrames }) : t("playToolbar.exportToVideo")}
+        {videoExport.isExporting ? t("playToolbar.exporting", { progress: videoExport.progress, total: totalFrames }) : `${t("playToolbar.exportToVideo")} [Shift+E]`}
       </button>
       {!videoExport.supported && (
         <div style={{ fontSize: 11, color: "var(--text-tertiary)" }}>{t("playToolbar.videoNotSupported")}</div>

@@ -20,7 +20,7 @@ describe("App — New project returns to board setup", () => {
 
   it("Continue to Editor always lands on the Pin tab, even if a prior session left another mode active", () => {
     render(<App />);
-    window.stringArtItDebug.setMode("thread");
+    window.stringArtItDebug!.setMode("thread");
 
     fireEvent.click(screen.getByRole("button", { name: "Continue to Editor" }));
 

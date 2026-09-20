@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
-import type { EditorStore, SymmetryConfig } from "../../application/document";
+import { symmetryConfigForType, type EditorStore, type SymmetryConfig } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
 
 function options(t: TFunction<"panels">): { id: SymmetryConfig["type"]; label: string }[] {
@@ -21,11 +21,7 @@ export function SymmetryPanel({ store }: { store: EditorStore }) {
   const selected = store.getSelectedPinPath();
   const config = selected ? selected.symmetry : state.symmetryDefaults;
 
-  const setType = (type: SymmetryConfig["type"]) => {
-    if (type === "none") return store.setSymmetryConfig({ type: "none" });
-    if (type === "radial") return store.setSymmetryConfig({ type: "radial", centre: { x: 0, y: 0 }, intervalDegrees: 45 });
-    return store.setSymmetryConfig({ type, axis: { x: 0, y: 0 } });
-  };
+  const setType = (type: SymmetryConfig["type"]) => store.setSymmetryConfig(symmetryConfigForType(type));
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>

@@ -247,6 +247,77 @@ export const HELP_TABS: HelpTab[] = [
           { labelKey: "keyboardMouse.mouse.leftDrag.label", descriptionKey: "keyboardMouse.mouse.leftDrag.description" },
         ],
       },
+      // docs/specs/34-keyboard-shortcuts.md — the full app-wide/per-tab shortcut
+      // table, appended to this existing tab rather than a new one (only document
+      // features that actually exist, per docs/conventions/ui-patterns.md).
+      {
+        headingKey: "keyboardMouse.shortcuts.general.heading",
+        items: [
+          { labelKey: "keyboardMouse.shortcuts.general.save.label", descriptionKey: "keyboardMouse.shortcuts.general.save.description" },
+          { labelKey: "keyboardMouse.shortcuts.general.open.label", descriptionKey: "keyboardMouse.shortcuts.general.open.description" },
+          { labelKey: "keyboardMouse.shortcuts.general.new.label", descriptionKey: "keyboardMouse.shortcuts.general.new.description" },
+          { labelKey: "keyboardMouse.shortcuts.general.help.label", descriptionKey: "keyboardMouse.shortcuts.general.help.description" },
+          { labelKey: "keyboardMouse.shortcuts.general.zoomIn.label", descriptionKey: "keyboardMouse.shortcuts.general.zoomIn.description" },
+          { labelKey: "keyboardMouse.shortcuts.general.zoomOut.label", descriptionKey: "keyboardMouse.shortcuts.general.zoomOut.description" },
+          { labelKey: "keyboardMouse.shortcuts.general.fit.label", descriptionKey: "keyboardMouse.shortcuts.general.fit.description" },
+          { labelKey: "keyboardMouse.shortcuts.general.grid.label", descriptionKey: "keyboardMouse.shortcuts.general.grid.description" },
+          { labelKey: "keyboardMouse.shortcuts.general.snap.label", descriptionKey: "keyboardMouse.shortcuts.general.snap.description" },
+        ],
+      },
+      {
+        headingKey: "keyboardMouse.shortcuts.tabs.heading",
+        items: [{ labelKey: "keyboardMouse.shortcuts.tabs.tabSwitch.label", descriptionKey: "keyboardMouse.shortcuts.tabs.tabSwitch.description" }],
+      },
+      {
+        headingKey: "keyboardMouse.shortcuts.edit.heading",
+        items: [
+          { labelKey: "keyboardMouse.shortcuts.edit.granularity.label", descriptionKey: "keyboardMouse.shortcuts.edit.granularity.description" },
+          { labelKey: "keyboardMouse.shortcuts.edit.select.label", descriptionKey: "keyboardMouse.shortcuts.edit.select.description" },
+          { labelKey: "keyboardMouse.shortcuts.edit.move.label", descriptionKey: "keyboardMouse.shortcuts.edit.move.description" },
+          { labelKey: "keyboardMouse.shortcuts.edit.rotate.label", descriptionKey: "keyboardMouse.shortcuts.edit.rotate.description" },
+          { labelKey: "keyboardMouse.shortcuts.edit.scale.label", descriptionKey: "keyboardMouse.shortcuts.edit.scale.description" },
+          { labelKey: "keyboardMouse.shortcuts.edit.merge.label", descriptionKey: "keyboardMouse.shortcuts.edit.merge.description" },
+        ],
+      },
+      {
+        headingKey: "keyboardMouse.shortcuts.pin.heading",
+        items: [
+          { labelKey: "keyboardMouse.shortcuts.pin.line.label", descriptionKey: "keyboardMouse.shortcuts.pin.line.description" },
+          { labelKey: "keyboardMouse.shortcuts.pin.arc.label", descriptionKey: "keyboardMouse.shortcuts.pin.arc.description" },
+          { labelKey: "keyboardMouse.shortcuts.pin.ellipse.label", descriptionKey: "keyboardMouse.shortcuts.pin.ellipse.description" },
+          { labelKey: "keyboardMouse.shortcuts.pin.circle.label", descriptionKey: "keyboardMouse.shortcuts.pin.circle.description" },
+          { labelKey: "keyboardMouse.shortcuts.pin.rectangle.label", descriptionKey: "keyboardMouse.shortcuts.pin.rectangle.description" },
+          { labelKey: "keyboardMouse.shortcuts.pin.square.label", descriptionKey: "keyboardMouse.shortcuts.pin.square.description" },
+          { labelKey: "keyboardMouse.shortcuts.pin.freehand.label", descriptionKey: "keyboardMouse.shortcuts.pin.freehand.description" },
+          { labelKey: "keyboardMouse.shortcuts.pin.path.label", descriptionKey: "keyboardMouse.shortcuts.pin.path.description" },
+          { labelKey: "keyboardMouse.shortcuts.pin.text.label", descriptionKey: "keyboardMouse.shortcuts.pin.text.description" },
+          { labelKey: "keyboardMouse.shortcuts.pin.eraser.label", descriptionKey: "keyboardMouse.shortcuts.pin.eraser.description" },
+          { labelKey: "keyboardMouse.shortcuts.pin.pathEraser.label", descriptionKey: "keyboardMouse.shortcuts.pin.pathEraser.description" },
+          { labelKey: "keyboardMouse.shortcuts.pin.symmetryCycle.label", descriptionKey: "keyboardMouse.shortcuts.pin.symmetryCycle.description" },
+        ],
+      },
+      {
+        headingKey: "keyboardMouse.shortcuts.thread.heading",
+        items: [
+          { labelKey: "keyboardMouse.shortcuts.thread.draw.label", descriptionKey: "keyboardMouse.shortcuts.thread.draw.description" },
+          { labelKey: "keyboardMouse.shortcuts.thread.select.label", descriptionKey: "keyboardMouse.shortcuts.thread.select.description" },
+          { labelKey: "keyboardMouse.shortcuts.thread.eraser.label", descriptionKey: "keyboardMouse.shortcuts.thread.eraser.description" },
+          { labelKey: "keyboardMouse.shortcuts.thread.segmentEraser.label", descriptionKey: "keyboardMouse.shortcuts.thread.segmentEraser.description" },
+          { labelKey: "keyboardMouse.shortcuts.thread.colourCount.label", descriptionKey: "keyboardMouse.shortcuts.thread.colourCount.description" },
+          { labelKey: "keyboardMouse.shortcuts.thread.width.label", descriptionKey: "keyboardMouse.shortcuts.thread.width.description" },
+        ],
+      },
+      {
+        headingKey: "keyboardMouse.shortcuts.play.heading",
+        items: [
+          { labelKey: "keyboardMouse.shortcuts.play.first.label", descriptionKey: "keyboardMouse.shortcuts.play.first.description" },
+          { labelKey: "keyboardMouse.shortcuts.play.previous.label", descriptionKey: "keyboardMouse.shortcuts.play.previous.description" },
+          { labelKey: "keyboardMouse.shortcuts.play.playPause.label", descriptionKey: "keyboardMouse.shortcuts.play.playPause.description" },
+          { labelKey: "keyboardMouse.shortcuts.play.next.label", descriptionKey: "keyboardMouse.shortcuts.play.next.description" },
+          { labelKey: "keyboardMouse.shortcuts.play.last.label", descriptionKey: "keyboardMouse.shortcuts.play.last.description" },
+          { labelKey: "keyboardMouse.shortcuts.play.export.label", descriptionKey: "keyboardMouse.shortcuts.play.export.description" },
+        ],
+      },
     ],
   },
   {

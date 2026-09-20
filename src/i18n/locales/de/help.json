@@ -123,9 +123,9 @@
       "undo": { "label": "Strg/Cmd+Z", "description": "Rückgängig. Wird ignoriert, solange ein Textfeld (ein Input, Textarea oder editierbarer Text) fokussiert ist." },
       "redo": { "label": "Strg/Cmd+Shift+Z", "description": "Wiederholen. Gleiche Textfeld-Ausnahme wie Rückgängig." },
       "escape": { "label": "Escape", "description": "Bricht die laufende Aktion des aktiven Werkzeugs ab oder beendet sie: einen unvollständigen Fadenentwurf, einen laufenden Pfad-Werkzeug-Vieleck-Entwurf (wird bei 3+ Eckpunkten beendet, nicht abgebrochen), ein laufendes Verschiebe- oder Drehziehen, oder eine ausstehende Zusammenführungsauswahl — je nachdem, was für den aktuellen Modus/das aktuelle Werkzeug zutrifft." },
-      "arrowLeft": { "label": "Pfeil-Links", "description": "Faden-Zeichenwerkzeug: zieht den letzten Punkt des laufenden Fadenentwurfs zurück. Pfad-Werkzeug: zieht den letzten Eckpunkt des laufenden Entwurfs zurück und bricht ihn ganz ab, falls es der einzige war. Bearbeiten-Modus mit aktivem Verschieben/Drehung/Skalieren und ausgewähltem Stiftpfad: verschiebt/dreht/skaliert ihn (siehe Registerkarte Bearbeiten)." },
-      "arrowRight": { "label": "Pfeil-Rechts", "description": "Faden-Zeichenwerkzeug: sobald der Entwurf 4 oder mehr Eckpunkte hat, erweitert er ihn durch Extrapolation des numerischen Stiftpositionsmusters der bisher hinzugefügten Eckpunkte, wobei die Stiftanzahl des betreffenden Stiftpfads umlaufen wird. Bearbeiten-Modus mit aktivem Verschieben/Drehung/Skalieren und ausgewähltem Stiftpfad: verschiebt/dreht/skaliert ihn (siehe Registerkarte Bearbeiten)." },
-      "arrowUpDown": { "label": "Pfeil-Auf / Pfeil-Ab", "description": "Bearbeiten-Modus mit aktivem Verschieben/Drehung/Skalieren und ausgewähltem Stiftpfad: verschiebt/dreht/skaliert ihn. Andernorts ohne Wirkung." },
+      "arrowLeft": { "label": "Pfeil-Links", "description": "Faden-Zeichenwerkzeug mit laufendem Entwurf: zieht den letzten Punkt zurück. Pfad-Werkzeug mit laufendem Entwurf: zieht den letzten Eckpunkt zurück und bricht ihn ganz ab, falls es der einzige war. Bearbeiten-Modus mit aktivem Verschieben/Drehung/Skalieren: verschiebt/dreht/skaliert die Auswahl (siehe Registerkarte Bearbeiten). Andernfalls wird der Ansichtsbereich verschoben." },
+      "arrowRight": { "label": "Pfeil-Rechts", "description": "Faden-Zeichenwerkzeug mit einem Entwurf von 4 oder mehr Eckpunkten: erweitert ihn durch Extrapolation des numerischen Stiftpositionsmusters der bisher hinzugefügten Eckpunkte, wobei die Stiftanzahl des betreffenden Stiftpfads umlaufen wird. Bearbeiten-Modus mit aktivem Verschieben/Drehung/Skalieren: verschiebt/dreht/skaliert die Auswahl (siehe Registerkarte Bearbeiten). Andernfalls wird der Ansichtsbereich verschoben." },
+      "arrowUpDown": { "label": "Pfeil-Auf / Pfeil-Ab", "description": "Bearbeiten-Modus mit aktivem Verschieben/Drehung/Skalieren: verschiebt/dreht/skaliert die Auswahl. Andernfalls wird der Ansichtsbereich verschoben (mit Umschalt für einen größeren Schritt)." },
       "shift": { "label": "Shift (gehalten mit einer Pfeiltaste im Bearbeiten-Modus)", "description": "Multipliziert den Verschiebe-/Dreh-/Skalierschritt der Pfeiltaste mit 10." },
       "holdArrow": { "label": "Eine Pfeiltaste im Bearbeiten-Modus gehalten", "description": "Wiederholt den Verschiebe-/Dreh-/Skalierschritt automatisch nach einer Verzögerung von 500 ms, danach alle 100 ms bis zum Loslassen." },
       "alt": { "label": "Alt (beim Ziehen gehalten)", "description": "Nur Ellipse-/Rechteck-Werkzeuge im Stift-Modus — beschränkt die Form auf einen Kreis/ein Quadrat. Das Loslassen von Alt während des Ziehens kehrt zum uneingeschränkten Modus zurück." }
@@ -136,6 +136,66 @@
       "rightClick": { "label": "Rechtsklick", "description": "Öffnet ein radiales Kontextmenü mit Symbolabschnitten passend zum aktuellen Editor-Modus — Auswählen/Verschieben/Drehen/Skalieren/Zusammenführen (plus Zusammenführung Bestätigen bei 2 oder mehr angesammelten Stiften) im Bearbeiten-Modus, die Stift-Zeichenwerkzeuge im Stift-Modus (oder Schneiden/Zurück/Abbrechen während eines laufenden Pfad-Werkzeug-Entwurfs), Zeichnen/Radierer/Segment im Faden-Modus (oder Schneiden/Zurück/Weiter während eines laufenden Fadenentwurfs), Einpassen/Vergrößern/Verkleinern im Verschieben-Modus, und die Wiedergabesteuerung im Wiedergabe-Modus. Escape oder ein Klick außerhalb des Menüs schließt es, ohne etwas auszuführen." },
       "doubleClick": { "label": "Doppelklick", "description": "Faden-Zeichenwerkzeug — beendet den laufenden Entwurf, indem ein letztes Segment zum angeklickten Stift hinzugefügt wird." },
       "leftDrag": { "label": "Ziehen mit linker Taste", "description": "Verschiebt den Ansichtsbereich im Verschieben-Modus; Drücken-Ziehen-Loslassen steuert auch Verschieben/Drehung im Bearbeiten-Modus und die meisten Formwerkzeuge im Stift-Modus." }
+    },
+    "shortcuts": {
+      "general": {
+        "heading": "Allgemein",
+        "save": { "label": "Strg/Cmd+S", "description": "Speichert das aktuelle Projekt als heruntergeladene .json-Datei." },
+        "open": { "label": "Strg/Cmd+O", "description": "Öffnet die Dateiauswahl zum Laden eines gespeicherten Projekts." },
+        "new": { "label": "Strg/Cmd+Alt+N", "description": "Startet ein neues, leeres Projekt und kehrt zum Bildschirm „Neues Board“ zurück." },
+        "help": { "label": "?", "description": "Öffnet diese Hilfe." },
+        "zoomIn": { "label": "+", "description": "Vergrößert, zentriert auf die Mitte des Ansichtsbereichs." },
+        "zoomOut": { "label": "-", "description": "Verkleinert, zentriert auf die Mitte des Ansichtsbereichs." },
+        "fit": { "label": "0", "description": "Setzt den Ansichtsbereich zurück, um das ganze Board anzuzeigen." },
+        "grid": { "label": "Strg/Cmd+Umschalt+G", "description": "Schaltet die Sichtbarkeit der Gitterlinien um." },
+        "snap": { "label": "Strg/Cmd+Umschalt+A", "description": "Schaltet das Einrasten am Gitter um." }
+      },
+      "tabs": {
+        "heading": "Tabs wechseln",
+        "tabSwitch": { "label": "1-6", "description": "Springt direkt zum Tab Bearbeiten (1), Stift (2), Faden (3), Generieren (4), Verschieben (5) oder Wiedergabe (6)." }
+      },
+      "edit": {
+        "heading": "Bearbeiten-Tab",
+        "granularity": { "label": "Umschalt+P", "description": "Schaltet die Auswahlgranularität zwischen Pin-Pfad und Pins um." },
+        "select": { "label": "S", "description": "Auswahlwerkzeug." },
+        "move": { "label": "M", "description": "Verschieben-Werkzeug." },
+        "rotate": { "label": "R", "description": "Drehen-Werkzeug." },
+        "scale": { "label": "C", "description": "Skalieren-Werkzeug." },
+        "merge": { "label": "J", "description": "Führt die aktuelle Auswahl zusammen, wie die Schaltfläche „Zusammenführen“." }
+      },
+      "pin": {
+        "heading": "Stift-Tab",
+        "line": { "label": "L", "description": "Linie-Werkzeug." },
+        "arc": { "label": "A", "description": "Bogen-Werkzeug." },
+        "ellipse": { "label": "E", "description": "Ellipse-Werkzeug." },
+        "circle": { "label": "C", "description": "Kreis-Werkzeug." },
+        "rectangle": { "label": "R", "description": "Rechteck-Werkzeug." },
+        "square": { "label": "S", "description": "Quadrat-Werkzeug." },
+        "freehand": { "label": "F", "description": "Freihand-Werkzeug." },
+        "path": { "label": "P", "description": "Pfad-Werkzeug." },
+        "text": { "label": "T", "description": "Text-Werkzeug." },
+        "eraser": { "label": "D", "description": "Radierer-Werkzeug." },
+        "pathEraser": { "label": "Q", "description": "Pfad-Radierer-Werkzeug." },
+        "symmetryCycle": { "label": "Umschalt+S", "description": "Wechselt die Symmetrie durch: Keine → Horizontal → Vertikal → Beide → Radial → Keine." }
+      },
+      "thread": {
+        "heading": "Faden-Tab",
+        "draw": { "label": "D", "description": "Zeichnen-Werkzeug." },
+        "select": { "label": "S", "description": "Auswahlwerkzeug." },
+        "eraser": { "label": "E", "description": "Radierer-Werkzeug." },
+        "segmentEraser": { "label": "C", "description": "Segment-Werkzeug." },
+        "colourCount": { "label": "Umschalt+1 / Umschalt+2 / Umschalt+3", "description": "Setzt die Farbanzahl auf 1, 2 oder 3." },
+        "width": { "label": "Umschalt++ / Umschalt+-", "description": "Erhöht oder verringert die Fadenbreite um 0,5, begrenzt zwischen 0,5 und 5." }
+      },
+      "play": {
+        "heading": "Wiedergabe-Tab",
+        "first": { "label": "F", "description": "Erstes Bild." },
+        "previous": { "label": "P", "description": "Vorheriges Bild." },
+        "playPause": { "label": "Leertaste", "description": "Wiedergabe / Pause." },
+        "next": { "label": "N", "description": "Nächstes Bild." },
+        "last": { "label": "L", "description": "Letztes Bild." },
+        "export": { "label": "Umschalt+E", "description": "Als Video exportieren." }
+      }
     }
   },
   "about": {

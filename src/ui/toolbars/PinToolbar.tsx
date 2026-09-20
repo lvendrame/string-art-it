@@ -5,6 +5,22 @@ import type { TFunction } from "i18next";
 import type { EditorStore, PinTool } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
 
+// docs/specs/34-keyboard-shortcuts.md — bare-letter shortcut per Pin-tab tool, shown
+// as a "[X]" suffix on each button's label.
+export const PIN_TOOL_SHORTCUT_KEY: Partial<Record<PinTool, string>> = {
+  line: "L",
+  arc: "A",
+  ellipse: "E",
+  circle: "C",
+  rectangle: "R",
+  square: "S",
+  freehand: "F",
+  polygon: "P",
+  text: "T",
+  eraser: "D",
+  "path-eraser": "Q",
+};
+
 function basicTools(t: TFunction<"toolbars">): { id: PinTool; label: string; icon: ComponentType<{ size?: number }> }[] {
   return [
     { id: "line", label: t("pinToolbar.basicTools.line"), icon: Minus },
@@ -63,16 +79,16 @@ export function PinToolbar({ store }: { store: EditorStore }) {
             style={CHIP_STYLE}
           >
             <tool.icon size={16} />
-            {tool.label}
+            {tool.label} [{PIN_TOOL_SHORTCUT_KEY[tool.id]}]
           </button>
         ))}
         <button className={`btn${state.pinTool === "eraser" ? " btn-active" : ""}`} onClick={() => store.setPinTool("eraser")} style={CHIP_STYLE}>
           <Eraser size={16} />
-          {t("pinToolbar.eraser")}
+          {t("pinToolbar.eraser")} [{PIN_TOOL_SHORTCUT_KEY.eraser}]
         </button>
         <button className={`btn${state.pinTool === "path-eraser" ? " btn-active" : ""}`} onClick={() => store.setPinTool("path-eraser")} style={CHIP_STYLE}>
           <Trash2 size={16} />
-          {t("pinToolbar.pathEraser")}
+          {t("pinToolbar.pathEraser")} [{PIN_TOOL_SHORTCUT_KEY["path-eraser"]}]
         </button>
       </div>
 

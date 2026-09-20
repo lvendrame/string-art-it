@@ -69,6 +69,8 @@ export {
 export { geometryFromDrag, curvatureFromCursor, DRAG_TOOLS } from "./pinToolGeometry";
 export {
   NO_SYMMETRY,
+  SYMMETRY_TYPE_CYCLE,
+  symmetryConfigForType,
   allPinsWithMirrors,
   computeMirroredPinGroups,
   mirroredPinId,

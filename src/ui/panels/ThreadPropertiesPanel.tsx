@@ -3,7 +3,14 @@ import { threadPathStatistics, type EditorStore } from "../../application/docume
 import { useEditorState } from "../useEditorStore";
 import { SliderField } from "./fields/SliderField";
 
-const PALETTE = ["#5b8def", "#edeff7", "#e8b449", "#d96c6c", "#8fd6c8"];
+export const PALETTE = ["#5b8def", "#edeff7", "#e8b449", "#d96c6c", "#8fd6c8"];
+
+// docs/specs/34-keyboard-shortcuts.md — Shift+1/2/3 reuses this exact array-building
+// logic (not just PALETTE) so the keyboard shortcut and this panel's own [1,2,3]
+// buttons always agree on which colours survive a count change.
+export function coloursForCount(colours: string[], n: number): string[] {
+  return Array.from({ length: n }, (_, i) => colours[i] ?? PALETTE[i % PALETTE.length]);
+}
 
 // docs/specs/27-thread-select-tool.md — dual-context, same pattern as
 // PinPropertiesPanel: with a Thread Path selected, these fields edit it; otherwise
@@ -18,8 +25,7 @@ export function ThreadPropertiesPanel({ store }: { store: EditorStore }) {
   const colours = values.colours;
 
   function setColourCount(n: number) {
-    const next = Array.from({ length: n }, (_, i) => colours[i] ?? PALETTE[i % PALETTE.length]);
-    store.setThreadProperty({ colours: next });
+    store.setThreadProperty({ colours: coloursForCount(colours, n) });
   }
 
   return (

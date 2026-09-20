@@ -52,3 +52,38 @@ describe("BoardSetup", () => {
     expect(onContinue).toHaveBeenCalled();
   });
 });
+
+describe("BoardSetup keyboard shortcuts", () => {
+  it("Enter continues to the Editor", () => {
+    const store = new EditorStore();
+    const onContinue = vi.fn();
+    render(<BoardSetup store={store} onContinue={onContinue} />);
+
+    fireEvent.keyDown(window, { key: "Enter" });
+
+    expect(onContinue).toHaveBeenCalledTimes(1);
+  });
+
+  it("Enter is ignored while a dimension field has focus", () => {
+    const store = new EditorStore();
+    const onContinue = vi.fn();
+    render(<BoardSetup store={store} onContinue={onContinue} />);
+    const diameterField = screen.getByLabelText(/Diameter/);
+    diameterField.focus();
+
+    fireEvent.keyDown(diameterField, { key: "Enter" });
+
+    expect(onContinue).not.toHaveBeenCalled();
+  });
+
+  it("L opens the language dropdown, a second L cycles to the next language", () => {
+    const store = new EditorStore();
+    render(<BoardSetup store={store} onContinue={() => {}} />);
+
+    fireEvent.keyDown(window, { key: "l" });
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+
+    fireEvent.keyDown(window, { key: "l" });
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument(); // closes after applying the next language
+  });
+});

@@ -1,9 +1,11 @@
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import type { Board, BoardShape, EditorStore, TriangleType } from "../../application/document";
 import { boardHypotenuse } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
-import { LanguageSwitcher } from "../LanguageSwitcher";
+import { isTextEntryTarget } from "../keyboard";
+import { LanguageSwitcher, type LanguageSwitcherHandle } from "../LanguageSwitcher";
 import { BoardAppearancePanel } from "./BoardAppearancePanel";
 
 function shapeOptions(t: TFunction<"boardSetup">): { id: BoardShape; label: string }[] {
@@ -82,6 +84,26 @@ export function BoardSetup({ store, onContinue }: { store: EditorStore; onContin
   const state = useEditorState(store);
   const { board } = state;
   const shapes = shapeOptions(t);
+  const languageSwitcherRef = useRef<LanguageSwitcherHandle>(null);
+
+  // docs/specs/34-keyboard-shortcuts.md — this screen's own shortcuts (Enter to
+  // continue, L to open/cycle language), scoped to its own lifecycle rather than
+  // routed through EditorShell's dispatcher, matching LanguageSwitcher's own
+  // pre-existing self-contained Escape listener.
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (isTextEntryTarget(e.target)) return;
+      if (e.key === "Enter") {
+        e.preventDefault();
+        onContinue();
+      } else if (e.key === "l" || e.key === "L") {
+        e.preventDefault();
+        languageSwitcherRef.current?.openOrCycle();
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onContinue]);
 
   return (
     <div
@@ -99,7 +121,7 @@ export function BoardSetup({ store, onContinue }: { store: EditorStore; onContin
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h2 style={{ margin: 0, fontSize: 18 }}>{t("title")}</h2>
-        <LanguageSwitcher />
+        <LanguageSwitcher ref={languageSwitcherRef} />
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

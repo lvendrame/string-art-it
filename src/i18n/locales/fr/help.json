@@ -123,9 +123,9 @@
       "undo": { "label": "Ctrl/Cmd+Z", "description": "Annuler. Ignoré tant qu'un champ de texte (un input, textarea ou texte modifiable) a le focus." },
       "redo": { "label": "Ctrl/Cmd+Shift+Z", "description": "Rétablir. Même exception de champ de texte qu'Annuler." },
       "escape": { "label": "Échap", "description": "Annule ou termine l'action en cours de l'outil actif : un brouillon de fil inachevé, un brouillon de polygone de l'outil Tracé en cours (terminé, pas annulé, s'il a 3 sommets ou plus), un glissement de Déplacement ou de Rotation en cours, ou une sélection de Fusion en attente — selon ce qui s'applique au mode/outil actuel." },
-      "arrowLeft": { "label": "Flèche Gauche", "description": "Outil Dessiner Fil : retire le dernier point du brouillon de fil en cours. Outil Tracé : retire le dernier sommet du brouillon en cours, l'annulant entièrement si c'était le seul. Mode Édition avec Déplacer/Rotation/Échelle actif et un Tracé de Broches sélectionné : le déplace/tourne/redimensionne (voir l'onglet Édition)." },
-      "arrowRight": { "label": "Flèche Droite", "description": "Outil Dessiner Fil : une fois que le brouillon a 4 sommets ou plus, l'étend en extrapolant le motif numérique de position des broches des sommets ajoutés jusqu'à présent, en bouclant sur le nombre de broches du Tracé de Broches concerné. Mode Édition avec Déplacer/Rotation/Échelle actif et un Tracé de Broches sélectionné : le déplace/tourne/redimensionne (voir l'onglet Édition)." },
-      "arrowUpDown": { "label": "Flèche Haut / Flèche Bas", "description": "Mode Édition avec Déplacer/Rotation/Échelle actif et un Tracé de Broches sélectionné : le déplace/tourne/redimensionne. Aucun effet ailleurs." },
+      "arrowLeft": { "label": "Flèche Gauche", "description": "Outil Dessiner Fil avec un brouillon en cours : retire son dernier point. Outil Tracé avec un brouillon en cours : retire le dernier sommet, l'annulant entièrement si c'était le seul. Mode Édition avec Déplacer/Rotation/Échelle actif : déplace/tourne/redimensionne la sélection (voir l'onglet Édition). Sinon, déplace la zone de visualisation." },
+      "arrowRight": { "label": "Flèche Droite", "description": "Outil Dessiner Fil avec un brouillon de 4 sommets ou plus : l'étend en extrapolant le motif numérique de position des broches des sommets ajoutés jusqu'à présent, en bouclant sur le nombre de broches du Tracé de Broches concerné. Mode Édition avec Déplacer/Rotation/Échelle actif : déplace/tourne/redimensionne la sélection (voir l'onglet Édition). Sinon, déplace la zone de visualisation." },
+      "arrowUpDown": { "label": "Flèche Haut / Flèche Bas", "description": "Mode Édition avec Déplacer/Rotation/Échelle actif : déplace/tourne/redimensionne la sélection. Sinon, déplace la zone de visualisation (Maj pour un pas plus grand)." },
       "shift": { "label": "Shift (maintenu avec une flèche en mode Édition)", "description": "Multiplie par 10 le pas de Déplacement/Rotation/Échelle de la flèche." },
       "holdArrow": { "label": "Maintenir une flèche en mode Édition", "description": "Répète le pas de Déplacement/Rotation/Échelle automatiquement après un délai de 500 ms, puis toutes les 100 ms jusqu'au relâchement." },
       "alt": { "label": "Alt (maintenu en glissant)", "description": "Outils Ellipse/Rectangle du mode Broche uniquement — contraint la forme à un Cercle/Carré. Relâcher Alt en cours de glissement revient au mode sans contrainte." }
@@ -136,6 +136,66 @@
       "rightClick": { "label": "Clic droit", "description": "Ouvre un menu contextuel radial avec des tranches d'icônes correspondant au mode actuel de l'Éditeur — Sélectionner/Déplacer/Tourner/Redimensionner/Fusionner (plus Valider la Fusion une fois 2 broches ou plus accumulées) en mode Édition, les outils de dessin de Broche en mode Broche (ou Couper/Retour/Annuler pendant un brouillon de l'outil Tracé en cours), Dessiner/Gomme/Segment en mode Fil (ou Couper/Retour/Suivant pendant un brouillon de fil en cours), Ajuster/Zoom avant/Zoom arrière en mode Déplacement, et les commandes de lecture en mode Lecture. Échap ou un clic hors du menu le ferme sans effectuer d'action." },
       "doubleClick": { "label": "Double-clic", "description": "Outil Dessiner Fil — termine le brouillon en cours, en ajoutant un segment final à la broche cliquée." },
       "leftDrag": { "label": "Glisser avec le bouton gauche", "description": "Déplace la zone de visualisation en mode Déplacement ; appuyer-glisser-relâcher pilote aussi Déplacer/Rotation en mode Édition et la plupart des outils de forme en mode Broche." }
+    },
+    "shortcuts": {
+      "general": {
+        "heading": "Général",
+        "save": { "label": "Ctrl/Cmd+S", "description": "Enregistre le projet actuel sous forme de fichier .json téléchargé." },
+        "open": { "label": "Ctrl/Cmd+O", "description": "Ouvre le sélecteur de fichier pour charger un projet enregistré." },
+        "new": { "label": "Ctrl/Cmd+Alt+N", "description": "Démarre un nouveau projet vide et revient à l'écran Nouveau plateau." },
+        "help": { "label": "?", "description": "Ouvre ce panneau d'aide." },
+        "zoomIn": { "label": "+", "description": "Zoom avant, centré sur le centre de la zone de visualisation." },
+        "zoomOut": { "label": "-", "description": "Zoom arrière, centré sur le centre de la zone de visualisation." },
+        "fit": { "label": "0", "description": "Réinitialise la zone de visualisation pour afficher tout le plateau." },
+        "grid": { "label": "Ctrl/Cmd+Maj+G", "description": "Active ou désactive la visibilité des lignes de grille." },
+        "snap": { "label": "Ctrl/Cmd+Maj+A", "description": "Active ou désactive l'alignement sur la grille." }
+      },
+      "tabs": {
+        "heading": "Changer d'onglet",
+        "tabSwitch": { "label": "1-6", "description": "Va directement à l'onglet Édition (1), Broche (2), Fil (3), Générer (4), Déplacement (5) ou Lecture (6)." }
+      },
+      "edit": {
+        "heading": "Onglet Édition",
+        "granularity": { "label": "Maj+P", "description": "Bascule la granularité de sélection entre Chemin de broches et Broches." },
+        "select": { "label": "S", "description": "Outil Sélection." },
+        "move": { "label": "M", "description": "Outil Déplacer." },
+        "rotate": { "label": "R", "description": "Outil Rotation." },
+        "scale": { "label": "C", "description": "Outil Échelle." },
+        "merge": { "label": "J", "description": "Fusionne la sélection actuelle, comme le bouton Fusionner." }
+      },
+      "pin": {
+        "heading": "Onglet Broche",
+        "line": { "label": "L", "description": "Outil Ligne." },
+        "arc": { "label": "A", "description": "Outil Arc." },
+        "ellipse": { "label": "E", "description": "Outil Ellipse." },
+        "circle": { "label": "C", "description": "Outil Cercle." },
+        "rectangle": { "label": "R", "description": "Outil Rectangle." },
+        "square": { "label": "S", "description": "Outil Carré." },
+        "freehand": { "label": "F", "description": "Outil Main levée." },
+        "path": { "label": "P", "description": "Outil Chemin." },
+        "text": { "label": "T", "description": "Outil Texte." },
+        "eraser": { "label": "D", "description": "Outil Gomme." },
+        "pathEraser": { "label": "Q", "description": "Outil Gomme de chemin." },
+        "symmetryCycle": { "label": "Maj+S", "description": "Fait défiler la symétrie : Aucune → Horizontale → Verticale → Les deux → Radiale → Aucune." }
+      },
+      "thread": {
+        "heading": "Onglet Fil",
+        "draw": { "label": "D", "description": "Outil Dessiner." },
+        "select": { "label": "S", "description": "Outil Sélection." },
+        "eraser": { "label": "E", "description": "Outil Gomme." },
+        "segmentEraser": { "label": "C", "description": "Outil Segment." },
+        "colourCount": { "label": "Maj+1 / Maj+2 / Maj+3", "description": "Définit le nombre de couleurs à 1, 2 ou 3." },
+        "width": { "label": "Maj++ / Maj+-", "description": "Augmente ou diminue la largeur du fil de 0,5, limitée entre 0,5 et 5." }
+      },
+      "play": {
+        "heading": "Onglet Lecture",
+        "first": { "label": "F", "description": "Première image." },
+        "previous": { "label": "P", "description": "Image précédente." },
+        "playPause": { "label": "Espace", "description": "Lecture / Pause." },
+        "next": { "label": "N", "description": "Image suivante." },
+        "last": { "label": "L", "description": "Dernière image." },
+        "export": { "label": "Maj+E", "description": "Exporter en vidéo." }
+      }
     }
   },
   "about": {

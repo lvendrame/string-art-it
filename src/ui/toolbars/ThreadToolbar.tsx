@@ -20,19 +20,19 @@ export function ThreadToolbar({ store }: { store: EditorStore }) {
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
         <button className={`btn${state.threadTool === "draw" ? " btn-active" : ""}`} onClick={() => store.setThreadTool("draw")} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}>
           <PenLine size={14} />
-          {t("threadToolbar.draw")}
+          {t("threadToolbar.draw")} [D]
         </button>
         <button className={`btn${state.threadTool === "select" ? " btn-active" : ""}`} onClick={() => store.setThreadTool("select")} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}>
           <MousePointer2 size={14} />
-          {t("threadToolbar.select")}
+          {t("threadToolbar.select")} [S]
         </button>
         <button className={`btn${state.threadTool === "eraser" ? " btn-active" : ""}`} onClick={() => store.setThreadTool("eraser")} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}>
           <Eraser size={14} />
-          {t("threadToolbar.eraser")}
+          {t("threadToolbar.eraser")} [E]
         </button>
         <button className={`btn${state.threadTool === "segment-eraser" ? " btn-active" : ""}`} onClick={() => store.setThreadTool("segment-eraser")} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}>
           <Scissors size={14} />
-          {t("threadToolbar.segment")}
+          {t("threadToolbar.segment")} [C]
         </button>
       </div>
 

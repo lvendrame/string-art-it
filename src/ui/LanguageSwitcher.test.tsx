@@ -1,7 +1,8 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { createRef } from "react";
+import { act, render, screen, fireEvent } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import i18n from "../i18n";
-import { LanguageSwitcher } from "./LanguageSwitcher";
+import { LanguageSwitcher, type LanguageSwitcherHandle } from "./LanguageSwitcher";
 
 describe("LanguageSwitcher", () => {
   afterEach(async () => {
@@ -54,6 +55,18 @@ describe("LanguageSwitcher", () => {
     expect(screen.getByRole("listbox")).toBeInTheDocument();
 
     fireEvent.pointerDown(screen.getByTestId("outside"));
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
+  it("openOrCycle opens the dropdown when closed, then cycles to the next language when open", async () => {
+    const ref = createRef<LanguageSwitcherHandle>();
+    render(<LanguageSwitcher ref={ref} />);
+
+    act(() => ref.current!.openOrCycle());
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+
+    act(() => ref.current!.openOrCycle());
+    expect(i18n.language).toBe("pt-BR"); // next after English in SUPPORTED_LANGUAGES order
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
 });

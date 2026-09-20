@@ -123,9 +123,9 @@
       "undo": { "label": "Ctrl/Cmd+Z", "description": "Undo. Ignored while a text field (an input, textarea, or editable text) has focus." },
       "redo": { "label": "Ctrl/Cmd+Shift+Z", "description": "Redo. Same text-field exception as Undo." },
       "escape": { "label": "Escape", "description": "Cancels or finishes the active tool's in-progress action: an unfinished thread draft, an in-progress Path tool polygon draft (finished, not cancelled, if it has 3+ vertices), an in-progress Move or Rotation drag, or a pending Merge selection — whichever applies to the current mode/tool." },
-      "arrowLeft": { "label": "ArrowLeft", "description": "Thread Draw tool: retracts the last point of the in-progress thread draft. Path tool: retracts the last vertex of the in-progress draft, cancelling it entirely if it was the only one. Edit mode with Move/Rotation/Scale active and a Pin Path selected: nudges/rotates/scales it (see the Edit tab)." },
-      "arrowRight": { "label": "ArrowRight", "description": "Thread Draw tool: once the draft has 4+ vertices, extends it by extrapolating the numeric pin-position pattern of the vertices added so far, wrapping around the pin count of the relevant Pin Path. Edit mode with Move/Rotation/Scale active and a Pin Path selected: nudges/rotates/scales it (see the Edit tab)." },
-      "arrowUpDown": { "label": "ArrowUp / ArrowDown", "description": "Edit mode with Move/Rotation/Scale active and a Pin Path selected: nudges/rotates/scales it. No effect elsewhere." },
+      "arrowLeft": { "label": "ArrowLeft", "description": "Thread Draw tool with a draft in progress: retracts its last point. Path tool with a draft in progress: retracts the last vertex, cancelling it entirely if it was the only one. Edit mode with Move/Rotation/Scale active: nudges/rotates/scales the selection (see the Edit tab). Otherwise, pans the viewport." },
+      "arrowRight": { "label": "ArrowRight", "description": "Thread Draw tool with a draft of 4+ vertices in progress: extends it by extrapolating the numeric pin-position pattern of the vertices added so far, wrapping around the pin count of the relevant Pin Path. Edit mode with Move/Rotation/Scale active: nudges/rotates/scales the selection (see the Edit tab). Otherwise, pans the viewport." },
+      "arrowUpDown": { "label": "ArrowUp / ArrowDown", "description": "Edit mode with Move/Rotation/Scale active: nudges/rotates/scales the selection. Otherwise, pans the viewport (Shift for a bigger step)." },
       "shift": { "label": "Shift (held with an Edit-mode arrow key)", "description": "Multiplies the arrow key's Move/Rotation/Scale step by 10." },
       "holdArrow": { "label": "Holding an Edit-mode arrow key", "description": "Repeats the Move/Rotation/Scale step automatically after a 500ms delay, then every 100ms until released." },
       "alt": { "label": "Alt (held while dragging)", "description": "Pin mode Ellipse/Rectangle tools only — constrains the shape to a Circle/Square. Releasing Alt mid-drag reverts to unconstrained." }
@@ -136,6 +136,66 @@
       "rightClick": { "label": "Right-click", "description": "Opens a radial context menu with icon slices matching the current Editor mode — Select/Move/Rotate/Scale/Merge (plus Commit Merge once 2+ pins are accumulated) in Edit mode, the Pin drawing tools in Pin mode (or Cut/Back/Cancel while a Path tool draft is in progress), Draw/Eraser/Segment in Thread mode (or Cut/Back/Next while a thread draft is in progress), Fit/Zoom In/Zoom Out in Pan mode, and the playback transport in Play mode. Escape or clicking outside the menu closes it without acting." },
       "doubleClick": { "label": "Double-click", "description": "Thread Draw tool — finishes the in-progress draft, adding one final segment to the clicked pin." },
       "leftDrag": { "label": "Left-drag", "description": "Pans the viewport in Pan mode; press-drag-release also drives Move/Rotation in Edit mode and most shape tools in Pin mode." }
+    },
+    "shortcuts": {
+      "general": {
+        "heading": "General",
+        "save": { "label": "Ctrl/Cmd+S", "description": "Saves the current project as a downloaded .json file." },
+        "open": { "label": "Ctrl/Cmd+O", "description": "Opens the file picker to load a saved project." },
+        "new": { "label": "Ctrl/Cmd+Alt+N", "description": "Starts a new, empty project and returns to the New Board screen." },
+        "help": { "label": "?", "description": "Opens this Help panel." },
+        "zoomIn": { "label": "+", "description": "Zooms in, centred on the viewport centre." },
+        "zoomOut": { "label": "-", "description": "Zooms out, centred on the viewport centre." },
+        "fit": { "label": "0", "description": "Resets the viewport to fit the whole board in view." },
+        "grid": { "label": "Ctrl/Cmd+Shift+G", "description": "Toggles grid line visibility." },
+        "snap": { "label": "Ctrl/Cmd+Shift+A", "description": "Toggles snap-to-grid." }
+      },
+      "tabs": {
+        "heading": "Switch tabs",
+        "tabSwitch": { "label": "1-6", "description": "Jumps directly to the Edit (1), Pin (2), Thread (3), Generate (4), Pan (5), or Play (6) tab." }
+      },
+      "edit": {
+        "heading": "Edit tab",
+        "granularity": { "label": "Shift+P", "description": "Toggles the selection granularity between Pin Path and Pins." },
+        "select": { "label": "S", "description": "Select tool." },
+        "move": { "label": "M", "description": "Move tool." },
+        "rotate": { "label": "R", "description": "Rotation tool." },
+        "scale": { "label": "C", "description": "Scale tool." },
+        "merge": { "label": "J", "description": "Merges the current selection, same as the Merge button." }
+      },
+      "pin": {
+        "heading": "Pin tab",
+        "line": { "label": "L", "description": "Line tool." },
+        "arc": { "label": "A", "description": "Arc tool." },
+        "ellipse": { "label": "E", "description": "Ellipse tool." },
+        "circle": { "label": "C", "description": "Circle tool." },
+        "rectangle": { "label": "R", "description": "Rect tool." },
+        "square": { "label": "S", "description": "Square tool." },
+        "freehand": { "label": "F", "description": "Freehand tool." },
+        "path": { "label": "P", "description": "Path tool." },
+        "text": { "label": "T", "description": "Text tool." },
+        "eraser": { "label": "D", "description": "Eraser tool." },
+        "pathEraser": { "label": "Q", "description": "Path Eraser tool." },
+        "symmetryCycle": { "label": "Shift+S", "description": "Cycles symmetry: None → Horizontal → Vertical → Both → Radial → None." }
+      },
+      "thread": {
+        "heading": "Thread tab",
+        "draw": { "label": "D", "description": "Draw tool." },
+        "select": { "label": "S", "description": "Select tool." },
+        "eraser": { "label": "E", "description": "Eraser tool." },
+        "segmentEraser": { "label": "C", "description": "Segment tool." },
+        "colourCount": { "label": "Shift+1 / Shift+2 / Shift+3", "description": "Sets the colour count to 1, 2, or 3." },
+        "width": { "label": "Shift++ / Shift+-", "description": "Increases or decreases thread width by 0.5, clamped between 0.5 and 5." }
+      },
+      "play": {
+        "heading": "Play tab",
+        "first": { "label": "F", "description": "First Frame." },
+        "previous": { "label": "P", "description": "Previous Frame." },
+        "playPause": { "label": "Space", "description": "Play / Pause." },
+        "next": { "label": "N", "description": "Next Frame." },
+        "last": { "label": "L", "description": "Last Frame." },
+        "export": { "label": "Shift+E", "description": "Export to Video." }
+      }
     }
   },
   "about": {

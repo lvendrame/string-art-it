@@ -1,14 +1,22 @@
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Check, ChevronDown, Globe } from "lucide-react";
 import { LANGUAGE_META, SUPPORTED_LANGUAGES, isSupportedLanguage, type SupportedLanguage } from "../i18n/languages";
+
+// docs/specs/34-keyboard-shortcuts.md — the New Board screen's "L" shortcut: first
+// press opens the dropdown, a further press while open cycles to the next language.
+// Exposed only for that screen's own local shortcut listener (EditorShell's copy of
+// this component doesn't need it, so the ref is optional and unused there).
+export interface LanguageSwitcherHandle {
+  openOrCycle: () => void;
+}
 
 // Cross-cutting (used by both BoardSetup and EditorShell), so it lives at src/ui/'s top
 // level rather than under panels/ or toolbars/. No existing Select/Dropdown vocabulary
 // entry in docs/specs/18-design-system.md — this introduces one, documented in
 // docs/specs/24-internationalization.md. Both mount points share the same global
 // i18n.language, so they always agree without any prop threading.
-export function LanguageSwitcher() {
+export const LanguageSwitcher = forwardRef<LanguageSwitcherHandle>(function LanguageSwitcher(_props, ref) {
   const { t, i18n } = useTranslation("common");
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -35,6 +43,17 @@ export function LanguageSwitcher() {
     void i18n.changeLanguage(lng);
     setOpen(false);
   }
+
+  useImperativeHandle(ref, () => ({
+    openOrCycle: () => {
+      if (!open) {
+        setOpen(true);
+        return;
+      }
+      const currentIndex = SUPPORTED_LANGUAGES.indexOf(current);
+      select(SUPPORTED_LANGUAGES[(currentIndex + 1) % SUPPORTED_LANGUAGES.length]);
+    },
+  }));
 
   function onMenuKeyDown(e: React.KeyboardEvent) {
     const count = SUPPORTED_LANGUAGES.length;
@@ -113,4 +132,4 @@ export function LanguageSwitcher() {
       )}
     </div>
   );
-}
+});

@@ -9,7 +9,7 @@ import { Canvas } from "./canvas/Canvas";
 import { PlaybackCanvas } from "./canvas/PlaybackCanvas";
 import { RadialContextMenu, type RadialMenuPosition } from "./canvas/radialMenu/RadialContextMenu";
 import { ModeSwitcher } from "./toolbars/ModeSwitcher";
-import { FileMenu } from "./toolbars/FileMenu";
+import { FileMenu, type FileMenuHandle } from "./toolbars/FileMenu";
 import { ExportMenu } from "./toolbars/ExportMenu";
 import { PinToolbar } from "./toolbars/PinToolbar";
 import { ThreadToolbar } from "./toolbars/ThreadToolbar";
@@ -28,6 +28,7 @@ import { StatisticsPanel } from "./panels/StatisticsPanel";
 import { HelpPanel } from "./panels/help/HelpPanel";
 import { useEditorState } from "./useEditorStore";
 import { isTextEntryTarget } from "./keyboard";
+import { useKeyboardShortcuts } from "./useKeyboardShortcuts";
 
 const EDITOR_SHELL_TOOLTIP_ID = "editor-shell-tooltip";
 
@@ -40,6 +41,7 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
   const playSvgRef = useRef<SVGSVGElement>(null);
   const videoExport = useVideoExport(playSvgRef, state.board, totalFrames, transport.intervalMs, transport.goToFrame);
   const canvasAreaRef = useRef<HTMLDivElement>(null);
+  const fileMenuRef = useRef<FileMenuHandle>(null);
   const [radialMenuPosition, setRadialMenuPosition] = useState<RadialMenuPosition | null>(null);
 
   // "Adjusting state when a prop changes" (react.dev), same technique as
@@ -93,11 +95,22 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [store]);
 
+  // docs/specs/34-keyboard-shortcuts.md — the ~40-binding app-wide/per-tab shortcut
+  // table, everything else this milestone adds.
+  useKeyboardShortcuts(store, {
+    transport,
+    totalFrames,
+    videoExport,
+    onNewProject,
+    openHelp: () => setOverlay("help"),
+    fileMenuRef,
+  });
+
   return (
     <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg-app)" }}>
       <div style={{ height: 56, flex: "0 0 auto", display: "flex", alignItems: "center", gap: 20, padding: "0 16px", background: "var(--bg-panel)", borderBottom: "1px solid var(--border)" }}>
         <span style={{ fontWeight: 800, fontSize: 15, letterSpacing: "-0.01em" }}>StringArtIt</span>
-        <FileMenu store={store} onNewProject={onNewProject} />
+        <FileMenu ref={fileMenuRef} store={store} onNewProject={onNewProject} />
         <ExportMenu store={store} />
         <div style={{ flex: 1 }} />
         <ModeSwitcher mode={state.mode} onChange={store.setMode.bind(store)} />

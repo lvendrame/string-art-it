@@ -11,6 +11,20 @@ export type SymmetryConfig =
 
 export const NO_SYMMETRY: SymmetryConfig = { type: "none" };
 
+// docs/specs/34-keyboard-shortcuts.md Shift+S cycle order — shared by SymmetryPanel's
+// own type buttons and the keyboard shortcut, so both produce the exact same config
+// for a given type (see symmetryConfigForType).
+export const SYMMETRY_TYPE_CYCLE: SymmetryConfig["type"][] = ["none", "horizontal", "vertical", "both", "radial"];
+
+// Out-of-the-box config for a given symmetry type — always resets axis/centre/interval
+// to their defaults rather than preserving whatever a previous instance of that type
+// had (matches SymmetryPanel's pre-existing type-button behaviour exactly).
+export function symmetryConfigForType(type: SymmetryConfig["type"]): SymmetryConfig {
+  if (type === "none") return { type: "none" };
+  if (type === "radial") return { type: "radial", centre: { x: 0, y: 0 }, intervalDegrees: 45 };
+  return { type, axis: { x: 0, y: 0 } };
+}
+
 // Mirrored/radial copies are DERIVED, never stored — editing the source recalculates
 // them automatically because they're recomputed on every read (docs/specs/06-symmetry
 // §"Edit source -> Regenerate source pins -> Regenerate mirrored instances"). They are

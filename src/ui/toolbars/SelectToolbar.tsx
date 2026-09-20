@@ -9,6 +9,14 @@ import { useEditorState } from "../useEditorStore";
 
 const SELECT_TOOLBAR_TOOLTIP_ID = "select-toolbar-tooltip";
 
+// docs/specs/34-keyboard-shortcuts.md — bare-letter shortcut per Edit-tab tool.
+export const SELECT_TOOL_SHORTCUT_KEY: Record<SelectTool, string> = {
+  select: "S",
+  move: "M",
+  rotate: "R",
+  scale: "C",
+};
+
 function tools(t: TFunction<"toolbars">): { id: SelectTool; label: string; icon: ComponentType<{ size?: number }>; tooltip: string; requiresSelection: boolean }[] {
   return [
     { id: "select", label: t("selectToolbar.tools.select.label"), icon: MousePointer2, tooltip: t("selectToolbar.tools.select.tooltip"), requiresSelection: false },
@@ -43,7 +51,7 @@ function GranularitySwitch({ store, granularity, label }: { store: EditorStore; 
       <button
         role="switch"
         aria-checked={isPins}
-        aria-label={label("path") + " / " + label("pins")}
+        aria-label={label("path") + " / " + label("pins") + " [Shift+P]"}
         onClick={() => store.setSelectGranularity(isPins ? "path" : "pins")}
         style={{ position: "relative", width: 44, height: 32, background: "none", border: "none", padding: 0, cursor: "pointer", flexShrink: 0 }}
       >
@@ -116,7 +124,7 @@ export function SelectToolbar({ store }: { store: EditorStore }) {
               style={{ flexDirection: "column", borderRadius: "var(--radius-sm)", padding: "10px 4px 7px", gap: 5, fontSize: 11, fontWeight: 600 }}
             >
               <tool.icon size={16} />
-              {tool.label}
+              {tool.label} [{SELECT_TOOL_SHORTCUT_KEY[tool.id]}]
             </button>
           );
         })}
@@ -135,7 +143,7 @@ export function SelectToolbar({ store }: { store: EditorStore }) {
         style={{ justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, gap: 6, fontSize: 12, fontWeight: 600 }}
       >
         <GitMerge size={14} />
-        {t("selectToolbar.tools.merge.label")}
+        {t("selectToolbar.tools.merge.label")} [J]
       </button>
 
       <Tooltip id={SELECT_TOOLBAR_TOOLTIP_ID} place="top" />

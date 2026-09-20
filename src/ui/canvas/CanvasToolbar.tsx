@@ -5,11 +5,10 @@ import "react-tooltip/dist/react-tooltip.css";
 import type { EditorStore } from "../../application/document";
 import { zoomToPercent } from "../../domain/transforms";
 import { useEditorState } from "../useEditorStore";
-import { CANVAS_VIEWPORT_PX, fitViewportForBoard } from "./boardViewport";
+import { fitViewportForBoard } from "./boardViewport";
 import { GridSettingsPopover } from "./GridSettingsPopover";
-import { zoomInStep, zoomOutStep } from "./zoomSteps";
+import { VIEWPORT_CENTER, zoomInStep, zoomOutStep } from "./zoomSteps";
 
-const VIEWPORT_CENTER = { x: CANVAS_VIEWPORT_PX.width / 2, y: CANVAS_VIEWPORT_PX.height / 2 };
 const CANVAS_TOOLBAR_TOOLTIP_ID = "canvas-toolbar-tooltip";
 
 function ToggleChip({ label, active, onClick, icon: Icon }: { label: string; active: boolean; onClick: () => void; icon: typeof Grid3x3 }) {

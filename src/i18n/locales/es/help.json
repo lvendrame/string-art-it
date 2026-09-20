@@ -123,9 +123,9 @@
       "undo": { "label": "Ctrl/Cmd+Z", "description": "Deshacer. Se ignora mientras un campo de texto (un input, textarea o texto editable) tiene el foco." },
       "redo": { "label": "Ctrl/Cmd+Shift+Z", "description": "Rehacer. Misma excepción de campo de texto que Deshacer." },
       "escape": { "label": "Escape", "description": "Cancela o termina la acción en curso de la herramienta activa: un borrador de hilo inacabado, un borrador de polígono de la herramienta Trazado en curso (se termina, no se cancela, si tiene 3 o más vértices), un arrastre de Movimiento o Rotación en curso, o una selección de Combinación pendiente — lo que sea aplicable al modo/herramienta actual." },
-      "arrowLeft": { "label": "Flecha Izquierda", "description": "Herramienta Dibujar Hilo: retrae el último punto del borrador de hilo en curso. Herramienta Trazado: retrae el último vértice del borrador en curso, cancelándolo por completo si era el único. Modo Editar con Mover/Rotación/Escala activo y un Trazado de Pines seleccionado: lo desplaza/gira/escala (ver la pestaña Editar)." },
-      "arrowRight": { "label": "Flecha Derecha", "description": "Herramienta Dibujar Hilo: en cuanto el borrador tenga 4 o más vértices, lo extiende extrapolando el patrón numérico de posición de pines de los vértices añadidos hasta ahora, dando la vuelta al número de pines del Trazado de Pines relevante. Modo Editar con Mover/Rotación/Escala activo y un Trazado de Pines seleccionado: lo desplaza/gira/escala (ver la pestaña Editar)." },
-      "arrowUpDown": { "label": "Flecha Arriba / Flecha Abajo", "description": "Modo Editar con Mover/Rotación/Escala activo y un Trazado de Pines seleccionado: lo desplaza/gira/escala. Sin efecto en otros casos." },
+      "arrowLeft": { "label": "Flecha Izquierda", "description": "Herramienta Dibujar Hilo con un borrador en curso: retrae su último punto. Herramienta Trazado con un borrador en curso: retrae el último vértice, cancelándolo por completo si era el único. Modo Editar con Mover/Rotación/Escala activo: desplaza/gira/escala la selección (ver la pestaña Editar). En caso contrario, desplaza el área de visualización." },
+      "arrowRight": { "label": "Flecha Derecha", "description": "Herramienta Dibujar Hilo con un borrador de 4 o más vértices: lo extiende extrapolando el patrón numérico de posición de pines de los vértices añadidos hasta ahora, dando la vuelta al número de pines del Trazado de Pines relevante. Modo Editar con Mover/Rotación/Escala activo: desplaza/gira/escala la selección (ver la pestaña Editar). En caso contrario, desplaza el área de visualización." },
+      "arrowUpDown": { "label": "Flecha Arriba / Flecha Abajo", "description": "Modo Editar con Mover/Rotación/Escala activo: desplaza/gira/escala la selección. En caso contrario, desplaza el área de visualización (Mayús para un paso mayor)." },
       "shift": { "label": "Shift (mantenido con una flecha en modo Editar)", "description": "Multiplica por 10 el paso de Mover/Rotación/Escala de la flecha." },
       "holdArrow": { "label": "Mantener presionada una flecha en modo Editar", "description": "Repite el paso de Mover/Rotación/Escala automáticamente tras un retraso de 500ms, luego cada 100ms hasta que se suelte." },
       "alt": { "label": "Alt (mantenido al arrastrar)", "description": "Solo herramientas Elipse/Rectángulo del modo Pin — restringe la forma a un Círculo/Cuadrado. Soltar Alt a mitad del arrastre vuelve al modo sin restricción." }
@@ -136,6 +136,66 @@
       "rightClick": { "label": "Clic derecho", "description": "Abre un menú de contexto radial con secciones de icono según el modo actual del Editor — Seleccionar/Mover/Rotar/Escalar/Combinar (más Confirmar Combinación cuando hay 2 o más pines acumulados) en modo Editar, las herramientas de dibujo de Pin en modo Pin (o Cortar/Atrás/Cancelar durante un borrador de la herramienta Trazado en curso), Dibujar/Borrador/Segmento en modo Hilo (o Cortar/Atrás/Siguiente durante un borrador de hilo en curso), Ajustar/Acercar/Alejar en modo Desplazar, y los controles de reproducción en modo Reproducir. Escape o hacer clic fuera del menú lo cierra sin actuar." },
       "doubleClick": { "label": "Doble clic", "description": "Herramienta Dibujar Hilo — finaliza el borrador en curso, añadiendo un segmento final al pin en el que se hizo clic." },
       "leftDrag": { "label": "Arrastre con botón izquierdo", "description": "Desplaza el área de visualización en modo Desplazar; presionar-arrastrar-soltar también controla Mover/Rotación en modo Editar y la mayoría de las herramientas de forma en modo Pin." }
+    },
+    "shortcuts": {
+      "general": {
+        "heading": "General",
+        "save": { "label": "Ctrl/Cmd+S", "description": "Guarda el proyecto actual como un archivo .json descargado." },
+        "open": { "label": "Ctrl/Cmd+O", "description": "Abre el selector de archivos para cargar un proyecto guardado." },
+        "new": { "label": "Ctrl/Cmd+Alt+N", "description": "Inicia un proyecto nuevo y vacío, y vuelve a la pantalla Nuevo tablero." },
+        "help": { "label": "?", "description": "Abre este panel de ayuda." },
+        "zoomIn": { "label": "+", "description": "Acerca el zoom, centrado en el centro del área de visualización." },
+        "zoomOut": { "label": "-", "description": "Aleja el zoom, centrado en el centro del área de visualización." },
+        "fit": { "label": "0", "description": "Restablece el área de visualización para ajustar todo el tablero." },
+        "grid": { "label": "Ctrl/Cmd+Mayús+G", "description": "Activa o desactiva la visibilidad de las líneas de la cuadrícula." },
+        "snap": { "label": "Ctrl/Cmd+Mayús+A", "description": "Activa o desactiva el ajuste a la cuadrícula." }
+      },
+      "tabs": {
+        "heading": "Cambiar de pestaña",
+        "tabSwitch": { "label": "1-6", "description": "Salta directamente a la pestaña Editar (1), Pin (2), Hilo (3), Generar (4), Desplazar (5) o Reproducir (6)." }
+      },
+      "edit": {
+        "heading": "Pestaña Editar",
+        "granularity": { "label": "Mayús+P", "description": "Alterna la granularidad de selección entre Trayecto de pines y Pines." },
+        "select": { "label": "S", "description": "Herramienta Seleccionar." },
+        "move": { "label": "M", "description": "Herramienta Mover." },
+        "rotate": { "label": "R", "description": "Herramienta Rotación." },
+        "scale": { "label": "C", "description": "Herramienta Escala." },
+        "merge": { "label": "J", "description": "Combina la selección actual, igual que el botón Combinar." }
+      },
+      "pin": {
+        "heading": "Pestaña Pin",
+        "line": { "label": "L", "description": "Herramienta Línea." },
+        "arc": { "label": "A", "description": "Herramienta Arco." },
+        "ellipse": { "label": "E", "description": "Herramienta Elipse." },
+        "circle": { "label": "C", "description": "Herramienta Círculo." },
+        "rectangle": { "label": "R", "description": "Herramienta Rectángulo." },
+        "square": { "label": "S", "description": "Herramienta Cuadrado." },
+        "freehand": { "label": "F", "description": "Herramienta Mano alzada." },
+        "path": { "label": "P", "description": "Herramienta Trayecto." },
+        "text": { "label": "T", "description": "Herramienta Texto." },
+        "eraser": { "label": "D", "description": "Herramienta Borrador." },
+        "pathEraser": { "label": "Q", "description": "Herramienta Borrador de trayecto." },
+        "symmetryCycle": { "label": "Mayús+S", "description": "Recorre la simetría: Ninguna → Horizontal → Vertical → Ambas → Radial → Ninguna." }
+      },
+      "thread": {
+        "heading": "Pestaña Hilo",
+        "draw": { "label": "D", "description": "Herramienta Dibujar." },
+        "select": { "label": "S", "description": "Herramienta Seleccionar." },
+        "eraser": { "label": "E", "description": "Herramienta Borrador." },
+        "segmentEraser": { "label": "C", "description": "Herramienta Segmento." },
+        "colourCount": { "label": "Mayús+1 / Mayús+2 / Mayús+3", "description": "Establece el número de colores en 1, 2 o 3." },
+        "width": { "label": "Mayús++ / Mayús+-", "description": "Aumenta o disminuye el ancho del hilo en 0,5, limitado entre 0,5 y 5." }
+      },
+      "play": {
+        "heading": "Pestaña Reproducir",
+        "first": { "label": "F", "description": "Primer fotograma." },
+        "previous": { "label": "P", "description": "Fotograma anterior." },
+        "playPause": { "label": "Espacio", "description": "Reproducir / Pausar." },
+        "next": { "label": "N", "description": "Fotograma siguiente." },
+        "last": { "label": "L", "description": "Último fotograma." },
+        "export": { "label": "Mayús+E", "description": "Exportar a video." }
+      }
     }
   },
   "about": {

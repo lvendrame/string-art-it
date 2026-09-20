@@ -6,6 +6,7 @@ import type { EditorStore } from "../../application/document";
 import { zoomToPercent } from "../../domain/transforms";
 import { useEditorState } from "../useEditorStore";
 import { fitViewportForBoard } from "./boardViewport";
+import { ChangeBackgroundPopover } from "./ChangeBackgroundPopover";
 import { GridSettingsPopover } from "./GridSettingsPopover";
 import { VIEWPORT_CENTER, zoomInStep, zoomOutStep } from "./zoomSteps";
 
@@ -38,6 +39,7 @@ export function CanvasToolbar({ store }: { store: EditorStore }) {
       <ToggleChip label={grid.visible ? t("canvasToolbar.gridOn") : t("canvasToolbar.gridOff")} active={grid.visible} onClick={() => store.setGrid({ visible: !grid.visible })} icon={Grid3x3} />
       <ToggleChip label={grid.snapEnabled ? t("canvasToolbar.snapOn") : t("canvasToolbar.snapOff")} active={grid.snapEnabled} onClick={() => store.setGrid({ snapEnabled: !grid.snapEnabled })} icon={Magnet} />
       <GridSettingsPopover store={store} />
+      <ChangeBackgroundPopover store={store} />
 
       <div style={{ flex: 1 }} />
 

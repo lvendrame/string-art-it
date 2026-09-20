@@ -9,6 +9,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Circle,
+  Croissant,
   Ellipse,
   Eraser,
   GitMerge,
@@ -104,6 +105,10 @@ function buildDescriptor(
       return { icon: Trash2, tooltip: t("pinToolbar.pathEraser"), onSelect: () => store.setPinTool("path-eraser") };
     case "threadDraw":
       return { icon: PenLine, tooltip: t("threadToolbar.draw"), onSelect: () => store.setThreadTool("draw") };
+    case "threadZigzag":
+      return { icon: Waypoints, tooltip: t("threadToolbar.zigzag"), onSelect: () => store.setThreadTool("zigzag") };
+    case "threadParabolic":
+      return { icon: Croissant, tooltip: t("threadToolbar.parabolic"), onSelect: () => store.setThreadTool("parabolic") };
     case "threadEraser":
       return { icon: Eraser, tooltip: t("threadToolbar.eraser"), onSelect: () => store.setThreadTool("eraser") };
     case "threadSegment":
@@ -114,6 +119,12 @@ function buildDescriptor(
       return { icon: ArrowLeft, tooltip: t("radialMenu.back"), onSelect: () => store.retractThreadDraft() };
     case "threadNext":
       return { icon: ArrowRight, tooltip: t("radialMenu.next"), onSelect: () => store.advanceThreadDraftByPattern() };
+    case "twoPinResolve":
+      return { icon: Scissors, tooltip: t("radialMenu.cut"), onSelect: () => store.resolveTwoPinDraft(state.activeThreadLayerId) };
+    case "twoPinBack":
+      return { icon: ArrowLeft, tooltip: t("radialMenu.back"), onSelect: () => store.retractTwoPinDraft() };
+    case "twoPinCancel":
+      return { icon: X, tooltip: t("radialMenu.cancel"), onSelect: () => store.cancelTwoPinDraft() };
     case "polygonCut":
       return { icon: Scissors, tooltip: t("radialMenu.cut"), onSelect: () => store.finishPolygonDraft(state.activePinLayerId) };
     case "polygonBack":

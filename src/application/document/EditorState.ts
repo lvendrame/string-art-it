@@ -82,8 +82,9 @@ export interface PinDefaults extends PinStyle {
   spacing: number;
 }
 
-// docs/specs/24-thread-mode, docs/specs/27-thread-select-tool.md
-export type ThreadTool = "draw" | "eraser" | "segment-eraser" | "select";
+// docs/specs/24-thread-mode, docs/specs/27-thread-select-tool.md,
+// docs/specs/35-zigzag-parabolic-tools.md
+export type ThreadTool = "draw" | "eraser" | "segment-eraser" | "select" | "zigzag" | "parabolic";
 
 export interface ThreadDefaults {
   colours: string[];
@@ -105,6 +106,21 @@ export type GeneratorDraft = { params: GeneratorParams; pinPaths: PinPath[]; thr
 // free-form polygon). Transient, non-undoable, same treatment as ThreadDraft above:
 // only the final commit (a real closed Pin Path) reaches the undo history.
 export type PolygonDraft = { points: Point[] } | null;
+
+// docs/specs/35-zigzag-parabolic-tools.md — the in-progress Zig-zag/Parabolic draft.
+// Click 1 sets `firstPinId` with `candidates` still empty (awaiting a second pin).
+// Click 2 fills `candidates` with every valid resulting pin-id sequence for that pair
+// (1 when there's no ambiguity, up to 4 when both an arc/direction choice is open) —
+// a single candidate commits immediately without populating the draft further. Once
+// 2+ candidates exist, `chosenIndex` tracks whichever the cursor is currently nearest
+// (live preview) and a 3rd click commits it. Transient, non-undoable, same treatment
+// as ThreadDraft/PolygonDraft above.
+export type TwoPinDraft = {
+  tool: "zigzag" | "parabolic";
+  firstPinId: string;
+  candidates: string[][];
+  chosenIndex: number;
+} | null;
 
 export interface EditorState {
   board: Board;
@@ -129,4 +145,5 @@ export interface EditorState {
   printSettings: PrintSettings;
   generatorDraft: GeneratorDraft;
   polygonDraft: PolygonDraft;
+  twoPinDraft: TwoPinDraft;
 }

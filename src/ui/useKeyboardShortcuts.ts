@@ -37,7 +37,8 @@ export interface KeyboardShortcutDeps {
 // app-wide/per-tab shortcut (~40 bindings). Mounted once in EditorShell, additive only:
 // it never binds Escape/ArrowLeft/ArrowRight/Ctrl+Z, so it can't collide with the
 // existing scattered listeners (EditorShell's own undo/redo effect,
-// useKeyboardTransform, useThreadDrawing, usePolygonDrawing). Re-reads
+// useKeyboardTransform, useThreadDrawing, usePolygonDrawing,
+// useTwoPinSequenceDrawing). Re-reads
 // store.getState() on every keystroke rather than closing over stale state, same
 // pattern useKeyboardTransform already uses.
 //
@@ -86,7 +87,7 @@ export function useKeyboardShortcuts(store: EditorStore, deps: KeyboardShortcutD
       const key = e.key.toLowerCase();
       const bare = !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey;
       if (bare) {
-        const tool = { d: "draw", s: "select", e: "eraser", c: "segment-eraser" } as const;
+        const tool = { d: "draw", s: "select", e: "eraser", c: "segment-eraser", z: "zigzag", p: "parabolic" } as const;
         if (key in tool) {
           store.setThreadTool(tool[key as keyof typeof tool]);
           return true;
@@ -184,8 +185,9 @@ export function useKeyboardShortcuts(store: EditorStore, deps: KeyboardShortcutD
     // a live selection — so arrows stay silent, not pan, if e.g. Move is picked but
     // nothing is selected yet, matching "a selected tool that uses the arrow keys"),
     // an in-progress Thread Draw draft (useThreadDrawing.ts, ArrowLeft retract /
-    // ArrowRight pattern-follow), and an in-progress Path tool draft
-    // (usePolygonDrawing.ts, ArrowLeft retract). Those three hooks are independent
+    // ArrowRight pattern-follow), an in-progress Path tool draft (usePolygonDrawing.ts,
+    // ArrowLeft retract), and an in-progress Zig-zag/Parabolic draft
+    // (useTwoPinSequenceDrawing.ts, ArrowLeft retract). Those hooks are independent
     // `window` keydown listeners that also fire on this same event — re-deriving their
     // "would I act" predicate here (rather than a shared preventDefault flag) is what
     // keeps this purely additive without touching those files.
@@ -197,6 +199,9 @@ export function useKeyboardShortcuts(store: EditorStore, deps: KeyboardShortcutD
         return true;
       }
       if (state.mode === "pin" && state.pinTool === "polygon" && state.polygonDraft && key === "ArrowLeft") {
+        return true;
+      }
+      if (state.mode === "thread" && state.twoPinDraft && key === "ArrowLeft") {
         return true;
       }
       return false;

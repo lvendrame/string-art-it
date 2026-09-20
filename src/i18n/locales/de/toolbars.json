@@ -63,6 +63,8 @@
   "threadToolbar": {
     "sectionTitle": "Faden",
     "draw": "Zeichnen",
+    "zigzag": "Zickzack",
+    "parabolic": "Parabolisch",
     "select": "Auswählen",
     "eraser": "Radierer",
     "segment": "Segment",

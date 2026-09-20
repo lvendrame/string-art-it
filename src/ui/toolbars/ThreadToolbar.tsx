@@ -1,4 +1,4 @@
-import { Eraser, MousePointer2, PenLine, Scissors } from "lucide-react";
+import { Croissant, Eraser, MousePointer2, PenLine, Scissors, Waypoints } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { EditorStore } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
@@ -21,6 +21,14 @@ export function ThreadToolbar({ store }: { store: EditorStore }) {
         <button className={`btn${state.threadTool === "draw" ? " btn-active" : ""}`} onClick={() => store.setThreadTool("draw")} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}>
           <PenLine size={14} />
           {t("threadToolbar.draw")} [D]
+        </button>
+        <button className={`btn${state.threadTool === "zigzag" ? " btn-active" : ""}`} onClick={() => store.setThreadTool("zigzag")} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}>
+          <Waypoints size={14} />
+          {t("threadToolbar.zigzag")} [Z]
+        </button>
+        <button className={`btn${state.threadTool === "parabolic" ? " btn-active" : ""}`} onClick={() => store.setThreadTool("parabolic")} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}>
+          <Croissant size={14} />
+          {t("threadToolbar.parabolic")} [P]
         </button>
         <button className={`btn${state.threadTool === "select" ? " btn-active" : ""}`} onClick={() => store.setThreadTool("select")} style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}>
           <MousePointer2 size={14} />

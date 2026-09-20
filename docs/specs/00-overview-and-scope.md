@@ -84,6 +84,7 @@ The application must allow users to:
 | Generator mode (auto pin+thread pattern generation) | [32-generator-mode.md](./32-generator-mode.md) |
 | Pin Path tool (click-per-vertex free-form polygon) | [33-pin-path-tool.md](./33-pin-path-tool.md) |
 | Keyboard shortcuts | [34-keyboard-shortcuts.md](./34-keyboard-shortcuts.md) |
+| Zig-Zag and Parabolic thread tools | [35-zigzag-parabolic-tools.md](./35-zigzag-parabolic-tools.md) |
 
 ## MVP Scope
 

@@ -63,6 +63,8 @@
   "threadToolbar": {
     "sectionTitle": "Fil",
     "draw": "Dessiner",
+    "zigzag": "Zigzag",
+    "parabolic": "Parabolique",
     "select": "Sélectionner",
     "eraser": "Gomme",
     "segment": "Segment",

@@ -52,6 +52,8 @@
     "tools": {
       "heading": "Herramientas",
       "draw": { "label": "Dibujar", "description": "Haz clic en un pin para iniciar o extender un Trazado de Hilo (se ajusta al pin más cercano). El doble clic finaliza con un segmento final; el clic derecho finaliza sin añadir uno. Esc cancela/descarta el borrador en curso; Flecha Izquierda retrae el último punto del borrador. En cuanto el borrador tenga 4 o más vértices, Flecha Derecha añade automáticamente el siguiente siguiendo el patrón numérico de posición de pines de los vértices añadidos hasta ahora." },
+      "zigzag": { "label": "Zigzag", "description": "Haz clic en un primer pin y luego en un segundo para insertar un abanico en zigzag de segmentos entre ellos. Mismo trazado: refleja desde ambos extremos hacia el centro. Trazados diferentes: alterna descendiendo por cada trazado desde su propio ancla hasta que uno se agota. Un trazado cerrado o un segundo trazado con una elección real de dirección requiere un 3er clic, en posición libre, para confirmar qué arco/dirección usar (la vista previa en vivo sigue al cursor); Esc cancela, Flecha Izquierda retrocede un paso." },
+      "parabolic": { "label": "Parabólico", "description": "Haz clic en un primer pin y luego en un segundo para insertar un abanico tipo curva de bordado entre ellos. Mismo trazado: conecta la primera mitad del rango con la segunda mitad, en orden. Trazados diferentes: conecta el tramo propio de cada trazado, recorriendo el segundo trazado en reversa hacia su propia ancla. Un trazado cerrado o un segundo trazado con una elección real de dirección requiere un 3er clic, en posición libre, para confirmar qué arco/dirección usar (la vista previa en vivo sigue al cursor); Esc cancela, Flecha Izquierda retrocede un paso." },
       "eraser": { "label": "Borrador", "description": "Haz clic en un Trazado de Hilo para eliminar el trazado completo en un solo clic." },
       "segment": { "label": "Segmento", "description": "Haz clic en un segmento para eliminarlo, dividiendo el trazado en hasta dos fragmentos restantes (un fragmento con menos de 2 pines se descarta). Los pines en sí no se ven afectados." }
     },
@@ -181,6 +183,8 @@
       "thread": {
         "heading": "Pestaña Hilo",
         "draw": { "label": "D", "description": "Herramienta Dibujar." },
+        "zigzag": { "label": "Z", "description": "Herramienta Zigzag." },
+        "parabolic": { "label": "P", "description": "Herramienta Parabólico." },
         "select": { "label": "S", "description": "Herramienta Seleccionar." },
         "eraser": { "label": "E", "description": "Herramienta Borrador." },
         "segmentEraser": { "label": "C", "description": "Herramienta Segmento." },

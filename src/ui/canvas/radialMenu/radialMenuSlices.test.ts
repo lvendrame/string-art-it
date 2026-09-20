@@ -55,7 +55,7 @@ describe("getRadialMenuSliceIds", () => {
 
   it("Thread mode: normal slice set with no draft in progress", () => {
     const state = new EditorStore({ mode: "thread", threadDraft: null }).getState();
-    expect(getRadialMenuSliceIds(state)).toEqual(["threadDraw", "threadEraser", "threadSegment"]);
+    expect(getRadialMenuSliceIds(state)).toEqual(["threadDraw", "threadZigzag", "threadParabolic", "threadEraser", "threadSegment"]);
   });
 
   it("Thread mode: draft slice set entirely replaces the normal set", () => {

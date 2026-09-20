@@ -25,6 +25,7 @@ export type {
   ThreadTool,
   ThreadDefaults,
   ThreadDraft,
+  TwoPinDraft,
 } from "./EditorState";
 export { EditorStore, canCommitSelectionMerge } from "./EditorStore";
 export {
@@ -77,6 +78,11 @@ export {
   buildNearestPinRemap,
   type SymmetryConfig,
 } from "./symmetryConfig";
+export {
+  computeSamePathCandidates,
+  computeCrossPathCandidates,
+  type TwoPinCandidate,
+} from "./twoPinSequence";
 export {
   createThreadPath,
   removePinFromThreadPath,

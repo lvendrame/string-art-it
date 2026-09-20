@@ -52,6 +52,8 @@
     "tools": {
       "heading": "Tools",
       "draw": { "label": "Draw", "description": "Click a pin to start or extend a Thread Path (snaps to the nearest pin). Double-click finishes with a final segment; right-click finishes without adding one. Esc cancels/discards the in-progress draft; ArrowLeft retracts the draft's last point. Once the draft has 4+ vertices, ArrowRight auto-adds the next one by following the numeric pin-position pattern of the vertices added so far." },
+      "zigzag": { "label": "Zig-zag", "description": "Click a first pin, then a second, to insert a zig-zag fan of segments between them. Same path: mirrors outward-in from both ends toward the middle. Different paths: alternates straight down each path from its own anchor until one runs out. A closed path or a second path with a real direction choice needs a 3rd, free-position click to confirm which arc/direction to use (the live preview follows the cursor); Esc cancels, ArrowLeft steps back." },
+      "parabolic": { "label": "Parabolic", "description": "Click a first pin, then a second, to insert a curve-stitch fan of segments between them. Same path: connects the range's first half to its second half in order. Different paths: connects each path's own run, with the second path walked in reverse toward its own anchor. A closed path or a second path with a real direction choice needs a 3rd, free-position click to confirm which arc/direction to use (the live preview follows the cursor); Esc cancels, ArrowLeft steps back." },
       "eraser": { "label": "Eraser", "description": "Click a Thread Path to remove the whole path in one click." },
       "segment": { "label": "Segment", "description": "Click one segment to remove it, splitting the path into up to two surviving fragments (a fragment left with under 2 pins is dropped). Pins themselves are untouched." }
     },
@@ -181,6 +183,8 @@
       "thread": {
         "heading": "Thread tab",
         "draw": { "label": "D", "description": "Draw tool." },
+        "zigzag": { "label": "Z", "description": "Zig-zag tool." },
+        "parabolic": { "label": "P", "description": "Parabolic tool." },
         "select": { "label": "S", "description": "Select tool." },
         "eraser": { "label": "E", "description": "Eraser tool." },
         "segmentEraser": { "label": "C", "description": "Segment tool." },

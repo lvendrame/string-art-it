@@ -52,6 +52,8 @@
     "tools": {
       "heading": "Ferramentas",
       "draw": { "label": "Desenhar", "description": "Clique em um pino para iniciar ou estender um Caminho de Linha (encaixa no pino mais próximo). Duplo clique finaliza com um segmento final; clique direito finaliza sem adicionar um. Esc cancela/descarta o rascunho em andamento; Seta Esquerda retrai o último ponto do rascunho. Assim que o rascunho tiver 4 ou mais vértices, Seta Direita adiciona automaticamente o próximo seguindo o padrão numérico de posição de pinos dos vértices adicionados até então." },
+      "zigzag": { "label": "Zigue-zague", "description": "Clique em um primeiro pino e depois em um segundo para inserir um leque em zigue-zague de segmentos entre eles. Mesmo caminho: espelha das duas pontas em direção ao meio. Caminhos diferentes: alterna descendo cada caminho a partir de sua própria âncora até que um deles se esgote. Um caminho fechado ou um segundo caminho com uma escolha real de direção exige um 3º clique, em posição livre, para confirmar qual arco/direção usar (a pré-visualização ao vivo segue o cursor); Esc cancela, Seta Esquerda volta um passo." },
+      "parabolic": { "label": "Parabólico", "description": "Clique em um primeiro pino e depois em um segundo para inserir um leque em curva de bordado entre eles. Mesmo caminho: liga a primeira metade do intervalo à segunda metade, em ordem. Caminhos diferentes: liga o trecho de cada caminho, com o segundo caminho percorrido em sentido inverso até sua própria âncora. Um caminho fechado ou um segundo caminho com uma escolha real de direção exige um 3º clique, em posição livre, para confirmar qual arco/direção usar (a pré-visualização ao vivo segue o cursor); Esc cancela, Seta Esquerda volta um passo." },
       "eraser": { "label": "Borracha", "description": "Clique em um Caminho de Linha para remover o caminho inteiro em um único clique." },
       "segment": { "label": "Segmento", "description": "Clique em um segmento para removê-lo, dividindo o caminho em até dois fragmentos restantes (um fragmento com menos de 2 pinos é descartado). Os próprios pinos permanecem intactos." }
     },
@@ -181,6 +183,8 @@
       "thread": {
         "heading": "Aba Fio",
         "draw": { "label": "D", "description": "Ferramenta Desenhar." },
+        "zigzag": { "label": "Z", "description": "Ferramenta Zigue-zague." },
+        "parabolic": { "label": "P", "description": "Ferramenta Parabólico." },
         "select": { "label": "S", "description": "Ferramenta Selecionar." },
         "eraser": { "label": "E", "description": "Ferramenta Borracha." },
         "segmentEraser": { "label": "C", "description": "Ferramenta Segmento." },

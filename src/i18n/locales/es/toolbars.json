@@ -63,6 +63,8 @@
   "threadToolbar": {
     "sectionTitle": "Hilo",
     "draw": "Dibujar",
+    "zigzag": "Zigzag",
+    "parabolic": "Parabólico",
     "select": "Seleccionar",
     "eraser": "Borrador",
     "segment": "Segmento",

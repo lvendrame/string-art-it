@@ -52,6 +52,8 @@
     "tools": {
       "heading": "Werkzeuge",
       "draw": { "label": "Zeichnen", "description": "Klicken Sie auf einen Stift, um einen Fadenpfad zu beginnen oder zu erweitern (rastet am nächstgelegenen Stift ein). Doppelklick beendet mit einem letzten Segment; Rechtsklick beendet ohne eines hinzuzufügen. Esc bricht den laufenden Entwurf ab/verwirft ihn; Pfeil-Links zieht den letzten Punkt des Entwurfs zurück. Sobald der Entwurf 4 oder mehr Eckpunkte hat, fügt Pfeil-Rechts automatisch den nächsten hinzu, indem das numerische Stiftpositionsmuster der bisher hinzugefügten Eckpunkte fortgesetzt wird." },
+      "zigzag": { "label": "Zickzack", "description": "Klicken Sie auf einen ersten Stift und dann auf einen zweiten, um einen Zickzack-Fächer aus Segmenten zwischen ihnen einzufügen. Gleicher Pfad: spiegelt von beiden Enden nach innen zur Mitte. Unterschiedliche Pfade: wechselt geradlinig entlang jedes Pfads von seinem eigenen Ankerpunkt aus, bis einer davon endet. Ein geschlossener Pfad oder ein zweiter Pfad mit einer echten Richtungswahl benötigt einen 3. Klick an freier Position, um Bogen/Richtung zu bestätigen (die Live-Vorschau folgt dem Cursor); Esc bricht ab, Pfeil-Links geht einen Schritt zurück." },
+      "parabolic": { "label": "Parabolisch", "description": "Klicken Sie auf einen ersten Stift und dann auf einen zweiten, um einen kurvengewebten Fächer aus Segmenten zwischen ihnen einzufügen. Gleicher Pfad: verbindet die erste Hälfte des Bereichs der Reihe nach mit der zweiten Hälfte. Unterschiedliche Pfade: verbindet den Abschnitt jedes Pfads, wobei der zweite Pfad rückwärts zu seinem eigenen Ankerpunkt durchlaufen wird. Ein geschlossener Pfad oder ein zweiter Pfad mit einer echten Richtungswahl benötigt einen 3. Klick an freier Position, um Bogen/Richtung zu bestätigen (die Live-Vorschau folgt dem Cursor); Esc bricht ab, Pfeil-Links geht einen Schritt zurück." },
       "eraser": { "label": "Radierer", "description": "Klicken Sie auf einen Fadenpfad, um den gesamten Pfad mit einem Klick zu entfernen." },
       "segment": { "label": "Segment", "description": "Klicken Sie auf ein Segment, um es zu entfernen, wodurch der Pfad in bis zu zwei verbleibende Fragmente aufgeteilt wird (ein Fragment mit weniger als 2 Stiften wird verworfen). Die Stifte selbst bleiben unberührt." }
     },
@@ -181,6 +183,8 @@
       "thread": {
         "heading": "Faden-Tab",
         "draw": { "label": "D", "description": "Zeichnen-Werkzeug." },
+        "zigzag": { "label": "Z", "description": "Zickzack-Werkzeug." },
+        "parabolic": { "label": "P", "description": "Parabolisch-Werkzeug." },
         "select": { "label": "S", "description": "Auswahlwerkzeug." },
         "eraser": { "label": "E", "description": "Radierer-Werkzeug." },
         "segmentEraser": { "label": "C", "description": "Segment-Werkzeug." },

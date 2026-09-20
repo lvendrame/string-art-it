@@ -52,6 +52,8 @@
     "tools": {
       "heading": "Outils",
       "draw": { "label": "Dessiner", "description": "Cliquez sur une broche pour démarrer ou étendre un Tracé de Fil (s'accroche à la broche la plus proche). Le double-clic termine avec un segment final ; le clic droit termine sans en ajouter. Échap annule/abandonne le brouillon en cours ; Flèche Gauche retire le dernier point du brouillon. Une fois que le brouillon a 4 sommets ou plus, Flèche Droite ajoute automatiquement le suivant en suivant le motif numérique de position des broches des sommets ajoutés jusqu'à présent." },
+      "zigzag": { "label": "Zigzag", "description": "Cliquez sur une première broche, puis sur une deuxième, pour insérer un éventail de segments en zigzag entre elles. Même tracé : miroir des deux extrémités vers le milieu. Tracés différents : alterne en descendant chaque tracé depuis sa propre ancre jusqu\u2019à ce que l\u2019un des deux soit épuisé. Un tracé fermé ou un second tracé offrant un vrai choix de direction nécessite un 3e clic, à une position libre, pour confirmer l\u2019arc/la direction (l\u2019aperçu en direct suit le curseur) ; Échap annule, Flèche Gauche revient d\u2019un pas." },
+      "parabolic": { "label": "Parabolique", "description": "Cliquez sur une première broche, puis sur une deuxième, pour insérer un éventail de type courbe de broderie entre elles. Même tracé : relie la première moitié de la plage à la seconde, dans l\u2019ordre. Tracés différents : relie le segment propre à chaque tracé, le second tracé étant parcouru à l\u2019envers vers sa propre ancre. Un tracé fermé ou un second tracé offrant un vrai choix de direction nécessite un 3e clic, à une position libre, pour confirmer l\u2019arc/la direction (l\u2019aperçu en direct suit le curseur) ; Échap annule, Flèche Gauche revient d\u2019un pas." },
       "eraser": { "label": "Gomme", "description": "Cliquez sur un Tracé de Fil pour supprimer tout le tracé en un seul clic." },
       "segment": { "label": "Segment", "description": "Cliquez sur un segment pour le supprimer, divisant le tracé en jusqu'à deux fragments restants (un fragment avec moins de 2 broches est abandonné). Les broches elles-mêmes ne sont pas affectées." }
     },
@@ -181,6 +183,8 @@
       "thread": {
         "heading": "Onglet Fil",
         "draw": { "label": "D", "description": "Outil Dessiner." },
+        "zigzag": { "label": "Z", "description": "Outil Zigzag." },
+        "parabolic": { "label": "P", "description": "Outil Parabolique." },
         "select": { "label": "S", "description": "Outil Sélection." },
         "eraser": { "label": "E", "description": "Outil Gomme." },
         "segmentEraser": { "label": "C", "description": "Outil Segment." },

@@ -25,11 +25,16 @@ export type RadialMenuSliceId =
   | "polygonBack"
   | "polygonCancel"
   | "threadDraw"
+  | "threadZigzag"
+  | "threadParabolic"
   | "threadEraser"
   | "threadSegment"
   | "threadCut"
   | "threadBack"
   | "threadNext"
+  | "twoPinResolve"
+  | "twoPinBack"
+  | "twoPinCancel"
   | "panFit"
   | "panZoomIn"
   | "panZoomOut"
@@ -56,10 +61,20 @@ export function getRadialMenuSliceIds(state: EditorState): RadialMenuSliceId[] {
       return state.polygonDraft !== null
         ? ["polygonCut", "polygonBack", "polygonCancel"]
         : ["pinLine", "pinArc", "pinEllipse", "pinCircle", "pinRectangle", "pinSquare", "pinFreehand", "pinPath", "pinEraser", "pinPathEraser"];
+    // docs/specs/35-zigzag-parabolic-tools.md — a Zig-zag/Parabolic draft in progress
+    // gets its own Cut(only once candidates exist)/Back/Cancel slice set, same
+    // draft-mode swap shape as Thread Draw and the Path tool above; "resolve" only
+    // appears once a 2nd pin has produced 2+ candidates to disambiguate (a single
+    // candidate never reaches the draft — it commits immediately on click 2).
     case "thread":
+      if (state.twoPinDraft) {
+        return state.twoPinDraft.candidates.length > 0
+          ? ["twoPinResolve", "twoPinBack", "twoPinCancel"]
+          : ["twoPinBack", "twoPinCancel"];
+      }
       return state.threadDraft !== null
         ? ["threadCut", "threadBack", "threadNext"]
-        : ["threadDraw", "threadEraser", "threadSegment"];
+        : ["threadDraw", "threadZigzag", "threadParabolic", "threadEraser", "threadSegment"];
     case "pan":
       return ["panFit", "panZoomIn", "panZoomOut"];
     case "play":

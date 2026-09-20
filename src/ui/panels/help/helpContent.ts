@@ -125,6 +125,8 @@ export const HELP_TABS: HelpTab[] = [
         headingKey: "thread.tools.heading",
         items: [
           { labelKey: "thread.tools.draw.label", descriptionKey: "thread.tools.draw.description" },
+          { labelKey: "thread.tools.zigzag.label", descriptionKey: "thread.tools.zigzag.description" },
+          { labelKey: "thread.tools.parabolic.label", descriptionKey: "thread.tools.parabolic.description" },
           { labelKey: "thread.tools.eraser.label", descriptionKey: "thread.tools.eraser.description" },
           { labelKey: "thread.tools.segment.label", descriptionKey: "thread.tools.segment.description" },
         ],
@@ -300,6 +302,8 @@ export const HELP_TABS: HelpTab[] = [
         headingKey: "keyboardMouse.shortcuts.thread.heading",
         items: [
           { labelKey: "keyboardMouse.shortcuts.thread.draw.label", descriptionKey: "keyboardMouse.shortcuts.thread.draw.description" },
+          { labelKey: "keyboardMouse.shortcuts.thread.zigzag.label", descriptionKey: "keyboardMouse.shortcuts.thread.zigzag.description" },
+          { labelKey: "keyboardMouse.shortcuts.thread.parabolic.label", descriptionKey: "keyboardMouse.shortcuts.thread.parabolic.description" },
           { labelKey: "keyboardMouse.shortcuts.thread.select.label", descriptionKey: "keyboardMouse.shortcuts.thread.select.description" },
           { labelKey: "keyboardMouse.shortcuts.thread.eraser.label", descriptionKey: "keyboardMouse.shortcuts.thread.eraser.description" },
           { labelKey: "keyboardMouse.shortcuts.thread.segmentEraser.label", descriptionKey: "keyboardMouse.shortcuts.thread.segmentEraser.description" },

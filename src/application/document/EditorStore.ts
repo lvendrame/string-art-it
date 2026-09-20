@@ -49,6 +49,7 @@ import {
 } from "./threadLayer";
 import { createThreadPath, type ThreadPath } from "./threadPath";
 import { computeNextPatternPinId } from "./threadPattern";
+import { computeCrossPathCandidates, computeSamePathCandidates } from "./twoPinSequence";
 import { serializeProject, type ProjectFile, type SerializableDocument } from "./projectFile";
 import { defaultPrintSettings, type PrintSettings } from "./printSettings";
 import { seedCounterFrom } from "./idCounter";
@@ -128,6 +129,7 @@ export class EditorStore {
       printSettings: defaultPrintSettings(),
       generatorDraft: null,
       polygonDraft: null,
+      twoPinDraft: null,
       ...initial,
     };
   }
@@ -247,6 +249,9 @@ export class EditorStore {
       // polygonDraft discards it, same non-undoable-transient-state precedent as
       // generatorDraft/threadDraft above.
       ...(mode !== "pin" && this.state.polygonDraft ? { polygonDraft: null } : {}),
+      // docs/specs/35-zigzag-parabolic-tools.md: same rule for the Zig-zag/Parabolic
+      // draft when leaving Thread mode.
+      ...(mode !== "thread" && this.state.twoPinDraft ? { twoPinDraft: null } : {}),
     };
     this.notify();
   }
@@ -824,7 +829,15 @@ export class EditorStore {
   // setPinTool's selection clear — the tool is about to act on the canvas.
   setThreadTool(tool: ThreadTool): void {
     const selection = this.state.selection.type === "threadPath" ? { type: "none" as const } : this.state.selection;
-    this.state = { ...this.state, threadTool: tool, selection };
+    this.state = {
+      ...this.state,
+      threadTool: tool,
+      selection,
+      // docs/specs/35-zigzag-parabolic-tools.md: switching away from Zig-zag/Parabolic
+      // with an uncommitted twoPinDraft discards it, matching setMode's mode-exit
+      // cleanup and setPinTool's polygonDraft-discard-on-tool-switch precedent.
+      ...(tool !== "zigzag" && tool !== "parabolic" && this.state.twoPinDraft ? { twoPinDraft: null } : {}),
+    };
     this.notify();
   }
 
@@ -929,6 +942,95 @@ export class EditorStore {
     const nextPinId = computeNextPatternPinId(this.state.pinLayers, draft.pinIds);
     if (!nextPinId) return;
     this.extendThreadDraft(nextPinId);
+  }
+
+  // --- Zig-zag / Parabolic thread tools (docs/specs/35-zigzag-parabolic-tools.md) ---
+
+  // reverseSecond per the tool/case duality table in twoPinSequence.ts: zig-zag
+  // reverses the second half when both pins are on the SAME path, parabolic reverses
+  // the second run when they're on DIFFERENT paths.
+  private static twoPinReverseSecond(tool: "zigzag" | "parabolic", sameCase: boolean): boolean {
+    return sameCase ? tool === "zigzag" : tool === "parabolic";
+  }
+
+  // Click 1: remember the anchor pin, awaiting a second pin (candidates stays empty).
+  startTwoPinDraft(tool: "zigzag" | "parabolic", pinId: string): void {
+    this.state = { ...this.state, twoPinDraft: { tool, firstPinId: pinId, candidates: [], chosenIndex: 0 } };
+    this.notify();
+  }
+
+  // Click 2: compute every valid resulting pin-id sequence for (firstPinId, pinId).
+  // Exactly one candidate (an open Pin Path, or both anchors on paths that only allow
+  // one direction combination) commits immediately — there's no ambiguity to resolve.
+  // 2+ candidates populate the draft and wait for the disambiguating 3rd click
+  // (setTwoPinChosenCandidate/resolveTwoPinDraft).
+  chooseSecondPin(layerId: string, pinId: string): void {
+    const draft = this.state.twoPinDraft;
+    if (!draft || pinId === draft.firstPinId) return;
+    const same = computeSamePathCandidates(this.state.pinLayers, draft.firstPinId, pinId, EditorStore.twoPinReverseSecond(draft.tool, true));
+    const candidates = same.length > 0 ? same : computeCrossPathCandidates(this.state.pinLayers, draft.firstPinId, pinId, EditorStore.twoPinReverseSecond(draft.tool, false));
+    if (candidates.length === 0) return;
+    if (candidates.length === 1) {
+      this.commitTwoPinSequence(layerId, candidates[0].sequence);
+      return;
+    }
+    this.state = { ...this.state, twoPinDraft: { ...draft, candidates: candidates.map((c) => c.sequence), chosenIndex: 0 } };
+    this.notify();
+  }
+
+  // Hover while resolving the 3rd click: the calling hook decides which candidate the
+  // cursor is currently nearest and reports the index here for live preview.
+  setTwoPinChosenCandidate(index: number): void {
+    const draft = this.state.twoPinDraft;
+    if (!draft || draft.candidates.length === 0 || draft.chosenIndex === index) return;
+    this.state = { ...this.state, twoPinDraft: { ...draft, chosenIndex: index } };
+    this.notify();
+  }
+
+  // 3rd click ("Cut" on the radial menu too): commit whichever candidate is currently
+  // previewed. No-op before candidates exist (click 2 hasn't happened yet).
+  resolveTwoPinDraft(layerId: string): void {
+    const draft = this.state.twoPinDraft;
+    if (!draft || draft.candidates.length === 0) return;
+    this.commitTwoPinSequence(layerId, draft.candidates[draft.chosenIndex]);
+  }
+
+  private commitTwoPinSequence(layerId: string, pinIds: string[]): void {
+    this.state = { ...this.state, twoPinDraft: null };
+    if (pinIds.length < 2) {
+      this.notify();
+      return;
+    }
+    if (isThreadLayerLocked(this.state.threadLayers, layerId)) {
+      this.notify();
+      return;
+    }
+    const threadPath = createThreadPath(pinIds, this.state.threadDefaults.colours, this.state.threadDefaults.width, this.state.threadDefaults.twistPitch);
+    const nextLayers = addThreadPathToLayers(this.state.threadLayers, layerId, threadPath);
+    const command = new SetValueCommand<ThreadLayer[]>((l) => this.setThreadLayers(l), this.state.threadLayers, nextLayers);
+    this.history.run(command);
+  }
+
+  // Esc / "Cancel" (radial menu): hard discard at any stage.
+  cancelTwoPinDraft(): void {
+    if (!this.state.twoPinDraft) return;
+    this.state = { ...this.state, twoPinDraft: null };
+    this.notify();
+  }
+
+  // Left Arrow / "Back" (radial menu): before a second pin is chosen (no candidates
+  // yet) this cancels the whole draft, same "removing the only step ends it" rule as
+  // retractThreadDraft/retractPolygonDraft; once candidates exist, it steps back to
+  // awaiting the second pin rather than discarding the first pin too.
+  retractTwoPinDraft(): void {
+    const draft = this.state.twoPinDraft;
+    if (!draft) return;
+    if (draft.candidates.length === 0) {
+      this.cancelTwoPinDraft();
+      return;
+    }
+    this.state = { ...this.state, twoPinDraft: { ...draft, candidates: [], chosenIndex: 0 } };
+    this.notify();
   }
 
   deleteThreadPath(layerId: string, pathId: string): void {
@@ -1155,6 +1257,7 @@ export class EditorStore {
       selectGranularity: "path",
       threadDraft: null,
       generatorDraft: null,
+      twoPinDraft: null,
     };
     this.notify();
   }

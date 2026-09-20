@@ -27,6 +27,7 @@ import { PinLayersView } from "./PinLayersView";
 import { SymmetryOverlay } from "./SymmetryOverlay";
 import { ThreadLayersView } from "./ThreadLayersView";
 import { ThreadDraftLayer } from "./ThreadDraftLayer";
+import { TwoPinDraftLayer } from "./TwoPinDraftLayer";
 import { PinHighlightOverlay } from "./PinHighlightOverlay";
 import { SelectedPinsOverlay } from "./SelectedPinsOverlay";
 import { SelectionMarqueeOverlay } from "./SelectionMarqueeOverlay";
@@ -40,6 +41,7 @@ import { usePinDrawing } from "./usePinDrawing";
 import { useFreehandDrawing } from "./useFreehandDrawing";
 import { usePolygonDrawing } from "./usePolygonDrawing";
 import { useThreadDrawing } from "./useThreadDrawing";
+import { useTwoPinSequenceDrawing } from "./useTwoPinSequenceDrawing";
 import { useSelectTool } from "./useSelectTool";
 import { useMoveTool } from "./useMoveTool";
 import { useRotateTool } from "./useRotateTool";
@@ -122,6 +124,8 @@ const THREAD_TOOL_CURSORS: Record<ThreadTool, string> = {
   select: "default",
   eraser: ERASER_CURSOR,
   "segment-eraser": SCISSORS_CURSOR,
+  zigzag: "crosshair",
+  parabolic: "crosshair",
 };
 
 function canvasCursor(
@@ -159,6 +163,8 @@ export function Canvas({ store }: { store: EditorStore }) {
     threadLayerId,
     cursorDoc,
   );
+  const twoPinDrawing = useTwoPinSequenceDrawing(store, state, threadLayerId);
+  const isTwoPinTool = state.threadTool === "zigzag" || state.threadTool === "parabolic";
   const selectTool = useSelectTool(store, state);
   const moveTool = useMoveTool(store, state);
   const rotateTool = useRotateTool(store, state);
@@ -201,7 +207,11 @@ export function Canvas({ store }: { store: EditorStore }) {
     }
 
     if (state.mode === "thread") {
-      threadDrawing.handleMouseDown(raw, maxDist);
+      if (isTwoPinTool) {
+        twoPinDrawing.handleMouseDown(raw, maxDist);
+      } else {
+        threadDrawing.handleMouseDown(raw, maxDist);
+      }
       return;
     }
 
@@ -252,7 +262,8 @@ export function Canvas({ store }: { store: EditorStore }) {
     }
 
     const { raw } = updateCursor(e);
-    if (state.mode === "thread") threadDrawing.handleMouseMove(raw, maxDist);
+    if (state.mode === "thread" && isTwoPinTool) twoPinDrawing.handleMouseMove(raw, maxDist);
+    if (state.mode === "thread" && !isTwoPinTool) threadDrawing.handleMouseMove(raw, maxDist);
     if (state.mode === "pin" && state.pinTool === "freehand") freehandDrawing.handleMouseMove(raw, viewport);
     if (state.mode === "select" && state.selectTool === "select") selectTool.handleMouseMove(raw, e.clientX, e.clientY);
     if (state.mode === "select" && state.selectTool === "move") moveTool.handleMouseMove(resolvePoint(raw));
@@ -386,6 +397,15 @@ export function Canvas({ store }: { store: EditorStore }) {
               threadDraft={state.threadDraft}
               cursorDoc={cursorDoc}
               threadCandidateId={threadDrawing.threadCandidateId}
+            />
+          )}
+
+          {state.mode === "thread" && state.twoPinDraft && (
+            <TwoPinDraftLayer
+              state={state}
+              twoPinDraft={state.twoPinDraft}
+              cursorDoc={cursorDoc}
+              secondPinCandidateId={twoPinDrawing.secondPinCandidateId}
             />
           )}
 

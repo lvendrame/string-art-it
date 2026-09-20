@@ -1,7 +1,17 @@
 import { describe, expect, it } from "vitest";
 import { pathLength } from "../../domain/paths";
-import { boardHypotenuse, boardPath, clampDimension, defaultDimensionsFor } from "./board";
+import { boardHypotenuse, boardPath, clampDimension, createDefaultBoard, defaultDimensionsFor } from "./board";
 import type { Board } from "./board";
+
+describe("createDefaultBoard", () => {
+  it("defaults to a circle, 60cm diameter, solid #3b3b3b", () => {
+    expect(createDefaultBoard()).toEqual({
+      shape: "circle",
+      dimensions: { diameter: 60 },
+      appearance: { type: "solid", colour: "#3b3b3b" },
+    });
+  });
+});
 
 describe("defaultDimensionsFor", () => {
   it("gives each shape sane defaults", () => {

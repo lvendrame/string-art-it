@@ -17,4 +17,13 @@ describe("App — New project returns to board setup", () => {
 
     expect(screen.getByRole("button", { name: "Continue to Editor" })).toBeInTheDocument();
   });
+
+  it("Continue to Editor always lands on the Pin tab, even if a prior session left another mode active", () => {
+    render(<App />);
+    window.stringArtItDebug.setMode("thread");
+
+    fireEvent.click(screen.getByRole("button", { name: "Continue to Editor" }));
+
+    expect(screen.getByRole("tab", { name: "Pin" })).toHaveAttribute("aria-selected", "true");
+  });
 });

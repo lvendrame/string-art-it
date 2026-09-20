@@ -127,6 +127,42 @@ describe("EditorStore transient state (not undoable)", () => {
     expect(store.getState().symmetryDefaults).toEqual({ type: "none" });
   });
 
+  it("entering Pin mode resets pinTool to circle, regardless of the last active Pin tool", () => {
+    const store = new EditorStore();
+    store.setMode("select");
+    store.setPinTool("eraser");
+
+    store.setMode("pin");
+
+    expect(store.getState().pinTool).toBe("circle");
+  });
+
+  it("entering Select (Edit tab) mode resets selectTool and selectGranularity to their defaults", () => {
+    const store = new EditorStore();
+    store.setMode("select");
+    store.setSelectTool("rotate");
+    store.setSelectGranularity("pins");
+    store.setMode("thread");
+
+    store.setMode("select");
+
+    expect(store.getState().selectTool).toBe("select");
+    expect(store.getState().selectGranularity).toBe("path");
+  });
+
+  it("entering Thread mode resets threadTool and threadDefaults to their out-of-the-box values", () => {
+    const store = new EditorStore();
+    store.setMode("thread");
+    store.setThreadTool("eraser");
+    store.setThreadProperty({ colours: ["#ff0000", "#00ff00"], width: 4, twistPitch: 10 });
+    store.setMode("select");
+
+    store.setMode("thread");
+
+    expect(store.getState().threadTool).toBe("draw");
+    expect(store.getState().threadDefaults).toEqual({ colours: ["#5b8def"], width: 1.5, twistPitch: 6 });
+  });
+
   it("entering Pin or Thread mode clears a Pin Path/Pins selection; Edit mode doesn't", () => {
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;

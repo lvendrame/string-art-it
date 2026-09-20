@@ -60,6 +60,10 @@ import { seedCounterFrom } from "./idCounter";
 // docs/specs/12-pin-drawing-tools — the pin defaults a draw-tool selection resets to.
 const DEFAULT_PIN_DEFAULTS: PinDefaults = { spacing: 1, colour: "#f2ede4", diameter: 2, guideVisible: true };
 
+// The thread defaults entering Thread mode resets to, same baseline-on-entry precedent
+// as DEFAULT_PIN_DEFAULTS above.
+const DEFAULT_THREAD_DEFAULTS: ThreadDefaults = { colours: ["#5b8def"], width: 1.5, twistPitch: 6 };
+
 // eraser/path-eraser aren't shape tools — switching to one shouldn't clobber the pin
 // defaults a user just dialled in for their next shape.
 function isPinDrawTool(tool: PinTool): boolean {
@@ -118,7 +122,7 @@ export class EditorStore {
       threadLayers: [defaultThreadLayer],
       activeThreadLayerId: defaultThreadLayer.id,
       threadTool: "draw",
-      threadDefaults: { colours: ["#5b8def"], width: 1.5, twistPitch: 6 },
+      threadDefaults: DEFAULT_THREAD_DEFAULTS,
       threadDraft: null,
       layerPanelTab: "pin",
       printSettings: defaultPrintSettings(),
@@ -204,10 +208,18 @@ export class EditorStore {
   // only makes sense in Thread mode, so entering Pin or Edit mode clears it. Pan/Play
   // leave the current selection untouched.
   //
-  // Entering Pin mode also resets pinDefaults/symmetryDefaults to their out-of-the-box
-  // values, same as picking a draw tool (setPinTool) — landing on the Pin tab, whether
-  // by clicking it directly or by picking a tool while already there, always starts
-  // from a known baseline rather than whatever was last dialled in.
+  // Entering a tab also resets that tab's own tool/property state to its out-of-the-box
+  // baseline, every time — whether landing on it by clicking it directly or by having
+  // been there before with something else dialled in, it never starts from whatever was
+  // last left behind:
+  //  - Pin mode resets pinTool to "circle" and pinDefaults/symmetryDefaults to their
+  //    out-of-the-box values, same as picking a draw tool (setPinTool).
+  //  - Select (Edit tab) mode resets selectTool to "select" and selectGranularity to
+  //    "path".
+  //  - Thread mode resets threadTool to "draw" and threadDefaults to
+  //    DEFAULT_THREAD_DEFAULTS.
+  // (Generate mode's pattern selection lives in GeneratorPanel's own local state, which
+  // already resets on every remount — see EditorShell's conditional mount.)
   //
   // docs/specs/32-generator-mode.md: leaving Generator mode with an uncommitted
   // generatorDraft discards it — nothing was ever committed to history, so there's
@@ -227,7 +239,9 @@ export class EditorStore {
       mode,
       layerPanelTab,
       selection,
-      ...(mode === "pin" ? { pinDefaults: DEFAULT_PIN_DEFAULTS, symmetryDefaults: NO_SYMMETRY } : {}),
+      ...(mode === "pin" ? { pinTool: "circle" as const, pinDefaults: DEFAULT_PIN_DEFAULTS, symmetryDefaults: NO_SYMMETRY } : {}),
+      ...(mode === "select" ? { selectTool: "select" as const, selectGranularity: "path" as const } : {}),
+      ...(mode === "thread" ? { threadTool: "draw" as const, threadDefaults: DEFAULT_THREAD_DEFAULTS } : {}),
       ...(mode !== "generate" && this.state.generatorDraft ? { generatorDraft: null } : {}),
       // docs/specs/33-pin-path-tool.md: leaving Pin mode with an uncommitted
       // polygonDraft discards it, same non-undoable-transient-state precedent as

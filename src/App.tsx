@@ -92,7 +92,7 @@ export function App() {
         ) : (
           <>
             <LandingHero />
-            <BoardSetup store={store} onContinue={enterEditor} />
+            <BoardSetup store={store} onContinue={() => { store.setMode("pin"); enterEditor(); }} />
             <LandingFeatures />
             <LandingHowItWorks />
             <LandingFAQ />

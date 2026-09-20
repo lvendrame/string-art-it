@@ -50,7 +50,7 @@ export function createDefaultBoard(): Board {
   return {
     shape: "circle",
     dimensions: { diameter: 60 },
-    appearance: { type: "painted-wood", presetId: "walnut" },
+    appearance: { type: "solid", colour: "#3b3b3b" },
   };
 }
 

@@ -69,3 +69,33 @@ export function projectThreadTotals(threadLayers: ThreadLayer[], pinLayers: PinL
   }
   return { threadCount, totalLengthCm };
 }
+
+export interface ThreadTypeStatistics {
+  colours: string[];
+  width: number;
+  threadCount: number;
+  totalSegments: number;
+  totalLengthCm: number;
+  totalPinsVisited: number;
+}
+
+// docs/specs/17-statistics.md Summary — groups every Thread Path by its "type": the
+// exact (colours, width) combination. A thread with colours ["red", "white"] is its
+// own type, distinct from a plain "red" thread or a plain "white" one — colours are
+// concurrent twisted strands (see threadPath.ts), not a set to split stats across.
+export function threadStatisticsByType(threadLayers: ThreadLayer[], pinLayers: PinLayer[]): ThreadTypeStatistics[] {
+  const byType = new Map<string, ThreadTypeStatistics>();
+  for (const layer of threadLayers) {
+    for (const thread of layer.threadPaths) {
+      const stats = threadPathStatistics(thread, pinLayers);
+      const key = JSON.stringify([thread.colours, thread.width]);
+      const bucket = byType.get(key) ?? { colours: thread.colours, width: thread.width, threadCount: 0, totalSegments: 0, totalLengthCm: 0, totalPinsVisited: 0 };
+      bucket.threadCount += 1;
+      bucket.totalSegments += stats.segments;
+      bucket.totalLengthCm += stats.lengthCm;
+      bucket.totalPinsVisited += stats.pinsVisited;
+      byType.set(key, bucket);
+    }
+  }
+  return [...byType.values()];
+}

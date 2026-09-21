@@ -111,6 +111,8 @@
   },
   "statisticsPanel": {
     "title": "Estadísticas",
+    "summaryTitle": "Resumen",
+    "detailsTitle": "Detalles",
     "totalPins": "Total de pines",
     "pathTitle": "{{layerName}} — Trazado {{index}}",
     "pins": "Pines",
@@ -121,7 +123,9 @@
     "segments": "Segmentos",
     "threadLength": "Longitud del hilo",
     "pinsVisited": "Pines visitados",
-    "colours": "Colores"
+    "colours": "Colores",
+    "threadCount": "Hilos",
+    "width": "Grosor"
   },
   "generatorPanel": {
     "fields": {

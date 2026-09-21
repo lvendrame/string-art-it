@@ -111,6 +111,8 @@
   },
   "statisticsPanel": {
     "title": "Statistiken",
+    "summaryTitle": "Zusammenfassung",
+    "detailsTitle": "Details",
     "totalPins": "Stifte insgesamt",
     "pathTitle": "{{layerName}} — Pfad {{index}}",
     "pins": "Stifte",
@@ -121,7 +123,9 @@
     "segments": "Segmente",
     "threadLength": "Fadenlänge",
     "pinsVisited": "Besuchte Stifte",
-    "colours": "Farben"
+    "colours": "Farben",
+    "threadCount": "Fäden",
+    "width": "Stärke"
   },
   "generatorPanel": {
     "fields": {

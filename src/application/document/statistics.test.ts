@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { EditorStore } from "./EditorStore";
-import { pinPathStatistics, projectThreadTotals, projectTotalPins, threadPathStatistics } from "./statistics";
+import { pinPathStatistics, projectThreadTotals, projectTotalPins, threadPathStatistics, threadStatisticsByType } from "./statistics";
 
 describe("pinPathStatistics", () => {
   it("reports pin count, requested/actual spacing, and diameter", () => {
@@ -105,5 +105,58 @@ describe("projectThreadTotals", () => {
     const store = new EditorStore();
     const totals = projectThreadTotals(store.getState().threadLayers, store.getState().pinLayers);
     expect(totals).toEqual({ threadCount: 0, totalLengthCm: 0 });
+  });
+});
+
+describe("threadStatisticsByType", () => {
+  it("treats a multi-colour thread as its own type, not split across its individual colours", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 0, y: 0 }, end: { x: 8, y: 0 } });
+    const pins = store.getState().pinLayers[0].pinPaths[0].pins;
+    const threadLayerId = store.getState().threadLayers[0].id;
+
+    store.setThreadDefaults({ colours: ["red"], width: 1.5 });
+    store.extendThreadDraft(pins[0].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[5].id); // 0->5, 5cm, plain red
+
+    store.setThreadDefaults({ colours: ["red", "white"], width: 1.5 });
+    store.extendThreadDraft(pins[0].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[3].id); // 0->3, 3cm, red+white twist
+
+    const byType = threadStatisticsByType(store.getState().threadLayers, store.getState().pinLayers);
+    expect(byType).toHaveLength(2); // ["red"] and ["red","white"] are distinct types, not merged under "red"
+
+    const red = byType.find((t) => t.colours.length === 1)!;
+    const redWhite = byType.find((t) => t.colours.length === 2)!;
+
+    expect(red).toEqual({ colours: ["red"], width: 1.5, threadCount: 1, totalSegments: 1, totalLengthCm: 5, totalPinsVisited: 2 });
+    expect(redWhite).toEqual({ colours: ["red", "white"], width: 1.5, threadCount: 1, totalSegments: 1, totalLengthCm: 3, totalPinsVisited: 2 });
+  });
+
+  it("treats same colours at different widths as distinct types", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 0, y: 0 }, end: { x: 8, y: 0 } });
+    const pins = store.getState().pinLayers[0].pinPaths[0].pins;
+    const threadLayerId = store.getState().threadLayers[0].id;
+
+    store.setThreadDefaults({ colours: ["red"], width: 1.5 });
+    store.extendThreadDraft(pins[0].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[5].id); // 5cm @ width 1.5
+
+    store.setThreadDefaults({ colours: ["red"], width: 2.5 });
+    store.extendThreadDraft(pins[0].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[3].id); // 3cm @ width 2.5
+
+    const byType = threadStatisticsByType(store.getState().threadLayers, store.getState().pinLayers);
+    expect(byType).toHaveLength(2);
+    expect(byType.find((t) => t.width === 1.5)?.totalLengthCm).toBe(5);
+    expect(byType.find((t) => t.width === 2.5)?.totalLengthCm).toBe(3);
+  });
+
+  it("returns an empty array for a document with no threads", () => {
+    const store = new EditorStore();
+    expect(threadStatisticsByType(store.getState().threadLayers, store.getState().pinLayers)).toEqual([]);
   });
 });

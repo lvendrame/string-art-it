@@ -111,6 +111,8 @@
   },
   "statisticsPanel": {
     "title": "Estatísticas",
+    "summaryTitle": "Resumo",
+    "detailsTitle": "Detalhes",
     "totalPins": "Total de pinos",
     "pathTitle": "{{layerName}} — Caminho {{index}}",
     "pins": "Pinos",
@@ -121,7 +123,9 @@
     "segments": "Segmentos",
     "threadLength": "Comprimento da linha",
     "pinsVisited": "Pinos visitados",
-    "colours": "Cores"
+    "colours": "Cores",
+    "threadCount": "Linhas",
+    "width": "Espessura"
   },
   "generatorPanel": {
     "fields": {

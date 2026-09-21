@@ -133,9 +133,11 @@ export {
   projectTotalPins,
   threadPathStatistics,
   projectThreadTotals,
+  threadStatisticsByType,
   type PinPathStatistics,
   type ThreadPathStatistics,
   type ProjectThreadTotals,
+  type ThreadTypeStatistics,
 } from "./statistics";
 export {
   GENERATOR_PATTERNS,

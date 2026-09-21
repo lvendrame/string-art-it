@@ -266,34 +266,38 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
     expect(withFullFill[0].sequence).toEqual(without[0].sequence);
   });
 
-  it("closed path: full-fill walks the WHOLE ring instead of the clicked arc (Zig-zag included, not just Parabolic)", () => {
+  it("closed path: full-fill runs the SAME bounded-arc algorithm on both arcs, concatenated — first pair is still (A,B) in each", () => {
     const layers = makeLayer(8, true);
     const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true };
     const candidates = computeSamePathCandidates(layers, "p1", "p3", "zigzag", settings);
-    expect(candidates).toHaveLength(2);
-    const forward = candidates.find((c) => c.dirA === 1)!;
-    // Full ring (all 8 pins), split at the midpoint, secondHalf reversed (Zig-zag) —
-    // not bounded to the p1->p3 arc the two clicks implied.
-    expect(forward.sequence).toEqual(seq("p1", "p8", "p2", "p7", "p3", "p6", "p4", "p5"));
+    expect(candidates).toHaveLength(1); // no 3rd click — both arcs are used, nothing to disambiguate
+    // Short arc (p1,p2,p3 -> zigzag [p1,p3,p2]) followed by the long arc (p1,p8,p7,p6,p5,p4,p3
+    // -> zigzag [p1,p3,p8,p4,p7,p5,p6]) — (A,B)=(p1,p3) is the first pair in BOTH arcs, exactly
+    // like the bounded (non-full-fill) algorithm already produces for a single arc.
+    expect(candidates[0].sequence).toEqual(seq("p1", "p3", "p2", "p1", "p3", "p8", "p4", "p7", "p5", "p6"));
   });
 
-  it("same-closed-path pair: circles=1 is one full ring pass (today's shape, generalized to the whole ring)", () => {
+  it("without full-fill, the same closed-path pair still needs the 3rd click (pick one arc) — unchanged", () => {
+    const layers = makeLayer(8, true);
+    const candidates = computeSamePathCandidates(layers, "p1", "p3", "zigzag", { stepA: 0, stepB: 0, fullFill: false });
+    expect(candidates).toHaveLength(2);
+  });
+
+  it("same-closed-path pair: circles=1 is one full both-arcs pass (today's per-arc shape, generalized to both arcs)", () => {
     const layers = makeLayer(8, true);
     const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 1 };
     const candidates = computeSamePathCandidates(layers, "p1", "p3", "parabolic", settings);
-    expect(candidates).toHaveLength(2);
-    const forward = candidates.find((c) => c.dirA === 1)!;
-    // Full ring (all 8 pins) in the forward direction, split at the midpoint and
-    // paired without reversal — not bounded to the p1->p3 arc the two clicks implied.
-    expect(forward.sequence).toEqual(seq("p1", "p5", "p2", "p6", "p3", "p7", "p4", "p8"));
+    expect(candidates).toHaveLength(1);
+    // Short arc (parabolic, no reverse: [p1,p3,p2]) then long arc ([p1,p5,p8,p4,p7,p3,p6]).
+    expect(candidates[0].sequence).toEqual(seq("p1", "p3", "p2", "p1", "p5", "p8", "p4", "p7", "p3", "p6"));
   });
 
-  it("same-closed-path pair: circles=3 repeats the same full-ring pass 3 times", () => {
+  it("same-closed-path pair: circles=3 repeats the same both-arcs pass 3 times", () => {
     const layers = makeLayer(8, true);
     const settingsOnce: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 1 };
     const settingsThrice: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 3 };
-    const once = computeSamePathCandidates(layers, "p1", "p3", "parabolic", settingsOnce).find((c) => c.dirA === 1)!;
-    const thrice = computeSamePathCandidates(layers, "p1", "p3", "parabolic", settingsThrice).find((c) => c.dirA === 1)!;
+    const once = computeSamePathCandidates(layers, "p1", "p3", "parabolic", settingsOnce)[0];
+    const thrice = computeSamePathCandidates(layers, "p1", "p3", "parabolic", settingsThrice)[0];
     expect(thrice.sequence).toEqual([...once.sequence, ...once.sequence, ...once.sequence]);
   });
 });

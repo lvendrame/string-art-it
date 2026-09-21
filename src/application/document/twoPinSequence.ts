@@ -133,13 +133,15 @@ export interface TwoPinCandidate {
 // away. Returns [] if the pins aren't actually on the same path (or are the same pin)
 // — callers use that to fall back to computeCrossPathCandidates.
 //
-// A closed path + fullFill is the one case that doesn't just strand/pair the bounded
-// A-B arc: it walks the WHOLE ring (pinCount pins, same direction) instead of stopping
-// at B — "full-fill" for the whole app means "don't leave an ambiguous side/direction
-// unused," and on a closed path BOTH arcs together are exactly the whole ring. That one
-// full-ring pass is then repeated `settings.circles` times (Parabolic only; Zig-zag has
-// no Circles field, so this is always effectively 1 — see docs/specs/35-zigzag-
-// parabolic-tools.md §Configuration).
+// A closed path + fullFill is the one case with two arcs to choose between (instead of
+// a forced single direction) — full-fill uses BOTH arcs instead of picking one via the
+// 3rd click, exactly the same "apply the existing algorithm to both options" rule
+// Case 2 uses: each arc still runs through the SAME unchanged buildSameRangeSequence
+// call the bounded (non-full-fill) case already uses — first pair is still (A,B) in
+// EACH arc, zigzagging inward from there — just concatenated instead of picking one.
+// That whole concatenated pass is then repeated `settings.circles` times (Parabolic
+// only; Zig-zag has no Circles field, so this is always effectively 1 — see
+// docs/specs/35-zigzag-parabolic-tools.md §Configuration).
 export function computeSamePathCandidates(
   layers: PinLayer[],
   firstPinId: string,
@@ -158,26 +160,29 @@ export function computeSamePathCandidates(
   const closed = isPathClosed(path);
   const pinCount = path.pins.length;
   const reverseSecond = reverseSecondFor(tool, true);
-  const ringFill = closed && settings.fullFill;
 
-  function candidateFor(dir: Direction, arcN: number): TwoPinCandidate {
-    const n = ringFill ? pinCount : arcN;
-    const range = extractIds(path, indexA, dir, n, closed, groupIndex);
-    const onePass = buildSameRangeSequence(range, reverseSecond, settings);
-    const sequence = ringFill ? Array.from({ length: Math.max(1, Math.floor(settings.circles ?? 1)) }, () => onePass).flat() : onePass;
-    return { dirA: dir, sequence };
+  function arcSequence(dir: Direction, arcN: number): string[] {
+    const range = extractIds(path, indexA, dir, arcN, closed, groupIndex);
+    return buildSameRangeSequence(range, reverseSecond, settings);
   }
 
   if (!closed) {
     const dir: Direction = indexB > indexA ? 1 : -1;
-    return [candidateFor(dir, Math.abs(indexB - indexA) + 1)];
+    return [{ dirA: dir, sequence: arcSequence(dir, Math.abs(indexB - indexA) + 1) }];
   }
 
   // Two arcs share both endpoints, so their pin counts sum to pinCount + 2.
   const forwardN = (((indexB - indexA) % pinCount) + pinCount) % pinCount + 1;
   const backwardN = pinCount + 2 - forwardN;
-  const candidates = [candidateFor(1, forwardN)];
-  if (backwardN !== forwardN) candidates.push(candidateFor(-1, backwardN));
+
+  if (closed && settings.fullFill) {
+    const onePass = backwardN !== forwardN ? [...arcSequence(1, forwardN), ...arcSequence(-1, backwardN)] : arcSequence(1, forwardN);
+    const sequence = Array.from({ length: Math.max(1, Math.floor(settings.circles ?? 1)) }, () => onePass).flat();
+    return [{ dirA: 1, sequence }];
+  }
+
+  const candidates = [{ dirA: 1 as Direction, sequence: arcSequence(1, forwardN) }];
+  if (backwardN !== forwardN) candidates.push({ dirA: -1, sequence: arcSequence(-1, backwardN) });
   return candidates;
 }
 

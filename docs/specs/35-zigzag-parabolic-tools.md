@@ -132,7 +132,7 @@ Full-fill doesn't introduce a new algorithm — it applies the **same** directio
 
 - **Case 2 (different Pin Paths)**: without full-fill, an anchor pin sitting mid-path (not at a true endpoint) has two viable directions along its own path — today's existing 3rd-click disambiguation, unchanged. With full-fill, that anchor instead combines *both* directions into one run (every pin walking outward one way, then every pin walking outward the other way, anchor de-duplicated) — eliminating that anchor's own direction choice, so no 3rd click is needed for it. An anchor already at a true endpoint is unaffected either way (it only ever had one direction with real extent). The two anchors' resulting runs are still paired by simple interleave, truncated to whichever ends up shorter — full-fill's completeness comes entirely from each anchor using every one of its own reachable pins, not from extending the pairing itself past the shorter run.
 - **Case 1 (same Pin Path), open path**: no effect — the second clicked pin already forces a single direction, so there's no direction/arc choice for full-fill to combine away.
-- **Case 1 (same Pin Path), closed path**: without full-fill, the two arcs between the clicked pins are separate 3rd-click candidates (existing behaviour). With full-fill, the same firstHalf/secondHalf pairing is built from the **whole ring** (every pin on the path) instead of just the clicked arc — both arcs together are exactly the whole ring, so this is the Case-1 equivalent of Case 2's "combine both options." One full pass through that whole-ring pairing is one **circle**; the identical pass repeats `circles` times (`circles=1`, the default, reproduces a single full-ring pass). Applies to both tools — `circles` beyond 1 is Parabolic-only (Zig-zag has no Circles field, always effectively 1). Which of the two ring *directions* to walk (clockwise/counter-clockwise — same pin set, different order) may still need a 3rd click, since that's an ordering choice full-fill doesn't resolve.
+- **Case 1 (same Pin Path), closed path**: without full-fill, the two arcs between the clicked pins are separate 3rd-click candidates (existing behaviour). With full-fill, **both arcs are used** — the same unchanged firstHalf/secondHalf pairing the bounded (non-full-fill) case already runs is run once per arc, and the two arcs' results are concatenated. Each arc's own pairing still starts with `(A, B)` as its first pair (exactly like today's single-arc result), then zigzags inward from there — full-fill just means neither arc is thrown away for the other, so no 3rd click is needed to pick one. One concatenated (both-arcs) pass is one **circle**; the identical pass repeats `circles` times (`circles=1`, the default, reproduces a single both-arcs pass). Applies to both tools — `circles` beyond 1 is Parabolic-only (Zig-zag has no Circles field, always effectively 1).
 
 ## Test Cases
 
@@ -214,17 +214,22 @@ Feature: Zig-zag / Parabolic tool sequence math
     When the draft is committed
     Then the resulting Thread Path pairs up to Path 1's 10-pin combined run, and Path 2's pins 11-20 never appear anywhere in it
 
-  Scenario: Parabolic full-fill on a same-closed-path pair walks the whole ring, not just the clicked arc
+  Scenario: Without full-fill, a closed-path pair still needs the 3rd click to pick one arc
+    Given a closed Pin Path and either tool active, Full-fill off
+    When the user clicks two non-adjacent pins
+    Then 2 candidates are populated (one per arc) and a 3rd click is required — unchanged from before full-fill existed
+
+  Scenario: Full-fill on a closed-path pair uses both arcs, each pairing still starting at (A,B)
     Given a closed Pin Path and the Parabolic tool active, Full-fill on, Circles set to 1
     When the user completes a draft between two of its pins
-    Then the resulting Thread Path pairs every pin on the path (not just those between the two clicked pins), split into two ring-spanning halves
+    Then no 3rd click is needed, and the resulting Thread Path is the short arc's own bounded-arc pairing followed by the long arc's own bounded-arc pairing, each starting with (A,B) as its first pair
 
-  Scenario: Zig-zag gets the same whole-ring full-fill treatment on a closed path, not just Parabolic
+  Scenario: Zig-zag gets the same both-arcs full-fill treatment on a closed path, not just Parabolic
     Given the same closed-path setup as above but the Zig-zag tool active
     When the draft is committed
-    Then the resulting Thread Path also pairs every pin on the path, with Zig-zag's own second-half reversal applied
+    Then the resulting Thread Path also concatenates both arcs' own pairings, with Zig-zag's own second-half reversal applied within each arc
 
-  Scenario: Circles repeats the same full-ring pass
+  Scenario: Circles repeats the same both-arcs pass
     Given the same setup as above but Circles set to 3
     When the draft is committed
     Then the resulting Thread Path is exactly the Circles=1 sequence repeated 3 times

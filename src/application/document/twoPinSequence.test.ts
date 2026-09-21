@@ -203,29 +203,80 @@ describe("step-by (stride = step + 1)", () => {
   });
 });
 
-describe("full-fill — Zig-zag (bounded, no wraparound)", () => {
-  it("Case 2: keeps advancing the longer side alone once the shorter is exhausted", () => {
+describe("full-fill — Case 2 (different Pin Paths): combines a mid-path anchor's two directions", () => {
+  it("a mid-path anchor uses both its directions as one run (dir +1's pins, then dir -1's, anchor deduplicated)", () => {
     const layers = makeTwoPaths(10, 10);
-    const settings: TwoPinFillSettings = { stepA: 1, stepB: 0, fullFill: true };
-    const candidates = computeCrossPathCandidates(layers, "a1", "b1", "zigzag", settings);
-    const best = candidates.find((c) => c.dirA === 1 && c.dirB === 1);
-    // Same subA/subB as the "leftover" test above, but now b's remaining tail
-    // (b6..b10) is appended solo after the 5 interleaved pairs.
-    expect(best?.sequence).toEqual(seq("a1", "b1", "a3", "b2", "a5", "b3", "a7", "b4", "a9", "b5", "b6", "b7", "b8", "b9", "b10"));
+    const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true };
+    // a5 is mid-path (index 4 of 10): its two directions are [a5..a10] and [a5,a4,a3,a2,a1].
+    // b1 is a true endpoint, so full-fill has no effect on it (nothing to combine).
+    const candidates = computeCrossPathCandidates(layers, "a5", "b1", "zigzag", settings);
+    expect(candidates).toHaveLength(1);
+    expect(candidates[0].sequence).toEqual(
+      seq("a5", "b1", "a6", "b2", "a7", "b3", "a8", "b4", "a9", "b5", "a10", "b6", "a4", "b7", "a3", "b8", "a2", "b9", "a1", "b10"),
+    );
   });
 
-  it("Case 1: applies the same rule to firstHalf/secondHalf when their strides differ", () => {
-    const layers = makeLayer(10, false);
-    // A=p1, B=p10: firstHalf=[p1..p5], secondHalf (B-anchored, reversed)=[p10,p9,p8,p7,p6].
-    // stepA=0 keeps all 5 of firstHalf; stepB=1 (stride 2) keeps [p10,p8,p6] (3 pins).
-    const settings: TwoPinFillSettings = { stepA: 0, stepB: 1, fullFill: true };
-    const candidates = computeSamePathCandidates(layers, "p1", "p10", "zigzag", settings);
+  it("without full-fill, the same mid-path anchor still needs the 3rd click (multiple direction candidates) — unchanged, pre-existing behavior", () => {
+    const layers = makeTwoPaths(10, 10);
+    const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: false };
+    const withoutFullFill = computeCrossPathCandidates(layers, "a5", "b1", "zigzag", settings);
+    const withFullFill = computeCrossPathCandidates(layers, "a5", "b1", "zigzag", { ...settings, fullFill: true });
+    expect(withoutFullFill.length).toBeGreaterThan(1);
+    expect(withFullFill).toHaveLength(1);
+  });
+
+  it("unequal combined-run lengths: outer pairing simply truncates to the shorter one, no tail is appended", () => {
+    const layers = makeTwoPaths(10, 20);
+    const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true };
+    // a5's combined run is still 10 pins (bounded by its own 10-pin path); b1 (endpoint
+    // of the 20-pin path) contributes all 20. Pairing truncates to 10 — b11..b20 never
+    // appear anywhere, even though full-fill is on.
+    const candidates = computeCrossPathCandidates(layers, "a5", "b1", "zigzag", settings);
     expect(candidates).toHaveLength(1);
-    expect(candidates[0].sequence).toEqual(seq("p1", "p10", "p2", "p8", "p3", "p6", "p4", "p5"));
+    expect(candidates[0].sequence).toEqual(
+      seq("a5", "b1", "a6", "b2", "a7", "b3", "a8", "b4", "a9", "b5", "a10", "b6", "a4", "b7", "a3", "b8", "a2", "b9", "a1", "b10"),
+    );
+    expect(candidates[0].sequence).not.toContain("b11");
+  });
+
+  it("Parabolic gets the same combined-run treatment, with its own cross-path reversal applied afterward", () => {
+    const layers = makeTwoPaths(10, 10);
+    const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true };
+    const candidates = computeCrossPathCandidates(layers, "a5", "b1", "parabolic", settings);
+    expect(candidates).toHaveLength(1);
+    expect(candidates[0].sequence).toEqual(
+      seq("a5", "b10", "a6", "b9", "a7", "b8", "a8", "b7", "a9", "b6", "a10", "b5", "a4", "b4", "a3", "b3", "a2", "b2", "a1", "b1"),
+    );
+  });
+
+  it("Circles has no effect here at all (only read for a same-closed-path pair)", () => {
+    const layers = makeTwoPaths(10, 10);
+    const withoutCircles = computeCrossPathCandidates(layers, "a5", "b1", "parabolic", { stepA: 0, stepB: 0, fullFill: true });
+    const withCircles = computeCrossPathCandidates(layers, "a5", "b1", "parabolic", { stepA: 0, stepB: 0, fullFill: true, circles: 5 });
+    expect(withCircles[0].sequence).toEqual(withoutCircles[0].sequence);
   });
 });
 
-describe("full-fill — Parabolic", () => {
+describe("full-fill — Case 1 (same Pin Path)", () => {
+  it("open path: full-fill has no effect — there's no per-anchor direction ambiguity to combine (B already forces the direction)", () => {
+    const layers = makeLayer(10, false);
+    const without = computeSamePathCandidates(layers, "p1", "p10", "zigzag", { stepA: 0, stepB: 0, fullFill: false });
+    const withFullFill = computeSamePathCandidates(layers, "p1", "p10", "zigzag", { stepA: 0, stepB: 0, fullFill: true });
+    expect(withFullFill).toHaveLength(1);
+    expect(withFullFill[0].sequence).toEqual(without[0].sequence);
+  });
+
+  it("closed path: full-fill walks the WHOLE ring instead of the clicked arc (Zig-zag included, not just Parabolic)", () => {
+    const layers = makeLayer(8, true);
+    const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true };
+    const candidates = computeSamePathCandidates(layers, "p1", "p3", "zigzag", settings);
+    expect(candidates).toHaveLength(2);
+    const forward = candidates.find((c) => c.dirA === 1)!;
+    // Full ring (all 8 pins), split at the midpoint, secondHalf reversed (Zig-zag) —
+    // not bounded to the p1->p3 arc the two clicks implied.
+    expect(forward.sequence).toEqual(seq("p1", "p8", "p2", "p7", "p3", "p6", "p4", "p5"));
+  });
+
   it("same-closed-path pair: circles=1 is one full ring pass (today's shape, generalized to the whole ring)", () => {
     const layers = makeLayer(8, true);
     const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 1 };
@@ -244,18 +295,5 @@ describe("full-fill — Parabolic", () => {
     const once = computeSamePathCandidates(layers, "p1", "p3", "parabolic", settingsOnce).find((c) => c.dirA === 1)!;
     const thrice = computeSamePathCandidates(layers, "p1", "p3", "parabolic", settingsThrice).find((c) => c.dirA === 1)!;
     expect(thrice.sequence).toEqual([...once.sequence, ...once.sequence, ...once.sequence]);
-  });
-
-  it("cross-path pair: falls back to Zig-zag's bounded tail-append rule, not a ring wrap", () => {
-    const layers = makeTwoPaths(10, 10);
-    const settings: TwoPinFillSettings = { stepA: 1, stepB: 0, fullFill: true, circles: 5 };
-    const candidates = computeCrossPathCandidates(layers, "a1", "b1", "parabolic", settings);
-    const best = candidates.find((c) => c.dirA === 1 && c.dirB === 1)!;
-    // subA=[a1,a3,a5,a7,a9] (5), subB=reverse(all 10 b's)=[b10..b1] (10, no stride) —
-    // interleaved to 5 pairs, then b's remaining tail (b5..b1) appended solo. `circles`
-    // has no effect here (cross-path, not a same-closed-path pair).
-    expect(best.sequence).toEqual(
-      seq("a1", "b10", "a3", "b9", "a5", "b8", "a7", "b7", "a9", "b6", "b5", "b4", "b3", "b2", "b1"),
-    );
   });
 });

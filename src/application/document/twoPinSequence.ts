@@ -98,21 +98,25 @@ export function computeSamePathCandidates(
   const b = findPinPosition(layers, secondPinId);
   if (!a || !b || a.path.id !== b.path.id || a.index === b.index) return [];
 
-  const closed = isPathClosed(a.path);
-  const pinCount = a.path.pins.length;
+  // Captured into locals before the nested function below: TS's narrowing of `a`/`b`
+  // from the guard above doesn't extend into a nested function declaration's body.
+  const { path, index: indexA, groupIndex } = a;
+  const indexB = b.index;
+  const closed = isPathClosed(path);
+  const pinCount = path.pins.length;
 
   function candidateFor(dir: Direction, n: number): TwoPinCandidate {
-    const range = extractIds(a.path, a.index, dir, n, closed, a.groupIndex);
+    const range = extractIds(path, indexA, dir, n, closed, groupIndex);
     return { dirA: dir, sequence: buildSameRangeSequence(range, reverseSecond) };
   }
 
   if (!closed) {
-    const dir: Direction = b.index > a.index ? 1 : -1;
-    return [candidateFor(dir, Math.abs(b.index - a.index) + 1)];
+    const dir: Direction = indexB > indexA ? 1 : -1;
+    return [candidateFor(dir, Math.abs(indexB - indexA) + 1)];
   }
 
   // Two arcs share both endpoints, so their pin counts sum to pinCount + 2.
-  const forwardN = (((b.index - a.index) % pinCount) + pinCount) % pinCount + 1;
+  const forwardN = (((indexB - indexA) % pinCount) + pinCount) % pinCount + 1;
   const backwardN = pinCount + 2 - forwardN;
   const candidates = [candidateFor(1, forwardN)];
   if (backwardN !== forwardN) candidates.push(candidateFor(-1, backwardN));

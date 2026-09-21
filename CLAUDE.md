@@ -14,3 +14,11 @@ Two linked files carry the patterns this codebase has settled on — read them b
 
 - [`docs/conventions/ui-patterns.md`](docs/conventions/ui-patterns.md) — the overlay/modal convention, tab-switcher styles, Editor-mode↔panel sync, and the data-driven-content pattern for reference/help-style panels.
 - [`docs/conventions/workflow.md`](docs/conventions/workflow.md) — how a milestone gets scoped, specced, implemented, tested, and closed out, including when live browser verification is required before calling something done.
+
+## Before considering any change done — run the real build
+
+`npm run build` (`tsc -b && vite build`) is the exact command the Docker deploy pipeline runs, and it has caught real type errors that other checks missed, more than once:
+
+- **`npx tsc --noEmit -p .` is not a substitute — it silently checks ZERO files** in this repo. The root `tsconfig.json` uses TS project references with `files: []`, which needs build mode (`tsc -b`) to actually traverse the referenced projects; `-p .`/`--noEmit` alone reports success having typechecked nothing. This exact trap already cost a deployment before (`tsc -b --force` was needed to surface real exhaustiveness gaps — see M25's orchestrator notes) and cost a second, later deployment when it recurred (a nested `function` declaration whose body used variables narrowed by an outer `if (!a || !b) return` guard — TS does not carry that narrowing into a nested function's body, only `tsc -b`'s real project-mode check caught it; `--noEmit -p .` reported clean).
+- Always run **`npm run build`** itself (not just a typecheck flag) before calling a change complete — it's the one command guaranteed to match what the deploy server actually runs.
+- Also run `npx vitest run` and `npx eslint .` — but neither substitutes for the build; `vitest` doesn't typecheck at all by default, and passing tests plus a misleading `tsc --noEmit -p .` is exactly the combination that produced the last two failed deployments.

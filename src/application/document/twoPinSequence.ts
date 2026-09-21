@@ -83,6 +83,26 @@ export function interleave<T>(a: T[], b: T[]): T[] {
   return out;
 }
 
+// Parabolic + closed path + full-fill: a single continuous "constant offset" walk —
+// pin A's own position and pin B's own position both advance together (one full lap
+// each, starting at A and at B respectively) rather than being paired via the
+// firstHalf/secondHalf split every other case uses. This is what full-fill actually
+// means for Parabolic on a closed ring (confirmed against a real example: clicking
+// pins 125 and 22 on a 141-pin ring should keep inserting the SAME (A,B) offset —
+// [125,22, 126,23, 127,24, ...] — all the way around, stopping just before it would
+// repeat the very first pair again (excluded — that pair is already implied by having
+// started there); NOT the firstHalf/secondHalf-split "two separate arcs" shape
+// Zig-zag's closed-path full-fill uses). Reuses the existing extractIds/strideList/
+// interleave primitives unchanged — no new pairing math, matching the same "apply the
+// existing algorithm" principle everything else in this module follows; only the
+// SHAPE of what gets extracted (one full lap per anchor, not a bounded arc) differs.
+function ringWalkSequence(path: PinPath, indexA: number, indexB: number, groupIndex: number, settings: TwoPinFillSettings): string[] {
+  const n = path.pins.length;
+  const aIds = extractIds(path, indexA, 1, n, true, groupIndex);
+  const bIds = extractIds(path, indexB, 1, n, true, groupIndex);
+  return interleave(strideList(aIds, settings.stepA), strideList(bIds, settings.stepB));
+}
+
 // Case 1 (same Pin Path): one contiguous range walked from A to B (range[0] === A,
 // range[last] === B). Split into two (near-)equal halves — each strided independently
 // by the caller's per-side settings — and interleaved to whichever is shorter — mirrored
@@ -192,11 +212,16 @@ export function computeSamePathCandidates(
 
   if (closed && settings.fullFill) {
     const circles = Math.max(1, Math.floor(settings.circles ?? 1));
-    const strands: string[][] = [];
-    for (let c = 0; c < circles; c++) {
-      strands.push(arcSequence(1, forwardN));
-      if (backwardN !== forwardN) strands.push(arcSequence(-1, backwardN));
-    }
+    // Parabolic: one continuous constant-offset lap per circle (ringWalkSequence).
+    // Zig-zag: the existing two-separate-arcs shape, unchanged. Every circle/arc still
+    // commits as its own SEPARATE strand (never concatenated) for the same reason
+    // documented on TwoPinCandidate.extraSequences — a single ThreadPath always
+    // renders as one continuous line, so gluing independently-built pieces together
+    // draws a spurious segment at their boundary.
+    const strands: string[][] =
+      tool === "parabolic"
+        ? Array.from({ length: circles }, () => ringWalkSequence(path, indexA, indexB, groupIndex, settings))
+        : Array.from({ length: circles }).flatMap(() => (backwardN !== forwardN ? [arcSequence(1, forwardN), arcSequence(-1, backwardN)] : [arcSequence(1, forwardN)]));
     const [sequence, ...extraSequences] = strands;
     return [{ dirA: 1, sequence, extraSequences: extraSequences.length > 0 ? extraSequences : undefined }];
   }

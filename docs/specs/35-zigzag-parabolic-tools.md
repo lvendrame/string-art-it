@@ -132,7 +132,9 @@ Full-fill doesn't introduce a new algorithm — it applies the **same** directio
 
 - **Case 2 (different Pin Paths)**: without full-fill, an anchor pin sitting mid-path (not at a true endpoint) has two viable directions along its own path — today's existing 3rd-click disambiguation, unchanged. With full-fill, that anchor instead combines *both* directions into one run (every pin walking outward one way, then every pin walking outward the other way, anchor de-duplicated) — eliminating that anchor's own direction choice, so no 3rd click is needed for it. An anchor already at a true endpoint is unaffected either way (it only ever had one direction with real extent). The two anchors' resulting runs are still paired by simple interleave, truncated to whichever ends up shorter — full-fill's completeness comes entirely from each anchor using every one of its own reachable pins, not from extending the pairing itself past the shorter run.
 - **Case 1 (same Pin Path), open path**: no effect — the second clicked pin already forces a single direction, so there's no direction/arc choice for full-fill to combine away.
-- **Case 1 (same Pin Path), closed path**: without full-fill, the two arcs between the clicked pins are separate 3rd-click candidates (existing behaviour). With full-fill, **both arcs are used** — the same unchanged firstHalf/secondHalf pairing the bounded (non-full-fill) case already runs is run once per arc, and each arc commits as its own **separate Thread Path** (not concatenated into one). Each arc's own pairing still starts with `(A, B)` as its first pair (exactly like today's single-arc result), then zigzags inward from there — full-fill just means neither arc is thrown away for the other, so no 3rd click is needed to pick one. Both Thread Paths are created together as one bundled undo step. They stay separate deliberately: a `ThreadPath` always renders as one continuous connect-the-dots line, so concatenating two independently-built arcs into a single `pinIds` array would draw a spurious straight segment wherever one arc's zigzag happens to end and the next arc's own `(A, B)` pair restarts — a real bug caught live (clicking two pins on a closed ring produced an unwanted long chord at exactly that boundary). One pass over both arcs is one **circle**; the identical pair of strands repeats `circles` times (`circles=1`, the default, produces exactly the 2 strands above). Applies to both tools — `circles` beyond 1 is Parabolic-only (Zig-zag has no Circles field, always effectively 1).
+- **Case 1 (same Pin Path), closed path, Zig-zag**: without full-fill, the two arcs between the clicked pins are separate 3rd-click candidates (existing behaviour). With full-fill, **both arcs are used** — the same unchanged firstHalf/secondHalf pairing the bounded (non-full-fill) case already runs is run once per arc, and each arc commits as its own **separate Thread Path** (not concatenated into one). Each arc's own pairing still starts with `(A, B)` as its first pair (exactly like today's single-arc result), then zigzags inward from there — full-fill just means neither arc is thrown away for the other, so no 3rd click is needed to pick one. Both Thread Paths are created together as one bundled undo step. They stay separate deliberately: a `ThreadPath` always renders as one continuous connect-the-dots line, so concatenating two independently-built arcs into a single `pinIds` array would draw a spurious straight segment wherever one arc's zigzag happens to end and the next arc's own `(A, B)` pair restarts — a real bug caught live (clicking two pins on a closed ring produced an unwanted long chord at exactly that boundary). One pass over both arcs is one **circle**; the identical pair of strands repeats `circles` times — for Zig-zag this stays fixed at 1 (Zig-zag has no Circles field at all).
+
+- **Case 1 (same Pin Path), closed path, Parabolic**: a genuinely different shape from Zig-zag's — not the firstHalf/secondHalf split at all. Full-fill keeps the **same constant offset** between the clicked pins and just keeps walking: pin A and pin B both advance one step at a time around the whole ring in lockstep (`A+k`, `B+k` for `k = 0..pinCount-1`, both mod `pinCount`), producing one continuous Thread Path — the first pair is `(A, B)` exactly as clicked, and the walk stops one step before it would repeat that same pair (so no closing segment back to the start is ever added). Confirmed against a real reported example: clicking pins 125 and 22 on a 141-pin ring produces `[125,22, 126,23, 127,24, ..., 123,20, 124,21]` — 141 pairs, single strand. Reuses the existing `extractIds`/`strideList`/`interleave` primitives unchanged (one full lap extracted from each anchor, each independently strided by its own Step A/Step B, then interleaved) — no new pairing math, just a different starting SHAPE (a full lap per anchor instead of a bounded arc). One lap is one **circle**; `circles` repeats it that many times, each repetition its own separate Thread Path (same "don't concatenate — it draws a spurious boundary segment" reasoning as Zig-zag's two arcs above), all created together as one bundled undo step.
 
 ## Test Cases
 
@@ -219,20 +221,25 @@ Feature: Zig-zag / Parabolic tool sequence math
     When the user clicks two non-adjacent pins
     Then 2 candidates are populated (one per arc) and a 3rd click is required — unchanged from before full-fill existed
 
-  Scenario: Full-fill on a closed-path pair uses both arcs, committed as two separate Thread Paths
-    Given a closed Pin Path and the Parabolic tool active, Full-fill on, Circles set to 1
+  Scenario: Zig-zag full-fill on a closed-path pair uses both arcs, committed as two separate Thread Paths
+    Given a closed Pin Path and the Zig-zag tool active, Full-fill on
     When the user completes a draft between two of its pins
     Then no 3rd click is needed, and TWO Thread Paths are created together as one undo step — the short arc's own bounded-arc pairing, and the long arc's own bounded-arc pairing — each starting with (A,B) as its first pair, with no segment connecting the two
 
-  Scenario: Zig-zag gets the same both-arcs full-fill treatment on a closed path, not just Parabolic
-    Given the same closed-path setup as above but the Zig-zag tool active
-    When the draft is committed
-    Then two Thread Paths are created the same way, with Zig-zag's own second-half reversal applied within each arc
-
-  Scenario: Circles repeats the pair of strands
-    Given the same setup as above but Circles set to 3
+  Scenario: Zig-zag Circles repeats the pair of strands
+    Given the same closed-path Zig-zag setup as above but Circles set to 3
     When the draft is committed
     Then 6 Thread Paths are created (3 repetitions of the short-arc/long-arc pair), all as one undo step
+
+  Scenario: Parabolic full-fill on a closed-path pair is a single continuous constant-offset walk, not the two-arc shape
+    Given a closed Pin Path and the Parabolic tool active, Full-fill on, Circles set to 1
+    When the user clicks two of its pins, A then B
+    Then no 3rd click is needed, and ONE Thread Path is created whose first pair is (A,B), continuing with both pins advancing together one step at a time around the whole ring, stopping one step before the pair would repeat (A,B) again
+
+  Scenario: Parabolic Circles repeats the constant-offset walk as separate strands
+    Given the same closed-path Parabolic setup as above but Circles set to 3
+    When the draft is committed
+    Then 3 Thread Paths are created (3 repetitions of the same constant-offset walk), all as one undo step
 
   Scenario: Circles has no effect outside a same-closed-path pair
     Given two different Pin Paths, Parabolic tool active, Full-fill on, Circles set to 5

@@ -289,17 +289,36 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
     expect(candidates[1].extraSequences).toBeUndefined();
   });
 
-  it("same-closed-path pair: circles=1 is one strand per arc (today's per-arc shape, generalized to both arcs)", () => {
+  it("Parabolic same-closed-path pair: full-fill is a single continuous constant-offset walk, NOT the two-arc shape", () => {
+    // Confirmed against a real reported example (141-pin ring, pins 125 & 22): the
+    // resulting sequence keeps the SAME (A,B) offset constant while both pins advance
+    // together — [125,22, 126,23, ...] — for one full lap, stopping just before it
+    // would repeat the very first pair again. This is NOT firstHalf/secondHalf pairing
+    // (Zig-zag's own closed-path full-fill shape, which stays unchanged) — Parabolic's
+    // is a plain "walk A forward, walk B forward in lockstep" using the SAME
+    // extractIds/strideList/interleave primitives, not the arc-split algorithm.
     const layers = makeLayer(8, true);
     const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 1 };
     const candidates = computeSamePathCandidates(layers, "p1", "p3", "parabolic", settings);
     expect(candidates).toHaveLength(1);
-    // Short arc (parabolic, no reverse: [p1,p3,p2]) and long arc ([p1,p5,p8,p4,p7,p3,p6]).
-    expect(candidates[0].sequence).toEqual(seq("p1", "p3", "p2"));
-    expect(candidates[0].extraSequences).toEqual([seq("p1", "p5", "p8", "p4", "p7", "p3", "p6")]);
+    expect(candidates[0].extraSequences).toBeUndefined();
+    // offset = 2 (index of p3 minus index of p1), constant across all 8 pairs:
+    // (p1,p3),(p2,p4),(p3,p5),(p4,p6),(p5,p7),(p6,p8),(p7,p1),(p8,p2).
+    expect(candidates[0].sequence).toEqual(
+      seq("p1", "p3", "p2", "p4", "p3", "p5", "p4", "p6", "p5", "p7", "p6", "p8", "p7", "p1", "p8", "p2"),
+    );
   });
 
-  it("same-closed-path pair: circles=3 repeats the same pair of strands 3 times (6 strands total)", () => {
+  it("Zig-zag same-closed-path pair keeps the two-arc shape (unaffected by the Parabolic change above)", () => {
+    const layers = makeLayer(8, true);
+    const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 1 };
+    const candidates = computeSamePathCandidates(layers, "p1", "p3", "zigzag", settings);
+    expect(candidates).toHaveLength(1);
+    expect(candidates[0].sequence).toEqual(seq("p1", "p3", "p2"));
+    expect(candidates[0].extraSequences).toEqual([seq("p1", "p3", "p8", "p4", "p7", "p5", "p6")]);
+  });
+
+  it("Parabolic circles=3 repeats the ring-walk 3 times as 3 separate strands (1 strand per circle)", () => {
     const layers = makeLayer(8, true);
     const settingsOnce: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 1 };
     const settingsThrice: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 3 };
@@ -307,6 +326,38 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
     const thrice = computeSamePathCandidates(layers, "p1", "p3", "parabolic", settingsThrice)[0];
     const onceStrands = [once.sequence, ...(once.extraSequences ?? [])];
     const thriceStrands = [thrice.sequence, ...(thrice.extraSequences ?? [])];
+    expect(onceStrands).toHaveLength(1);
+    expect(thriceStrands).toHaveLength(3);
     expect(thriceStrands).toEqual([...onceStrands, ...onceStrands, ...onceStrands]);
+  });
+
+  it("Zig-zag circles=3 still repeats the arc-pair 3 times as 6 separate strands (unchanged)", () => {
+    const layers = makeLayer(8, true);
+    const settingsOnce: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 1 };
+    const settingsThrice: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 3 };
+    const once = computeSamePathCandidates(layers, "p1", "p3", "zigzag", settingsOnce)[0];
+    const thrice = computeSamePathCandidates(layers, "p1", "p3", "zigzag", settingsThrice)[0];
+    const onceStrands = [once.sequence, ...(once.extraSequences ?? [])];
+    const thriceStrands = [thrice.sequence, ...(thrice.extraSequences ?? [])];
+    expect(onceStrands).toHaveLength(2);
+    expect(thriceStrands).toHaveLength(6);
+    expect(thriceStrands).toEqual([...onceStrands, ...onceStrands, ...onceStrands]);
+  });
+
+  it("reproduces the exact reported example: 141-pin ring, pins 125 & 22, Parabolic full-fill", () => {
+    const layers = makeLayer(141, true);
+    const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true };
+    const candidates = computeSamePathCandidates(layers, "p125", "p22", "parabolic", settings);
+    expect(candidates).toHaveLength(1);
+    const sequence = candidates[0].sequence;
+    expect(sequence).toHaveLength(282); // 141 pairs, no closing repeat back to (125,22)
+    expect(sequence.slice(0, 10)).toEqual(seq("p125", "p22", "p126", "p23", "p127", "p24", "p128", "p25", "p129", "p26"));
+    expect(sequence.slice(-2)).toEqual(seq("p124", "p21"));
+    // The (A,B) PAIR never repeats — pin 125 can legitimately reappear later as part of
+    // B's own lap (it eventually walks through every pin, including where A started),
+    // but the very first pair specifically is never re-inserted a second time.
+    const pairs: [string, string][] = [];
+    for (let i = 0; i < sequence.length; i += 2) pairs.push([sequence[i], sequence[i + 1]]);
+    expect(pairs.filter(([x, y]) => x === "p125" && y === "p22")).toHaveLength(1);
   });
 });

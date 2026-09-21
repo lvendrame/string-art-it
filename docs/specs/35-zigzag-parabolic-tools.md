@@ -103,6 +103,34 @@ Per [34-keyboard-shortcuts.md](./34-keyboard-shortcuts.md), Thread tab bare-lett
 
 Placing the anchor pin and picking a second pin are unaffected by layer lock state, same as Draw. Only the final commit is blocked by a locked active Thread Layer, discarding the draft silently. Switching Thread tool away from Zig-zag/Parabolic, or switching Editor mode away from Thread, while a draft is in progress discards it outright — the same non-undoable-transient-state cleanup as every other in-progress draft in this app (Thread Draw, the Path tool, Generator mode).
 
+## Configuration
+
+Both tools expose a small "next-draw settings" panel in `ThreadPropertiesPanel.tsx`, shown only while the matching tool is active — same treatment as `threadDefaults` (plain state, read at click-2 time, never routed through `HistoryStack`, since nothing about a committed `ThreadPath` needs to remember how it was configured).
+
+| Field | Tool | Range | Default | Effect |
+|---|---|---|---|---|
+| Step A | both | 0–9 (integer) | 0 | Stride applied to side A (Case 1: firstHalf; Case 2: the first-clicked path's run) |
+| Step B | both | 0–9 (integer) | 0 | Same, for side B |
+| Full-fill | both | on/off | off | Use every reachable pin instead of stopping once one side runs out |
+| Circles | Parabolic only | 1–20 (integer) | 1 | Enabled only while Full-fill is checked. Only has an effect on a same-CLOSED-path pair (see below) |
+
+### step-by
+
+Each side's ordered pin list is sub-sampled by its own **stride**: `stride = step + 1`. `step=0` (the default) keeps every pin — today's original shipped behaviour. `step=2` keeps every 3rd pin. A stride that doesn't land exactly on the far end of a side simply leaves the remainder unconnected — no snapping the last hop to force an endpoint.
+
+Worked example (the case that defined this formula): two Pin Paths, 10 and 20 pins, `stepA=stepB=2`, Zig-zag, no full-fill:
+
+```text
+subA = [1,4,7,10]            (path A, stride 3)
+subB = [11,14,17,20]         (path B, stride 3)
+result: [1,11,4,14,7,17,10,20]
+```
+
+### full-fill
+
+- **Zig-zag, any case; Parabolic, a cross-path or same-open-path pair**: bounded, no wraparound. Once the shorter (strided) side is exhausted, the longer side keeps advancing alone, in its own stride, appending its remaining pins in order until it too is exhausted.
+- **Parabolic, a same-CLOSED-path pair**: the only case where "full-fill" and "circles" mean something different — instead of stopping at the clicked second pin, the same two-strand pairing (firstHalf/secondHalf, unreversed) is built from the **whole ring** (every pin on the path, in the chosen direction) instead of just the clicked arc. One full pass through that whole-ring pairing is one **circle**; the identical pass is repeated `circles` times (`circles=1`, the default, reproduces one full-ring pass — a generalization of the tool's original single-arc pairing, not a behaviour change when the two clicked pins already happen to be diametrically apart). The originally-clicked second pin only ever affects *which of the two ring directions* is offered as a 3rd-click disambiguation candidate — once full-fill is on, its exact position no longer bounds the pairing.
+
 ## Test Cases
 
 ```gherkin
@@ -162,6 +190,31 @@ Feature: Zig-zag / Parabolic tool sequence math
     Given a Zig-zag draft is in progress
     When the user picks a different Thread tool
     Then the draft is discarded with no commit attempt
+
+  Scenario: step-by reproduces the worked example
+    Given two Pin Paths of 10 and 20 pins, Zig-zag tool active, Step A and Step B both set to 2, Full-fill off
+    When the user clicks Path 1's pin 1, then Path 2's pin 1
+    Then the resulting Thread Path is [1,11,4,14,7,17,10,20]
+
+  Scenario: Zig-zag full-fill uses up the longer side's remaining pins
+    Given two Pin Paths of equal length, Zig-zag tool active, differing Step A/Step B such that one strided side is shorter than the other, Full-fill on
+    When the user completes a Zig-zag draft between them
+    Then the resulting Thread Path pairs up to the shorter side's length, then appends the longer side's remaining strided pins solo, in order
+
+  Scenario: Parabolic full-fill on a same-closed-path pair walks the whole ring, not just the clicked arc
+    Given a closed Pin Path and the Parabolic tool active, Full-fill on, Circles set to 1
+    When the user completes a draft between two of its pins
+    Then the resulting Thread Path pairs every pin on the path (not just those between the two clicked pins), split into two ring-spanning halves
+
+  Scenario: Circles repeats the same full-ring pass
+    Given the same setup as above but Circles set to 3
+    When the draft is committed
+    Then the resulting Thread Path is exactly the Circles=1 sequence repeated 3 times
+
+  Scenario: Circles has no effect outside a same-closed-path pair
+    Given two different Pin Paths, Parabolic tool active, Full-fill on, Circles set to 5
+    When the user completes a draft between them
+    Then the resulting Thread Path follows the same bounded tail-append rule as Zig-zag's full-fill, unaffected by the Circles value
 ```
 
 ## Scope limits

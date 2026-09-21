@@ -14,6 +14,8 @@ import type {
   Selection,
   ThreadDefaults,
   ThreadTool,
+  ZigzagSettings,
+  ParabolicSettings,
 } from "./EditorState";
 import type { Point } from "../../domain/paths";
 import { buildGeneratorPattern, GENERATOR_PATTERN_NAMES, maxInscribedRadius, type GeneratorParams } from "./generator/generatorPatterns";
@@ -64,6 +66,11 @@ const DEFAULT_PIN_DEFAULTS: PinDefaults = { spacing: 1, colour: "#f2ede4", diame
 // The thread defaults entering Thread mode resets to, same baseline-on-entry precedent
 // as DEFAULT_PIN_DEFAULTS above.
 const DEFAULT_THREAD_DEFAULTS: ThreadDefaults = { colours: ["#5b8def"], width: 1.5, twistPitch: 6 };
+
+// docs/specs/35-zigzag-parabolic-tools.md §Configuration — step=0 on both sides and
+// fullFill off reproduces the tools' original (pre-configuration) shipped behaviour.
+const DEFAULT_ZIGZAG_SETTINGS: ZigzagSettings = { stepA: 0, stepB: 0, fullFill: false };
+const DEFAULT_PARABOLIC_SETTINGS: ParabolicSettings = { stepA: 0, stepB: 0, fullFill: false, circles: 1 };
 
 // eraser/path-eraser aren't shape tools — switching to one shouldn't clobber the pin
 // defaults a user just dialled in for their next shape.
@@ -130,6 +137,8 @@ export class EditorStore {
       generatorDraft: null,
       polygonDraft: null,
       twoPinDraft: null,
+      zigzagSettings: DEFAULT_ZIGZAG_SETTINGS,
+      parabolicSettings: DEFAULT_PARABOLIC_SETTINGS,
       ...initial,
     };
   }
@@ -846,6 +855,20 @@ export class EditorStore {
     this.notify();
   }
 
+  // docs/specs/35-zigzag-parabolic-tools.md §Configuration — read at click-2 time
+  // (chooseSecondPin), same "next-draw defaults" treatment as setThreadDefaults above:
+  // plain state, never routed through HistoryStack, since nothing about a committed
+  // ThreadPath needs to remember how it was configured.
+  setZigzagSettings(patch: Partial<ZigzagSettings>): void {
+    this.state = { ...this.state, zigzagSettings: { ...this.state.zigzagSettings, ...patch } };
+    this.notify();
+  }
+
+  setParabolicSettings(patch: Partial<ParabolicSettings>): void {
+    this.state = { ...this.state, parabolicSettings: { ...this.state.parabolicSettings, ...patch } };
+    this.notify();
+  }
+
   // docs/specs/27-thread-select-tool.md — dual-context, same pattern as
   // setPinProperty: with a Thread Path selected, edits apply to it; otherwise they
   // change the defaults used by the next drawn thread. One method, one set of fields
@@ -946,20 +969,14 @@ export class EditorStore {
 
   // --- Zig-zag / Parabolic thread tools (docs/specs/35-zigzag-parabolic-tools.md) ---
 
-  // reverseSecond per the tool/case duality table in twoPinSequence.ts: zig-zag
-  // reverses the second half when both pins are on the SAME path, parabolic reverses
-  // the second run when they're on DIFFERENT paths.
-  private static twoPinReverseSecond(tool: "zigzag" | "parabolic", sameCase: boolean): boolean {
-    return sameCase ? tool === "zigzag" : tool === "parabolic";
-  }
-
   // Click 1: remember the anchor pin, awaiting a second pin (candidates stays empty).
   startTwoPinDraft(tool: "zigzag" | "parabolic", pinId: string): void {
     this.state = { ...this.state, twoPinDraft: { tool, firstPinId: pinId, candidates: [], chosenIndex: 0 } };
     this.notify();
   }
 
-  // Click 2: compute every valid resulting pin-id sequence for (firstPinId, pinId).
+  // Click 2: compute every valid resulting pin-id sequence for (firstPinId, pinId),
+  // reading whichever settings object applies to the active tool (§Configuration).
   // Exactly one candidate (an open Pin Path, or both anchors on paths that only allow
   // one direction combination) commits immediately — there's no ambiguity to resolve.
   // 2+ candidates populate the draft and wait for the disambiguating 3rd click
@@ -967,8 +984,9 @@ export class EditorStore {
   chooseSecondPin(layerId: string, pinId: string): void {
     const draft = this.state.twoPinDraft;
     if (!draft || pinId === draft.firstPinId) return;
-    const same = computeSamePathCandidates(this.state.pinLayers, draft.firstPinId, pinId, EditorStore.twoPinReverseSecond(draft.tool, true));
-    const candidates = same.length > 0 ? same : computeCrossPathCandidates(this.state.pinLayers, draft.firstPinId, pinId, EditorStore.twoPinReverseSecond(draft.tool, false));
+    const settings = draft.tool === "zigzag" ? this.state.zigzagSettings : this.state.parabolicSettings;
+    const same = computeSamePathCandidates(this.state.pinLayers, draft.firstPinId, pinId, draft.tool, settings);
+    const candidates = same.length > 0 ? same : computeCrossPathCandidates(this.state.pinLayers, draft.firstPinId, pinId, draft.tool, settings);
     if (candidates.length === 0) return;
     if (candidates.length === 1) {
       this.commitTwoPinSequence(layerId, candidates[0].sequence);

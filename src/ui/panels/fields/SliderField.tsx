@@ -15,6 +15,7 @@ export function SliderField({
   step,
   onChange,
   format,
+  disabled,
 }: {
   label: string;
   value: number;
@@ -23,9 +24,10 @@ export function SliderField({
   step?: number;
   onChange: (value: number) => void;
   format?: (value: number) => string;
+  disabled?: boolean;
 }) {
   return (
-    <label style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+    <label style={{ display: "flex", flexDirection: "column", gap: 3, opacity: disabled ? 0.5 : 1 }}>
       <div style={FIELD_LABEL_STYLE}>
         <span>{label}</span>
         <span className="mono" style={SLIDER_VALUE_STYLE}>
@@ -39,6 +41,7 @@ export function SliderField({
         max={max}
         step={step}
         value={value}
+        disabled={disabled}
         onChange={(e) => onChange(Number(e.target.value))}
         className="slider-field-range"
       />

@@ -26,6 +26,8 @@ export type {
   ThreadDefaults,
   ThreadDraft,
   TwoPinDraft,
+  ZigzagSettings,
+  ParabolicSettings,
 } from "./EditorState";
 export { EditorStore, canCommitSelectionMerge } from "./EditorStore";
 export {
@@ -82,6 +84,8 @@ export {
   computeSamePathCandidates,
   computeCrossPathCandidates,
   type TwoPinCandidate,
+  type TwoPinTool,
+  type TwoPinFillSettings,
 } from "./twoPinSequence";
 export {
   createThreadPath,

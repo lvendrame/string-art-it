@@ -70,6 +70,12 @@
     "coloursSectionTitle": "Farben",
     "width": "Stärke",
     "twistPitch": "Drehsteigung",
+    "zigzagSectionTitle": "Zickzack-Einstellungen",
+    "parabolicSectionTitle": "Parabolisch-Einstellungen",
+    "stepA": "Schritt A",
+    "stepB": "Schritt B",
+    "fullFill": "Vollständig füllen",
+    "circles": "Kreise",
     "stats": {
       "title": "Statistiken",
       "segments": "Segmente",

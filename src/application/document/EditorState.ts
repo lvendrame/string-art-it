@@ -122,6 +122,26 @@ export type TwoPinDraft = {
   chosenIndex: number;
 } | null;
 
+// docs/specs/35-zigzag-parabolic-tools.md §Configuration — the settings used the next
+// time a Zig-zag draft is completed (read at click-2 time, same "next-draw defaults"
+// treatment as PinDefaults/ThreadDefaults: plain state, never routed through
+// HistoryStack). `stepA`/`stepB` are per SIDE (Case 1: firstHalf/secondHalf; Case 2:
+// the two clicked paths' own runs), not per tool.
+export interface ZigzagSettings {
+  stepA: number;
+  stepB: number;
+  fullFill: boolean;
+}
+
+// Same shape as ZigzagSettings plus `circles` — only meaningful for a same-CLOSED-path
+// pair with fullFill on (every other combination ignores it; see twoPinSequence.ts).
+export interface ParabolicSettings {
+  stepA: number;
+  stepB: number;
+  fullFill: boolean;
+  circles: number;
+}
+
 export interface EditorState {
   board: Board;
   mode: EditorMode;
@@ -146,4 +166,6 @@ export interface EditorState {
   generatorDraft: GeneratorDraft;
   polygonDraft: PolygonDraft;
   twoPinDraft: TwoPinDraft;
+  zigzagSettings: ZigzagSettings;
+  parabolicSettings: ParabolicSettings;
 }

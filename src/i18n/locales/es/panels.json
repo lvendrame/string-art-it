@@ -70,6 +70,12 @@
     "coloursSectionTitle": "Colores",
     "width": "Grosor",
     "twistPitch": "Paso de torsión",
+    "zigzagSectionTitle": "Ajustes de zigzag",
+    "parabolicSectionTitle": "Ajustes de parabólico",
+    "stepA": "Paso A",
+    "stepB": "Paso B",
+    "fullFill": "Relleno completo",
+    "circles": "Círculos",
     "stats": {
       "title": "Estadísticas",
       "segments": "Segmentos",

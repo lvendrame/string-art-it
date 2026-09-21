@@ -70,6 +70,12 @@
     "coloursSectionTitle": "Cores",
     "width": "Espessura",
     "twistPitch": "Passo da torção",
+    "zigzagSectionTitle": "Configurações de zigue-zague",
+    "parabolicSectionTitle": "Configurações de parabólico",
+    "stepA": "Passo A",
+    "stepB": "Passo B",
+    "fullFill": "Preenchimento total",
+    "circles": "Círculos",
     "stats": {
       "title": "Estatísticas",
       "segments": "Segmentos",

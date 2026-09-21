@@ -70,6 +70,12 @@
     "coloursSectionTitle": "Colours",
     "width": "Width",
     "twistPitch": "Twist pitch",
+    "zigzagSectionTitle": "Zig-zag settings",
+    "parabolicSectionTitle": "Parabolic settings",
+    "stepA": "Step A",
+    "stepB": "Step B",
+    "fullFill": "Full-fill",
+    "circles": "Circles",
     "stats": {
       "title": "Stats",
       "segments": "Segments",

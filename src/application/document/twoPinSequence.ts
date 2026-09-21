@@ -14,6 +14,34 @@ import { findPinPosition } from "./threadPattern";
 // See the spec for the full derivation and worked examples this module reproduces.
 
 export type Direction = 1 | -1;
+export type TwoPinTool = "zigzag" | "parabolic";
+
+// docs/specs/35-zigzag-parabolic-tools.md §Configuration — per-draft fill settings.
+// `stepA`/`stepB` are independent per SIDE (Case 1: firstHalf/secondHalf; Case 2: the
+// two paths' own runs), not per tool. `circles` only has an effect for Parabolic on a
+// same-CLOSED-path pair with `fullFill` on — every other combination ignores it.
+export interface TwoPinFillSettings {
+  stepA: number;
+  stepB: number;
+  fullFill: boolean;
+  // Only meaningful for Parabolic on a same-CLOSED-path pair with fullFill on; absent
+  // (Zig-zag has no circles field at all) defaults to 1 — a single full-ring pass.
+  circles?: number;
+}
+
+function reverseSecondFor(tool: TwoPinTool, sameCase: boolean): boolean {
+  return sameCase ? tool === "zigzag" : tool === "parabolic";
+}
+
+// "step" pins are skipped between hops, so the stride is step+1: step=0 keeps every
+// pin (today's pre-configuration behaviour), step=2 keeps every 3rd. A stride that
+// doesn't land exactly on the list's last element simply leaves the remainder unused.
+function strideList<T>(list: T[], step: number): T[] {
+  const advance = Math.max(0, Math.floor(step)) + 1;
+  const out: T[] = [];
+  for (let i = 0; i < list.length; i += advance) out.push(list[i]);
+  return out;
+}
 
 // "text" has no single Path (it's N contours — geometryToPath throws for it), but
 // every contour it produces is closed, so a text Pin Path is closed as a whole for the
@@ -56,25 +84,45 @@ export function interleave<T>(a: T[], b: T[]): T[] {
   return out;
 }
 
+// Full-fill (bounded, no wraparound): pair up to the shorter side, then append the
+// longer side's own remaining entries solo, in order, until it's exhausted too.
+function interleaveFull<T>(a: T[], b: T[]): T[] {
+  const len = Math.min(a.length, b.length);
+  const out: T[] = [];
+  for (let i = 0; i < len; i++) out.push(a[i], b[i]);
+  if (a.length > len) out.push(...a.slice(len));
+  else if (b.length > len) out.push(...b.slice(len));
+  return out;
+}
+
 // Case 1 (same Pin Path): one contiguous range walked from A to B (range[0] === A,
-// range[last] === B). Split into two (near-)equal halves and interleaved — mirrored
-// (zig-zag) or in original order (parabolic); an odd-length range's true middle pin
-// belongs to neither half and is appended alone at the end.
-export function buildSameRangeSequence(range: string[], reverseSecond: boolean): string[] {
+// range[last] === B). Split into two (near-)equal halves — each strided independently
+// by the caller's per-side settings — and interleaved — mirrored (zig-zag) or in
+// original order (parabolic); an odd-length range's true middle pin belongs to neither
+// half and is appended alone at the end regardless of striding/full-fill.
+export function buildSameRangeSequence(range: string[], reverseSecond: boolean, settings: TwoPinFillSettings): string[] {
   const n = range.length;
   const halfLen = Math.floor(n / 2);
   const firstHalf = range.slice(0, halfLen);
-  const secondHalf = range.slice(n - halfLen);
+  const secondHalfRaw = range.slice(n - halfLen);
   const middle = n % 2 === 1 ? [range[halfLen]] : [];
-  const b = reverseSecond ? [...secondHalf].reverse() : secondHalf;
-  return [...interleave(firstHalf, b), ...middle];
+  const bArr = reverseSecond ? [...secondHalfRaw].reverse() : secondHalfRaw;
+
+  const subA = strideList(firstHalf, settings.stepA);
+  const subB = strideList(bArr, settings.stepB);
+  const paired = settings.fullFill ? interleaveFull(subA, subB) : interleave(subA, subB);
+  return [...paired, ...middle];
 }
 
 // Case 2 (different Pin Paths): one run per path, from its own anchor outward,
-// interleaved straight (zig-zag) or against the second run reversed (parabolic).
-export function buildCrossPathSequence(runA: string[], runB: string[], reverseSecond: boolean): string[] {
-  const b = reverseSecond ? [...runB].reverse() : runB;
-  return interleave(runA, b);
+// interleaved straight (zig-zag) or against the second run reversed (parabolic), each
+// side strided independently. `runA`/`runB` may already be unequal length when the
+// caller extracted them uncapped for full-fill (see computeCrossPathCandidates).
+export function buildCrossPathSequence(runA: string[], runB: string[], reverseSecond: boolean, settings: TwoPinFillSettings): string[] {
+  const bArr = reverseSecond ? [...runB].reverse() : runB;
+  const subA = strideList(runA, settings.stepA);
+  const subB = strideList(bArr, settings.stepB);
+  return settings.fullFill ? interleaveFull(subA, subB) : interleave(subA, subB);
 }
 
 export interface TwoPinCandidate {
@@ -88,11 +136,17 @@ export interface TwoPinCandidate {
 // between A and B, both sharing endpoints A and B. Returns [] if the pins aren't
 // actually on the same path (or are the same pin) — callers use that to fall back to
 // computeCrossPathCandidates.
+//
+// Parabolic + closed path + fullFill is the one case that doesn't just strand/pair the
+// bounded A-B arc: it walks the WHOLE ring (pinCount pins, same direction) instead of
+// stopping at B, and repeats that full-ring pass `settings.circles` times — "circles"
+// has no effect anywhere else (docs/specs/35-zigzag-parabolic-tools.md §Configuration).
 export function computeSamePathCandidates(
   layers: PinLayer[],
   firstPinId: string,
   secondPinId: string,
-  reverseSecond: boolean,
+  tool: TwoPinTool,
+  settings: TwoPinFillSettings,
 ): TwoPinCandidate[] {
   const a = findPinPosition(layers, firstPinId);
   const b = findPinPosition(layers, secondPinId);
@@ -104,10 +158,15 @@ export function computeSamePathCandidates(
   const indexB = b.index;
   const closed = isPathClosed(path);
   const pinCount = path.pins.length;
+  const reverseSecond = reverseSecondFor(tool, true);
+  const ringFill = tool === "parabolic" && closed && settings.fullFill;
 
-  function candidateFor(dir: Direction, n: number): TwoPinCandidate {
+  function candidateFor(dir: Direction, arcN: number): TwoPinCandidate {
+    const n = ringFill ? pinCount : arcN;
     const range = extractIds(path, indexA, dir, n, closed, groupIndex);
-    return { dirA: dir, sequence: buildSameRangeSequence(range, reverseSecond) };
+    const onePass = buildSameRangeSequence(range, reverseSecond, settings);
+    const sequence = ringFill ? Array.from({ length: Math.max(1, Math.floor(settings.circles ?? 1)) }, () => onePass).flat() : onePass;
+    return { dirA: dir, sequence };
   }
 
   if (!closed) {
@@ -124,17 +183,21 @@ export function computeSamePathCandidates(
 }
 
 // Every valid resolution for two anchors on DIFFERENT Pin Paths: each anchor
-// independently walks in one of two directions, so up to 4 combinations. `L` (the
-// pins actually used per path) is capped by whichever side runs out first
-// (remainingInDirection) — the "perfect distribution" is simply using as many pins as
-// that direction combination allows. Duplicate resulting sequences (e.g. both anchors
-// pinned to a single-pin path) collapse to one candidate. Returns [] if the pins are
-// on the same path — callers use that to prefer computeSamePathCandidates.
+// independently walks in one of two directions, so up to 4 combinations. Without
+// full-fill, `L` (the pins actually used per path) is capped by whichever side runs
+// out first (remainingInDirection) — the "perfect distribution" is simply using as
+// many pins as that direction combination allows. With full-fill, each side is
+// extracted uncapped (its own full `remainingInDirection`) so the longer side's tail
+// can be appended solo by buildCrossPathSequence once the shorter side is exhausted.
+// Duplicate resulting sequences (e.g. both anchors pinned to a single-pin path)
+// collapse to one candidate. Returns [] if the pins are on the same path — callers use
+// that to prefer computeSamePathCandidates.
 export function computeCrossPathCandidates(
   layers: PinLayer[],
   firstPinId: string,
   secondPinId: string,
-  reverseSecond: boolean,
+  tool: TwoPinTool,
+  settings: TwoPinFillSettings,
 ): TwoPinCandidate[] {
   const a = findPinPosition(layers, firstPinId);
   const b = findPinPosition(layers, secondPinId);
@@ -144,6 +207,7 @@ export function computeCrossPathCandidates(
   const closedB = isPathClosed(b.path);
   const nA = a.path.pins.length;
   const nB = b.path.pins.length;
+  const reverseSecond = reverseSecondFor(tool, false);
 
   const candidates: TwoPinCandidate[] = [];
   for (const dirA of [1, -1] as Direction[]) {
@@ -152,9 +216,11 @@ export function computeCrossPathCandidates(
       const remB = remainingInDirection(nB, b.index, dirB, closedB);
       const L = Math.min(remA, remB);
       if (L < 1) continue;
-      const runA = extractIds(a.path, a.index, dirA, L, closedA, a.groupIndex);
-      const runB = extractIds(b.path, b.index, dirB, L, closedB, b.groupIndex);
-      candidates.push({ dirA, dirB, sequence: buildCrossPathSequence(runA, runB, reverseSecond) });
+      const extractA = settings.fullFill ? remA : L;
+      const extractB = settings.fullFill ? remB : L;
+      const runA = extractIds(a.path, a.index, dirA, extractA, closedA, a.groupIndex);
+      const runB = extractIds(b.path, b.index, dirB, extractB, closedB, b.groupIndex);
+      candidates.push({ dirA, dirB, sequence: buildCrossPathSequence(runA, runB, reverseSecond, settings) });
     }
   }
 

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { GENERATOR_PATTERNS, maxGeneratorColours, type AssymetryLayerParams, type EditorStore, type FreestyleCircleParams, type GeneratorParams, type GeneratorPatternId } from "../../application/document";
 import { GeneratorToolbar } from "../toolbars/GeneratorToolbar";
 import { useEditorState } from "../useEditorStore";
+import { CheckboxField } from "./fields/CheckboxField";
 import { SliderField } from "./fields/SliderField";
 
 const FIELD_LABEL_STYLE: CSSProperties = { display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11.5, color: "var(--text-secondary)" };
@@ -31,15 +32,6 @@ function SelectField({ label, value, options, onChange }: { label: string; value
           </option>
         ))}
       </select>
-    </label>
-  );
-}
-
-function CheckboxField({ label, checked, onChange }: { label: string; checked: boolean; onChange: (checked: boolean) => void }) {
-  return (
-    <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, color: "var(--text-secondary)" }}>
-      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
-      {label}
     </label>
   );
 }

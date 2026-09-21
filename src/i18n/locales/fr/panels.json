@@ -70,6 +70,12 @@
     "coloursSectionTitle": "Couleurs",
     "width": "Épaisseur",
     "twistPitch": "Pas de torsion",
+    "zigzagSectionTitle": "Paramètres Zigzag",
+    "parabolicSectionTitle": "Paramètres Parabolique",
+    "stepA": "Pas A",
+    "stepB": "Pas B",
+    "fullFill": "Remplissage complet",
+    "circles": "Cercles",
     "stats": {
       "title": "Statistiques",
       "segments": "Segments",

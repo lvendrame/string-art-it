@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
-import { threadPathStatistics, type EditorStore } from "../../application/document";
+import { threadPathStatistics, type EditorStore, type ParabolicSettings, type ZigzagSettings } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
+import { CheckboxField } from "./fields/CheckboxField";
 import { SliderField } from "./fields/SliderField";
 
 export const PALETTE = ["#5b8def", "#edeff7", "#e8b449", "#d96c6c", "#8fd6c8"];
@@ -86,7 +87,55 @@ export function ThreadPropertiesPanel({ store }: { store: EditorStore }) {
         </label>
       )}
 
+      {state.threadTool === "zigzag" && <ZigzagSettingsBox store={store} settings={state.zigzagSettings} />}
+      {state.threadTool === "parabolic" && <ParabolicSettingsBox store={store} settings={state.parabolicSettings} />}
+
       {selected && <ThreadStatsBox thread={selected} pinLayers={state.pinLayers} />}
+    </div>
+  );
+}
+
+// docs/specs/35-zigzag-parabolic-tools.md §Configuration — shown only while the
+// Zig-zag tool is active (setThreadTool already clears any threadPath selection when
+// switching to it, so this section and the dual-context selected/defaults fields above
+// never compete for the same space). "Next-draw settings," same as threadDefaults —
+// writes go straight to store.setZigzagSettings, never through HistoryStack.
+function ZigzagSettingsBox({ store, settings }: { store: EditorStore; settings: ZigzagSettings }) {
+  const { t } = useTranslation("panels");
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 10, marginTop: 4 }}>
+      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
+        {t("threadPropertiesPanel.zigzagSectionTitle")}
+      </div>
+      <SliderField label={t("threadPropertiesPanel.stepA")} value={settings.stepA} min={0} max={9} step={1} onChange={(v) => store.setZigzagSettings({ stepA: v })} />
+      <SliderField label={t("threadPropertiesPanel.stepB")} value={settings.stepB} min={0} max={9} step={1} onChange={(v) => store.setZigzagSettings({ stepB: v })} />
+      <CheckboxField label={t("threadPropertiesPanel.fullFill")} checked={settings.fullFill} onChange={(v) => store.setZigzagSettings({ fullFill: v })} />
+    </div>
+  );
+}
+
+// Same shape as ZigzagSettingsBox plus Circles, enabled only while Full-fill is
+// checked — it has no effect otherwise (twoPinSequence.ts: circles only applies to a
+// same-CLOSED-path pair with fullFill on).
+function ParabolicSettingsBox({ store, settings }: { store: EditorStore; settings: ParabolicSettings }) {
+  const { t } = useTranslation("panels");
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 10, marginTop: 4 }}>
+      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
+        {t("threadPropertiesPanel.parabolicSectionTitle")}
+      </div>
+      <SliderField label={t("threadPropertiesPanel.stepA")} value={settings.stepA} min={0} max={9} step={1} onChange={(v) => store.setParabolicSettings({ stepA: v })} />
+      <SliderField label={t("threadPropertiesPanel.stepB")} value={settings.stepB} min={0} max={9} step={1} onChange={(v) => store.setParabolicSettings({ stepB: v })} />
+      <CheckboxField label={t("threadPropertiesPanel.fullFill")} checked={settings.fullFill} onChange={(v) => store.setParabolicSettings({ fullFill: v })} />
+      <SliderField
+        label={t("threadPropertiesPanel.circles")}
+        value={settings.circles}
+        min={1}
+        max={20}
+        step={1}
+        disabled={!settings.fullFill}
+        onChange={(v) => store.setParabolicSettings({ circles: v })}
+      />
     </div>
   );
 }

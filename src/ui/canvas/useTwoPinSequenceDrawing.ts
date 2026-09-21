@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { findPinById, type EditorState, type EditorStore } from "../../application/document";
 import type { Point } from "../../domain/paths";
 import { nearestThreadInsertionPin } from "./hitTesting";
@@ -14,7 +14,14 @@ function isTwoPinTool(tool: EditorState["threadTool"]): tool is "zigzag" | "para
 // is currently nearest. A single candidate commits immediately on click 2, same as the
 // Arc tool's "no 3rd click needed" case when there's nothing to disambiguate.
 export function useTwoPinSequenceDrawing(store: EditorStore, state: EditorState, threadLayerId: string) {
-  const [secondPinCandidateId, setSecondPinCandidateId] = useState<string | null>(null);
+  // The pin currently under the cursor, whenever a PIN (not a candidate sequence) is
+  // what's being picked next — before click 1 (which pin would become the anchor) and
+  // between clicks 1 and 2 (which pin would become the second pin). Null once 2+
+  // candidates exist, since the cursor is then picking a SEQUENCE via nearest far
+  // endpoint (see handleMouseMove below), not a pin — same "Candidate highlight applies
+  // even with no active draft" precedent PinHighlightOverlay already documents for
+  // Thread Draw.
+  const [hoverPinId, setHoverPinId] = useState<string | null>(null);
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -52,17 +59,15 @@ export function useTwoPinSequenceDrawing(store: EditorStore, state: EditorState,
 
   function handleMouseMove(raw: Point, maxDist: number): void {
     const draft = state.twoPinDraft;
-    if (!draft) {
-      setSecondPinCandidateId(null);
+
+    // No draft yet, or awaiting the second pin: surface the nearest pin under the
+    // cursor — same shape as useThreadDrawing's own pre-draft/mid-draft candidate.
+    if (!draft || draft.candidates.length === 0) {
+      setHoverPinId(nearestThreadInsertionPin(state.pinLayers, state.activePinLayerId, raw, maxDist)?.pinId ?? null);
       return;
     }
 
-    if (draft.candidates.length === 0) {
-      setSecondPinCandidateId(nearestThreadInsertionPin(state.pinLayers, state.activePinLayerId, raw, maxDist)?.pinId ?? null);
-      return;
-    }
-
-    setSecondPinCandidateId(null);
+    setHoverPinId(null);
     // Nearest-candidate-by-far-endpoint: cheap and, since candidates mostly differ by
     // which arc/direction was taken, a good proxy for "which one is the cursor over."
     let bestIndex = draft.chosenIndex;
@@ -79,5 +84,18 @@ export function useTwoPinSequenceDrawing(store: EditorStore, state: EditorState,
     if (bestIndex !== draft.chosenIndex) store.setTwoPinChosenCandidate(bestIndex);
   }
 
-  return { secondPinCandidateId, handleMouseDown, handleMouseMove };
+  const statusText = useMemo(() => {
+    const draft = state.twoPinDraft;
+    if (!draft) {
+      // no draft started yet — still surface the nearest pin under the cursor so its
+      // id is known before the user commits to starting the draft.
+      return hoverPinId ? `Pin ${hoverPinId} — click to start.` : null;
+    }
+    if (draft.candidates.length === 0) {
+      return hoverPinId ? `From Pin ${draft.firstPinId} → ${hoverPinId} — click to compute.` : `From Pin ${draft.firstPinId} — click the second pin.`;
+    }
+    return `${draft.candidates.length} candidates — click anywhere to confirm the previewed one.`;
+  }, [state.twoPinDraft, hoverPinId]);
+
+  return { hoverPinId, handleMouseDown, handleMouseMove, statusText };
 }

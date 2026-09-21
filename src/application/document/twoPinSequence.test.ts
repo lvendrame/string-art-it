@@ -266,38 +266,47 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
     expect(withFullFill[0].sequence).toEqual(without[0].sequence);
   });
 
-  it("closed path: full-fill runs the SAME bounded-arc algorithm on both arcs, concatenated — first pair is still (A,B) in each", () => {
+  it("closed path: full-fill runs the SAME bounded-arc algorithm on both arcs, committed as TWO SEPARATE strands — first pair is still (A,B) in each", () => {
     const layers = makeLayer(8, true);
     const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true };
     const candidates = computeSamePathCandidates(layers, "p1", "p3", "zigzag", settings);
     expect(candidates).toHaveLength(1); // no 3rd click — both arcs are used, nothing to disambiguate
-    // Short arc (p1,p2,p3 -> zigzag [p1,p3,p2]) followed by the long arc (p1,p8,p7,p6,p5,p4,p3
-    // -> zigzag [p1,p3,p8,p4,p7,p5,p6]) — (A,B)=(p1,p3) is the first pair in BOTH arcs, exactly
-    // like the bounded (non-full-fill) algorithm already produces for a single arc.
-    expect(candidates[0].sequence).toEqual(seq("p1", "p3", "p2", "p1", "p3", "p8", "p4", "p7", "p5", "p6"));
+    // Short arc (p1,p2,p3 -> zigzag [p1,p3,p2]) and the long arc (p1,p8,p7,p6,p5,p4,p3
+    // -> zigzag [p1,p3,p8,p4,p7,p5,p6]) — (A,B)=(p1,p3) is the first pair in BOTH arcs,
+    // exactly like the bounded (non-full-fill) algorithm already produces for a single
+    // arc. Kept as two SEPARATE strands (sequence + extraSequences), not concatenated
+    // into one — concatenating would draw a spurious segment between wherever the
+    // short arc's zigzag ends and wherever the long arc's own (A,B) pair restarts.
+    expect(candidates[0].sequence).toEqual(seq("p1", "p3", "p2"));
+    expect(candidates[0].extraSequences).toEqual([seq("p1", "p3", "p8", "p4", "p7", "p5", "p6")]);
   });
 
   it("without full-fill, the same closed-path pair still needs the 3rd click (pick one arc) — unchanged", () => {
     const layers = makeLayer(8, true);
     const candidates = computeSamePathCandidates(layers, "p1", "p3", "zigzag", { stepA: 0, stepB: 0, fullFill: false });
     expect(candidates).toHaveLength(2);
+    expect(candidates[0].extraSequences).toBeUndefined();
+    expect(candidates[1].extraSequences).toBeUndefined();
   });
 
-  it("same-closed-path pair: circles=1 is one full both-arcs pass (today's per-arc shape, generalized to both arcs)", () => {
+  it("same-closed-path pair: circles=1 is one strand per arc (today's per-arc shape, generalized to both arcs)", () => {
     const layers = makeLayer(8, true);
     const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 1 };
     const candidates = computeSamePathCandidates(layers, "p1", "p3", "parabolic", settings);
     expect(candidates).toHaveLength(1);
-    // Short arc (parabolic, no reverse: [p1,p3,p2]) then long arc ([p1,p5,p8,p4,p7,p3,p6]).
-    expect(candidates[0].sequence).toEqual(seq("p1", "p3", "p2", "p1", "p5", "p8", "p4", "p7", "p3", "p6"));
+    // Short arc (parabolic, no reverse: [p1,p3,p2]) and long arc ([p1,p5,p8,p4,p7,p3,p6]).
+    expect(candidates[0].sequence).toEqual(seq("p1", "p3", "p2"));
+    expect(candidates[0].extraSequences).toEqual([seq("p1", "p5", "p8", "p4", "p7", "p3", "p6")]);
   });
 
-  it("same-closed-path pair: circles=3 repeats the same both-arcs pass 3 times", () => {
+  it("same-closed-path pair: circles=3 repeats the same pair of strands 3 times (6 strands total)", () => {
     const layers = makeLayer(8, true);
     const settingsOnce: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 1 };
     const settingsThrice: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 3 };
     const once = computeSamePathCandidates(layers, "p1", "p3", "parabolic", settingsOnce)[0];
     const thrice = computeSamePathCandidates(layers, "p1", "p3", "parabolic", settingsThrice)[0];
-    expect(thrice.sequence).toEqual([...once.sequence, ...once.sequence, ...once.sequence]);
+    const onceStrands = [once.sequence, ...(once.extraSequences ?? [])];
+    const thriceStrands = [thrice.sequence, ...(thrice.extraSequences ?? [])];
+    expect(thriceStrands).toEqual([...onceStrands, ...onceStrands, ...onceStrands]);
   });
 });

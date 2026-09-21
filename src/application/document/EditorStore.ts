@@ -989,7 +989,8 @@ export class EditorStore {
     const candidates = same.length > 0 ? same : computeCrossPathCandidates(this.state.pinLayers, draft.firstPinId, pinId, draft.tool, settings);
     if (candidates.length === 0) return;
     if (candidates.length === 1) {
-      this.commitTwoPinSequence(layerId, candidates[0].sequence);
+      const c = candidates[0];
+      this.commitTwoPinSequence(layerId, [c.sequence, ...(c.extraSequences ?? [])]);
       return;
     }
     this.state = { ...this.state, twoPinDraft: { ...draft, candidates: candidates.map((c) => c.sequence), chosenIndex: 0 } };
@@ -1006,16 +1007,26 @@ export class EditorStore {
   }
 
   // 3rd click ("Cut" on the radial menu too): commit whichever candidate is currently
-  // previewed. No-op before candidates exist (click 2 hasn't happened yet).
+  // previewed. No-op before candidates exist (click 2 hasn't happened yet). A candidate
+  // reachable through this path is always single-strand — full-fill (the only source of
+  // extraSequences) always collapses to exactly one candidate, which commits immediately
+  // via chooseSecondPin above and never reaches `draft.candidates`.
   resolveTwoPinDraft(layerId: string): void {
     const draft = this.state.twoPinDraft;
     if (!draft || draft.candidates.length === 0) return;
-    this.commitTwoPinSequence(layerId, draft.candidates[draft.chosenIndex]);
+    this.commitTwoPinSequence(layerId, [draft.candidates[draft.chosenIndex]]);
   }
 
-  private commitTwoPinSequence(layerId: string, pinIds: string[]): void {
+  // Commits one or more SEPARATE Thread Paths as ONE bundled undo step. Multiple
+  // entries only ever come from Case 1 closed-path full-fill (docs/specs/35-zigzag-
+  // parabolic-tools.md §Configuration) — each arc/circle is its own strand rather than
+  // one concatenated sequence, since a single ThreadPath always renders as one
+  // continuous connect-the-dots line and concatenating unrelated arcs would draw a
+  // spurious segment between wherever one arc ends and the next begins.
+  private commitTwoPinSequence(layerId: string, pinIdsList: string[][]): void {
     this.state = { ...this.state, twoPinDraft: null };
-    if (pinIds.length < 2) {
+    const valid = pinIdsList.filter((ids) => ids.length >= 2);
+    if (valid.length === 0) {
       this.notify();
       return;
     }
@@ -1023,8 +1034,11 @@ export class EditorStore {
       this.notify();
       return;
     }
-    const threadPath = createThreadPath(pinIds, this.state.threadDefaults.colours, this.state.threadDefaults.width, this.state.threadDefaults.twistPitch);
-    const nextLayers = addThreadPathToLayers(this.state.threadLayers, layerId, threadPath);
+    let nextLayers = this.state.threadLayers;
+    for (const ids of valid) {
+      const threadPath = createThreadPath(ids, this.state.threadDefaults.colours, this.state.threadDefaults.width, this.state.threadDefaults.twistPitch);
+      nextLayers = addThreadPathToLayers(nextLayers, layerId, threadPath);
+    }
     const command = new SetValueCommand<ThreadLayer[]>((l) => this.setThreadLayers(l), this.state.threadLayers, nextLayers);
     this.history.run(command);
   }

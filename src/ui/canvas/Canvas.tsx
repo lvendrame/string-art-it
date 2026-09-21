@@ -405,7 +405,7 @@ export function Canvas({ store }: { store: EditorStore }) {
               state={state}
               twoPinDraft={state.twoPinDraft}
               cursorDoc={cursorDoc}
-              secondPinCandidateId={twoPinDrawing.secondPinCandidateId}
+              secondPinCandidateId={twoPinDrawing.hoverPinId}
             />
           )}
 
@@ -468,12 +468,20 @@ export function Canvas({ store }: { store: EditorStore }) {
             </>
           )}
 
-          {state.mode === "thread" && (
+          {state.mode === "thread" && !isTwoPinTool && (
             <PinHighlightOverlay
               pinLayers={state.pinLayers}
               lastPinId={state.threadDraft?.pinIds.at(-1) ?? null}
               threadCandidateId={threadDrawing.threadCandidateId}
               usedPinIds={state.threadDraft?.pinIds.slice(0, -1) ?? []}
+            />
+          )}
+
+          {state.mode === "thread" && isTwoPinTool && (
+            <PinHighlightOverlay
+              pinLayers={state.pinLayers}
+              lastPinId={state.twoPinDraft?.firstPinId ?? null}
+              threadCandidateId={twoPinDrawing.hoverPinId}
             />
           )}
 
@@ -506,7 +514,7 @@ export function Canvas({ store }: { store: EditorStore }) {
         pinTool={state.pinTool}
         previewGeometry={activePreviewGeometry}
         spacing={state.pinDefaults.spacing}
-        threadStatusText={threadDrawing.statusText}
+        threadStatusText={isTwoPinTool ? twoPinDrawing.statusText : threadDrawing.statusText}
       />
     </div>
   );

@@ -124,6 +124,19 @@ export interface TwoPinCandidate {
   dirA: Direction;
   dirB?: Direction; // only meaningful for a Case 2 candidate
   sequence: string[];
+  // Additional SEPARATE Thread Paths committed alongside `sequence` — only populated
+  // by Case 1 closed-path full-fill (see below). Every ThreadPath is rendered as one
+  // continuous connect-the-dots line, so concatenating two independently-built arc
+  // sequences into a single `sequence` would draw a spurious straight segment between
+  // wherever the first arc happens to end and wherever the second starts (found live:
+  // clicking pins 68→1 on a closed ring produced an unwanted long chord where arc 1's
+  // zigzag ended). Keeping each arc/circle as its own strand avoids that entirely — a
+  // real string-art build already commonly ties off and starts a fresh strand instead
+  // of forcing one unbroken thread through unrelated points. Never populated for a
+  // candidate sitting in `TwoPinDraft.candidates` (disambiguation only ever applies to
+  // single-strand direction/arc choices; full-fill always collapses to exactly one
+  // candidate, so this only appears on a candidate that commits immediately).
+  extraSequences?: string[][];
 }
 
 // Every valid resolution for two anchors on the SAME Pin Path. An open path has
@@ -138,10 +151,12 @@ export interface TwoPinCandidate {
 // 3rd click, exactly the same "apply the existing algorithm to both options" rule
 // Case 2 uses: each arc still runs through the SAME unchanged buildSameRangeSequence
 // call the bounded (non-full-fill) case already uses — first pair is still (A,B) in
-// EACH arc, zigzagging inward from there — just concatenated instead of picking one.
-// That whole concatenated pass is then repeated `settings.circles` times (Parabolic
-// only; Zig-zag has no Circles field, so this is always effectively 1 — see
-// docs/specs/35-zigzag-parabolic-tools.md §Configuration).
+// EACH arc, zigzagging inward from there. The two arcs commit as SEPARATE Thread Paths
+// (`extraSequences`, see TwoPinCandidate) rather than one concatenated sequence — see
+// that type's doc comment for why. `settings.circles` repeats the whole arc-pair that
+// many times, each repetition its own pair of strands (Parabolic only; Zig-zag has no
+// Circles field, so this is always effectively 1 — see docs/specs/35-zigzag-parabolic-
+// tools.md §Configuration).
 export function computeSamePathCandidates(
   layers: PinLayer[],
   firstPinId: string,
@@ -176,9 +191,14 @@ export function computeSamePathCandidates(
   const backwardN = pinCount + 2 - forwardN;
 
   if (closed && settings.fullFill) {
-    const onePass = backwardN !== forwardN ? [...arcSequence(1, forwardN), ...arcSequence(-1, backwardN)] : arcSequence(1, forwardN);
-    const sequence = Array.from({ length: Math.max(1, Math.floor(settings.circles ?? 1)) }, () => onePass).flat();
-    return [{ dirA: 1, sequence }];
+    const circles = Math.max(1, Math.floor(settings.circles ?? 1));
+    const strands: string[][] = [];
+    for (let c = 0; c < circles; c++) {
+      strands.push(arcSequence(1, forwardN));
+      if (backwardN !== forwardN) strands.push(arcSequence(-1, backwardN));
+    }
+    const [sequence, ...extraSequences] = strands;
+    return [{ dirA: 1, sequence, extraSequences: extraSequences.length > 0 ? extraSequences : undefined }];
   }
 
   const candidates = [{ dirA: 1 as Direction, sequence: arcSequence(1, forwardN) }];

@@ -133,13 +133,13 @@ export interface ZigzagSettings {
   fullFill: boolean;
 }
 
-// Same shape as ZigzagSettings plus `circles` — only meaningful for a same-CLOSED-path
+// Same shape as ZigzagSettings plus `cycles` — only meaningful for a same-CLOSED-path
 // pair with fullFill on (every other combination ignores it; see twoPinSequence.ts).
 export interface ParabolicSettings {
   stepA: number;
   stepB: number;
   fullFill: boolean;
-  circles: number;
+  cycles: number;
 }
 
 export interface EditorState {

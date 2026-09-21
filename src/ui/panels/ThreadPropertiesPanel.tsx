@@ -114,8 +114,8 @@ function ZigzagSettingsBox({ store, settings }: { store: EditorStore; settings: 
   );
 }
 
-// Same shape as ZigzagSettingsBox plus Circles, enabled only while Full-fill is
-// checked — it has no effect otherwise (twoPinSequence.ts: circles only applies to a
+// Same shape as ZigzagSettingsBox plus Cycles, enabled only while Full-fill is
+// checked — it has no effect otherwise (twoPinSequence.ts: cycles only applies to a
 // same-CLOSED-path pair with fullFill on).
 function ParabolicSettingsBox({ store, settings }: { store: EditorStore; settings: ParabolicSettings }) {
   const { t } = useTranslation("panels");
@@ -128,13 +128,13 @@ function ParabolicSettingsBox({ store, settings }: { store: EditorStore; setting
       <SliderField label={t("threadPropertiesPanel.stepB")} value={settings.stepB} min={0} max={9} step={1} onChange={(v) => store.setParabolicSettings({ stepB: v })} />
       <CheckboxField label={t("threadPropertiesPanel.fullFill")} checked={settings.fullFill} onChange={(v) => store.setParabolicSettings({ fullFill: v })} />
       <SliderField
-        label={t("threadPropertiesPanel.circles")}
-        value={settings.circles}
+        label={t("threadPropertiesPanel.cycles")}
+        value={settings.cycles}
         min={1}
         max={20}
         step={1}
         disabled={!settings.fullFill}
-        onChange={(v) => store.setParabolicSettings({ circles: v })}
+        onChange={(v) => store.setParabolicSettings({ cycles: v })}
       />
     </div>
   );

@@ -112,7 +112,7 @@ Both tools expose a small "next-draw settings" panel in `ThreadPropertiesPanel.t
 | Step A | both | 0–9 (integer) | 0 | Stride applied to side A (Case 1: firstHalf; Case 2: the first-clicked pin's own run) |
 | Step B | both | 0–9 (integer) | 0 | Same, for side B |
 | Full-fill | both | on/off | off | Use both of an anchor's directions/arcs instead of requiring a 3rd click to pick one |
-| Circles | Parabolic only | 1–20 (integer) | 1 | Enabled only while Full-fill is checked. Only has an effect on a same-CLOSED-path pair (see below) |
+| Cycles | Parabolic only | 1–20 (integer) | 1 | Enabled only while Full-fill is checked. Only has an effect on a same-CLOSED-path pair (see below) |
 
 ### step-by
 
@@ -132,9 +132,17 @@ Full-fill doesn't introduce a new algorithm — it applies the **same** directio
 
 - **Case 2 (different Pin Paths)**: without full-fill, an anchor pin sitting mid-path (not at a true endpoint) has two viable directions along its own path — today's existing 3rd-click disambiguation, unchanged. With full-fill, that anchor instead combines *both* directions into one run (every pin walking outward one way, then every pin walking outward the other way, anchor de-duplicated) — eliminating that anchor's own direction choice, so no 3rd click is needed for it. An anchor already at a true endpoint is unaffected either way (it only ever had one direction with real extent). The two anchors' resulting runs are still paired by simple interleave, truncated to whichever ends up shorter — full-fill's completeness comes entirely from each anchor using every one of its own reachable pins, not from extending the pairing itself past the shorter run.
 - **Case 1 (same Pin Path), open path**: no effect — the second clicked pin already forces a single direction, so there's no direction/arc choice for full-fill to combine away.
-- **Case 1 (same Pin Path), closed path, Zig-zag**: without full-fill, the two arcs between the clicked pins are separate 3rd-click candidates (existing behaviour). With full-fill, **both arcs are used** — the same unchanged firstHalf/secondHalf pairing the bounded (non-full-fill) case already runs is run once per arc, and each arc commits as its own **separate Thread Path** (not concatenated into one). Each arc's own pairing still starts with `(A, B)` as its first pair (exactly like today's single-arc result), then zigzags inward from there — full-fill just means neither arc is thrown away for the other, so no 3rd click is needed to pick one. Both Thread Paths are created together as one bundled undo step. They stay separate deliberately: a `ThreadPath` always renders as one continuous connect-the-dots line, so concatenating two independently-built arcs into a single `pinIds` array would draw a spurious straight segment wherever one arc's zigzag happens to end and the next arc's own `(A, B)` pair restarts — a real bug caught live (clicking two pins on a closed ring produced an unwanted long chord at exactly that boundary). One pass over both arcs is one **circle**; the identical pair of strands repeats `circles` times — for Zig-zag this stays fixed at 1 (Zig-zag has no Circles field at all).
+- **Case 1 (same Pin Path), closed path, Zig-zag**: without full-fill, the two arcs between the clicked pins are separate 3rd-click candidates (existing behaviour). With full-fill, **both arcs are used** — the same unchanged firstHalf/secondHalf pairing the bounded (non-full-fill) case already runs is run once per arc, and each arc commits as its own **separate Thread Path** (not concatenated into one). Each arc's own pairing still starts with `(A, B)` as its first pair (exactly like today's single-arc result), then zigzags inward from there — full-fill just means neither arc is thrown away for the other, so no 3rd click is needed to pick one. Both Thread Paths are created together as one bundled undo step. They stay separate deliberately: a `ThreadPath` always renders as one continuous connect-the-dots line, so concatenating two independently-built arcs into a single `pinIds` array would draw a spurious straight segment wherever one arc's zigzag happens to end and the next arc's own `(A, B)` pair restarts — a real bug caught live (clicking two pins on a closed ring produced an unwanted long chord at exactly that boundary). One pass over both arcs is one **circle**; the identical pair of strands repeats `cycles` times — for Zig-zag this stays fixed at 1 (Zig-zag has no Cycles field at all).
 
-- **Case 1 (same Pin Path), closed path, Parabolic**: a genuinely different shape from Zig-zag's — not the firstHalf/secondHalf split at all. Full-fill keeps the **same constant offset** between the clicked pins and just keeps walking: pin A and pin B both advance one step at a time around the whole ring in lockstep (`A+k`, `B+k` for `k = 0..pinCount-1`, both mod `pinCount`), producing one continuous Thread Path — the first pair is `(A, B)` exactly as clicked, and the walk stops one step before it would repeat that same pair (so no closing segment back to the start is ever added). Confirmed against a real reported example: clicking pins 125 and 22 on a 141-pin ring produces `[125,22, 126,23, 127,24, ..., 123,20, 124,21]` — 141 pairs, single strand. Reuses the existing `extractIds`/`strideList`/`interleave` primitives unchanged (one full lap extracted from each anchor, each independently strided by its own Step A/Step B, then interleaved) — no new pairing math, just a different starting SHAPE (a full lap per anchor instead of a bounded arc). One lap is one **circle**; `circles` repeats it that many times, each repetition its own separate Thread Path (same "don't concatenate — it draws a spurious boundary segment" reasoning as Zig-zag's two arcs above), all created together as one bundled undo step.
+- **Case 1 (same Pin Path), closed path, Parabolic**: a genuinely different shape from Zig-zag's — not the firstHalf/secondHalf split at all. Full-fill keeps the **same constant offset** between the clicked pins and just keeps walking: pin A and pin B both advance one step at a time around the whole ring in lockstep, producing one continuous Thread Path — the first pair is `(A, B)` exactly as clicked. The walk stops the moment EITHER anchor reaches or passes its own starting pin — that's one **circle**. A side doesn't have to land exactly back on its own start to count: if its stride skips past it, the pin it overshoots onto is the stopping point.
+
+  For a side whose stride divides `pinCount` exactly, it always lands exactly on its own start — that hop is excluded (no redundant repeat of the pair). For a side whose stride does NOT divide `pinCount`, it never lands exactly on its own start — the hop where it first overshoots past it is included instead, since that pin was never otherwise visited. The walk runs for whichever side reaches this point first.
+
+  Confirmed against real examples: pins 125/22 on a 141-pin ring (Step A = Step B = 0, stride 1 for both — always divides exactly) gives `[125,22, 126,23, ..., 123,20, 124,21]`, 141 pairs; a 119-pin ring with Step A and Step B both set to skip 1 (stride 2, and `gcd(119,2)=1` — stride 2 still divides 119's own return length exactly, since both sides use the same stride) gives a full 119-pair walk. Pins 99/19 on that same 119-pin ring but with only Step B set to skip 1 (Step A=0/stride 1, Step B=1/stride 2 — 119 is odd, so stride 2 does NOT divide it exactly) stops at 61 pairs, not 119: B overshoots its own start on every lap and never lands on it exactly, so its own stopping hop is `ceil(119/2) + 1 = 61`, shorter than A's exact 119. Pins 124/15 on a 151-pin ring (Step A=0/stride 1, Step B=2/stride 3 — 151 is prime, so stride 3 doesn't divide it exactly either) stops at 52 pairs for the same reason (`ceil(151/3) + 1 = 52`). On a 10-pin ring with Step A=0/stride 1 and Step B=2/stride 3 (10 isn't a multiple of 3), B's walk is `2,5,8,1,4` — its last term, 4, is the pin it overshoots onto rather than landing back on its own start, 2.
+
+  Reuses the existing `interleave` primitive (one modular-cycle walk extracted per anchor, independently strided, each run out to the SHARED longer cycle length rather than each to its own).
+
+  Reaching/passing a side's own starting pin once is one **circle**; `cycles` extends the SAME walk until a side has reached/passed its own starting pin that many times — ONE continuous Thread Path, not `cycles` separate repeats (unlike Zig-zag's two-arc case above, which does use separate strands). `cycles=1`'s sequence is always an exact prefix of `cycles=2`'s, which is an exact prefix of `cycles=3`'s, and so on.
 
 ## Test Cases
 
@@ -226,25 +234,35 @@ Feature: Zig-zag / Parabolic tool sequence math
     When the user completes a draft between two of its pins
     Then no 3rd click is needed, and TWO Thread Paths are created together as one undo step — the short arc's own bounded-arc pairing, and the long arc's own bounded-arc pairing — each starting with (A,B) as its first pair, with no segment connecting the two
 
-  Scenario: Zig-zag Circles repeats the pair of strands
-    Given the same closed-path Zig-zag setup as above but Circles set to 3
+  Scenario: Zig-zag Cycles repeats the pair of strands
+    Given the same closed-path Zig-zag setup as above but Cycles set to 3
     When the draft is committed
     Then 6 Thread Paths are created (3 repetitions of the short-arc/long-arc pair), all as one undo step
 
   Scenario: Parabolic full-fill on a closed-path pair is a single continuous constant-offset walk, not the two-arc shape
-    Given a closed Pin Path and the Parabolic tool active, Full-fill on, Circles set to 1
+    Given a closed Pin Path and the Parabolic tool active, Full-fill on, Cycles set to 1
     When the user clicks two of its pins, A then B
-    Then no 3rd click is needed, and ONE Thread Path is created whose first pair is (A,B), continuing with both pins advancing together one step at a time around the whole ring, stopping one step before the pair would repeat (A,B) again
+    Then no 3rd click is needed, and ONE Thread Path is created whose first pair is (A,B), continuing with both pins advancing together one step at a time around the whole ring, stopping once either pin reaches or passes its own starting position
 
-  Scenario: Parabolic Circles repeats the constant-offset walk as separate strands
-    Given the same closed-path Parabolic setup as above but Circles set to 3
+  Scenario: Parabolic Cycles extends the same walk instead of repeating it as separate strands
+    Given the same closed-path Parabolic setup as above but Cycles set to 3
     When the draft is committed
-    Then 3 Thread Paths are created (3 repetitions of the same constant-offset walk), all as one undo step
+    Then still ONE Thread Path is created, whose sequence starts with exactly the Cycles=1 sequence and continues until a side has reached/passed its own starting pin 3 times total
 
-  Scenario: Circles has no effect outside a same-closed-path pair
-    Given two different Pin Paths, Parabolic tool active, Full-fill on, Circles set to 5
+  Scenario: Equal strides coprime with the pin count visit every pin before repeating, not a truncated half
+    Given a closed Pin Path with an odd pin count and the Parabolic tool active, Full-fill on, Step A and Step B both set to skip 1 pin (stride 2)
+    When the user completes a draft between two of its pins
+    Then the resulting walk has as many pairs as the pin count, not roughly half of it
+
+  Scenario: The walk stops as soon as either anchor reaches or passes its own starting pin
+    Given a closed Pin Path and the Parabolic tool active, Full-fill on, Step A and Step B set to different strides
+    When the user clicks pin A then pin B
+    Then ONE Thread Path is created stopping at whichever anchor reaches or passes its own starting pin first — exactly, if its stride divides pinCount, or by overshooting onto a not-yet-visited pin otherwise
+
+  Scenario: Cycles has no effect outside a same-closed-path pair
+    Given two different Pin Paths, Parabolic tool active, Full-fill on, Cycles set to 5
     When the user completes a draft between them
-    Then the resulting Thread Path is identical to the same draft with Circles left at 1
+    Then the resulting Thread Path is identical to the same draft with Cycles left at 1
 ```
 
 ## Scope limits

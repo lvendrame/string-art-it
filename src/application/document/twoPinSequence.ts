@@ -18,14 +18,14 @@ export type TwoPinTool = "zigzag" | "parabolic";
 
 // docs/specs/35-zigzag-parabolic-tools.md §Configuration — per-draft fill settings.
 // `stepA`/`stepB` are independent per SIDE (Case 1: firstHalf/secondHalf; Case 2: the
-// two paths' own anchors), not per tool. `circles` only has an effect on a
+// two paths' own anchors), not per tool. `cycles` only has an effect on a
 // same-CLOSED-path pair with `fullFill` on — every other combination ignores it.
 export interface TwoPinFillSettings {
   stepA: number;
   stepB: number;
   fullFill: boolean;
-  // Zig-zag has no Circles field at all — always effectively 1 (a single ring pass).
-  circles?: number;
+  // Zig-zag has no Cycles field at all — always effectively 1 (a single ring pass).
+  cycles?: number;
 }
 
 function reverseSecondFor(tool: TwoPinTool, sameCase: boolean): boolean {
@@ -83,24 +83,48 @@ export function interleave<T>(a: T[], b: T[]): T[] {
   return out;
 }
 
-// Parabolic + closed path + full-fill: a single continuous "constant offset" walk —
-// pin A's own position and pin B's own position both advance together (one full lap
-// each, starting at A and at B respectively) rather than being paired via the
-// firstHalf/secondHalf split every other case uses. This is what full-fill actually
-// means for Parabolic on a closed ring (confirmed against a real example: clicking
-// pins 125 and 22 on a 141-pin ring should keep inserting the SAME (A,B) offset —
-// [125,22, 126,23, 127,24, ...] — all the way around, stopping just before it would
-// repeat the very first pair again (excluded — that pair is already implied by having
-// started there); NOT the firstHalf/secondHalf-split "two separate arcs" shape
-// Zig-zag's closed-path full-fill uses). Reuses the existing extractIds/strideList/
-// interleave primitives unchanged — no new pairing math, matching the same "apply the
-// existing algorithm" principle everything else in this module follows; only the
-// SHAPE of what gets extracted (one full lap per anchor, not a bounded arc) differs.
-function ringWalkSequence(path: PinPath, indexA: number, indexB: number, groupIndex: number, settings: TwoPinFillSettings): string[] {
+function pinIdAt(path: PinPath, index: number, groupIndex: number): string {
+  const pin = path.pins[index];
+  return groupIndex === -1 ? pin.id : mirroredPinId(pin.id, groupIndex);
+}
+
+// Hop count for a side's own walk to reach or pass its own starting pin for the
+// `cycles`-th time — the first hop whose cumulative offset (hop count × stride) is at
+// least `cycles × n`. A stride that divides that target exactly lands ON the starting
+// pin, so that hop is excluded (stop before repeating it); any other stride overshoots
+// past it onto a not-yet-visited pin, so that hop is the one that counts as "passed"
+// and is included.
+function hopsToPassOwnOrigin(n: number, stride: number, cycles: number): number {
+  const target = cycles * n;
+  const boundary = Math.ceil(target / stride);
+  return target % stride === 0 ? boundary : boundary + 1;
+}
+
+// One side's own pin sequence for ringWalkSequence: starts at `startIndex`, advances
+// by `stride` each hop wrapping mod `path.pins.length`, and stops once it has taken
+// `hopCount` hops.
+function ringSide(path: PinPath, startIndex: number, stride: number, hopCount: number, groupIndex: number): string[] {
   const n = path.pins.length;
-  const aIds = extractIds(path, indexA, 1, n, true, groupIndex);
-  const bIds = extractIds(path, indexB, 1, n, true, groupIndex);
-  return interleave(strideList(aIds, settings.stepA), strideList(bIds, settings.stepB));
+  const ids: string[] = [];
+  let cur = startIndex;
+  for (let k = 0; k < hopCount; k++) {
+    ids.push(pinIdAt(path, cur, groupIndex));
+    cur = (cur + stride) % n;
+  }
+  return ids;
+}
+
+// Parabolic + closed path + full-fill: pin A and pin B advance together around the
+// ring, one hop each per step, until the FIRST of the two reaches or passes its own
+// starting pin for the `cycles`-th time — one continuous Thread Path, not `cycles`
+// separate repeats of the same short walk.
+function ringWalkSequence(path: PinPath, indexA: number, indexB: number, groupIndex: number, settings: TwoPinFillSettings): string[] {
+  const strideA = Math.max(0, Math.floor(settings.stepA)) + 1;
+  const strideB = Math.max(0, Math.floor(settings.stepB)) + 1;
+  const n = path.pins.length;
+  const cycles = Math.max(1, Math.floor(settings.cycles ?? 1));
+  const hopCount = Math.min(hopsToPassOwnOrigin(n, strideA, cycles), hopsToPassOwnOrigin(n, strideB, cycles));
+  return interleave(ringSide(path, indexA, strideA, hopCount, groupIndex), ringSide(path, indexB, strideB, hopCount, groupIndex));
 }
 
 // Case 1 (same Pin Path): one contiguous range walked from A to B (range[0] === A,
@@ -173,9 +197,9 @@ export interface TwoPinCandidate {
 // call the bounded (non-full-fill) case already uses — first pair is still (A,B) in
 // EACH arc, zigzagging inward from there. The two arcs commit as SEPARATE Thread Paths
 // (`extraSequences`, see TwoPinCandidate) rather than one concatenated sequence — see
-// that type's doc comment for why. `settings.circles` repeats the whole arc-pair that
+// that type's doc comment for why. `settings.cycles` repeats the whole arc-pair that
 // many times, each repetition its own pair of strands (Parabolic only; Zig-zag has no
-// Circles field, so this is always effectively 1 — see docs/specs/35-zigzag-parabolic-
+// Cycles field, so this is always effectively 1 — see docs/specs/35-zigzag-parabolic-
 // tools.md §Configuration).
 export function computeSamePathCandidates(
   layers: PinLayer[],
@@ -211,17 +235,17 @@ export function computeSamePathCandidates(
   const backwardN = pinCount + 2 - forwardN;
 
   if (closed && settings.fullFill) {
-    const circles = Math.max(1, Math.floor(settings.circles ?? 1));
-    // Parabolic: one continuous constant-offset lap per circle (ringWalkSequence).
-    // Zig-zag: the existing two-separate-arcs shape, unchanged. Every circle/arc still
-    // commits as its own SEPARATE strand (never concatenated) for the same reason
-    // documented on TwoPinCandidate.extraSequences — a single ThreadPath always
-    // renders as one continuous line, so gluing independently-built pieces together
-    // draws a spurious segment at their boundary.
-    const strands: string[][] =
-      tool === "parabolic"
-        ? Array.from({ length: circles }, () => ringWalkSequence(path, indexA, indexB, groupIndex, settings))
-        : Array.from({ length: circles }).flatMap(() => (backwardN !== forwardN ? [arcSequence(1, forwardN), arcSequence(-1, backwardN)] : [arcSequence(1, forwardN)]));
+    // Parabolic: ringWalkSequence handles `cycles` internally, producing ONE
+    // continuous walk that keeps going until a side has reached/passed its own
+    // starting pin `cycles` times — not `cycles` separate repeats of the same walk.
+    if (tool === "parabolic") {
+      return [{ dirA: 1, sequence: ringWalkSequence(path, indexA, indexB, groupIndex, settings) }];
+    }
+    // Zig-zag: the existing two-separate-arcs shape, unchanged — `cycles` still
+    // repeats the whole arc-pair as separate strands (never concatenated) for the
+    // reason documented on TwoPinCandidate.extraSequences.
+    const cycles = Math.max(1, Math.floor(settings.cycles ?? 1));
+    const strands = Array.from({ length: cycles }).flatMap(() => (backwardN !== forwardN ? [arcSequence(1, forwardN), arcSequence(-1, backwardN)] : [arcSequence(1, forwardN)]));
     const [sequence, ...extraSequences] = strands;
     return [{ dirA: 1, sequence, extraSequences: extraSequences.length > 0 ? extraSequences : undefined }];
   }

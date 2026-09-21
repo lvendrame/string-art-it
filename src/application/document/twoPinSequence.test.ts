@@ -249,11 +249,11 @@ describe("full-fill — Case 2 (different Pin Paths): combines a mid-path anchor
     );
   });
 
-  it("Circles has no effect here at all (only read for a same-closed-path pair)", () => {
+  it("Cycles has no effect here at all (only read for a same-closed-path pair)", () => {
     const layers = makeTwoPaths(10, 10);
-    const withoutCircles = computeCrossPathCandidates(layers, "a5", "b1", "parabolic", { stepA: 0, stepB: 0, fullFill: true });
-    const withCircles = computeCrossPathCandidates(layers, "a5", "b1", "parabolic", { stepA: 0, stepB: 0, fullFill: true, circles: 5 });
-    expect(withCircles[0].sequence).toEqual(withoutCircles[0].sequence);
+    const withoutCycles = computeCrossPathCandidates(layers, "a5", "b1", "parabolic", { stepA: 0, stepB: 0, fullFill: true });
+    const withCycles = computeCrossPathCandidates(layers, "a5", "b1", "parabolic", { stepA: 0, stepB: 0, fullFill: true, cycles: 5 });
+    expect(withCycles[0].sequence).toEqual(withoutCycles[0].sequence);
   });
 });
 
@@ -298,7 +298,7 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
     // is a plain "walk A forward, walk B forward in lockstep" using the SAME
     // extractIds/strideList/interleave primitives, not the arc-split algorithm.
     const layers = makeLayer(8, true);
-    const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 1 };
+    const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, cycles: 1 };
     const candidates = computeSamePathCandidates(layers, "p1", "p3", "parabolic", settings);
     expect(candidates).toHaveLength(1);
     expect(candidates[0].extraSequences).toBeUndefined();
@@ -311,30 +311,34 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
 
   it("Zig-zag same-closed-path pair keeps the two-arc shape (unaffected by the Parabolic change above)", () => {
     const layers = makeLayer(8, true);
-    const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 1 };
+    const settings: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, cycles: 1 };
     const candidates = computeSamePathCandidates(layers, "p1", "p3", "zigzag", settings);
     expect(candidates).toHaveLength(1);
     expect(candidates[0].sequence).toEqual(seq("p1", "p3", "p2"));
     expect(candidates[0].extraSequences).toEqual([seq("p1", "p3", "p8", "p4", "p7", "p5", "p6")]);
   });
 
-  it("Parabolic circles=3 repeats the ring-walk 3 times as 3 separate strands (1 strand per circle)", () => {
+  it("Parabolic cycles=3 continues the SAME walk for 3 origin-passes, as one continuous strand (not 3 separate repeats)", () => {
+    // Confirmed by the user: cycles>1 should keep extending the same walk until a side
+    // has reached/passed its own starting pin `cycles` times, not restart from scratch
+    // as separate overlapping strands — cycles=3's sequence starts with exactly
+    // cycles=1's sequence, then keeps going for 2 more passes.
     const layers = makeLayer(8, true);
-    const settingsOnce: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 1 };
-    const settingsThrice: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 3 };
+    const settingsOnce: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, cycles: 1 };
+    const settingsThrice: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, cycles: 3 };
     const once = computeSamePathCandidates(layers, "p1", "p3", "parabolic", settingsOnce)[0];
     const thrice = computeSamePathCandidates(layers, "p1", "p3", "parabolic", settingsThrice)[0];
-    const onceStrands = [once.sequence, ...(once.extraSequences ?? [])];
-    const thriceStrands = [thrice.sequence, ...(thrice.extraSequences ?? [])];
-    expect(onceStrands).toHaveLength(1);
-    expect(thriceStrands).toHaveLength(3);
-    expect(thriceStrands).toEqual([...onceStrands, ...onceStrands, ...onceStrands]);
+    expect(once.extraSequences).toBeUndefined();
+    expect(thrice.extraSequences).toBeUndefined();
+    expect(once.sequence).toHaveLength(16); // 8 pairs
+    expect(thrice.sequence).toHaveLength(48); // 24 pairs (3x)
+    expect(thrice.sequence.slice(0, 16)).toEqual(once.sequence);
   });
 
-  it("Zig-zag circles=3 still repeats the arc-pair 3 times as 6 separate strands (unchanged)", () => {
+  it("Zig-zag cycles=3 still repeats the arc-pair 3 times as 6 separate strands (unchanged)", () => {
     const layers = makeLayer(8, true);
-    const settingsOnce: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 1 };
-    const settingsThrice: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, circles: 3 };
+    const settingsOnce: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, cycles: 1 };
+    const settingsThrice: TwoPinFillSettings = { stepA: 0, stepB: 0, fullFill: true, cycles: 3 };
     const once = computeSamePathCandidates(layers, "p1", "p3", "zigzag", settingsOnce)[0];
     const thrice = computeSamePathCandidates(layers, "p1", "p3", "zigzag", settingsThrice)[0];
     const onceStrands = [once.sequence, ...(once.extraSequences ?? [])];
@@ -359,5 +363,95 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
     const pairs: [string, string][] = [];
     for (let i = 0; i < sequence.length; i += 2) pairs.push([sequence[i], sequence[i + 1]]);
     expect(pairs.filter(([x, y]) => x === "p125" && y === "p22")).toHaveLength(1);
+  });
+
+  it("reproduces the exact reported example: 119-pin ring, pins 99 & 19, Step A 0 / Step B 1, Parabolic full-fill", () => {
+    // Pins 99/19 on a 119-pin ring, Step A=0 (stride 1) and Step B=1 (stride 2). Stride
+    // 1 always divides pinCount exactly, so A's own hop count is 119 (stop before
+    // repeating its own start). Stride 2 does NOT divide 119 exactly (119 is odd), so B
+    // overshoots its own start rather than landing on it — its hop count is
+    // ceil(119/2)+1 = 61, INCLUDING the pin that overshoots. The walk stops at
+    // min(119, 61) = 61.
+    const layers = makeLayer(119, true);
+    const settings: TwoPinFillSettings = { stepA: 0, stepB: 1, fullFill: true };
+    const candidates = computeSamePathCandidates(layers, "p99", "p19", "parabolic", settings);
+    expect(candidates).toHaveLength(1);
+    const sequence = candidates[0].sequence;
+    expect(sequence).toHaveLength(122); // 61 pairs
+    expect(sequence.slice(0, 10)).toEqual(seq("p99", "p19", "p100", "p21", "p101", "p23", "p102", "p25", "p103", "p27"));
+    expect(sequence.slice(-6)).toEqual(seq("p38", "p16", "p39", "p18", "p40", "p20"));
+  });
+
+  it("cycles=3 on that same example continues the SAME walk for 3 origin-passes, as one continuous strand", () => {
+    const layers = makeLayer(119, true);
+    const settingsOnce: TwoPinFillSettings = { stepA: 0, stepB: 1, fullFill: true, cycles: 1 };
+    const settingsThrice: TwoPinFillSettings = { stepA: 0, stepB: 1, fullFill: true, cycles: 3 };
+    const once = computeSamePathCandidates(layers, "p99", "p19", "parabolic", settingsOnce)[0];
+    const thrice = computeSamePathCandidates(layers, "p99", "p19", "parabolic", settingsThrice)[0];
+    expect(thrice.extraSequences).toBeUndefined();
+    expect(thrice.sequence).toHaveLength(360); // 180 pairs
+    expect(thrice.sequence.slice(0, once.sequence.length)).toEqual(once.sequence);
+    expect(thrice.sequence.slice(-10)).toEqual(seq("p36", "p12", "p37", "p14", "p38", "p16", "p39", "p18", "p40", "p20"));
+  });
+
+  it("reproduces the exact reported example: 151-pin ring, pins 124 & 15, Step A 0 / Step B 2, Parabolic full-fill", () => {
+    // Pins 124/15 on a 151-pin ring, Step A=0 (stride 1) and Step B=2 (stride 3).
+    // Stride 1 always divides pinCount exactly, so A's own hop count is 151. Stride 3
+    // does NOT divide 151 exactly (151 is prime), so B overshoots rather than landing
+    // exactly — its hop count is ceil(151/3)+1 = 52, including the overshoot pin. The
+    // walk stops at min(151, 52) = 52.
+    const layers = makeLayer(151, true);
+    const settings: TwoPinFillSettings = { stepA: 0, stepB: 2, fullFill: true };
+    const candidates = computeSamePathCandidates(layers, "p124", "p15", "parabolic", settings);
+    expect(candidates).toHaveLength(1);
+    const sequence = candidates[0].sequence;
+    expect(sequence).toHaveLength(104); // 52 pairs
+    expect(sequence.slice(0, 8)).toEqual(seq("p124", "p15", "p125", "p18", "p126", "p21", "p127", "p24"));
+    expect(sequence.slice(-6)).toEqual(seq("p22", "p11", "p23", "p14", "p24", "p17"));
+  });
+
+  it("stops as soon as either anchor returns to its OWN starting pin — that's one cycle", () => {
+    // Confirmed directly by the user, correcting an earlier statement of theirs: the
+    // walk stops the moment ANY vertex reaches/passes its own origin pin, not once the
+    // pair as a whole realigns. On a 12-pin ring, Step A=0 (stride 1, cycle length 12)
+    // vs Step B=3 (stride 4, cycle length 3, since gcd(12,4)=4) — B is the first to
+    // return to its own start, after 3 hops, so the walk stops there.
+    const layers = makeLayer(12, true);
+    const settings: TwoPinFillSettings = { stepA: 0, stepB: 3, fullFill: true };
+    const candidates = computeSamePathCandidates(layers, "p1", "p2", "parabolic", settings);
+    expect(candidates).toHaveLength(1);
+    const sequence = candidates[0].sequence;
+    expect(sequence).toHaveLength(6); // 3 pairs — bounded by B's shorter cycle
+    expect(sequence).toEqual(seq("p1", "p2", "p2", "p6", "p3", "p10"));
+  });
+
+  it("uses the shorter of the two anchors' own cycle lengths even when neither divides the other", () => {
+    // On a 12-pin ring, Step A=2 (stride 3, cycle length 4, since gcd(12,3)=3) and
+    // Step B=1 (stride 2, cycle length 6, since gcd(12,2)=2) — A is first back to its
+    // own start, after 4 hops.
+    const layers = makeLayer(12, true);
+    const settings: TwoPinFillSettings = { stepA: 2, stepB: 1, fullFill: true };
+    const candidates = computeSamePathCandidates(layers, "p1", "p2", "parabolic", settings);
+    expect(candidates).toHaveLength(1);
+    const sequence = candidates[0].sequence;
+    expect(sequence).toHaveLength(8); // 4 pairs — bounded by A's shorter cycle
+    expect(sequence).toEqual(seq("p1", "p2", "p4", "p4", "p7", "p6", "p10", "p8"));
+  });
+
+  it("a side that overshoots its own origin (stride doesn't divide pinCount) includes the overshooting pin", () => {
+    // Confirmed by the user with a concrete example: if a side's own origin is pin 12
+    // and its stride skips past it landing on pin 13 instead of exactly on 12, that
+    // pin 13 counts as having "passed" the origin and is the side's stopping point —
+    // unlike a stride that lands exactly ON its origin (excluded, so the pair isn't
+    // redundantly repeated). On a 10-pin ring, Step A=0 (stride 1, divides 10 exactly)
+    // vs Step B=2 (stride 3, does NOT divide 10) — B never lands exactly back on its
+    // own start within its walk, so its final term is the pin where it first overshoots.
+    const layers = makeLayer(10, true);
+    const settings: TwoPinFillSettings = { stepA: 0, stepB: 2, fullFill: true };
+    const candidates = computeSamePathCandidates(layers, "p1", "p2", "parabolic", settings);
+    expect(candidates).toHaveLength(1);
+    const sequence = candidates[0].sequence;
+    expect(sequence).toHaveLength(10); // 5 pairs
+    expect(sequence).toEqual(seq("p1", "p2", "p2", "p5", "p3", "p8", "p4", "p1", "p5", "p4"));
   });
 });

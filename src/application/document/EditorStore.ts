@@ -70,7 +70,7 @@ const DEFAULT_THREAD_DEFAULTS: ThreadDefaults = { colours: ["#5b8def"], width: 1
 // docs/specs/35-zigzag-parabolic-tools.md §Configuration — step=0 on both sides and
 // fullFill off reproduces the tools' original (pre-configuration) shipped behaviour.
 const DEFAULT_ZIGZAG_SETTINGS: ZigzagSettings = { stepA: 0, stepB: 0, fullFill: false };
-const DEFAULT_PARABOLIC_SETTINGS: ParabolicSettings = { stepA: 0, stepB: 0, fullFill: false, circles: 1 };
+const DEFAULT_PARABOLIC_SETTINGS: ParabolicSettings = { stepA: 0, stepB: 0, fullFill: false, cycles: 1 };
 
 // eraser/path-eraser aren't shape tools — switching to one shouldn't clobber the pin
 // defaults a user just dialled in for their next shape.

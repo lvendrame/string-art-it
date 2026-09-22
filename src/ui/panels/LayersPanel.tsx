@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import type { EditorStore } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
+import "./LayersPanel.css";
 
 const LAYERS_TOOLTIP_ID = "layers-panel-actions-tooltip";
 
@@ -27,13 +28,12 @@ function IconActionButton({
 }) {
   return (
     <button
-      className="btn"
+      className={`btn layers-panel__action-btn${danger ? " layers-panel__action-btn--danger" : ""}`}
       onClick={onClick}
       disabled={disabled}
       aria-label={label}
       data-tooltip-id={LAYERS_TOOLTIP_ID}
       data-tooltip-content={label}
-      style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 8, ...(danger ? { color: "var(--danger)" } : {}) }}
     >
       <Icon size={15} />
     </button>
@@ -95,28 +95,23 @@ function LayerRow({
   const [draftName, setDraftName] = useState(layer.name);
 
   return (
-    <div
-      onClick={onSelect}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 9,
-        padding: "9px 16px",
-        cursor: "pointer",
-        borderLeft: `2px solid ${active ? "var(--accent)" : "transparent"}`,
-        background: active ? "var(--accent-soft)" : "transparent",
-      }}
-    >
+    <div onClick={onSelect} className={`layers-panel__row${active ? " layers-panel__row--active" : ""}`}>
       <button
-        onClick={(e) => { e.stopPropagation(); onToggleVisible(); }}
-        style={{ border: "none", background: "transparent", padding: 2, color: layer.visible ? "var(--text-secondary)" : "var(--text-tertiary)", cursor: "pointer" }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleVisible();
+        }}
+        className={`layers-panel__icon-btn${layer.visible ? " layers-panel__icon-btn--visible" : ""}`}
         aria-label={layer.visible ? t("layersPanel.hideLayer", { name: layer.name }) : t("layersPanel.showLayer", { name: layer.name })}
       >
         <EyeIcon open={layer.visible} />
       </button>
       <button
-        onClick={(e) => { e.stopPropagation(); onToggleLocked(); }}
-        style={{ border: "none", background: "transparent", padding: 2, color: layer.locked ? "var(--accent)" : "var(--text-tertiary)", cursor: "pointer" }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleLocked();
+        }}
+        className={`layers-panel__icon-btn${layer.locked ? " layers-panel__icon-btn--locked" : ""}`}
         aria-label={layer.locked ? t("layersPanel.unlockLayer", { name: layer.name }) : t("layersPanel.lockLayer", { name: layer.name })}
       >
         <LockIcon locked={layer.locked} />
@@ -127,14 +122,26 @@ function LayerRow({
           value={draftName}
           onChange={(e) => setDraftName(e.target.value)}
           onClick={(e) => e.stopPropagation()}
-          onBlur={() => { setEditing(false); onRename(draftName); }}
-          onKeyDown={(e) => { if (e.key === "Enter") { setEditing(false); onRename(draftName); } }}
-          style={{ flex: 1, fontSize: 12.5, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 4, color: "var(--text-primary)", padding: "2px 4px" }}
+          onBlur={() => {
+            setEditing(false);
+            onRename(draftName);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              setEditing(false);
+              onRename(draftName);
+            }
+          }}
+          className="layers-panel__rename-input"
         />
       ) : (
         <span
-          onDoubleClick={(e) => { e.stopPropagation(); setDraftName(layer.name); setEditing(true); }}
-          style={{ flex: 1, fontSize: 12.5, color: layer.visible ? "var(--text-primary)" : "var(--text-tertiary)" }}
+          onDoubleClick={(e) => {
+            e.stopPropagation();
+            setDraftName(layer.name);
+            setEditing(true);
+          }}
+          className={`layers-panel__name${layer.visible ? " layers-panel__name--visible" : ""}`}
         >
           {layer.name}
         </span>
@@ -175,23 +182,23 @@ export function LayersPanel({ store }: { store: EditorStore }) {
       };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <div style={{ display: "flex", padding: "0 16px", gap: 4, borderBottom: "1px solid var(--border)" }}>
+    <div className="layers-panel">
+      <div className="layers-panel__tabs">
         <button
           onClick={() => store.setLayerPanelTab("pin")}
-          style={{ flex: 1, justifyContent: "center", border: "none", borderBottom: `2px solid ${isPin ? "var(--accent)" : "transparent"}`, borderRadius: 0, padding: "9px 0", fontSize: 12, fontWeight: 700, background: "transparent", color: isPin ? "var(--text-primary)" : "var(--text-tertiary)", cursor: "pointer" }}
+          className={`tab-underline layers-panel__tab${isPin ? " tab-underline--active" : ""}`}
         >
           {t("layersPanel.pinLayersTab")}
         </button>
         <button
           onClick={() => store.setLayerPanelTab("thread")}
-          style={{ flex: 1, justifyContent: "center", border: "none", borderBottom: `2px solid ${!isPin ? "var(--accent)" : "transparent"}`, borderRadius: 0, padding: "9px 0", fontSize: 12, fontWeight: 700, background: "transparent", color: !isPin ? "var(--text-primary)" : "var(--text-tertiary)", cursor: "pointer" }}
+          className={`tab-underline layers-panel__tab${!isPin ? " tab-underline--active" : ""}`}
         >
           {t("layersPanel.threadLayersTab")}
         </button>
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto" }}>
+      <div className="layers-panel__rows">
         {rows.map((layer) => (
           <LayerRow
             key={layer.id}
@@ -206,7 +213,7 @@ export function LayersPanel({ store }: { store: EditorStore }) {
         ))}
       </div>
 
-      <div style={{ display: "flex", gap: 6, padding: 10, borderTop: "1px solid var(--border)" }}>
+      <div className="layers-panel__footer">
         <IconActionButton icon={Plus} label={t("layersPanel.newLayer")} onClick={actions.add} />
         <IconActionButton icon={Copy} label={t("layersPanel.duplicate")} onClick={() => actions.duplicate(activeId)} />
         <IconActionButton icon={ChevronUp} label={t("layersPanel.moveUp")} onClick={() => actions.reorder(activeId, -1)} />
@@ -223,4 +230,3 @@ export function LayersPanel({ store }: { store: EditorStore }) {
     </div>
   );
 }
-

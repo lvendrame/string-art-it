@@ -1,7 +1,8 @@
-import { useState, type CSSProperties, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Send } from "lucide-react";
 import pkg from "../../../../package.json";
+import "./AboutTabContent.css";
 
 const CONTACT_EMAIL = "lfsvendrame@gmail.com";
 const APP_NAME = "StringArtIt";
@@ -20,17 +21,6 @@ const SUBJECT_TOKEN: Record<SubjectOption, string> = {
   other: "Other",
 };
 
-const LABEL_STYLE: CSSProperties = { display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "var(--text-secondary)" };
-const FIELD_STYLE: CSSProperties = {
-  background: "var(--bg-panel-2)",
-  border: "1px solid var(--border)",
-  borderRadius: "var(--radius-sm)",
-  color: "var(--text-primary)",
-  padding: "6px 8px",
-  fontSize: 12.5,
-  fontFamily: "inherit",
-};
-
 export function AboutTabContent() {
   const { t } = useTranslation("help");
   const [name, setName] = useState("");
@@ -45,10 +35,10 @@ export function AboutTabContent() {
     : undefined;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+    <div className="about-tab-content">
       <div>
-        <div style={{ fontSize: 12.5, fontWeight: 700, marginBottom: 8, color: "var(--text-secondary)" }}>{t("about.appInfo.heading")}</div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 420 }}>
+        <div className="about-tab-content__section-heading">{t("about.appInfo.heading")}</div>
+        <div className="about-tab-content__app-info">
           <PropertyRow label={t("about.appInfo.name")} value={APP_NAME} />
           <PropertyRow label={t("about.appInfo.description")} value={t("about.appInfo.descriptionValue")} mono={false} />
           <PropertyRow label={t("about.appInfo.version")} value={pkg.version} />
@@ -57,17 +47,17 @@ export function AboutTabContent() {
       </div>
 
       <div>
-        <div style={{ fontSize: 12.5, fontWeight: 700, marginBottom: 8, color: "var(--text-secondary)" }}>{t("about.contactForm.heading")}</div>
-        <p style={{ fontSize: 12, color: "var(--text-secondary)", maxWidth: 420, marginTop: 0 }}>{t("about.contactForm.intro")}</p>
-        <form onSubmit={(e: FormEvent) => e.preventDefault()} style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 420 }}>
-          <label style={LABEL_STYLE}>
+        <div className="about-tab-content__section-heading">{t("about.contactForm.heading")}</div>
+        <p className="about-tab-content__intro">{t("about.contactForm.intro")}</p>
+        <form onSubmit={(e: FormEvent) => e.preventDefault()} className="about-tab-content__form">
+          <label className="about-tab-content__field-label">
             {t("about.contactForm.name.label")}
-            <input value={name} onChange={(e) => setName(e.target.value)} style={FIELD_STYLE} />
+            <input value={name} onChange={(e) => setName(e.target.value)} className="about-tab-content__field" />
           </label>
 
-          <label style={LABEL_STYLE}>
+          <label className="about-tab-content__field-label">
             {t("about.contactForm.subject.label")}
-            <select value={subject} onChange={(e) => setSubject(e.target.value as SubjectOption)} style={FIELD_STYLE}>
+            <select value={subject} onChange={(e) => setSubject(e.target.value as SubjectOption)} className="about-tab-content__field">
               <option value="" disabled>
                 {t("about.contactForm.subject.placeholder")}
               </option>
@@ -79,35 +69,22 @@ export function AboutTabContent() {
             </select>
           </label>
 
-          <label style={LABEL_STYLE}>
+          <label className="about-tab-content__field-label">
             {t("about.contactForm.message.label")}
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={5}
-              style={{ ...FIELD_STYLE, resize: "vertical", minHeight: 90 }}
+              className="about-tab-content__field about-tab-content__field--textarea"
             />
           </label>
 
           <a
             href={mailtoHref ?? "#"}
             aria-disabled={!canSend}
-            className="btn"
+            className={`btn about-tab-content__send${canSend ? " about-tab-content__send--ready" : " is-disabled"}`}
             onClick={(e) => {
               if (!canSend) e.preventDefault();
-            }}
-            style={{
-              alignSelf: "flex-start",
-              justifyContent: "center",
-              borderRadius: "var(--radius-sm)",
-              padding: "8px 16px",
-              fontSize: 12,
-              fontWeight: 700,
-              gap: 6,
-              textDecoration: "none",
-              ...(canSend
-                ? { background: "var(--accent-strong)", color: "#fff", borderColor: "var(--accent-strong)" }
-                : { opacity: 0.5, pointerEvents: "none" as const }),
             }}
           >
             <Send size={14} />
@@ -121,21 +98,9 @@ export function AboutTabContent() {
 
 function PropertyRow({ label, value, mono = true }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        gap: 12,
-        background: "var(--bg-app)",
-        border: "1px solid var(--border)",
-        borderRadius: "var(--radius-md)",
-        padding: 12,
-      }}
-    >
-      <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>{label}</span>
-      <span className={mono ? "mono" : undefined} style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)", textAlign: "right" }}>
-        {value}
-      </span>
+    <div className="about-tab-content__property-row">
+      <span className="about-tab-content__property-label">{label}</span>
+      <span className={`about-tab-content__property-value${mono ? " mono" : ""}`}>{value}</span>
     </div>
   );
 }

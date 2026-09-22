@@ -1,10 +1,166 @@
 {
   "file": "ui/panels/help/AboutTabContent.tsx",
   "classes": [
+    "about-tab-content",
+    "about-tab-content__app-info",
+    "about-tab-content__field",
+    "about-tab-content__field--textarea",
+    "about-tab-content__field-label",
+    "about-tab-content__form",
+    "about-tab-content__intro",
+    "about-tab-content__property-label",
+    "about-tab-content__property-row",
+    "about-tab-content__property-value",
+    "about-tab-content__section-heading",
+    "about-tab-content__send",
+    "about-tab-content__send--ready",
     "btn",
+    "is-disabled",
     "mono"
   ],
   "cssRules": [
+    {
+      "selector": ".about-tab-content",
+      "file": "ui/panels/help/AboutTabContent.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "24px"
+      }
+    },
+    {
+      "selector": ".about-tab-content__section-heading",
+      "file": "ui/panels/help/AboutTabContent.css",
+      "declarations": {
+        "font-size": "12.5px",
+        "font-weight": "700",
+        "margin-bottom": "8px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".about-tab-content__app-info",
+      "file": "ui/panels/help/AboutTabContent.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "8px",
+        "max-width": "420px"
+      }
+    },
+    {
+      "selector": ".about-tab-content__intro",
+      "file": "ui/panels/help/AboutTabContent.css",
+      "declarations": {
+        "font-size": "12px",
+        "color": "var(--text-secondary)",
+        "max-width": "420px",
+        "margin-top": "0"
+      }
+    },
+    {
+      "selector": ".about-tab-content__form",
+      "file": "ui/panels/help/AboutTabContent.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "12px",
+        "max-width": "420px"
+      }
+    },
+    {
+      "selector": ".about-tab-content__field-label",
+      "file": "ui/panels/help/AboutTabContent.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "4px",
+        "font-size": "12px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".about-tab-content__field",
+      "file": "ui/panels/help/AboutTabContent.css",
+      "declarations": {
+        "background": "var(--bg-panel-2)",
+        "border": "1px solid var(--border)",
+        "border-radius": "var(--radius-sm)",
+        "color": "var(--text-primary)",
+        "padding": "6px 8px",
+        "font-size": "12.5px",
+        "font-family": "inherit"
+      }
+    },
+    {
+      "selector": ".about-tab-content__field--textarea",
+      "file": "ui/panels/help/AboutTabContent.css",
+      "declarations": {
+        "resize": "vertical",
+        "min-height": "90px"
+      }
+    },
+    {
+      "selector": ".about-tab-content__send",
+      "file": "ui/panels/help/AboutTabContent.css",
+      "declarations": {
+        "align-self": "flex-start",
+        "justify-content": "center",
+        "border-radius": "var(--radius-sm)",
+        "padding": "8px 16px",
+        "font-size": "12px",
+        "font-weight": "700",
+        "gap": "6px",
+        "text-decoration": "none"
+      }
+    },
+    {
+      "selector": ".btn.about-tab-content__send--ready",
+      "file": "ui/panels/help/AboutTabContent.css",
+      "declarations": {
+        "background": "var(--accent-strong)",
+        "color": "#fff",
+        "border-color": "var(--accent-strong)"
+      }
+    },
+    {
+      "selector": ".about-tab-content__send.is-disabled",
+      "file": "ui/panels/help/AboutTabContent.css",
+      "declarations": {
+        "pointer-events": "none"
+      }
+    },
+    {
+      "selector": ".about-tab-content__property-row",
+      "file": "ui/panels/help/AboutTabContent.css",
+      "declarations": {
+        "display": "flex",
+        "justify-content": "space-between",
+        "gap": "12px",
+        "background": "var(--bg-app)",
+        "border": "1px solid var(--border)",
+        "border-radius": "var(--radius-md)",
+        "padding": "12px"
+      }
+    },
+    {
+      "selector": ".about-tab-content__property-label",
+      "file": "ui/panels/help/AboutTabContent.css",
+      "declarations": {
+        "font-size": "12px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".about-tab-content__property-value",
+      "file": "ui/panels/help/AboutTabContent.css",
+      "declarations": {
+        "font-size": "12px",
+        "font-weight": "600",
+        "color": "var(--text-primary)",
+        "text-align": "right"
+      }
+    },
     {
       "selector": ".mono",
       "file": "ui/theme.css",
@@ -24,24 +180,14 @@
         "align-items": "center",
         "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
       }
+    },
+    {
+      "selector": ".is-disabled",
+      "file": "ui/theme.css",
+      "declarations": {
+        "opacity": "0.5"
+      }
     }
   ],
-  "inlineStyleBlocks": [
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 24 }}",
-    "{{ fontSize: 12.5, fontWeight: 700, marginBottom: 8, color: \"var(--text-secondary)\" }}",
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 8, maxWidth: 420 }}",
-    "{{ fontSize: 12.5, fontWeight: 700, marginBottom: 8, color: \"var(--text-secondary)\" }}",
-    "{{ fontSize: 12, color: \"var(--text-secondary)\", maxWidth: 420, marginTop: 0 }}",
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 12, maxWidth: 420 }}",
-    "{LABEL_STYLE}",
-    "{FIELD_STYLE}",
-    "{LABEL_STYLE}",
-    "{FIELD_STYLE}",
-    "{LABEL_STYLE}",
-    "{{ ...FIELD_STYLE, resize: \"vertical\", minHeight: 90 }}",
-    "{{\n              alignSelf: \"flex-start\",\n              justifyContent: \"center\",\n              borderRadius: \"var(--radius-sm)\",\n              padding: \"8px 16px\",\n              fontSize: 12,\n              fontWeight: 700,\n              gap: 6,\n              textDecoration: \"none\",\n              ...(canSend\n                ? { background: \"var(--accent-strong)\", color: \"#fff\", borderColor: \"var(--accent-strong)\" }\n                : { opacity: 0.5, pointerEvents: \"none\" as const }),\n            }}",
-    "{{\n        display: \"flex\",\n        justifyContent: \"space-between\",\n        gap: 12,\n        background: \"var(--bg-app)\",\n        border: \"1px solid var(--border)\",\n        borderRadius: \"var(--radius-md)\",\n        padding: 12,\n      }}",
-    "{{ fontSize: 12, color: \"var(--text-secondary)\" }}",
-    "{{ fontSize: 12, fontWeight: 600, color: \"var(--text-primary)\", textAlign: \"right\" }}"
-  ]
+  "inlineStyleBlocks": []
 }

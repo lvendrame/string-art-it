@@ -1,9 +1,166 @@
 {
   "file": "ui/panels/LayersPanel.tsx",
   "classes": [
-    "btn"
+    "btn",
+    "layers-panel",
+    "layers-panel__action-btn",
+    "layers-panel__action-btn--danger",
+    "layers-panel__footer",
+    "layers-panel__icon-btn",
+    "layers-panel__icon-btn--locked",
+    "layers-panel__icon-btn--visible",
+    "layers-panel__name",
+    "layers-panel__name--visible",
+    "layers-panel__rename-input",
+    "layers-panel__row",
+    "layers-panel__row--active",
+    "layers-panel__rows",
+    "layers-panel__tab",
+    "layers-panel__tabs",
+    "tab-underline",
+    "tab-underline--active"
   ],
   "cssRules": [
+    {
+      "selector": ".layers-panel",
+      "file": "ui/panels/LayersPanel.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "height": "100%"
+      }
+    },
+    {
+      "selector": ".layers-panel__tabs",
+      "file": "ui/panels/LayersPanel.css",
+      "declarations": {
+        "display": "flex",
+        "padding": "0 16px",
+        "gap": "4px",
+        "border-bottom": "1px solid var(--border)"
+      }
+    },
+    {
+      "selector": ".layers-panel__tab",
+      "file": "ui/panels/LayersPanel.css",
+      "declarations": {
+        "flex": "1",
+        "justify-content": "center",
+        "padding": "9px 0",
+        "font-size": "12px",
+        "font-weight": "700"
+      }
+    },
+    {
+      "selector": ".layers-panel__rows",
+      "file": "ui/panels/LayersPanel.css",
+      "declarations": {
+        "flex": "1",
+        "overflow-y": "auto"
+      }
+    },
+    {
+      "selector": ".layers-panel__row",
+      "file": "ui/panels/LayersPanel.css",
+      "declarations": {
+        "display": "flex",
+        "align-items": "center",
+        "gap": "9px",
+        "padding": "9px 16px",
+        "cursor": "pointer",
+        "border-left": "2px solid transparent",
+        "background": "transparent"
+      }
+    },
+    {
+      "selector": ".layers-panel__row--active",
+      "file": "ui/panels/LayersPanel.css",
+      "declarations": {
+        "border-left-color": "var(--accent)",
+        "background": "var(--accent-soft)"
+      }
+    },
+    {
+      "selector": ".layers-panel__icon-btn",
+      "file": "ui/panels/LayersPanel.css",
+      "declarations": {
+        "border": "none",
+        "background": "transparent",
+        "padding": "2px",
+        "cursor": "pointer",
+        "color": "var(--text-tertiary)"
+      }
+    },
+    {
+      "selector": ".layers-panel__icon-btn--visible",
+      "file": "ui/panels/LayersPanel.css",
+      "declarations": {
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".layers-panel__icon-btn--locked",
+      "file": "ui/panels/LayersPanel.css",
+      "declarations": {
+        "color": "var(--accent)"
+      }
+    },
+    {
+      "selector": ".layers-panel__rename-input",
+      "file": "ui/panels/LayersPanel.css",
+      "declarations": {
+        "flex": "1",
+        "font-size": "12.5px",
+        "background": "var(--bg-panel-2)",
+        "border": "1px solid var(--border)",
+        "border-radius": "4px",
+        "color": "var(--text-primary)",
+        "padding": "2px 4px"
+      }
+    },
+    {
+      "selector": ".layers-panel__name",
+      "file": "ui/panels/LayersPanel.css",
+      "declarations": {
+        "flex": "1",
+        "font-size": "12.5px",
+        "color": "var(--text-tertiary)"
+      }
+    },
+    {
+      "selector": ".layers-panel__name--visible",
+      "file": "ui/panels/LayersPanel.css",
+      "declarations": {
+        "color": "var(--text-primary)"
+      }
+    },
+    {
+      "selector": ".layers-panel__footer",
+      "file": "ui/panels/LayersPanel.css",
+      "declarations": {
+        "display": "flex",
+        "gap": "6px",
+        "padding": "10px",
+        "border-top": "1px solid var(--border)"
+      }
+    },
+    {
+      "selector": ".layers-panel__action-btn",
+      "file": "ui/panels/LayersPanel.css",
+      "declarations": {
+        "flex": "1",
+        "justify-content": "center",
+        "border-radius": "var(--radius-sm)",
+        "padding": "8px"
+      }
+    },
+    {
+      "selector": ".btn.layers-panel__action-btn--danger",
+      "file": "ui/panels/LayersPanel.css",
+      "declarations": {
+        "color": "var(--danger)"
+      }
+    },
     {
       "selector": ".btn",
       "file": "ui/theme.css",
@@ -16,20 +173,45 @@
         "align-items": "center",
         "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
       }
+    },
+    {
+      "selector": ".tab-underline",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "none",
+        "border-radius": "0",
+        "background": "transparent",
+        "color": "var(--text-tertiary)",
+        "cursor": "pointer",
+        "border-bottom": "2px solid transparent"
+      }
+    },
+    {
+      "selector": ".tab-underline--active",
+      "file": "ui/theme.css",
+      "declarations": {
+        "color": "var(--text-primary)",
+        "border-bottom-color": "var(--accent)"
+      }
+    },
+    {
+      "selector": ".btn.tab-underline",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "none",
+        "background": "transparent",
+        "color": "var(--text-tertiary)",
+        "border-bottom": "2px solid transparent"
+      }
+    },
+    {
+      "selector": ".btn.tab-underline.tab-underline--active",
+      "file": "ui/theme.css",
+      "declarations": {
+        "color": "var(--text-primary)",
+        "border-bottom-color": "var(--accent)"
+      }
     }
   ],
-  "inlineStyleBlocks": [
-    "{{ flex: 1, justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: 8, ...(danger ? { color: \"var(--danger)\" } : {}) }}",
-    "{{\n        display: \"flex\",\n        alignItems: \"center\",\n        gap: 9,\n        padding: \"9px 16px\",\n        cursor: \"pointer\",\n        borderLeft: `2px solid ${active ? \"var(--accent)\" : \"transparent\"}`,\n        background: active ? \"var(--accent-soft)\" : \"transparent\",\n      }}",
-    "{{ border: \"none\", background: \"transparent\", padding: 2, color: layer.visible ? \"var(--text-secondary)\" : \"var(--text-tertiary)\", cursor: \"pointer\" }}",
-    "{{ border: \"none\", background: \"transparent\", padding: 2, color: layer.locked ? \"var(--accent)\" : \"var(--text-tertiary)\", cursor: \"pointer\" }}",
-    "{{ flex: 1, fontSize: 12.5, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 4, color: \"var(--text-primary)\", padding: \"2px 4px\" }}",
-    "{{ flex: 1, fontSize: 12.5, color: layer.visible ? \"var(--text-primary)\" : \"var(--text-tertiary)\" }}",
-    "{{ display: \"flex\", flexDirection: \"column\", height: \"100%\" }}",
-    "{{ display: \"flex\", padding: \"0 16px\", gap: 4, borderBottom: \"1px solid var(--border)\" }}",
-    "{{ flex: 1, justifyContent: \"center\", border: \"none\", borderBottom: `2px solid ${isPin ? \"var(--accent)\" : \"transparent\"}`, borderRadius: 0, padding: \"9px 0\", fontSize: 12, fontWeight: 700, background: \"transparent\", color: isPin ? \"var(--text-primary)\" : \"var(--text-tertiary)\", cursor: \"pointer\" }}",
-    "{{ flex: 1, justifyContent: \"center\", border: \"none\", borderBottom: `2px solid ${!isPin ? \"var(--accent)\" : \"transparent\"}`, borderRadius: 0, padding: \"9px 0\", fontSize: 12, fontWeight: 700, background: \"transparent\", color: !isPin ? \"var(--text-primary)\" : \"var(--text-tertiary)\", cursor: \"pointer\" }}",
-    "{{ flex: 1, overflowY: \"auto\" }}",
-    "{{ display: \"flex\", gap: 6, padding: 10, borderTop: \"1px solid var(--border)\" }}"
-  ]
+  "inlineStyleBlocks": []
 }

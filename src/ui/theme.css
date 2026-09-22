@@ -84,6 +84,40 @@ button {
   opacity: 0.5;
 }
 
+/* Underline-tab modifier (docs/conventions/ui-patterns.md §Tab-switcher styles),
+   shared by LayersPanel.tsx (used bare, no hover feedback — its pre-migration
+   behavior had no .btn) and HelpPanel.tsx (compounded with .btn for hover feedback —
+   its pre-migration behavior already had .btn). Both forms are declared so each
+   consumer's exact prior visual behavior is preserved; layout specifics (flex-basis,
+   padding, font-size) stay in each consumer's own CSS file. */
+.tab-underline {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-underline--active {
+  color: var(--text-primary);
+  border-bottom-color: var(--accent);
+}
+
+/* Compounded with .btn: .btn's own border/background/color would otherwise tie with
+   the bare rule above at equal (1-class) specificity — see cascadeGuard.test.ts. */
+.btn.tab-underline {
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  border-bottom: 2px solid transparent;
+}
+
+.btn.tab-underline.tab-underline--active {
+  color: var(--text-primary);
+  border-bottom-color: var(--accent);
+}
+
 /* docs/specs/18-design-system.md — Slider (range input): track/thumb reset for every
    SliderField instance (GeneratorPanel pattern fields + thread-width, both thread-
    width panels). Pseudo-element thumb styling can't go through a React style prop. */

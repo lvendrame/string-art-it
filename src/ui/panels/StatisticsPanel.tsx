@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { pinPathStatistics, projectTotalPins, threadPathStatistics, threadStatisticsByType, type EditorStore } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
+import { OverlayPanel, OverlayPanelHeader } from "./OverlayPanel";
+import "./StatisticsPanel.css";
 
 // docs/specs/17-statistics.md
 export function StatisticsPanel({ store, onClose }: { store: EditorStore; onClose: () => void }) {
@@ -10,17 +12,14 @@ export function StatisticsPanel({ store, onClose }: { store: EditorStore; onClos
   const typeStats = threadStatisticsByType(state.threadLayers, state.pinLayers);
 
   return (
-    <div style={{ position: "absolute", inset: 0, background: "var(--bg-app)", zIndex: 10, overflowY: "auto", padding: 24 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-        <span style={{ fontWeight: 700, fontSize: 15 }}>{t("statisticsPanel.title", { ns: "panels" })}</span>
-        <button className="btn" onClick={onClose} style={{ borderRadius: 6, padding: "4px 10px", fontSize: 12 }}>{t("actions.close", { ns: "common" })}</button>
-      </div>
+    <OverlayPanel className="statistics-panel">
+      <OverlayPanelHeader title={t("statisticsPanel.title", { ns: "panels" })} onClose={onClose} />
 
-      <div style={{ maxWidth: 1000, display: "flex", flexDirection: "column", gap: 16 }}>
+      <div className="statistics-panel__content">
         <CollapsibleSection title={t("statisticsPanel.summaryTitle", { ns: "panels" })}>
-          <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 16 }}>
-            <div className="mono" style={{ fontSize: 24, fontWeight: 700, color: "var(--accent)" }}>{projectTotalPins(state.pinLayers)}</div>
-            <div style={{ fontSize: 12, color: "var(--text-secondary)" }}>{t("statisticsPanel.totalPins", { ns: "panels" })}</div>
+          <div className="statistics-panel__summary-card">
+            <div className="mono statistics-panel__summary-value">{projectTotalPins(state.pinLayers)}</div>
+            <div className="statistics-panel__summary-label">{t("statisticsPanel.totalPins", { ns: "panels" })}</div>
           </div>
 
           {typeStats.map((stat) => (
@@ -76,34 +75,28 @@ export function StatisticsPanel({ store, onClose }: { store: EditorStore; onClos
           )}
         </CollapsibleSection>
       </div>
-    </div>
+    </OverlayPanel>
   );
 }
 
 function CollapsibleSection({ title, children, defaultOpen = true }: { title: string; children: ReactNode; defaultOpen?: boolean }) {
   return (
-    <details open={defaultOpen} style={{ background: "var(--bg-panel)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 16 }}>
-      <summary style={{ fontWeight: 700, fontSize: 13, cursor: "pointer" }}>{title}</summary>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16, marginTop: 16 }}>
-        {children}
-      </div>
+    <details open={defaultOpen} className="statistics-panel__section">
+      <summary className="statistics-panel__section-summary">{title}</summary>
+      <div className="statistics-panel__section-grid">{children}</div>
     </details>
   );
 }
 
 function ColourSwatch({ colour }: { colour: string }) {
-  return (
-    <span
-      style={{ display: "inline-block", width: 14, height: 10, borderRadius: 2, border: "1px solid var(--border)", background: colour, verticalAlign: "middle" }}
-    />
-  );
+  return <span className="statistics-panel__swatch" style={{ background: colour }} />;
 }
 
 function ColoursValue({ colours }: { colours: string[] }) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+    <span className="statistics-panel__colours">
       {colours.map((colour, i) => (
-        <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+        <span key={i} className="statistics-panel__colour-item">
           <ColourSwatch colour={colour} />
           {colour}
         </span>
@@ -114,12 +107,12 @@ function ColoursValue({ colours }: { colours: string[] }) {
 
 function StatCard({ title, rows }: { title: ReactNode; rows: [string, ReactNode][] }) {
   return (
-    <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 16, display: "flex", flexDirection: "column", gap: 8 }}>
-      <div style={{ fontSize: 12.5, fontWeight: 700, display: "flex", alignItems: "center", gap: 6 }}>{title}</div>
+    <div className="statistics-panel__card">
+      <div className="statistics-panel__card-title">{title}</div>
       {rows.map(([label, value]) => (
-        <div key={label} className="mono" style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
-          <span style={{ color: "var(--text-secondary)" }}>{label}</span>
-          <span style={{ color: "var(--text-primary)" }}>{value}</span>
+        <div key={label} className="mono statistics-panel__card-row">
+          <span className="statistics-panel__card-row-label">{label}</span>
+          <span className="statistics-panel__card-row-value">{value}</span>
         </div>
       ))}
     </div>

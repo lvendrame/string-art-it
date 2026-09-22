@@ -131,8 +131,8 @@ button {
 
 /* docs/specs/18-design-system.md tokens — react-cookie-consent's <CookieConsent
    disableStyles> ships unstyled, so its container/text/button-wrapper classes
-   are styled here to match the rest of the chrome (cf. the autosave banner in
-   App.tsx, which uses the same panel/accent tokens inline). */
+   are styled here to match the rest of the chrome (cf. AutosaveDialog.css,
+   which uses the same panel/accent tokens). */
 .cookie-consent-banner {
   position: fixed;
   left: 50%;

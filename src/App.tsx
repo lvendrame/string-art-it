@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { EditorStore, recomputePinPath, rotateGeometry, scaleGeometry, translateGeometry } from "./application/document";
 import { fitViewportForBoard } from "./ui/canvas/boardViewport";
 import { CookieConsentBanner } from "./ui/CookieConsentBanner";
@@ -8,6 +7,7 @@ import { LandingFAQ } from "./ui/panels/landing/LandingFAQ";
 import { LandingFeatures } from "./ui/panels/landing/LandingFeatures";
 import { LandingHero } from "./ui/panels/landing/LandingHero";
 import { LandingHowItWorks } from "./ui/panels/landing/LandingHowItWorks";
+import { AutosaveDialog } from "./ui/panels/landing/AutosaveDialog";
 import { BoardSetup } from "./ui/panels/BoardSetup";
 import { useAutosave } from "./ui/useAutosave";
 import { registerWebMcpTools } from "./infrastructure/webmcp/tools";
@@ -32,7 +32,6 @@ declare global {
 }
 
 export function App() {
-  const { t } = useTranslation("common");
   const store = useMemo(() => new EditorStore(), []);
   useEffect(() => {
     window.stringArtItDebug = store;
@@ -52,38 +51,8 @@ export function App() {
 
   return (
     <>
-      {pendingAutosave && (
-        <div
-          style={{
-            position: "fixed",
-            top: 12,
-            left: "50%",
-            transform: "translateX(-50%)",
-            zIndex: 100,
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            background: "var(--bg-panel)",
-            border: "1px solid var(--accent)",
-            borderRadius: "var(--radius-md)",
-            padding: "10px 16px",
-            fontSize: 12.5,
-            color: "var(--text-primary)",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
-          }}
-        >
-          <span>{t("autosave.found")}</span>
-          <button
-            className="btn"
-            onClick={() => { restore(); enterEditor(); }}
-            style={{ borderRadius: 6, padding: "5px 10px", fontSize: 12, fontWeight: 600, background: "var(--accent-strong)", color: "white", borderColor: "transparent" }}
-          >
-            {t("autosave.restore")}
-          </button>
-          <button className="btn" onClick={discard} style={{ borderRadius: 6, padding: "5px 10px", fontSize: 12 }}>
-            {t("autosave.discard")}
-          </button>
-        </div>
+      {!entered && pendingAutosave && (
+        <AutosaveDialog onRestore={() => { restore(); enterEditor(); }} onDiscard={discard} />
       )}
 
       <main>

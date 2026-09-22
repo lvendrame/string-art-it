@@ -1,9 +1,20 @@
 {
   "file": "ui/canvas/radialMenu/RadialContextMenu.tsx",
-  "classes": [],
-  "cssRules": [],
+  "classes": [
+    "radial-context-menu__backdrop"
+  ],
+  "cssRules": [
+    {
+      "selector": ".radial-context-menu__backdrop",
+      "file": "ui/canvas/radialMenu/RadialContextMenu.css",
+      "declarations": {
+        "position": "absolute",
+        "inset": "0",
+        "z-index": "1"
+      }
+    }
+  ],
   "inlineStyleBlocks": [
-    "{{ position: \"absolute\", inset: 0, zIndex: 1 }}",
     "{MENU_STYLE}"
   ]
 }

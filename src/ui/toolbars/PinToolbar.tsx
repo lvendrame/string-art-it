@@ -5,6 +5,7 @@ import type { TFunction } from "i18next";
 import type { EditorStore, PinTool } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
 import { PIN_TOOL_SHORTCUT_KEY } from "./pinToolShortcuts";
+import "./PinToolbar.css";
 
 function basicTools(t: TFunction<"toolbars">): { id: PinTool; label: string; icon: ComponentType<{ size?: number }> }[] {
   return [
@@ -34,15 +35,6 @@ function polygonFamily(t: TFunction<"toolbars">): { id: PinTool; label: string }
   ];
 }
 
-const CHIP_STYLE = {
-  flexDirection: "column" as const,
-  borderRadius: "var(--radius-sm)",
-  padding: "10px 4px 7px",
-  gap: 5,
-  fontSize: 10,
-  fontWeight: 600,
-};
-
 export function PinToolbar({ store }: { store: EditorStore }) {
   const { t } = useTranslation("toolbars");
   const state = useEditorState(store);
@@ -51,37 +43,37 @@ export function PinToolbar({ store }: { store: EditorStore }) {
   const isPolygonFamilySelected = POLYGON_FAMILY.some((tool) => tool.id === state.pinTool);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-        {t("pinToolbar.sectionTitle")}
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
+    <div className="pin-toolbar">
+      <div className="pin-toolbar__section-title">{t("pinToolbar.sectionTitle")}</div>
+      <div className="pin-toolbar__grid">
         {BASIC_TOOLS.map((tool) => (
           <button
             key={tool.id}
-            className={`btn${state.pinTool === tool.id ? " btn-active" : ""}`}
+            className={`btn pin-toolbar__chip${state.pinTool === tool.id ? " btn-active" : ""}`}
             onClick={() => store.setPinTool(tool.id)}
-            style={CHIP_STYLE}
           >
             <tool.icon size={16} />
             {tool.label} [{PIN_TOOL_SHORTCUT_KEY[tool.id]}]
           </button>
         ))}
-        <button className={`btn${state.pinTool === "eraser" ? " btn-active" : ""}`} onClick={() => store.setPinTool("eraser")} style={CHIP_STYLE}>
+        <button
+          className={`btn pin-toolbar__chip${state.pinTool === "eraser" ? " btn-active" : ""}`}
+          onClick={() => store.setPinTool("eraser")}
+        >
           <Eraser size={16} />
           {t("pinToolbar.eraser")} [{PIN_TOOL_SHORTCUT_KEY.eraser}]
         </button>
-        <button className={`btn${state.pinTool === "path-eraser" ? " btn-active" : ""}`} onClick={() => store.setPinTool("path-eraser")} style={CHIP_STYLE}>
+        <button
+          className={`btn pin-toolbar__chip${state.pinTool === "path-eraser" ? " btn-active" : ""}`}
+          onClick={() => store.setPinTool("path-eraser")}
+        >
           <Trash2 size={16} />
           {t("pinToolbar.pathEraser")} [{PIN_TOOL_SHORTCUT_KEY["path-eraser"]}]
         </button>
       </div>
 
-      <label
-        className={`btn${isPolygonFamilySelected ? " btn-active" : ""}`}
-        style={{ width: "100%", justifyContent: "space-between", borderRadius: "var(--radius-sm)", padding: "9px 10px", gap: 6 }}
-      >
-        <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 600 }}>
+      <label className={`btn pin-toolbar__picker${isPolygonFamilySelected ? " btn-active" : ""}`}>
+        <span className="pin-toolbar__picker-label">
           <Shapes size={14} />
           {t("pinToolbar.polygonStarLabel")}
         </span>
@@ -89,7 +81,7 @@ export function PinToolbar({ store }: { store: EditorStore }) {
           aria-label={t("pinToolbar.polygonStarLabel")}
           value={isPolygonFamilySelected ? state.pinTool : ""}
           onChange={(e) => store.setPinTool(e.target.value as PinTool)}
-          style={{ background: "transparent", color: "inherit", border: "none", fontSize: 12 }}
+          className="pin-toolbar__select"
         >
           <option value="" disabled>
             {t("pinToolbar.choosePlaceholder")}

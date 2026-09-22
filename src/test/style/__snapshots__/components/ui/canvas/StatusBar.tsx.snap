@@ -1,9 +1,26 @@
 {
   "file": "ui/canvas/StatusBar.tsx",
   "classes": [
-    "mono"
+    "mono",
+    "status-bar"
   ],
   "cssRules": [
+    {
+      "selector": ".status-bar",
+      "file": "ui/canvas/StatusBar.css",
+      "declarations": {
+        "flex": "0 0 auto",
+        "height": "32px",
+        "display": "flex",
+        "align-items": "center",
+        "gap": "14px",
+        "padding": "0 16px",
+        "background": "var(--bg-panel)",
+        "border-top": "1px solid var(--border)",
+        "font-size": "11.5px",
+        "color": "var(--text-secondary)"
+      }
+    },
     {
       "selector": ".mono",
       "file": "ui/theme.css",
@@ -12,7 +29,5 @@
       }
     }
   ],
-  "inlineStyleBlocks": [
-    "{{\n        flex: \"0 0 auto\",\n        height: 32,\n        display: \"flex\",\n        alignItems: \"center\",\n        gap: 14,\n        padding: \"0 16px\",\n        background: \"var(--bg-panel)\",\n        borderTop: \"1px solid var(--border)\",\n        fontSize: 11.5,\n        color: \"var(--text-secondary)\",\n      }}"
-  ]
+  "inlineStyleBlocks": []
 }

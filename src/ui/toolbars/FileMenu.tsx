@@ -12,6 +12,7 @@ import {
 import { fitViewportForBoard } from "../canvas/boardViewport";
 import { mapOpenFileError } from "./openFileErrors";
 import { saveProjectFile } from "./projectFileDownload";
+import "./FileMenu.css";
 
 const FILE_MENU_TOOLTIP_ID = "file-menu-tooltip";
 
@@ -57,38 +58,41 @@ export const FileMenu = forwardRef<FileMenuHandle, { store: EditorStore; onNewPr
   }
 
   return (
-    <div style={{ display: "flex", gap: 6 }}>
+    <div className="file-menu">
       <button
-        className="btn"
+        className="btn file-menu__btn"
         onClick={handleNew}
         aria-label={t("file.new")}
         data-tooltip-id={FILE_MENU_TOOLTIP_ID}
         data-tooltip-content={t("file.new")}
-        style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}
       >
         <FilePlus size={14} />
       </button>
       <button
-        className="btn"
+        className="btn file-menu__btn"
         onClick={() => saveProjectFile(store)}
         aria-label={t("file.save")}
         data-tooltip-id={FILE_MENU_TOOLTIP_ID}
         data-tooltip-content={t("file.save")}
-        style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}
       >
         <Save size={14} />
       </button>
       <button
-        className="btn"
+        className="btn file-menu__btn"
         onClick={handleOpenClick}
         aria-label={t("file.open")}
         data-tooltip-id={FILE_MENU_TOOLTIP_ID}
         data-tooltip-content={t("file.open")}
-        style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}
       >
         <FolderOpen size={14} />
       </button>
-      <input ref={fileInputRef} type="file" accept="application/json" onChange={handleFileSelected} style={{ display: "none" }} />
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="application/json"
+        onChange={handleFileSelected}
+        className="file-menu__file-input"
+      />
       <Tooltip id={FILE_MENU_TOOLTIP_ID} place="top" />
     </div>
   );

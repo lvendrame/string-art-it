@@ -1,0 +1,36 @@
+.generator-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.generator-toolbar__section-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.generator-toolbar__picker {
+  width: 100%;
+  justify-content: space-between;
+  border-radius: var(--radius-sm);
+  padding: 9px 10px;
+  gap: 6px;
+}
+
+.generator-toolbar__picker-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.generator-toolbar__select {
+  background: transparent;
+  color: inherit;
+  border: none;
+  font-size: 12px;
+}

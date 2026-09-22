@@ -1,0 +1,16 @@
+.file-menu {
+  display: flex;
+  gap: 6px;
+}
+
+.file-menu__btn {
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  gap: 6px;
+}
+
+.file-menu__file-input {
+  display: none;
+}

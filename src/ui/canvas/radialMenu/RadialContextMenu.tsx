@@ -41,6 +41,7 @@ import type { PlaybackTransport } from "../../toolbars/usePlaybackTransport";
 import { fitViewportForBoard } from "../boardViewport";
 import { zoomInStep, zoomOutStep } from "../zoomSteps";
 import { getRadialMenuSliceIds, type RadialMenuSliceId } from "./radialMenuSlices";
+import "./RadialContextMenu.css";
 
 const TOOLTIP_ID = "radial-context-menu-tooltip";
 const INNER_RADIUS = 32;
@@ -195,11 +196,7 @@ export function RadialContextMenu({
           landing anywhere else on this full-bleed backdrop close the menu without
           firing an action; a slice click's own stopPropagation (built into the
           library) never reaches this handler. */}
-      <div
-        data-testid="radial-menu-backdrop"
-        onClick={onClose}
-        style={{ position: "absolute", inset: 0, zIndex: 1 }}
-      />
+      <div data-testid="radial-menu-backdrop" onClick={onClose} className="radial-context-menu__backdrop" />
       <Menu
         centerX={position.x}
         centerY={position.y}

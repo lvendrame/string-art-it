@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { distributeClosedPath, distributeOpenPath, distributePathPerVertex, pathLength } from "../../domain/paths";
 import { geometryToPath, isVertexAnchoredGeometry, type EditorMode, type PinPathGeometry, type PinTool } from "../../application/document";
+import "./StatusBar.css";
 
 export function StatusBar({
   mode,
@@ -48,21 +49,7 @@ export function StatusBar({
   })();
 
   return (
-    <div
-      className="mono"
-      style={{
-        flex: "0 0 auto",
-        height: 32,
-        display: "flex",
-        alignItems: "center",
-        gap: 14,
-        padding: "0 16px",
-        background: "var(--bg-panel)",
-        borderTop: "1px solid var(--border)",
-        fontSize: 11.5,
-        color: "var(--text-secondary)",
-      }}
-    >
+    <div className="mono status-bar">
       {text}
     </div>
   );

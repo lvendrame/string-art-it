@@ -48,6 +48,7 @@ import { useRotateTool } from "./useRotateTool";
 import { useScaleTool } from "./useScaleTool";
 import { useKeyboardTransform } from "./useKeyboardTransform";
 import { useEraserHover } from "./useEraserHover";
+import "./Canvas.css";
 
 const VIEWPORT_PX = CANVAS_VIEWPORT_PX;
 
@@ -341,27 +342,10 @@ export function Canvas({ store }: { store: EditorStore }) {
   const activeSymmetry = store.getSelectedPinPath()?.symmetry ?? state.symmetryDefaults;
 
   return (
-    <div
-      style={{
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        minWidth: 0,
-        background: "var(--bg-canvas)",
-      }}
-    >
+    <div className="canvas-root">
       <CanvasToolbar store={store} />
 
-      <div
-        style={{
-          flex: 1,
-          position: "relative",
-          overflow: "hidden",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+      <div className="canvas-viewport">
         <svg
           width={VIEWPORT_PX.width}
           height={VIEWPORT_PX.height}

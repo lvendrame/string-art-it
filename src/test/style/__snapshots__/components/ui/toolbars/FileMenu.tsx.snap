@@ -1,7 +1,10 @@
 {
   "file": "ui/toolbars/FileMenu.tsx",
   "classes": [
-    "btn"
+    "btn",
+    "file-menu",
+    "file-menu__btn",
+    "file-menu__file-input"
   ],
   "cssRules": [
     {
@@ -16,13 +19,33 @@
         "align-items": "center",
         "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
       }
+    },
+    {
+      "selector": ".file-menu",
+      "file": "ui/toolbars/FileMenu.css",
+      "declarations": {
+        "display": "flex",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".file-menu__btn",
+      "file": "ui/toolbars/FileMenu.css",
+      "declarations": {
+        "border-radius": "8px",
+        "padding": "7px 12px",
+        "font-size": "12px",
+        "font-weight": "600",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".file-menu__file-input",
+      "file": "ui/toolbars/FileMenu.css",
+      "declarations": {
+        "display": "none"
+      }
     }
   ],
-  "inlineStyleBlocks": [
-    "{{ display: \"flex\", gap: 6 }}",
-    "{{ borderRadius: 8, padding: \"7px 12px\", fontSize: 12, fontWeight: 600, gap: 6 }}",
-    "{{ borderRadius: 8, padding: \"7px 12px\", fontSize: 12, fontWeight: 600, gap: 6 }}",
-    "{{ borderRadius: 8, padding: \"7px 12px\", fontSize: 12, fontWeight: 600, gap: 6 }}",
-    "{{ display: \"none\" }}"
-  ]
+  "inlineStyleBlocks": []
 }

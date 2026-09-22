@@ -7,6 +7,7 @@ import { BoardLayer } from "./BoardLayer";
 import { GridLayer } from "./GridLayer";
 import { PinLayersView } from "./PinLayersView";
 import { ThreadLayersView } from "./ThreadLayersView";
+import "./PlaybackCanvas.css";
 
 // docs/specs/19-play-mode.md — read-only replay view: all pins always render, only
 // thread segments are frame-gated. Framed statically (fitViewportForBoard), no pan/
@@ -26,7 +27,7 @@ export const PlaybackCanvas = forwardRef<SVGSVGElement, { state: EditorState; fr
   const viewBox = `${viewport.panOrigin.x} ${viewport.panOrigin.y} ${CANVAS_VIEWPORT_PX.width / viewport.zoom} ${CANVAS_VIEWPORT_PX.height / viewport.zoom}`;
 
   return (
-    <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-canvas)" }}>
+    <div className="playback-canvas">
       <svg ref={svgRef} width={CANVAS_VIEWPORT_PX.width} height={CANVAS_VIEWPORT_PX.height} viewBox={viewBox} role="img" aria-label={t("playModeCanvasAriaLabel")}>
         <BoardLayer board={state.board} pathD={pathD} />
         <GridLayer grid={state.grid} viewport={viewport} viewportPx={CANVAS_VIEWPORT_PX} />

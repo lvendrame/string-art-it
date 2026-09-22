@@ -3,7 +3,20 @@
   "classes": [
     "btn",
     "btn-active",
-    "mono"
+    "mono",
+    "play-toolbar",
+    "play-toolbar__export-btn",
+    "play-toolbar__frame-label",
+    "play-toolbar__frame-row",
+    "play-toolbar__interval-row",
+    "play-toolbar__number-input",
+    "play-toolbar__number-input--readonly",
+    "play-toolbar__section-title",
+    "play-toolbar__step-btn",
+    "play-toolbar__transport-row",
+    "play-toolbar__transport-toggle",
+    "play-toolbar__transport-toggle--ready",
+    "play-toolbar__unsupported-note"
   ],
   "cssRules": [
     {
@@ -34,25 +47,133 @@
         "color": "var(--accent)",
         "border-color": "var(--accent)"
       }
+    },
+    {
+      "selector": ".play-toolbar",
+      "file": "ui/toolbars/PlayToolbar.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "10px"
+      }
+    },
+    {
+      "selector": ".play-toolbar__section-title",
+      "file": "ui/toolbars/PlayToolbar.css",
+      "declarations": {
+        "font-size": "11px",
+        "font-weight": "700",
+        "letter-spacing": "0.06em",
+        "color": "var(--text-tertiary)",
+        "text-transform": "uppercase"
+      }
+    },
+    {
+      "selector": ".play-toolbar__transport-row",
+      "file": "ui/toolbars/PlayToolbar.css",
+      "declarations": {
+        "display": "flex",
+        "align-items": "center",
+        "justify-content": "center",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".play-toolbar__step-btn",
+      "file": "ui/toolbars/PlayToolbar.css",
+      "declarations": {
+        "justify-content": "center",
+        "border-radius": "var(--radius-sm)",
+        "padding": "9px"
+      }
+    },
+    {
+      "selector": ".play-toolbar__transport-toggle",
+      "file": "ui/toolbars/PlayToolbar.css",
+      "declarations": {
+        "justify-content": "center",
+        "border-radius": "var(--radius-md)",
+        "padding": "12px"
+      }
+    },
+    {
+      "selector": ".btn.play-toolbar__transport-toggle--ready",
+      "file": "ui/toolbars/PlayToolbar.css",
+      "declarations": {
+        "background": "var(--accent)",
+        "color": "#fff",
+        "border-color": "var(--accent)"
+      }
+    },
+    {
+      "selector": ".play-toolbar__frame-row",
+      "file": "ui/toolbars/PlayToolbar.css",
+      "declarations": {
+        "display": "flex",
+        "gap": "8px"
+      }
+    },
+    {
+      "selector": ".play-toolbar__frame-label",
+      "file": "ui/toolbars/PlayToolbar.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "4px",
+        "font-size": "12px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".play-toolbar__number-input",
+      "file": "ui/toolbars/PlayToolbar.css",
+      "declarations": {
+        "width": "70px",
+        "background": "var(--bg-panel-2)",
+        "border": "1px solid var(--border)",
+        "border-radius": "6px",
+        "color": "var(--text-primary)",
+        "padding": "4px 6px"
+      }
+    },
+    {
+      "selector": ".play-toolbar__number-input--readonly",
+      "file": "ui/toolbars/PlayToolbar.css",
+      "declarations": {
+        "color": "var(--text-tertiary)"
+      }
+    },
+    {
+      "selector": ".play-toolbar__interval-row",
+      "file": "ui/toolbars/PlayToolbar.css",
+      "declarations": {
+        "display": "flex",
+        "justify-content": "space-between",
+        "align-items": "center",
+        "font-size": "12px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".play-toolbar__export-btn",
+      "file": "ui/toolbars/PlayToolbar.css",
+      "declarations": {
+        "justify-content": "center",
+        "border-radius": "var(--radius-sm)",
+        "padding": "9px",
+        "font-size": "12px",
+        "font-weight": "600",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".play-toolbar__unsupported-note",
+      "file": "ui/toolbars/PlayToolbar.css",
+      "declarations": {
+        "font-size": "11px",
+        "color": "var(--text-tertiary)"
+      }
     }
   ],
-  "inlineStyleBlocks": [
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 10 }}",
-    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
-    "{{ display: \"flex\", alignItems: \"center\", justifyContent: \"center\", gap: 6 }}",
-    "{STEP_BUTTON_STYLE}",
-    "{STEP_BUTTON_STYLE}",
-    "{{ justifyContent: \"center\", borderRadius: \"var(--radius-md)\", padding: 12, ...(transport.isPlaying ? {} : { background: \"var(--accent)\", color: \"#fff\", borderColor: \"var(--accent)\" }) }}",
-    "{STEP_BUTTON_STYLE}",
-    "{STEP_BUTTON_STYLE}",
-    "{{ display: \"flex\", gap: 8 }}",
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 4, fontSize: 12, color: \"var(--text-secondary)\" }}",
-    "{NUMBER_INPUT_STYLE}",
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 4, fontSize: 12, color: \"var(--text-secondary)\" }}",
-    "{{ ...NUMBER_INPUT_STYLE, color: \"var(--text-tertiary)\" }}",
-    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 12, color: \"var(--text-secondary)\" }}",
-    "{NUMBER_INPUT_STYLE}",
-    "{{ justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}",
-    "{{ fontSize: 11, color: \"var(--text-tertiary)\" }}"
-  ]
+  "inlineStyleBlocks": []
 }

@@ -7,6 +7,7 @@ import type { TFunction } from "i18next";
 import { canCommitSelectionMerge, type EditorStore, type SelectGranularity, type SelectTool } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
 import { SELECT_TOOL_SHORTCUT_KEY } from "./selectToolShortcuts";
+import "./SelectToolbar.css";
 
 const SELECT_TOOLBAR_TOOLTIP_ID = "select-toolbar-tooltip";
 
@@ -26,18 +27,13 @@ function tools(t: TFunction<"toolbars">): { id: SelectTool; label: string; icon:
 // toggle). Track visual size (40x20) stays inside a 44x32 hit target per
 // 18-design-system.md's 32px minimum interactive size — the extra hit area is
 // invisible padding, same convention icon buttons already use.
-const TRACK_WIDTH = 40;
-const KNOB_SIZE = 14;
-const KNOB_INSET = 3;
-const KNOB_ON_LEFT = TRACK_WIDTH - KNOB_SIZE - KNOB_INSET;
-
 function GranularitySwitch({ store, granularity, label }: { store: EditorStore; granularity: SelectGranularity; label: (g: SelectGranularity) => string }) {
   const isPins = granularity === "pins";
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    <div className="select-toolbar__granularity">
       <button
         onClick={() => store.setSelectGranularity("path")}
-        style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontSize: 12, fontWeight: 600, color: isPins ? "var(--text-secondary)" : "var(--accent)", transition: "color 120ms ease" }}
+        className={`select-toolbar__granularity-label${isPins ? "" : " select-toolbar__granularity-label--active"}`}
       >
         {label("path")}
       </button>
@@ -46,30 +42,14 @@ function GranularitySwitch({ store, granularity, label }: { store: EditorStore; 
         aria-checked={isPins}
         aria-label={label("path") + " / " + label("pins") + " [Shift+P]"}
         onClick={() => store.setSelectGranularity(isPins ? "path" : "pins")}
-        style={{ position: "relative", width: 44, height: 32, background: "none", border: "none", padding: 0, cursor: "pointer", flexShrink: 0 }}
+        className="select-toolbar__switch"
       >
-        <span
-          aria-hidden
-          style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: TRACK_WIDTH, height: 20, borderRadius: 999, border: "1px solid var(--border)", background: "var(--bg-app)" }}
-        />
-        <span
-          aria-hidden
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: (44 - TRACK_WIDTH) / 2 + (isPins ? KNOB_ON_LEFT : KNOB_INSET),
-            width: KNOB_SIZE,
-            height: KNOB_SIZE,
-            borderRadius: "50%",
-            background: "var(--accent)",
-            transform: "translateY(-50%)",
-            transition: "left 150ms ease",
-          }}
-        />
+        <span aria-hidden className="select-toolbar__track" />
+        <span aria-hidden className={`select-toolbar__knob${isPins ? " select-toolbar__knob--pins" : ""}`} />
       </button>
       <button
         onClick={() => store.setSelectGranularity("pins")}
-        style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontSize: 12, fontWeight: 600, color: isPins ? "var(--accent)" : "var(--text-secondary)", transition: "color 120ms ease" }}
+        className={`select-toolbar__granularity-label${isPins ? " select-toolbar__granularity-label--active" : ""}`}
       >
         {label("pins")}
       </button>
@@ -87,10 +67,8 @@ export function SelectToolbar({ store }: { store: EditorStore }) {
   const TOOLS = tools(t);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-        {t("selectToolbar.sectionTitle")}
-      </div>
+    <div className="select-toolbar">
+      <div className="select-toolbar__section-title">{t("selectToolbar.sectionTitle")}</div>
 
       {/* docs/specs/26-edit-mode-multi-select.md Granularity Switch — a literal
           track+knob switch (18-design-system.md §Labeled slide switch), not the
@@ -102,19 +80,18 @@ export function SelectToolbar({ store }: { store: EditorStore }) {
         label={(g) => t(`selectToolbar.granularity.${g === "path" ? "pinPath" : "pins"}`)}
       />
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 6 }}>
+      <div className="select-toolbar__grid">
         {TOOLS.map((tool) => {
           const disabled = tool.requiresSelection && !hasSelection;
           return (
             <button
               key={tool.id}
-              className={`btn${state.selectTool === tool.id ? " btn-active" : ""}`}
+              className={`btn select-toolbar__tool${state.selectTool === tool.id ? " btn-active" : ""}`}
               disabled={disabled}
               onClick={() => store.setSelectTool(tool.id)}
               aria-label={tool.label}
               data-tooltip-id={SELECT_TOOLBAR_TOOLTIP_ID}
               data-tooltip-content={tool.tooltip}
-              style={{ flexDirection: "column", borderRadius: "var(--radius-sm)", padding: "10px 4px 7px", gap: 5, fontSize: 11, fontWeight: 600 }}
             >
               <tool.icon size={16} />
               {tool.label} [{SELECT_TOOL_SHORTCUT_KEY[tool.id]}]
@@ -127,13 +104,12 @@ export function SelectToolbar({ store }: { store: EditorStore }) {
           against the current selection, not a toggleable tool: a full-width action
           button (Primary/Secondary button vocabulary), not a Tool Grid Button. */}
       <button
-        className="btn"
+        className="btn select-toolbar__merge-btn"
         disabled={!canMerge}
         onClick={() => store.commitSelectionMerge()}
         aria-label={t("selectToolbar.tools.merge.label")}
         data-tooltip-id={SELECT_TOOLBAR_TOOLTIP_ID}
         data-tooltip-content={t("selectToolbar.tools.merge.tooltip")}
-        style={{ justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, gap: 6, fontSize: 12, fontWeight: 600 }}
       >
         <GitMerge size={14} />
         {t("selectToolbar.tools.merge.label")} [J]

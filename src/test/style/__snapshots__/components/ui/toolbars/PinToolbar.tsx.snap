@@ -3,8 +3,15 @@
   "classes": [
     "btn",
     "btn-active",
-    "btneraser",
-    "btnpath-eraser"
+    "pin-toolbar",
+    "pin-toolbar__chip",
+    "pin-toolbar__chiperaser",
+    "pin-toolbar__chippath-eraser",
+    "pin-toolbar__grid",
+    "pin-toolbar__picker",
+    "pin-toolbar__picker-label",
+    "pin-toolbar__section-title",
+    "pin-toolbar__select"
   ],
   "cssRules": [
     {
@@ -28,17 +35,80 @@
         "color": "var(--accent)",
         "border-color": "var(--accent)"
       }
+    },
+    {
+      "selector": ".pin-toolbar",
+      "file": "ui/toolbars/PinToolbar.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "10px"
+      }
+    },
+    {
+      "selector": ".pin-toolbar__section-title",
+      "file": "ui/toolbars/PinToolbar.css",
+      "declarations": {
+        "font-size": "11px",
+        "font-weight": "700",
+        "letter-spacing": "0.06em",
+        "color": "var(--text-tertiary)",
+        "text-transform": "uppercase"
+      }
+    },
+    {
+      "selector": ".pin-toolbar__grid",
+      "file": "ui/toolbars/PinToolbar.css",
+      "declarations": {
+        "display": "grid",
+        "grid-template-columns": "repeat(3, 1fr)",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".pin-toolbar__chip",
+      "file": "ui/toolbars/PinToolbar.css",
+      "declarations": {
+        "flex-direction": "column",
+        "border-radius": "var(--radius-sm)",
+        "padding": "10px 4px 7px",
+        "gap": "5px",
+        "font-size": "10px",
+        "font-weight": "600"
+      }
+    },
+    {
+      "selector": ".pin-toolbar__picker",
+      "file": "ui/toolbars/PinToolbar.css",
+      "declarations": {
+        "width": "100%",
+        "justify-content": "space-between",
+        "border-radius": "var(--radius-sm)",
+        "padding": "9px 10px",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".pin-toolbar__picker-label",
+      "file": "ui/toolbars/PinToolbar.css",
+      "declarations": {
+        "display": "flex",
+        "align-items": "center",
+        "gap": "6px",
+        "font-size": "12px",
+        "font-weight": "600"
+      }
+    },
+    {
+      "selector": ".pin-toolbar__select",
+      "file": "ui/toolbars/PinToolbar.css",
+      "declarations": {
+        "background": "transparent",
+        "color": "inherit",
+        "border": "none",
+        "font-size": "12px"
+      }
     }
   ],
-  "inlineStyleBlocks": [
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 10 }}",
-    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
-    "{{ display: \"grid\", gridTemplateColumns: \"repeat(3, 1fr)\", gap: 6 }}",
-    "{CHIP_STYLE}",
-    "{CHIP_STYLE}",
-    "{CHIP_STYLE}",
-    "{{ width: \"100%\", justifyContent: \"space-between\", borderRadius: \"var(--radius-sm)\", padding: \"9px 10px\", gap: 6 }}",
-    "{{ display: \"flex\", alignItems: \"center\", gap: 6, fontSize: 12, fontWeight: 600 }}",
-    "{{ background: \"transparent\", color: \"inherit\", border: \"none\", fontSize: 12 }}"
-  ]
+  "inlineStyleBlocks": []
 }

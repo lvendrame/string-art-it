@@ -1,10 +1,35 @@
 {
   "file": "ui/canvas/Canvas.tsx",
-  "classes": [],
-  "cssRules": [],
+  "classes": [
+    "canvas-root",
+    "canvas-viewport"
+  ],
+  "cssRules": [
+    {
+      "selector": ".canvas-root",
+      "file": "ui/canvas/Canvas.css",
+      "declarations": {
+        "flex": "1",
+        "display": "flex",
+        "flex-direction": "column",
+        "min-width": "0",
+        "background": "var(--bg-canvas)"
+      }
+    },
+    {
+      "selector": ".canvas-viewport",
+      "file": "ui/canvas/Canvas.css",
+      "declarations": {
+        "flex": "1",
+        "position": "relative",
+        "overflow": "hidden",
+        "display": "flex",
+        "align-items": "center",
+        "justify-content": "center"
+      }
+    }
+  ],
   "inlineStyleBlocks": [
-    "{{\n        flex: 1,\n        display: \"flex\",\n        flexDirection: \"column\",\n        minWidth: 0,\n        background: \"var(--bg-canvas)\",\n      }}",
-    "{{\n          flex: 1,\n          position: \"relative\",\n          overflow: \"hidden\",\n          display: \"flex\",\n          alignItems: \"center\",\n          justifyContent: \"center\",\n        }}",
     "{{\n            cursor: canvasCursor(state.mode, state.selectTool, state.pinTool, state.threadTool, pan.isPanning),\n          }}"
   ]
 }

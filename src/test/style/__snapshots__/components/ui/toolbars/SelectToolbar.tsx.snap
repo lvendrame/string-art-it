@@ -2,7 +2,19 @@
   "file": "ui/toolbars/SelectToolbar.tsx",
   "classes": [
     "btn",
-    "btn-active"
+    "btn-active",
+    "select-toolbar",
+    "select-toolbar__granularity",
+    "select-toolbar__granularity-label",
+    "select-toolbar__granularity-label--active",
+    "select-toolbar__grid",
+    "select-toolbar__knob",
+    "select-toolbar__knob--pins",
+    "select-toolbar__merge-btn",
+    "select-toolbar__section-title",
+    "select-toolbar__switch",
+    "select-toolbar__tool",
+    "select-toolbar__track"
   ],
   "cssRules": [
     {
@@ -26,19 +38,141 @@
         "color": "var(--accent)",
         "border-color": "var(--accent)"
       }
+    },
+    {
+      "selector": ".select-toolbar",
+      "file": "ui/toolbars/SelectToolbar.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "10px"
+      }
+    },
+    {
+      "selector": ".select-toolbar__section-title",
+      "file": "ui/toolbars/SelectToolbar.css",
+      "declarations": {
+        "font-size": "11px",
+        "font-weight": "700",
+        "letter-spacing": "0.06em",
+        "color": "var(--text-tertiary)",
+        "text-transform": "uppercase"
+      }
+    },
+    {
+      "selector": ".select-toolbar__granularity",
+      "file": "ui/toolbars/SelectToolbar.css",
+      "declarations": {
+        "display": "flex",
+        "align-items": "center",
+        "gap": "8px"
+      }
+    },
+    {
+      "selector": ".select-toolbar__granularity-label",
+      "file": "ui/toolbars/SelectToolbar.css",
+      "declarations": {
+        "background": "none",
+        "border": "none",
+        "padding": "0",
+        "cursor": "pointer",
+        "font-size": "12px",
+        "font-weight": "600",
+        "color": "var(--text-secondary)",
+        "transition": "color 120ms ease"
+      }
+    },
+    {
+      "selector": ".select-toolbar__granularity-label--active",
+      "file": "ui/toolbars/SelectToolbar.css",
+      "declarations": {
+        "color": "var(--accent)"
+      }
+    },
+    {
+      "selector": ".select-toolbar__switch",
+      "file": "ui/toolbars/SelectToolbar.css",
+      "declarations": {
+        "position": "relative",
+        "width": "44px",
+        "height": "32px",
+        "background": "none",
+        "border": "none",
+        "padding": "0",
+        "cursor": "pointer",
+        "flex-shrink": "0"
+      }
+    },
+    {
+      "selector": ".select-toolbar__track",
+      "file": "ui/toolbars/SelectToolbar.css",
+      "declarations": {
+        "position": "absolute",
+        "top": "50%",
+        "left": "50%",
+        "transform": "translate(-50%, -50%)",
+        "width": "40px",
+        "height": "20px",
+        "border-radius": "999px",
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-app)"
+      }
+    },
+    {
+      "selector": ".select-toolbar__knob",
+      "file": "ui/toolbars/SelectToolbar.css",
+      "declarations": {
+        "position": "absolute",
+        "top": "50%",
+        "left": "5px",
+        "width": "14px",
+        "height": "14px",
+        "border-radius": "50%",
+        "background": "var(--accent)",
+        "transform": "translateY(-50%)",
+        "transition": "left 150ms ease"
+      }
+    },
+    {
+      "selector": ".select-toolbar__knob--pins",
+      "file": "ui/toolbars/SelectToolbar.css",
+      "declarations": {
+        "left": "25px"
+      }
+    },
+    {
+      "selector": ".select-toolbar__grid",
+      "file": "ui/toolbars/SelectToolbar.css",
+      "declarations": {
+        "display": "grid",
+        "grid-template-columns": "repeat(2, 1fr)",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".select-toolbar__tool",
+      "file": "ui/toolbars/SelectToolbar.css",
+      "declarations": {
+        "flex-direction": "column",
+        "border-radius": "var(--radius-sm)",
+        "padding": "10px 4px 7px",
+        "gap": "5px",
+        "font-size": "11px",
+        "font-weight": "600"
+      }
+    },
+    {
+      "selector": ".select-toolbar__merge-btn",
+      "file": "ui/toolbars/SelectToolbar.css",
+      "declarations": {
+        "justify-content": "center",
+        "border-radius": "var(--radius-sm)",
+        "padding": "9px",
+        "gap": "6px",
+        "font-size": "12px",
+        "font-weight": "600"
+      }
     }
   ],
-  "inlineStyleBlocks": [
-    "{{ display: \"flex\", alignItems: \"center\", gap: 8 }}",
-    "{{ background: \"none\", border: \"none\", padding: 0, cursor: \"pointer\", fontSize: 12, fontWeight: 600, color: isPins ? \"var(--text-secondary)\" : \"var(--accent)\", transition: \"color 120ms ease\" }}",
-    "{{ position: \"relative\", width: 44, height: 32, background: \"none\", border: \"none\", padding: 0, cursor: \"pointer\", flexShrink: 0 }}",
-    "{{ position: \"absolute\", top: \"50%\", left: \"50%\", transform: \"translate(-50%, -50%)\", width: TRACK_WIDTH, height: 20, borderRadius: 999, border: \"1px solid var(--border)\", background: \"var(--bg-app)\" }}",
-    "{{\n            position: \"absolute\",\n            top: \"50%\",\n            left: (44 - TRACK_WIDTH) / 2 + (isPins ? KNOB_ON_LEFT : KNOB_INSET),\n            width: KNOB_SIZE,\n            height: KNOB_SIZE,\n            borderRadius: \"50%\",\n            background: \"var(--accent)\",\n            transform: \"translateY(-50%)\",\n            transition: \"left 150ms ease\",\n          }}",
-    "{{ background: \"none\", border: \"none\", padding: 0, cursor: \"pointer\", fontSize: 12, fontWeight: 600, color: isPins ? \"var(--accent)\" : \"var(--text-secondary)\", transition: \"color 120ms ease\" }}",
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 10 }}",
-    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
-    "{{ display: \"grid\", gridTemplateColumns: \"repeat(2, 1fr)\", gap: 6 }}",
-    "{{ flexDirection: \"column\", borderRadius: \"var(--radius-sm)\", padding: \"10px 4px 7px\", gap: 5, fontSize: 11, fontWeight: 600 }}",
-    "{{ justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: 9, gap: 6, fontSize: 12, fontWeight: 600 }}"
-  ]
+  "inlineStyleBlocks": []
 }

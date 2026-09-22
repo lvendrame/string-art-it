@@ -1,0 +1,92 @@
+.play-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.play-toolbar__section-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.play-toolbar__transport-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.play-toolbar__step-btn {
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  padding: 9px;
+}
+
+.play-toolbar__transport-toggle {
+  justify-content: center;
+  border-radius: var(--radius-md);
+  padding: 12px;
+}
+
+/* Compounded with .btn: background/color/border-color need to beat the plain .btn
+   rule deterministically. Represents "paused, highlighted to invite pressing play" —
+   distinct from .btn-active, which represents "currently playing" (the other state
+   this same button can be in). */
+.btn.play-toolbar__transport-toggle--ready {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.play-toolbar__frame-row {
+  display: flex;
+  gap: 8px;
+}
+
+.play-toolbar__frame-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.play-toolbar__number-input {
+  width: 70px;
+  background: var(--bg-panel-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  padding: 4px 6px;
+}
+
+/* Declared after the base rule above, in this same file — deterministic override on
+   the shared `color` property via source order, same as .btn/.btn-active elsewhere. */
+.play-toolbar__number-input--readonly {
+  color: var(--text-tertiary);
+}
+
+.play-toolbar__interval-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.play-toolbar__export-btn {
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  padding: 9px;
+  font-size: 12px;
+  font-weight: 600;
+  gap: 6px;
+}
+
+.play-toolbar__unsupported-note {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}

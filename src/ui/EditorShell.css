@@ -1,0 +1,82 @@
+.editor-shell {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-app);
+}
+
+.editor-shell__topbar {
+  height: 56px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 16px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.editor-shell__logo {
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+
+.editor-shell__spacer {
+  flex: 1;
+}
+
+/* Compounded with .btn: background/border-color need to beat the plain .btn rule
+   deterministically — this is the exact shape of the tracked border/borderColor
+   console-warning bug (see M30's batch 1 notes): whatever its root cause, moving
+   these off an inline style object removes the shorthand+longhand mix entirely. */
+.btn.editor-shell__icon-btn {
+  border-radius: 8px;
+  padding: 8px;
+  background: transparent;
+  border-color: transparent;
+  gap: 6px;
+}
+
+.editor-shell__toolbar-btn {
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  gap: 6px;
+}
+
+.editor-shell__body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  position: relative;
+}
+
+/* Identical shape across Pin/Select/Thread/Play/Generate mode side panels. */
+.editor-shell__side-panel {
+  width: 248px;
+  flex: 0 0 auto;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.editor-shell__canvas-area {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  position: relative;
+}
+
+.editor-shell__layers-panel {
+  width: 260px;
+  flex: 0 0 auto;
+  background: var(--bg-panel);
+  border-left: 1px solid var(--border);
+}

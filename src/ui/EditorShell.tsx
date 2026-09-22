@@ -29,6 +29,7 @@ import { HelpPanel } from "./panels/help/HelpPanel";
 import { useEditorState } from "./useEditorStore";
 import { isTextEntryTarget } from "./keyboard";
 import { useKeyboardShortcuts } from "./useKeyboardShortcuts";
+import "./EditorShell.css";
 
 const EDITOR_SHELL_TOOLTIP_ID = "editor-shell-tooltip";
 
@@ -107,63 +108,58 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
   });
 
   return (
-    <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column", background: "var(--bg-app)" }}>
-      <div style={{ height: 56, flex: "0 0 auto", display: "flex", alignItems: "center", gap: 20, padding: "0 16px", background: "var(--bg-panel)", borderBottom: "1px solid var(--border)" }}>
-        <span style={{ fontWeight: 800, fontSize: 15, letterSpacing: "-0.01em" }}>StringArtIt</span>
+    <div className="editor-shell">
+      <div className="editor-shell__topbar">
+        <span className="editor-shell__logo">StringArtIt</span>
         <FileMenu ref={fileMenuRef} store={store} onNewProject={onNewProject} />
         <ExportMenu store={store} />
-        <div style={{ flex: 1 }} />
+        <div className="editor-shell__spacer" />
         <ModeSwitcher mode={state.mode} onChange={store.setMode.bind(store)} />
-        <div style={{ flex: 1 }} />
+        <div className="editor-shell__spacer" />
         <button
-          className="btn"
+          className="btn editor-shell__icon-btn"
           disabled={!store.canUndo()}
           onClick={() => store.undo()}
           aria-label={t("undo")}
           data-tooltip-id={EDITOR_SHELL_TOOLTIP_ID}
           data-tooltip-content={t("undo")}
-          style={{ borderRadius: 8, padding: 8, background: "transparent", borderColor: "transparent", gap: 6 }}
         >
           <Undo2 size={14} />
         </button>
         <button
-          className="btn"
+          className="btn editor-shell__icon-btn"
           disabled={!store.canRedo()}
           onClick={() => store.redo()}
           aria-label={t("redo")}
           data-tooltip-id={EDITOR_SHELL_TOOLTIP_ID}
           data-tooltip-content={t("redo")}
-          style={{ borderRadius: 8, padding: 8, background: "transparent", borderColor: "transparent", gap: 6 }}
         >
           <Redo2 size={14} />
         </button>
         <button
-          className="btn"
+          className="btn editor-shell__toolbar-btn"
           onClick={() => setOverlay("stats")}
           aria-label={t("stats")}
           data-tooltip-id={EDITOR_SHELL_TOOLTIP_ID}
           data-tooltip-content={t("stats")}
-          style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}
         >
           <BarChart3 size={14} />
         </button>
         <button
-          className="btn"
+          className="btn editor-shell__toolbar-btn"
           onClick={() => setOverlay("help")}
           aria-label={t("help")}
           data-tooltip-id={EDITOR_SHELL_TOOLTIP_ID}
           data-tooltip-content={t("help")}
-          style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}
         >
           <HelpCircle size={14} />
         </button>
         <button
-          className="btn"
+          className="btn editor-shell__toolbar-btn"
           onClick={() => setOverlay("print")}
           aria-label={t("print")}
           data-tooltip-id={EDITOR_SHELL_TOOLTIP_ID}
           data-tooltip-content={t("print")}
-          style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }}
         >
           <Printer size={14} />
         </button>
@@ -171,40 +167,40 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
         <Tooltip id={EDITOR_SHELL_TOOLTIP_ID} place="bottom" />
       </div>
 
-      <div style={{ flex: 1, display: "flex", minHeight: 0, position: "relative" }}>
+      <div className="editor-shell__body">
         {overlay === "print" && <PrintPreviewPanel store={store} onClose={() => setOverlay("none")} />}
         {overlay === "stats" && <StatisticsPanel store={store} onClose={() => setOverlay("none")} />}
         {overlay === "help" && <HelpPanel currentMode={state.mode} onClose={() => setOverlay("none")} />}
         {state.mode === "pin" && (
-          <div style={{ width: 248, flex: "0 0 auto", background: "var(--bg-panel)", borderRight: "1px solid var(--border)", overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 20 }}>
+          <div className="editor-shell__side-panel">
             <PinToolbar store={store} />
             <PinPropertiesPanel store={store} />
             <SymmetryPanel store={store} />
           </div>
         )}
         {state.mode === "select" && (
-          <div style={{ width: 248, flex: "0 0 auto", background: "var(--bg-panel)", borderRight: "1px solid var(--border)", overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 20 }}>
+          <div className="editor-shell__side-panel">
             <SelectToolbar store={store} />
             <SelectionPanel store={store} />
           </div>
         )}
         {state.mode === "thread" && (
-          <div style={{ width: 248, flex: "0 0 auto", background: "var(--bg-panel)", borderRight: "1px solid var(--border)", overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 20 }}>
+          <div className="editor-shell__side-panel">
             <ThreadToolbar store={store} />
             <ThreadPropertiesPanel store={store} />
           </div>
         )}
         {state.mode === "play" && (
-          <div style={{ width: 248, flex: "0 0 auto", background: "var(--bg-panel)", borderRight: "1px solid var(--border)", overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 20 }}>
+          <div className="editor-shell__side-panel">
             <PlayToolbar transport={transport} totalFrames={totalFrames} videoExport={videoExport} />
           </div>
         )}
         {state.mode === "generate" && (
-          <div style={{ width: 248, flex: "0 0 auto", background: "var(--bg-panel)", borderRight: "1px solid var(--border)", overflowY: "auto", padding: 16, display: "flex", flexDirection: "column", gap: 20 }}>
+          <div className="editor-shell__side-panel">
             <GeneratorPanel store={store} />
           </div>
         )}
-        <div ref={canvasAreaRef} style={{ flex: 1, minWidth: 0, display: "flex", position: "relative" }} onContextMenu={handleCanvasAreaContextMenu}>
+        <div ref={canvasAreaRef} className="editor-shell__canvas-area" onContextMenu={handleCanvasAreaContextMenu}>
           {state.mode === "play" ? <PlaybackCanvas ref={playSvgRef} state={state} frame={transport.frame} /> : <Canvas store={store} />}
           {radialMenuPosition && (
             <RadialContextMenu
@@ -216,7 +212,7 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
             />
           )}
         </div>
-        <div style={{ width: 260, flex: "0 0 auto", background: "var(--bg-panel)", borderLeft: "1px solid var(--border)" }}>
+        <div className="editor-shell__layers-panel">
           <LayersPanel store={store} />
         </div>
       </div>

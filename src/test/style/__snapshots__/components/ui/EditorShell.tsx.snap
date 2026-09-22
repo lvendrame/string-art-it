@@ -1,9 +1,127 @@
 {
   "file": "ui/EditorShell.tsx",
   "classes": [
-    "btn"
+    "btn",
+    "editor-shell",
+    "editor-shell__body",
+    "editor-shell__canvas-area",
+    "editor-shell__icon-btn",
+    "editor-shell__layers-panel",
+    "editor-shell__logo",
+    "editor-shell__side-panel",
+    "editor-shell__spacer",
+    "editor-shell__toolbar-btn",
+    "editor-shell__topbar"
   ],
   "cssRules": [
+    {
+      "selector": ".editor-shell",
+      "file": "ui/EditorShell.css",
+      "declarations": {
+        "width": "100%",
+        "height": "100vh",
+        "display": "flex",
+        "flex-direction": "column",
+        "background": "var(--bg-app)"
+      }
+    },
+    {
+      "selector": ".editor-shell__topbar",
+      "file": "ui/EditorShell.css",
+      "declarations": {
+        "height": "56px",
+        "flex": "0 0 auto",
+        "display": "flex",
+        "align-items": "center",
+        "gap": "20px",
+        "padding": "0 16px",
+        "background": "var(--bg-panel)",
+        "border-bottom": "1px solid var(--border)"
+      }
+    },
+    {
+      "selector": ".editor-shell__logo",
+      "file": "ui/EditorShell.css",
+      "declarations": {
+        "font-weight": "800",
+        "font-size": "15px",
+        "letter-spacing": "-0.01em"
+      }
+    },
+    {
+      "selector": ".editor-shell__spacer",
+      "file": "ui/EditorShell.css",
+      "declarations": {
+        "flex": "1"
+      }
+    },
+    {
+      "selector": ".btn.editor-shell__icon-btn",
+      "file": "ui/EditorShell.css",
+      "declarations": {
+        "border-radius": "8px",
+        "padding": "8px",
+        "background": "transparent",
+        "border-color": "transparent",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".editor-shell__toolbar-btn",
+      "file": "ui/EditorShell.css",
+      "declarations": {
+        "border-radius": "8px",
+        "padding": "7px 12px",
+        "font-size": "12px",
+        "font-weight": "600",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".editor-shell__body",
+      "file": "ui/EditorShell.css",
+      "declarations": {
+        "flex": "1",
+        "display": "flex",
+        "min-height": "0",
+        "position": "relative"
+      }
+    },
+    {
+      "selector": ".editor-shell__side-panel",
+      "file": "ui/EditorShell.css",
+      "declarations": {
+        "width": "248px",
+        "flex": "0 0 auto",
+        "background": "var(--bg-panel)",
+        "border-right": "1px solid var(--border)",
+        "overflow-y": "auto",
+        "padding": "16px",
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "20px"
+      }
+    },
+    {
+      "selector": ".editor-shell__canvas-area",
+      "file": "ui/EditorShell.css",
+      "declarations": {
+        "flex": "1",
+        "min-width": "0",
+        "display": "flex",
+        "position": "relative"
+      }
+    },
+    {
+      "selector": ".editor-shell__layers-panel",
+      "file": "ui/EditorShell.css",
+      "declarations": {
+        "width": "260px",
+        "flex": "0 0 auto",
+        "background": "var(--bg-panel)",
+        "border-left": "1px solid var(--border)"
+      }
+    },
     {
       "selector": ".btn",
       "file": "ui/theme.css",
@@ -18,24 +136,5 @@
       }
     }
   ],
-  "inlineStyleBlocks": [
-    "{{ width: \"100%\", height: \"100vh\", display: \"flex\", flexDirection: \"column\", background: \"var(--bg-app)\" }}",
-    "{{ height: 56, flex: \"0 0 auto\", display: \"flex\", alignItems: \"center\", gap: 20, padding: \"0 16px\", background: \"var(--bg-panel)\", borderBottom: \"1px solid var(--border)\" }}",
-    "{{ fontWeight: 800, fontSize: 15, letterSpacing: \"-0.01em\" }}",
-    "{{ flex: 1 }}",
-    "{{ flex: 1 }}",
-    "{{ borderRadius: 8, padding: 8, background: \"transparent\", borderColor: \"transparent\", gap: 6 }}",
-    "{{ borderRadius: 8, padding: 8, background: \"transparent\", borderColor: \"transparent\", gap: 6 }}",
-    "{{ borderRadius: 8, padding: \"7px 12px\", fontSize: 12, fontWeight: 600, gap: 6 }}",
-    "{{ borderRadius: 8, padding: \"7px 12px\", fontSize: 12, fontWeight: 600, gap: 6 }}",
-    "{{ borderRadius: 8, padding: \"7px 12px\", fontSize: 12, fontWeight: 600, gap: 6 }}",
-    "{{ flex: 1, display: \"flex\", minHeight: 0, position: \"relative\" }}",
-    "{{ width: 248, flex: \"0 0 auto\", background: \"var(--bg-panel)\", borderRight: \"1px solid var(--border)\", overflowY: \"auto\", padding: 16, display: \"flex\", flexDirection: \"column\", gap: 20 }}",
-    "{{ width: 248, flex: \"0 0 auto\", background: \"var(--bg-panel)\", borderRight: \"1px solid var(--border)\", overflowY: \"auto\", padding: 16, display: \"flex\", flexDirection: \"column\", gap: 20 }}",
-    "{{ width: 248, flex: \"0 0 auto\", background: \"var(--bg-panel)\", borderRight: \"1px solid var(--border)\", overflowY: \"auto\", padding: 16, display: \"flex\", flexDirection: \"column\", gap: 20 }}",
-    "{{ width: 248, flex: \"0 0 auto\", background: \"var(--bg-panel)\", borderRight: \"1px solid var(--border)\", overflowY: \"auto\", padding: 16, display: \"flex\", flexDirection: \"column\", gap: 20 }}",
-    "{{ width: 248, flex: \"0 0 auto\", background: \"var(--bg-panel)\", borderRight: \"1px solid var(--border)\", overflowY: \"auto\", padding: 16, display: \"flex\", flexDirection: \"column\", gap: 20 }}",
-    "{{ flex: 1, minWidth: 0, display: \"flex\", position: \"relative\" }}",
-    "{{ width: 260, flex: \"0 0 auto\", background: \"var(--bg-panel)\", borderLeft: \"1px solid var(--border)\" }}"
-  ]
+  "inlineStyleBlocks": []
 }

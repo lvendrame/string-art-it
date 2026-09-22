@@ -1,0 +1,27 @@
+.language-switcher__trigger {
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  gap: 6px;
+}
+
+.language-switcher__panel {
+  padding: 6px;
+  min-width: 170px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Compounded with .btn: "border: none" (shorthand) needs to beat the plain .btn rule
+   deterministically. It also wins over .btn-active's border-color when this option is
+   the active one (2-class specificity > 1-class) — matching the original inline-style
+   behavior exactly, since an inline style unconditionally wins over every class. */
+.btn.language-switcher__option {
+  justify-content: space-between;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  font-size: 12.5px;
+}

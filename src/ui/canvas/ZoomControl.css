@@ -1,0 +1,41 @@
+.zoom-control__trigger-row {
+  display: flex;
+  align-items: center;
+}
+
+.zoom-control__input {
+  width: 48px;
+  text-align: center;
+  background: var(--bg-panel-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  padding: 5px 4px;
+  font-size: 12px;
+}
+
+.zoom-control__chevron {
+  border-radius: 6px;
+  padding: 5px 2px;
+  margin-left: 2px;
+}
+
+.zoom-control__panel {
+  padding: 6px;
+  min-width: 90px;
+  max-height: 260px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Compounded with .btn — "border: none" needs to beat the plain .btn rule
+   deterministically, same reasoning as LanguageSwitcher's option rows. */
+.btn.zoom-control__option {
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  font-size: 12px;
+  text-align: right;
+}

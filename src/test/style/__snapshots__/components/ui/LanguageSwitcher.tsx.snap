@@ -2,9 +2,53 @@
   "file": "ui/LanguageSwitcher.tsx",
   "classes": [
     "btn",
-    "btn-active"
+    "btn-active",
+    "language-switcher__option",
+    "language-switcher__panel",
+    "language-switcher__trigger",
+    "popover-trigger"
   ],
   "cssRules": [
+    {
+      "selector": ".popover-trigger",
+      "file": "ui/AnchoredPopover.css",
+      "declarations": {
+        "position": "relative"
+      }
+    },
+    {
+      "selector": ".language-switcher__trigger",
+      "file": "ui/LanguageSwitcher.css",
+      "declarations": {
+        "border-radius": "8px",
+        "padding": "7px 10px",
+        "font-size": "12px",
+        "font-weight": "600",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".language-switcher__panel",
+      "file": "ui/LanguageSwitcher.css",
+      "declarations": {
+        "padding": "6px",
+        "min-width": "170px",
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "2px"
+      }
+    },
+    {
+      "selector": ".btn.language-switcher__option",
+      "file": "ui/LanguageSwitcher.css",
+      "declarations": {
+        "justify-content": "space-between",
+        "border": "none",
+        "border-radius": "var(--radius-sm)",
+        "padding": "7px 10px",
+        "font-size": "12.5px"
+      }
+    },
     {
       "selector": ".btn",
       "file": "ui/theme.css",
@@ -28,10 +72,5 @@
       }
     }
   ],
-  "inlineStyleBlocks": [
-    "{{ position: \"relative\" }}",
-    "{{ borderRadius: 8, padding: \"7px 10px\", fontSize: 12, fontWeight: 600, gap: 6 }}",
-    "{{\n            position: \"absolute\",\n            top: \"110%\",\n            right: 0,\n            zIndex: 20,\n            background: \"var(--bg-panel-2)\",\n            border: \"1px solid var(--border)\",\n            borderRadius: \"var(--radius-md)\",\n            padding: 6,\n            minWidth: 170,\n            display: \"flex\",\n            flexDirection: \"column\",\n            gap: 2,\n            boxShadow: \"0 8px 24px rgba(0,0,0,0.4)\",\n          }}",
-    "{{\n                justifyContent: \"space-between\",\n                border: \"none\",\n                borderRadius: \"var(--radius-sm)\",\n                padding: \"7px 10px\",\n                fontSize: 12.5,\n              }}"
-  ]
+  "inlineStyleBlocks": []
 }

@@ -3,9 +3,89 @@
   "classes": [
     "btn",
     "btn-active",
-    "mono"
+    "grid-settings-popover__color-input",
+    "grid-settings-popover__number-input",
+    "grid-settings-popover__number-input--opacity",
+    "grid-settings-popover__panel",
+    "grid-settings-popover__row",
+    "grid-settings-popover__trigger",
+    "mono",
+    "popover-trigger"
   ],
   "cssRules": [
+    {
+      "selector": ".popover-trigger",
+      "file": "ui/AnchoredPopover.css",
+      "declarations": {
+        "position": "relative"
+      }
+    },
+    {
+      "selector": ".grid-settings-popover__trigger",
+      "file": "ui/canvas/GridSettingsPopover.css",
+      "declarations": {
+        "border-radius": "999px",
+        "padding": "6px 12px",
+        "font-size": "11.5px",
+        "font-weight": "600",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".grid-settings-popover__panel",
+      "file": "ui/canvas/GridSettingsPopover.css",
+      "declarations": {
+        "padding": "10px",
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "8px",
+        "min-width": "160px"
+      }
+    },
+    {
+      "selector": ".grid-settings-popover__row",
+      "file": "ui/canvas/GridSettingsPopover.css",
+      "declarations": {
+        "display": "flex",
+        "justify-content": "space-between",
+        "align-items": "center",
+        "gap": "8px",
+        "font-size": "11px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".grid-settings-popover__number-input",
+      "file": "ui/canvas/GridSettingsPopover.css",
+      "declarations": {
+        "width": "60px",
+        "background": "var(--bg-panel-2)",
+        "border": "1px solid var(--border)",
+        "border-radius": "6px",
+        "color": "var(--text-primary)",
+        "padding": "3px 6px",
+        "font-size": "11px"
+      }
+    },
+    {
+      "selector": ".grid-settings-popover__number-input--opacity",
+      "file": "ui/canvas/GridSettingsPopover.css",
+      "declarations": {
+        "width": "56px"
+      }
+    },
+    {
+      "selector": ".grid-settings-popover__color-input",
+      "file": "ui/canvas/GridSettingsPopover.css",
+      "declarations": {
+        "width": "28px",
+        "height": "22px",
+        "border": "1px solid var(--border)",
+        "border-radius": "4px",
+        "background": "none",
+        "padding": "0"
+      }
+    },
     {
       "selector": ".mono",
       "file": "ui/theme.css",
@@ -36,17 +116,5 @@
       }
     }
   ],
-  "inlineStyleBlocks": [
-    "{{ position: \"relative\" }}",
-    "{{ borderRadius: 999, padding: \"6px 12px\", fontSize: 11.5, fontWeight: 600, gap: 6 }}",
-    "{{\n            position: \"absolute\",\n            top: \"110%\",\n            left: 0,\n            zIndex: 20,\n            background: \"var(--bg-panel)\",\n            border: \"1px solid var(--border)\",\n            borderRadius: \"var(--radius-md)\",\n            padding: 10,\n            display: \"flex\",\n            flexDirection: \"column\",\n            gap: 8,\n            minWidth: 160,\n            boxShadow: \"var(--shadow-float)\",\n          }}",
-    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", gap: 8, fontSize: 11, color: \"var(--text-secondary)\" }}",
-    "{{ width: 60, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"3px 6px\", fontSize: 11 }}",
-    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", gap: 8, fontSize: 11, color: \"var(--text-secondary)\" }}",
-    "{{ width: 60, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"3px 6px\", fontSize: 11 }}",
-    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", gap: 8, fontSize: 11, color: \"var(--text-secondary)\" }}",
-    "{{ width: 28, height: 22, border: \"1px solid var(--border)\", borderRadius: 4, background: \"none\", padding: 0 }}",
-    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", gap: 8, fontSize: 11, color: \"var(--text-secondary)\" }}",
-    "{{ width: 56, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"3px 6px\", fontSize: 11 }}"
-  ]
+  "inlineStyleBlocks": []
 }

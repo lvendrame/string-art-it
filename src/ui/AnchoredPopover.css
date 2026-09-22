@@ -1,0 +1,33 @@
+/* docs/conventions/ui-patterns.md §Anchored settings popover. Consumer supplies
+   .popover-trigger's position:relative container itself (trigger content varies too
+   much — plain button, editable combobox, icon button — to templatize), and this
+   file owns only the panel shell shared by all 5 consumers (ExportMenu,
+   LanguageSwitcher, GridSettingsPopover, ChangeBackgroundPopover, ZoomControl). */
+.popover-trigger {
+  position: relative;
+}
+
+.popover-panel {
+  position: absolute;
+  top: 110%;
+  z-index: 20;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-float);
+  background: var(--bg-panel);
+}
+
+.popover-panel--left {
+  left: 0;
+}
+
+.popover-panel--right {
+  right: 0;
+}
+
+/* Option-list popovers (LanguageSwitcher, ZoomControl) use the lighter panel tone;
+   settings/menu popovers (ExportMenu, GridSettingsPopover, ChangeBackgroundPopover)
+   use the default above. */
+.popover-panel--alt {
+  background: var(--bg-panel-2);
+}

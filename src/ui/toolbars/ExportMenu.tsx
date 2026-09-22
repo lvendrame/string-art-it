@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronDown, Download, FileImage, FileType } from "lucide-react";
 import { boardPath, type EditorStore } from "../../application/document";
@@ -7,6 +7,9 @@ import { boundingBoxOf } from "../../domain/transforms";
 import { buildExportSvg } from "../../infrastructure/export/svgExport";
 import { exportToRaster } from "../../infrastructure/export/rasterExport";
 import { useEditorState } from "../useEditorStore";
+import { AnchoredPopover } from "../AnchoredPopover";
+import { usePopoverDismiss } from "../usePopoverDismiss";
+import "./ExportMenu.css";
 
 function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
@@ -25,6 +28,9 @@ export function ExportMenu({ store }: { store: EditorStore }) {
   const [open, setOpen] = useState(false);
   const [dpi, setDpi] = useState(150);
   const [busy, setBusy] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  usePopoverDismiss(containerRef, open, () => setOpen(false));
 
   function boardSizeCm() {
     const path = boardPath(state.board);
@@ -70,60 +76,67 @@ export function ExportMenu({ store }: { store: EditorStore }) {
   }
 
   return (
-    <div style={{ position: "relative" }}>
-      <button className="btn" onClick={() => setOpen((o) => !o)} style={{ borderRadius: 8, padding: "7px 12px", fontSize: 12, fontWeight: 600, gap: 6 }} disabled={busy}>
+    <div ref={containerRef} className="popover-trigger">
+      <button className="btn export-menu__trigger" onClick={() => setOpen((o) => !o)} disabled={busy}>
         <Download size={14} />
         {t("export.trigger")}
         <ChevronDown size={12} />
       </button>
       {open && (
-        <div
-          style={{
-            position: "absolute",
-            top: "110%",
-            left: 0,
-            zIndex: 20,
-            background: "var(--bg-panel)",
-            border: "1px solid var(--border)",
-            borderRadius: "var(--radius-md)",
-            padding: 10,
-            display: "flex",
-            flexDirection: "column",
-            gap: 6,
-            minWidth: 180,
-            boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
-          }}
-        >
-          <button className="btn" onClick={() => { handleSvg(); setOpen(false); }} style={{ justifyContent: "flex-start", borderRadius: 6, padding: 8, fontSize: 12, gap: 6 }}>
+        <AnchoredPopover align="left" className="export-menu__panel">
+          <button
+            className="btn export-menu__item"
+            onClick={() => {
+              handleSvg();
+              setOpen(false);
+            }}
+          >
             <FileType size={14} />
             {t("export.svg")}
           </button>
-          <button className="btn" onClick={() => { handlePdf(); setOpen(false); }} style={{ justifyContent: "flex-start", borderRadius: 6, padding: 8, fontSize: 12, gap: 6 }}>
+          <button
+            className="btn export-menu__item"
+            onClick={() => {
+              handlePdf();
+              setOpen(false);
+            }}
+          >
             <FileType size={14} />
             {t("export.pdf")}
           </button>
-          <button className="btn" onClick={() => { handleRaster("png"); setOpen(false); }} style={{ justifyContent: "flex-start", borderRadius: 6, padding: 8, fontSize: 12, gap: 6 }}>
+          <button
+            className="btn export-menu__item"
+            onClick={() => {
+              handleRaster("png");
+              setOpen(false);
+            }}
+          >
             <FileImage size={14} />
             {t("export.png", { dpi })}
           </button>
-          <button className="btn" onClick={() => { handleRaster("jpeg"); setOpen(false); }} style={{ justifyContent: "flex-start", borderRadius: 6, padding: 8, fontSize: 12, gap: 6 }}>
+          <button
+            className="btn export-menu__item"
+            onClick={() => {
+              handleRaster("jpeg");
+              setOpen(false);
+            }}
+          >
             <FileImage size={14} />
             {t("export.jpeg", { dpi })}
           </button>
-          <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11.5, color: "var(--text-secondary)", marginTop: 4 }}>
+          <label className="export-menu__dpi-row">
             {t("export.dpi")}
             <input
               type="number"
-              className="mono"
+              className="mono export-menu__dpi-input"
               min={72}
               max={600}
               step={1}
               value={dpi}
               onChange={(e) => setDpi(Number(e.target.value))}
-              style={{ width: 60, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "3px 6px" }}
             />
           </label>
-        </div>
+        </AnchoredPopover>
       )}
     </div>
   );

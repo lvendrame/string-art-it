@@ -2,9 +2,41 @@
   "file": "ui/canvas/ChangeBackgroundPopover.tsx",
   "classes": [
     "btn",
-    "btn-active"
+    "btn-active",
+    "change-background-popover__panel",
+    "change-background-popover__trigger",
+    "popover-trigger"
   ],
   "cssRules": [
+    {
+      "selector": ".popover-trigger",
+      "file": "ui/AnchoredPopover.css",
+      "declarations": {
+        "position": "relative"
+      }
+    },
+    {
+      "selector": ".change-background-popover__trigger",
+      "file": "ui/canvas/ChangeBackgroundPopover.css",
+      "declarations": {
+        "border-radius": "999px",
+        "padding": "6px 12px",
+        "font-size": "11.5px",
+        "font-weight": "600",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".change-background-popover__panel",
+      "file": "ui/canvas/ChangeBackgroundPopover.css",
+      "declarations": {
+        "padding": "10px",
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "8px",
+        "min-width": "220px"
+      }
+    },
     {
       "selector": ".btn",
       "file": "ui/theme.css",
@@ -28,9 +60,5 @@
       }
     }
   ],
-  "inlineStyleBlocks": [
-    "{{ position: \"relative\" }}",
-    "{{ borderRadius: 999, padding: \"6px 12px\", fontSize: 11.5, fontWeight: 600, gap: 6 }}",
-    "{{\n            position: \"absolute\",\n            top: \"110%\",\n            left: 0,\n            zIndex: 20,\n            background: \"var(--bg-panel)\",\n            border: \"1px solid var(--border)\",\n            borderRadius: \"var(--radius-md)\",\n            padding: 10,\n            display: \"flex\",\n            flexDirection: \"column\",\n            gap: 8,\n            minWidth: 220,\n            boxShadow: \"var(--shadow-float)\",\n          }}"
-  ]
+  "inlineStyleBlocks": []
 }

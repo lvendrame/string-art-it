@@ -1,10 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { EditorStore } from "../../application/document";
 import type { Viewport } from "../../domain/transforms";
 import { zoomToPercent } from "../../domain/transforms";
 import { VIEWPORT_CENTER, ZOOM_PRESET_PERCENTS, zoomToPercentStep } from "./zoomSteps";
+import { AnchoredPopover } from "../AnchoredPopover";
+import { usePopoverDismiss } from "../usePopoverDismiss";
+import "./ZoomControl.css";
 
 const ZOOM_LISTBOX_ID = "zoom-control-listbox";
 
@@ -29,14 +32,9 @@ export function ZoomControl({ store, viewport }: { store: EditorStore; viewport:
   const currentPercent = Math.round(zoomToPercent(viewport.zoom));
   const displayText = editing ? text : `${currentPercent}%`;
 
-  useEffect(() => {
-    if (!open) return;
-    function onPointerDown(e: PointerEvent) {
-      if (!containerRef.current?.contains(e.target as Node)) setOpen(false);
-    }
-    document.addEventListener("pointerdown", onPointerDown);
-    return () => document.removeEventListener("pointerdown", onPointerDown);
-  }, [open]);
+  // escapeKey:false — Escape is handled locally below (revert() on the input,
+  // close-and-refocus on the list), not a plain close.
+  usePopoverDismiss(containerRef, open, () => setOpen(false), { escapeKey: false });
 
   function applyPercent(percent: number) {
     store.setViewport(zoomToPercentStep(viewport, percent, VIEWPORT_CENTER));
@@ -95,7 +93,7 @@ export function ZoomControl({ store, viewport }: { store: EditorStore; viewport:
   }
 
   return (
-    <div ref={containerRef} style={{ position: "relative", display: "flex", alignItems: "center" }}>
+    <div ref={containerRef} className="popover-trigger zoom-control__trigger-row">
       <input
         ref={inputRef}
         type="text"
@@ -105,7 +103,7 @@ export function ZoomControl({ store, viewport }: { store: EditorStore; viewport:
         aria-expanded={open}
         aria-controls={ZOOM_LISTBOX_ID}
         aria-label={t("canvasToolbar.zoomLevel")}
-        className="mono"
+        className="mono zoom-control__input"
         value={displayText}
         onFocus={(e) => {
           setEditing(true);
@@ -121,51 +119,26 @@ export function ZoomControl({ store, viewport }: { store: EditorStore; viewport:
           }
           if (!open) commit();
         }}
-        style={{
-          width: 48,
-          textAlign: "center",
-          background: "var(--bg-panel-2)",
-          border: "1px solid var(--border)",
-          borderRadius: 6,
-          color: "var(--text-primary)",
-          padding: "5px 4px",
-          fontSize: 12,
-        }}
       />
       <button
         type="button"
         aria-label={t("canvasToolbar.zoomOptions")}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="btn"
+        className="btn zoom-control__chevron"
         onClick={() => setOpen((o) => !o)}
-        style={{ borderRadius: 6, padding: "5px 2px", marginLeft: 2 }}
       >
         <ChevronDown size={12} />
       </button>
       {open && (
-        <div
+        <AnchoredPopover
+          align="right"
+          variant="panel-2"
           id={ZOOM_LISTBOX_ID}
           role="listbox"
           aria-label={t("canvasToolbar.zoomOptions")}
           onKeyDown={onListKeyDown}
-          style={{
-            position: "absolute",
-            top: "110%",
-            right: 0,
-            zIndex: 20,
-            background: "var(--bg-panel-2)",
-            border: "1px solid var(--border)",
-            borderRadius: "var(--radius-md)",
-            padding: 6,
-            minWidth: 90,
-            maxHeight: 260,
-            overflowY: "auto",
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            boxShadow: "var(--shadow-float)",
-          }}
+          className="zoom-control__panel"
         >
           {ZOOM_PRESET_PERCENTS.map((percent, i) => (
             <button
@@ -176,14 +149,13 @@ export function ZoomControl({ store, viewport }: { store: EditorStore; viewport:
               type="button"
               role="option"
               aria-selected={percent === currentPercent}
-              className={`btn mono${percent === currentPercent ? " btn-active" : ""}`}
+              className={`btn mono zoom-control__option${percent === currentPercent ? " btn-active" : ""}`}
               onClick={() => selectPreset(percent)}
-              style={{ border: "none", borderRadius: "var(--radius-sm)", padding: "6px 8px", fontSize: 12, textAlign: "right" }}
             >
               {percent}%
             </button>
           ))}
-        </div>
+        </AnchoredPopover>
       )}
     </div>
   );

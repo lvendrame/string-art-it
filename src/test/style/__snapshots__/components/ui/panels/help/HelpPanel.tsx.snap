@@ -1,0 +1,35 @@
+{
+  "file": "ui/panels/help/HelpPanel.tsx",
+  "classes": [
+    "btn"
+  ],
+  "cssRules": [
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ position: \"absolute\", inset: 0, background: \"var(--bg-app)\", zIndex: 10, overflowY: \"auto\", padding: 24 }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", marginBottom: 20 }}",
+    "{{ fontWeight: 700, fontSize: 15 }}",
+    "{{ borderRadius: 6, padding: \"4px 10px\", fontSize: 12 }}",
+    "{{ display: \"flex\", flexWrap: \"wrap\", borderBottom: \"1px solid var(--border)\", marginBottom: 20 }}",
+    "{{\n              flex: \"0 0 auto\",\n              justifyContent: \"center\",\n              border: \"none\",\n              borderRadius: 0,\n              borderBottom: `2px solid ${activeTab === tb.id ? \"var(--accent)\" : \"transparent\"}`,\n              padding: \"9px 14px\",\n              fontSize: 12,\n              fontWeight: 700,\n              background: \"transparent\",\n              color: activeTab === tb.id ? \"var(--text-primary)\" : \"var(--text-tertiary)\",\n              gap: 6,\n            }}",
+    "{{ maxWidth: 720, display: \"flex\", flexDirection: \"column\", gap: 20 }}",
+    "{{ fontSize: 12.5, fontWeight: 700, marginBottom: 8, color: \"var(--text-secondary)\" }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 8 }}",
+    "{{ display: \"flex\", gap: 12, fontSize: 12.5 }}",
+    "{{ fontWeight: 700, flex: \"0 0 160px\", color: \"var(--text-primary)\" }}",
+    "{{ color: \"var(--text-secondary)\" }}"
+  ]
+}

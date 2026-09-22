@@ -1,0 +1,14 @@
+{
+  "file": "ui/panels/landing/LandingFeatures.tsx",
+  "classes": [],
+  "cssRules": [],
+  "inlineStyleBlocks": [
+    "{{ maxWidth: 760, margin: \"40px auto 0\", padding: \"0 24px\" }}",
+    "{{\n          fontSize: 11,\n          fontWeight: 700,\n          letterSpacing: \"0.06em\",\n          color: \"var(--text-tertiary)\",\n          textTransform: \"uppercase\",\n          marginBottom: 12,\n          textAlign: \"center\",\n        }}",
+    "{{ display: \"grid\", gridTemplateColumns: \"repeat(auto-fit, minmax(180px, 1fr))\", gap: 12 }}",
+    "{{\n              display: \"flex\",\n              flexDirection: \"column\",\n              gap: 6,\n              background: \"var(--bg-app)\",\n              border: \"1px solid var(--border)\",\n              borderRadius: \"var(--radius-md)\",\n              padding: 12,\n            }}",
+    "{{ color: \"var(--accent)\", display: \"flex\" }}",
+    "{{ fontSize: 13, fontWeight: 700, color: \"var(--text-primary)\" }}",
+    "{{ fontSize: 12, color: \"var(--text-secondary)\" }}"
+  ]
+}

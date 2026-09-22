@@ -1,0 +1,57 @@
+{
+  "file": "ui/toolbars/ThreadToolbar.tsx",
+  "classes": [
+    "btn",
+    "btn-active",
+    "btndraw",
+    "btneraser",
+    "btnparabolic",
+    "btnsegment-eraser",
+    "btnselect",
+    "btnzigzag"
+  ],
+  "cssRules": [
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    },
+    {
+      "selector": ".btn-active",
+      "file": "ui/theme.css",
+      "declarations": {
+        "background": "var(--accent-soft)",
+        "color": "var(--accent)",
+        "border-color": "var(--accent)"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 10 }}",
+    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
+    "{{ display: \"flex\", gap: 6, flexWrap: \"wrap\" }}",
+    "{{ flex: 1, justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}",
+    "{{ flex: 1, justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}",
+    "{{ flex: 1, justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}",
+    "{{ flex: 1, justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}",
+    "{{ flex: 1, justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}",
+    "{{ flex: 1, justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: 9, fontSize: 12, fontWeight: 600, gap: 6 }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 8, background: \"var(--bg-app)\", border: \"1px solid var(--border)\", borderRadius: \"var(--radius-md)\", padding: \"10px 12px\", marginTop: 4 }}",
+    "{{ width: 10, height: 10, borderRadius: \"50%\", background: \"#c7cad3\", display: \"inline-block\" }}",
+    "{{ position: \"relative\", width: 14, height: 14, display: \"inline-flex\", alignItems: \"center\", justifyContent: \"center\" }}",
+    "{{ position: \"absolute\", inset: 0, borderRadius: \"50%\", border: \"1.5px solid #e8b449\" }}",
+    "{{ width: 7, height: 7, borderRadius: \"50%\", background: \"#e8b449\" }}",
+    "{{ width: 10, height: 10, borderRadius: \"50%\", background: \"var(--accent)\", display: \"inline-block\" }}",
+    "{{ width: 10, height: 10, borderRadius: \"50%\", background: \"var(--accent)\", opacity: 0.5, display: \"inline-block\" }}",
+    "{{ display: \"flex\", alignItems: \"center\", gap: 9 }}",
+    "{{ fontSize: 11.5, color: \"var(--text-secondary)\" }}"
+  ]
+}

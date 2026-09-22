@@ -1,0 +1,50 @@
+{
+  "file": "ui/panels/StatisticsPanel.tsx",
+  "classes": [
+    "btn",
+    "mono"
+  ],
+  "cssRules": [
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    },
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ position: \"absolute\", inset: 0, background: \"var(--bg-app)\", zIndex: 10, overflowY: \"auto\", padding: 24 }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", marginBottom: 20 }}",
+    "{{ fontWeight: 700, fontSize: 15 }}",
+    "{{ borderRadius: 6, padding: \"4px 10px\", fontSize: 12 }}",
+    "{{ maxWidth: 1000, display: \"flex\", flexDirection: \"column\", gap: 16 }}",
+    "{{ background: \"var(--bg-panel)\", border: \"1px solid var(--border)\", borderRadius: \"var(--radius-md)\", padding: 16 }}",
+    "{{ fontSize: 24, fontWeight: 700, color: \"var(--accent)\" }}",
+    "{{ fontSize: 12, color: \"var(--text-secondary)\" }}",
+    "{{ background: \"var(--bg-panel)\", border: \"1px solid var(--border)\", borderRadius: \"var(--radius-md)\", padding: 16 }}",
+    "{{ fontWeight: 700, fontSize: 13, cursor: \"pointer\" }}",
+    "{{ display: \"grid\", gridTemplateColumns: \"repeat(auto-fill, minmax(260px, 1fr))\", gap: 16, marginTop: 16 }}",
+    "{{ display: \"inline-block\", width: 14, height: 10, borderRadius: 2, border: \"1px solid var(--border)\", background: colour, verticalAlign: \"middle\" }}",
+    "{{ display: \"inline-flex\", alignItems: \"center\", gap: 6 }}",
+    "{{ display: \"inline-flex\", alignItems: \"center\", gap: 4 }}",
+    "{{ background: \"var(--bg-panel)\", border: \"1px solid var(--border)\", borderRadius: \"var(--radius-md)\", padding: 16, display: \"flex\", flexDirection: \"column\", gap: 8 }}",
+    "{{ fontSize: 12.5, fontWeight: 700, display: \"flex\", alignItems: \"center\", gap: 6 }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", fontSize: 12 }}",
+    "{{ color: \"var(--text-secondary)\" }}",
+    "{{ color: \"var(--text-primary)\" }}"
+  ]
+}

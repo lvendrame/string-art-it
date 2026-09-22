@@ -1,0 +1,55 @@
+{
+  "file": "ui/panels/GeneratorPanel.tsx",
+  "classes": [
+    "btn",
+    "btn-active"
+  ],
+  "cssRules": [
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    },
+    {
+      "selector": ".btn-active",
+      "file": "ui/theme.css",
+      "declarations": {
+        "background": "var(--accent-soft)",
+        "color": "var(--accent)",
+        "border-color": "var(--accent)"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{FIELD_LABEL_STYLE}",
+    "{{ ...FIELD_INPUT_STYLE, width: \"auto\" }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 16 }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 8, background: \"var(--bg-app)\", border: \"1px solid var(--border)\", borderRadius: \"var(--radius-md)\", padding: 10 }}",
+    "{{ display: \"flex\", alignItems: \"center\", gap: 6, fontSize: 11.5, color: \"var(--text-secondary)\" }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 6, paddingTop: i > 0 ? 8 : 0, borderTop: i > 0 ? \"1px solid var(--border)\" : undefined }}",
+    "{{ display: \"flex\", alignItems: \"center\", gap: 6, fontSize: 11.5, color: \"var(--text-secondary)\", fontWeight: 600 }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 6, paddingTop: 8, borderTop: \"1px solid var(--border)\" }}",
+    "{{ display: \"flex\", alignItems: \"center\", gap: 6, fontSize: 11.5, color: \"var(--text-secondary)\", fontWeight: 600 }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 8, margin: 0, background: \"var(--bg-app)\", border: \"1px solid var(--border)\", borderRadius: \"var(--radius-md)\", padding: 10 }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", width: \"100%\", padding: 0 }}",
+    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
+    "{{ display: \"flex\", gap: 6 }}",
+    "{{ width: 24, height: 24, padding: 0, justifyContent: \"center\", borderRadius: 5, fontSize: 14, fontWeight: 700 }}",
+    "{{ width: 24, height: 24, padding: 0, justifyContent: \"center\", borderRadius: 5, fontSize: 14, fontWeight: 700 }}",
+    "{{ display: \"flex\", alignItems: \"center\", gap: 6, flexWrap: \"wrap\" }}",
+    "{{ width: 24, height: 24, border: \"1px solid var(--border-strong)\", borderRadius: 5, background: \"none\", padding: 0 }}",
+    "{{ fontSize: 10.5, color: \"var(--text-tertiary)\" }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 8 }}",
+    "{{ width: \"100%\", justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: \"9px 4px\", fontSize: 12, fontWeight: 700 }}",
+    "{{ fontSize: 10.5, color: \"var(--text-tertiary)\", textAlign: \"center\" }}",
+    "{{ width: \"100%\", justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: \"9px 4px\", fontSize: 12, fontWeight: 700 }}"
+  ]
+}

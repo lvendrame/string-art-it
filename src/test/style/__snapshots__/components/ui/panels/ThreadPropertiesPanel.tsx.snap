@@ -1,0 +1,59 @@
+{
+  "file": "ui/panels/ThreadPropertiesPanel.tsx",
+  "classes": [
+    "btn",
+    "btn-active",
+    "mono"
+  ],
+  "cssRules": [
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    },
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    },
+    {
+      "selector": ".btn-active",
+      "file": "ui/theme.css",
+      "declarations": {
+        "background": "var(--accent-soft)",
+        "color": "var(--accent)",
+        "border-color": "var(--accent)"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 10 }}",
+    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
+    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
+    "{{ display: \"flex\", gap: 6 }}",
+    "{{ flex: 1, justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: 9, fontSize: 12, fontWeight: 700 }}",
+    "{{ display: \"flex\", gap: 6 }}",
+    "{{ width: 24, height: 24, border: \"1px solid var(--border-strong)\", borderRadius: 5, background: \"none\", padding: 0 }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 12, color: \"var(--text-secondary)\" }}",
+    "{{ width: 60, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"4px 6px\" }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 8, border: \"1px solid var(--border)\", borderRadius: \"var(--radius-md)\", padding: 10, marginTop: 4 }}",
+    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 8, border: \"1px solid var(--border)\", borderRadius: \"var(--radius-md)\", padding: 10, marginTop: 4 }}",
+    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
+    "{{ border: \"1px solid var(--border)\", borderRadius: \"var(--radius-md)\", padding: 10, display: \"flex\", flexDirection: \"column\", gap: 8, marginTop: 4 }}",
+    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", fontSize: 12 }}",
+    "{{ color: \"var(--text-secondary)\" }}",
+    "{{ color: \"var(--text-primary)\" }}"
+  ]
+}

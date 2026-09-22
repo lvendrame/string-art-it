@@ -1,0 +1,76 @@
+{
+  "file": "ui/CookieConsentBanner.tsx",
+  "classes": [
+    "btn",
+    "cookie-consent-banner",
+    "cookie-consent-banner__accept",
+    "cookie-consent-banner__actions",
+    "cookie-consent-banner__text"
+  ],
+  "cssRules": [
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    },
+    {
+      "selector": ".cookie-consent-banner",
+      "file": "ui/theme.css",
+      "declarations": {
+        "position": "fixed",
+        "left": "50%",
+        "bottom": "16px",
+        "transform": "translateX(-50%)",
+        "z-index": "1000",
+        "display": "flex",
+        "flex-wrap": "wrap",
+        "align-items": "center",
+        "gap": "16px",
+        "max-width": "min(640px, calc(100vw - 32px))",
+        "background": "var(--bg-panel)",
+        "border": "1px solid var(--border)",
+        "border-radius": "var(--radius-md)",
+        "box-shadow": "var(--shadow-float)",
+        "padding": "14px 18px",
+        "font-size": "12.5px",
+        "color": "var(--text-primary)"
+      }
+    },
+    {
+      "selector": ".cookie-consent-banner__text",
+      "file": "ui/theme.css",
+      "declarations": {
+        "flex": "1 1 320px",
+        "color": "var(--text-secondary)",
+        "margin": "0"
+      }
+    },
+    {
+      "selector": ".cookie-consent-banner__actions",
+      "file": "ui/theme.css",
+      "declarations": {
+        "display": "flex",
+        "gap": "8px",
+        "flex": "0 0 auto"
+      }
+    },
+    {
+      "selector": ".cookie-consent-banner__accept",
+      "file": "ui/theme.css",
+      "declarations": {
+        "background": "var(--accent)",
+        "color": "white",
+        "border-color": "transparent"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

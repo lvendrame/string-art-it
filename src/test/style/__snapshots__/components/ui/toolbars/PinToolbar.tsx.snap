@@ -1,0 +1,44 @@
+{
+  "file": "ui/toolbars/PinToolbar.tsx",
+  "classes": [
+    "btn",
+    "btn-active",
+    "btneraser",
+    "btnpath-eraser"
+  ],
+  "cssRules": [
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    },
+    {
+      "selector": ".btn-active",
+      "file": "ui/theme.css",
+      "declarations": {
+        "background": "var(--accent-soft)",
+        "color": "var(--accent)",
+        "border-color": "var(--accent)"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 10 }}",
+    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
+    "{{ display: \"grid\", gridTemplateColumns: \"repeat(3, 1fr)\", gap: 6 }}",
+    "{CHIP_STYLE}",
+    "{CHIP_STYLE}",
+    "{CHIP_STYLE}",
+    "{{ width: \"100%\", justifyContent: \"space-between\", borderRadius: \"var(--radius-sm)\", padding: \"9px 10px\", gap: 6 }}",
+    "{{ display: \"flex\", alignItems: \"center\", gap: 6, fontSize: 12, fontWeight: 600 }}",
+    "{{ background: \"transparent\", color: \"inherit\", border: \"none\", fontSize: 12 }}"
+  ]
+}

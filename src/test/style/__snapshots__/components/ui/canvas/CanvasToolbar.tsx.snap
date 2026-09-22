@@ -1,0 +1,47 @@
+{
+  "file": "ui/canvas/CanvasToolbar.tsx",
+  "classes": [
+    "btn",
+    "btn-active",
+    "mono"
+  ],
+  "cssRules": [
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    },
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    },
+    {
+      "selector": ".btn-active",
+      "file": "ui/theme.css",
+      "declarations": {
+        "background": "var(--accent-soft)",
+        "color": "var(--accent)",
+        "border-color": "var(--accent)"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ borderRadius: 999, padding: \"6px 12px\", fontSize: 11.5, fontWeight: 600, gap: 6 }}",
+    "{{ flex: \"0 0 auto\", display: \"flex\", alignItems: \"center\", gap: 10, padding: \"10px 16px\", borderBottom: \"1px solid var(--border)\" }}",
+    "{{ flex: 1 }}",
+    "{{ borderRadius: 8, padding: \"6px 10px\", fontSize: 12 }}",
+    "{{ borderRadius: 8, padding: \"6px 10px\", fontSize: 12 }}",
+    "{{ borderRadius: 8, padding: \"6px 10px\", fontSize: 12, gap: 6 }}"
+  ]
+}

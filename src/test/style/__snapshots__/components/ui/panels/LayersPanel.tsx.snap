@@ -1,0 +1,35 @@
+{
+  "file": "ui/panels/LayersPanel.tsx",
+  "classes": [
+    "btn"
+  ],
+  "cssRules": [
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ flex: 1, justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: 8, ...(danger ? { color: \"var(--danger)\" } : {}) }}",
+    "{{\n        display: \"flex\",\n        alignItems: \"center\",\n        gap: 9,\n        padding: \"9px 16px\",\n        cursor: \"pointer\",\n        borderLeft: `2px solid ${active ? \"var(--accent)\" : \"transparent\"}`,\n        background: active ? \"var(--accent-soft)\" : \"transparent\",\n      }}",
+    "{{ border: \"none\", background: \"transparent\", padding: 2, color: layer.visible ? \"var(--text-secondary)\" : \"var(--text-tertiary)\", cursor: \"pointer\" }}",
+    "{{ border: \"none\", background: \"transparent\", padding: 2, color: layer.locked ? \"var(--accent)\" : \"var(--text-tertiary)\", cursor: \"pointer\" }}",
+    "{{ flex: 1, fontSize: 12.5, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 4, color: \"var(--text-primary)\", padding: \"2px 4px\" }}",
+    "{{ flex: 1, fontSize: 12.5, color: layer.visible ? \"var(--text-primary)\" : \"var(--text-tertiary)\" }}",
+    "{{ display: \"flex\", flexDirection: \"column\", height: \"100%\" }}",
+    "{{ display: \"flex\", padding: \"0 16px\", gap: 4, borderBottom: \"1px solid var(--border)\" }}",
+    "{{ flex: 1, justifyContent: \"center\", border: \"none\", borderBottom: `2px solid ${isPin ? \"var(--accent)\" : \"transparent\"}`, borderRadius: 0, padding: \"9px 0\", fontSize: 12, fontWeight: 700, background: \"transparent\", color: isPin ? \"var(--text-primary)\" : \"var(--text-tertiary)\", cursor: \"pointer\" }}",
+    "{{ flex: 1, justifyContent: \"center\", border: \"none\", borderBottom: `2px solid ${!isPin ? \"var(--accent)\" : \"transparent\"}`, borderRadius: 0, padding: \"9px 0\", fontSize: 12, fontWeight: 700, background: \"transparent\", color: !isPin ? \"var(--text-primary)\" : \"var(--text-tertiary)\", cursor: \"pointer\" }}",
+    "{{ flex: 1, overflowY: \"auto\" }}",
+    "{{ display: \"flex\", gap: 6, padding: 10, borderTop: \"1px solid var(--border)\" }}"
+  ]
+}

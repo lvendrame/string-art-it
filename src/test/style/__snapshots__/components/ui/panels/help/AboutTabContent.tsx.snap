@@ -1,0 +1,47 @@
+{
+  "file": "ui/panels/help/AboutTabContent.tsx",
+  "classes": [
+    "btn",
+    "mono"
+  ],
+  "cssRules": [
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    },
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 24 }}",
+    "{{ fontSize: 12.5, fontWeight: 700, marginBottom: 8, color: \"var(--text-secondary)\" }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 8, maxWidth: 420 }}",
+    "{{ fontSize: 12.5, fontWeight: 700, marginBottom: 8, color: \"var(--text-secondary)\" }}",
+    "{{ fontSize: 12, color: \"var(--text-secondary)\", maxWidth: 420, marginTop: 0 }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 12, maxWidth: 420 }}",
+    "{LABEL_STYLE}",
+    "{FIELD_STYLE}",
+    "{LABEL_STYLE}",
+    "{FIELD_STYLE}",
+    "{LABEL_STYLE}",
+    "{{ ...FIELD_STYLE, resize: \"vertical\", minHeight: 90 }}",
+    "{{\n              alignSelf: \"flex-start\",\n              justifyContent: \"center\",\n              borderRadius: \"var(--radius-sm)\",\n              padding: \"8px 16px\",\n              fontSize: 12,\n              fontWeight: 700,\n              gap: 6,\n              textDecoration: \"none\",\n              ...(canSend\n                ? { background: \"var(--accent-strong)\", color: \"#fff\", borderColor: \"var(--accent-strong)\" }\n                : { opacity: 0.5, pointerEvents: \"none\" as const }),\n            }}",
+    "{{\n        display: \"flex\",\n        justifyContent: \"space-between\",\n        gap: 12,\n        background: \"var(--bg-app)\",\n        border: \"1px solid var(--border)\",\n        borderRadius: \"var(--radius-md)\",\n        padding: 12,\n      }}",
+    "{{ fontSize: 12, color: \"var(--text-secondary)\" }}",
+    "{{ fontSize: 12, fontWeight: 600, color: \"var(--text-primary)\", textAlign: \"right\" }}"
+  ]
+}

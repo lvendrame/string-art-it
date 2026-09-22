@@ -1,0 +1,79 @@
+{
+  "file": "ui/panels/PrintPreviewPanel.tsx",
+  "classes": [
+    "btn",
+    "btn-active",
+    "mono",
+    "print-page",
+    "print-tile-grid"
+  ],
+  "cssRules": [
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    },
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    },
+    {
+      "selector": ".btn-active",
+      "file": "ui/theme.css",
+      "declarations": {
+        "background": "var(--accent-soft)",
+        "color": "var(--accent)",
+        "border-color": "var(--accent)"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{\n        position: \"absolute\",\n        inset: 0,\n        background: \"var(--bg-app)\",\n        display: \"flex\",\n        zIndex: 10,\n      }}",
+    "{{\n          width: 300,\n          borderRight: \"1px solid var(--border)\",\n          padding: 16,\n          display: \"flex\",\n          flexDirection: \"column\",\n          gap: 16,\n          overflowY: \"auto\",\n        }}",
+    "{{\n            display: \"flex\",\n            justifyContent: \"space-between\",\n            alignItems: \"center\",\n          }}",
+    "{{ fontWeight: 700, fontSize: 13 }}",
+    "{{ borderRadius: 6, padding: \"4px 8px\", fontSize: 12 }}",
+    "{{\n                display: \"flex\",\n                alignItems: \"center\",\n                gap: 8,\n                fontSize: 12,\n                color: \"var(--text-secondary)\",\n              }}",
+    "{{\n                display: \"flex\",\n                alignItems: \"center\",\n                gap: 8,\n                fontSize: 12,\n                color: \"var(--text-secondary)\",\n              }}",
+    "{{\n                width: 80,\n                background: \"var(--bg-panel-2)\",\n                border: \"1px solid var(--border)\",\n                borderRadius: 6,\n                color: \"var(--text-primary)\",\n                padding: \"4px 6px\",\n              }}",
+    "{{ fontSize: 11, color: \"var(--accent)\" }}",
+    "{{\n              background: \"var(--bg-panel-2)\",\n              border: \"1px solid var(--border)\",\n              borderRadius: 6,\n              color: \"var(--text-primary)\",\n              padding: \"4px 6px\",\n              fontSize: 12,\n            }}",
+    "{{ display: \"flex\", gap: 6 }}",
+    "{{\n                  flex: 1,\n                  justifyContent: \"center\",\n                  borderRadius: 6,\n                  padding: 6,\n                  fontSize: 11.5,\n                }}",
+    "{{ fontSize: 11, color: \"var(--text-secondary)\" }}",
+    "{{ color: \"var(--accent)\" }}",
+    "{{\n                justifyContent: \"center\",\n                borderRadius: 6,\n                padding: 8,\n                fontSize: 12,\n              }}",
+    "{{\n                display: \"flex\",\n                flexDirection: \"column\",\n                gap: 8,\n                background: \"var(--bg-app)\",\n                border: \"1px solid var(--border)\",\n                borderRadius: \"var(--radius-md)\",\n                padding: 10,\n              }}",
+    "{{ fontSize: 11.5, color: \"var(--text-secondary)\" }}",
+    "{{\n                  justifyContent: \"center\",\n                  borderRadius: 6,\n                  padding: 7,\n                  fontSize: 12,\n                }}",
+    "{{\n                  display: \"flex\",\n                  justifyContent: \"space-between\",\n                  alignItems: \"center\",\n                  fontSize: 12,\n                  color: \"var(--text-secondary)\",\n                }}",
+    "{{\n                    width: 70,\n                    background: \"var(--bg-panel-2)\",\n                    border: \"1px solid var(--border)\",\n                    borderRadius: 6,\n                    color: \"var(--text-primary)\",\n                    padding: \"4px 6px\",\n                  }}",
+    "{{ display: \"flex\", gap: 6 }}",
+    "{{\n                    flex: 1,\n                    justifyContent: \"center\",\n                    borderRadius: 6,\n                    padding: 7,\n                    fontSize: 12,\n                    fontWeight: 600,\n                  }}",
+    "{{\n                    flex: 1,\n                    justifyContent: \"center\",\n                    borderRadius: 6,\n                    padding: 7,\n                    fontSize: 12,\n                  }}",
+    "{{\n              display: \"flex\",\n              alignItems: \"center\",\n              gap: 8,\n              fontSize: 12,\n              color: \"var(--text-secondary)\",\n            }}",
+    "{{\n                  display: \"flex\",\n                  justifyContent: \"space-between\",\n                  alignItems: \"center\",\n                  fontSize: 12,\n                  color: \"var(--text-secondary)\",\n                }}",
+    "{{\n                    width: 70,\n                    background: \"var(--bg-panel-2)\",\n                    border: \"1px solid var(--border)\",\n                    borderRadius: 6,\n                    color: \"var(--text-primary)\",\n                    padding: \"4px 6px\",\n                  }}",
+    "{{\n                    display: \"flex\",\n                    alignItems: \"center\",\n                    gap: 8,\n                    fontSize: 12,\n                    color: \"var(--text-secondary)\",\n                  }}",
+    "{{ fontSize: 11, color: \"var(--accent)\" }}",
+    "{{\n            justifyContent: \"center\",\n            borderRadius: \"var(--radius-sm)\",\n            padding: 10,\n            fontSize: 13,\n            fontWeight: 700,\n            background: \"var(--accent-strong)\",\n            color: \"white\",\n            borderColor: \"transparent\",\n          }}",
+    "{{\n          flex: 1,\n          display: \"flex\",\n          alignItems: \"center\",\n          justifyContent: \"center\",\n          overflow: \"auto\",\n          padding: 24,\n        }}",
+    "{{\n          display: \"grid\",\n          gridTemplateColumns: `repeat(${grid.cols}, auto)`,\n          gap: 16,\n        }}",
+    "{{ background: \"white\" }}",
+    "{{ position: \"relative\" }}",
+    "{{ background: \"white\" }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 8 }}",
+    "{{\n          fontSize: 11,\n          fontWeight: 700,\n          letterSpacing: \"0.06em\",\n          color: \"var(--text-tertiary)\",\n          textTransform: \"uppercase\",\n        }}"
+  ]
+}

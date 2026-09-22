@@ -1,0 +1,28 @@
+{
+  "file": "ui/panels/PinPropertiesPanel.tsx",
+  "classes": [
+    "mono"
+  ],
+  "cssRules": [
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 10 }}",
+    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 8, background: \"var(--bg-app)\", border: \"1px solid var(--border)\", borderRadius: \"var(--radius-md)\", padding: 12 }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 12, color: \"var(--text-secondary)\" }}",
+    "{{ width: 70, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"4px 6px\" }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", fontSize: 12, color: \"var(--accent)\" }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 12, color: \"var(--text-secondary)\" }}",
+    "{{ width: 70, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"4px 6px\" }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 12, color: \"var(--text-secondary)\" }}",
+    "{{ width: 28, height: 20, border: \"1px solid var(--border)\", borderRadius: 4, background: \"none\", padding: 0 }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 12, color: \"var(--text-secondary)\" }}"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "file": "ui/canvas/Canvas.tsx",
+  "classes": [],
+  "cssRules": [],
+  "inlineStyleBlocks": [
+    "{{\n        flex: 1,\n        display: \"flex\",\n        flexDirection: \"column\",\n        minWidth: 0,\n        background: \"var(--bg-canvas)\",\n      }}",
+    "{{\n          flex: 1,\n          position: \"relative\",\n          overflow: \"hidden\",\n          display: \"flex\",\n          alignItems: \"center\",\n          justifyContent: \"center\",\n        }}",
+    "{{\n            cursor: canvasCursor(state.mode, state.selectTool, state.pinTool, state.threadTool, pan.isPanning),\n          }}"
+  ]
+}

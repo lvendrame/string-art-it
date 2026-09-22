@@ -1,0 +1,52 @@
+{
+  "file": "ui/canvas/GridSettingsPopover.tsx",
+  "classes": [
+    "btn",
+    "btn-active",
+    "mono"
+  ],
+  "cssRules": [
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    },
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    },
+    {
+      "selector": ".btn-active",
+      "file": "ui/theme.css",
+      "declarations": {
+        "background": "var(--accent-soft)",
+        "color": "var(--accent)",
+        "border-color": "var(--accent)"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ position: \"relative\" }}",
+    "{{ borderRadius: 999, padding: \"6px 12px\", fontSize: 11.5, fontWeight: 600, gap: 6 }}",
+    "{{\n            position: \"absolute\",\n            top: \"110%\",\n            left: 0,\n            zIndex: 20,\n            background: \"var(--bg-panel)\",\n            border: \"1px solid var(--border)\",\n            borderRadius: \"var(--radius-md)\",\n            padding: 10,\n            display: \"flex\",\n            flexDirection: \"column\",\n            gap: 8,\n            minWidth: 160,\n            boxShadow: \"var(--shadow-float)\",\n          }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", gap: 8, fontSize: 11, color: \"var(--text-secondary)\" }}",
+    "{{ width: 60, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"3px 6px\", fontSize: 11 }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", gap: 8, fontSize: 11, color: \"var(--text-secondary)\" }}",
+    "{{ width: 60, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"3px 6px\", fontSize: 11 }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", gap: 8, fontSize: 11, color: \"var(--text-secondary)\" }}",
+    "{{ width: 28, height: 22, border: \"1px solid var(--border)\", borderRadius: 4, background: \"none\", padding: 0 }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", gap: 8, fontSize: 11, color: \"var(--text-secondary)\" }}",
+    "{{ width: 56, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"3px 6px\", fontSize: 11 }}"
+  ]
+}

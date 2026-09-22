@@ -1,0 +1,35 @@
+{
+  "file": "ui/toolbars/ModeSwitcher.tsx",
+  "classes": [
+    "btn",
+    "btn-active"
+  ],
+  "cssRules": [
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    },
+    {
+      "selector": ".btn-active",
+      "file": "ui/theme.css",
+      "declarations": {
+        "background": "var(--accent-soft)",
+        "color": "var(--accent)",
+        "border-color": "var(--accent)"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{\n        display: \"flex\",\n        background: \"var(--bg-app)\",\n        border: \"1px solid var(--border)\",\n        borderRadius: \"var(--radius-md)\",\n        padding: 3,\n        gap: 2,\n      }}",
+    "{{\n            border: \"none\",\n            borderRadius: 8,\n            padding: \"7px 14px\",\n            fontSize: 12.5,\n            fontWeight: 600,\n            gap: 6,\n            ...(mode === m.id ? {} : { background: \"transparent\", borderColor: \"transparent\" }),\n          }}"
+  ]
+}

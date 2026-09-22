@@ -1,0 +1,40 @@
+{
+  "file": "ui/toolbars/ExportMenu.tsx",
+  "classes": [
+    "btn",
+    "mono"
+  ],
+  "cssRules": [
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    },
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ position: \"relative\" }}",
+    "{{ borderRadius: 8, padding: \"7px 12px\", fontSize: 12, fontWeight: 600, gap: 6 }}",
+    "{{\n            position: \"absolute\",\n            top: \"110%\",\n            left: 0,\n            zIndex: 20,\n            background: \"var(--bg-panel)\",\n            border: \"1px solid var(--border)\",\n            borderRadius: \"var(--radius-md)\",\n            padding: 10,\n            display: \"flex\",\n            flexDirection: \"column\",\n            gap: 6,\n            minWidth: 180,\n            boxShadow: \"0 8px 24px rgba(0,0,0,0.4)\",\n          }}",
+    "{{ justifyContent: \"flex-start\", borderRadius: 6, padding: 8, fontSize: 12, gap: 6 }}",
+    "{{ justifyContent: \"flex-start\", borderRadius: 6, padding: 8, fontSize: 12, gap: 6 }}",
+    "{{ justifyContent: \"flex-start\", borderRadius: 6, padding: 8, fontSize: 12, gap: 6 }}",
+    "{{ justifyContent: \"flex-start\", borderRadius: 6, padding: 8, fontSize: 12, gap: 6 }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 11.5, color: \"var(--text-secondary)\", marginTop: 4 }}",
+    "{{ width: 60, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"3px 6px\" }}"
+  ]
+}

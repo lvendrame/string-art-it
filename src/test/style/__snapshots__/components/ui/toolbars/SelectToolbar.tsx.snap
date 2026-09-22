@@ -1,0 +1,44 @@
+{
+  "file": "ui/toolbars/SelectToolbar.tsx",
+  "classes": [
+    "btn",
+    "btn-active"
+  ],
+  "cssRules": [
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    },
+    {
+      "selector": ".btn-active",
+      "file": "ui/theme.css",
+      "declarations": {
+        "background": "var(--accent-soft)",
+        "color": "var(--accent)",
+        "border-color": "var(--accent)"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ display: \"flex\", alignItems: \"center\", gap: 8 }}",
+    "{{ background: \"none\", border: \"none\", padding: 0, cursor: \"pointer\", fontSize: 12, fontWeight: 600, color: isPins ? \"var(--text-secondary)\" : \"var(--accent)\", transition: \"color 120ms ease\" }}",
+    "{{ position: \"relative\", width: 44, height: 32, background: \"none\", border: \"none\", padding: 0, cursor: \"pointer\", flexShrink: 0 }}",
+    "{{ position: \"absolute\", top: \"50%\", left: \"50%\", transform: \"translate(-50%, -50%)\", width: TRACK_WIDTH, height: 20, borderRadius: 999, border: \"1px solid var(--border)\", background: \"var(--bg-app)\" }}",
+    "{{\n            position: \"absolute\",\n            top: \"50%\",\n            left: (44 - TRACK_WIDTH) / 2 + (isPins ? KNOB_ON_LEFT : KNOB_INSET),\n            width: KNOB_SIZE,\n            height: KNOB_SIZE,\n            borderRadius: \"50%\",\n            background: \"var(--accent)\",\n            transform: \"translateY(-50%)\",\n            transition: \"left 150ms ease\",\n          }}",
+    "{{ background: \"none\", border: \"none\", padding: 0, cursor: \"pointer\", fontSize: 12, fontWeight: 600, color: isPins ? \"var(--accent)\" : \"var(--text-secondary)\", transition: \"color 120ms ease\" }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 10 }}",
+    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
+    "{{ display: \"grid\", gridTemplateColumns: \"repeat(2, 1fr)\", gap: 6 }}",
+    "{{ flexDirection: \"column\", borderRadius: \"var(--radius-sm)\", padding: \"10px 4px 7px\", gap: 5, fontSize: 11, fontWeight: 600 }}",
+    "{{ justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: 9, gap: 6, fontSize: 12, fontWeight: 600 }}"
+  ]
+}

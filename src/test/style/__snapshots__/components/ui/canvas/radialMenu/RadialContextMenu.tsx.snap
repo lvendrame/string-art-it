@@ -1,0 +1,9 @@
+{
+  "file": "ui/canvas/radialMenu/RadialContextMenu.tsx",
+  "classes": [],
+  "cssRules": [],
+  "inlineStyleBlocks": [
+    "{{ position: \"absolute\", inset: 0, zIndex: 1 }}",
+    "{MENU_STYLE}"
+  ]
+}

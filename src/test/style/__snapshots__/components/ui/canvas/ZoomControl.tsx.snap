@@ -1,0 +1,46 @@
+{
+  "file": "ui/canvas/ZoomControl.tsx",
+  "classes": [
+    "btn",
+    "btn-active",
+    "mono"
+  ],
+  "cssRules": [
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    },
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    },
+    {
+      "selector": ".btn-active",
+      "file": "ui/theme.css",
+      "declarations": {
+        "background": "var(--accent-soft)",
+        "color": "var(--accent)",
+        "border-color": "var(--accent)"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ position: \"relative\", display: \"flex\", alignItems: \"center\" }}",
+    "{{\n          width: 48,\n          textAlign: \"center\",\n          background: \"var(--bg-panel-2)\",\n          border: \"1px solid var(--border)\",\n          borderRadius: 6,\n          color: \"var(--text-primary)\",\n          padding: \"5px 4px\",\n          fontSize: 12,\n        }}",
+    "{{ borderRadius: 6, padding: \"5px 2px\", marginLeft: 2 }}",
+    "{{\n            position: \"absolute\",\n            top: \"110%\",\n            right: 0,\n            zIndex: 20,\n            background: \"var(--bg-panel-2)\",\n            border: \"1px solid var(--border)\",\n            borderRadius: \"var(--radius-md)\",\n            padding: 6,\n            minWidth: 90,\n            maxHeight: 260,\n            overflowY: \"auto\",\n            display: \"flex\",\n            flexDirection: \"column\",\n            gap: 2,\n            boxShadow: \"var(--shadow-float)\",\n          }}",
+    "{{ border: \"none\", borderRadius: \"var(--radius-sm)\", padding: \"6px 8px\", fontSize: 12, textAlign: \"right\" }}"
+  ]
+}

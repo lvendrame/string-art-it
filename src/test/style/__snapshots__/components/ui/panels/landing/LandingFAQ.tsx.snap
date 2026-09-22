@@ -1,0 +1,12 @@
+{
+  "file": "ui/panels/landing/LandingFAQ.tsx",
+  "classes": [],
+  "cssRules": [],
+  "inlineStyleBlocks": [
+    "{{ maxWidth: 760, margin: \"40px auto 56px\", padding: \"0 24px\" }}",
+    "{{\n          fontSize: 11,\n          fontWeight: 700,\n          letterSpacing: \"0.06em\",\n          color: \"var(--text-tertiary)\",\n          textTransform: \"uppercase\",\n          marginBottom: 12,\n          textAlign: \"center\",\n        }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 14 }}",
+    "{{ fontSize: 13.5, fontWeight: 700, color: \"var(--text-primary)\", marginBottom: 4 }}",
+    "{{ fontSize: 12.5, color: \"var(--text-secondary)\", lineHeight: 1.5 }}"
+  ]
+}

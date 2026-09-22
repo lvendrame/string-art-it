@@ -1,0 +1,24 @@
+{
+  "file": "ui/panels/landing/LandingHowItWorks.tsx",
+  "classes": [
+    "mono"
+  ],
+  "cssRules": [
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ maxWidth: 760, margin: \"40px auto 0\", padding: \"0 24px\" }}",
+    "{{\n          fontSize: 11,\n          fontWeight: 700,\n          letterSpacing: \"0.06em\",\n          color: \"var(--text-tertiary)\",\n          textTransform: \"uppercase\",\n          marginBottom: 12,\n          textAlign: \"center\",\n        }}",
+    "{{ listStyle: \"none\", margin: 0, padding: 0, display: \"flex\", flexDirection: \"column\", gap: 10 }}",
+    "{{\n              display: \"flex\",\n              gap: 12,\n              alignItems: \"flex-start\",\n              background: \"var(--bg-app)\",\n              border: \"1px solid var(--border)\",\n              borderRadius: \"var(--radius-md)\",\n              padding: 12,\n            }}",
+    "{{\n                flex: \"0 0 24px\",\n                height: 24,\n                borderRadius: \"999px\",\n                background: \"var(--accent-soft)\",\n                color: \"var(--accent)\",\n                fontSize: 12,\n                fontWeight: 700,\n                display: \"flex\",\n                alignItems: \"center\",\n                justifyContent: \"center\",\n              }}",
+    "{{ fontSize: 13, fontWeight: 700, color: \"var(--text-primary)\" }}",
+    "{{ fontSize: 12, color: \"var(--text-secondary)\" }}"
+  ]
+}

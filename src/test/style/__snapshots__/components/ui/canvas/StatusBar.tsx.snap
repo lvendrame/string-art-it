@@ -1,0 +1,18 @@
+{
+  "file": "ui/canvas/StatusBar.tsx",
+  "classes": [
+    "mono"
+  ],
+  "cssRules": [
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{\n        flex: \"0 0 auto\",\n        height: 32,\n        display: \"flex\",\n        alignItems: \"center\",\n        gap: 14,\n        padding: \"0 16px\",\n        background: \"var(--bg-panel)\",\n        borderTop: \"1px solid var(--border)\",\n        fontSize: 11.5,\n        color: \"var(--text-secondary)\",\n      }}"
+  ]
+}

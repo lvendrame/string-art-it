@@ -1,0 +1,56 @@
+{
+  "file": "ui/panels/BoardSetup.tsx",
+  "classes": [
+    "btn",
+    "btn-active",
+    "mono"
+  ],
+  "cssRules": [
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    },
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    },
+    {
+      "selector": ".btn-active",
+      "file": "ui/theme.css",
+      "declarations": {
+        "background": "var(--accent-soft)",
+        "color": "var(--accent)",
+        "border-color": "var(--accent)"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 4, fontSize: 12, color: \"var(--text-secondary)\" }}",
+    "{{\n          background: \"var(--bg-app)\",\n          border: \"1px solid var(--border)\",\n          borderRadius: \"var(--radius-sm)\",\n          color: \"var(--text-primary)\",\n          padding: \"6px 8px\",\n          fontSize: 13,\n        }}",
+    "{{ fontSize: 12, color: \"var(--text-secondary)\" }}",
+    "{{\n        maxWidth: 420,\n        margin: \"80px auto\",\n        display: \"flex\",\n        flexDirection: \"column\",\n        gap: 20,\n        padding: 24,\n        background: \"var(--bg-panel)\",\n        border: \"1px solid var(--border)\",\n        borderRadius: \"var(--radius-md)\",\n      }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\" }}",
+    "{{ margin: 0, fontSize: 18 }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 8 }}",
+    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
+    "{{ display: \"grid\", gridTemplateColumns: \"repeat(3, 1fr)\", gap: 6 }}",
+    "{{ justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: \"10px 4px\", fontSize: 12, fontWeight: 600 }}",
+    "{{ display: \"flex\", gap: 6 }}",
+    "{{ flex: 1, justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: 9, fontSize: 12, fontWeight: 600 }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 10 }}",
+    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
+    "{{\n          justifyContent: \"center\",\n          borderRadius: \"var(--radius-sm)\",\n          padding: 10,\n          fontSize: 13,\n          fontWeight: 700,\n          background: \"var(--accent-strong)\",\n          color: \"white\",\n          borderColor: \"transparent\",\n        }}"
+  ]
+}

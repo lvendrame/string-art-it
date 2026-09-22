@@ -1,0 +1,52 @@
+{
+  "file": "ui/panels/SelectionPanel.tsx",
+  "classes": [
+    "btn",
+    "mono"
+  ],
+  "cssRules": [
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    },
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 12, color: \"var(--text-secondary)\" }}",
+    "{{ width: 80, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"4px 6px\" }}",
+    "{{ color: \"var(--text-secondary)\", fontSize: 12, background: \"var(--bg-app)\", border: \"1px solid var(--border)\", borderRadius: \"var(--radius-md)\", padding: 12 }}",
+    "{{ border: \"1px solid var(--border)\", borderRadius: \"var(--radius-md)\", padding: 10, display: \"flex\", flexDirection: \"column\", gap: 8 }}",
+    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", fontSize: 12 }}",
+    "{{ color: \"var(--text-secondary)\" }}",
+    "{{ color: \"var(--text-primary)\" }}",
+    "{{ color: \"var(--text-tertiary)\", fontSize: 12 }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 10 }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 10 }}",
+    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
+    "{{ display: \"flex\", flexDirection: \"column\", gap: 8, background: \"var(--bg-app)\", border: \"1px solid var(--border)\", borderRadius: \"var(--radius-md)\", padding: 12 }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 12, color: \"var(--text-secondary)\" }}",
+    "{{ width: 140, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"4px 6px\", fontSize: 12 }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 12, color: \"var(--text-secondary)\" }}",
+    "{{ background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"4px 6px\", fontSize: 12 }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 12, color: \"var(--text-secondary)\" }}",
+    "{{ background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"4px 6px\", fontSize: 12 }}",
+    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 12, color: \"var(--text-secondary)\" }}",
+    "{{ borderRadius: \"var(--radius-sm)\", padding: 9, justifyContent: \"center\", fontSize: 12, fontWeight: 600, color: \"var(--danger)\", borderColor: \"var(--danger-soft)\" }}"
+  ]
+}

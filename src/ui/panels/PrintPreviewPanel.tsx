@@ -27,10 +27,8 @@ import {
   CSS_PIXELS_PER_CM,
   type BoundingBox,
 } from "../../domain/transforms";
-import {
-  boardFillPaint,
-  BoardFillDefs,
-} from "../../infrastructure/rendering/boardFill";
+import { BoardFillDefs } from "../../infrastructure/rendering/boardFill";
+import { boardFillPaint } from "../../infrastructure/rendering/boardFillUtils";
 import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
 import { useEditorState } from "../useEditorStore";
 

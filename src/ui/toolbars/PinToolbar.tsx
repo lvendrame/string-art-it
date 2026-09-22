@@ -4,22 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import type { EditorStore, PinTool } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
-
-// docs/specs/34-keyboard-shortcuts.md — bare-letter shortcut per Pin-tab tool, shown
-// as a "[X]" suffix on each button's label.
-export const PIN_TOOL_SHORTCUT_KEY: Partial<Record<PinTool, string>> = {
-  line: "L",
-  arc: "A",
-  ellipse: "E",
-  circle: "C",
-  rectangle: "R",
-  square: "S",
-  freehand: "F",
-  polygon: "P",
-  text: "T",
-  eraser: "D",
-  "path-eraser": "Q",
-};
+import { PIN_TOOL_SHORTCUT_KEY } from "./pinToolShortcuts";
 
 function basicTools(t: TFunction<"toolbars">): { id: PinTool; label: string; icon: ComponentType<{ size?: number }> }[] {
   return [

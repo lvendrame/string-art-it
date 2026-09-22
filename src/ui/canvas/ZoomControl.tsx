@@ -17,7 +17,7 @@ export function ZoomControl({ store, viewport }: { store: EditorStore; viewport:
   const { t } = useTranslation("toolbars");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [text, setText] = useState(() => `${Math.round(zoomToPercent(viewport.zoom))}%`);
+  const [text, setText] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -27,12 +27,7 @@ export function ZoomControl({ store, viewport }: { store: EditorStore; viewport:
   const revertingRef = useRef(false);
 
   const currentPercent = Math.round(zoomToPercent(viewport.zoom));
-
-  useEffect(() => {
-    if (editing) return;
-    setText(`${currentPercent}%`);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPercent, editing]);
+  const displayText = editing ? text : `${currentPercent}%`;
 
   useEffect(() => {
     if (!open) return;
@@ -111,7 +106,7 @@ export function ZoomControl({ store, viewport }: { store: EditorStore; viewport:
         aria-controls={ZOOM_LISTBOX_ID}
         aria-label={t("canvasToolbar.zoomLevel")}
         className="mono"
-        value={text}
+        value={displayText}
         onFocus={(e) => {
           setEditing(true);
           setText(String(currentPercent));

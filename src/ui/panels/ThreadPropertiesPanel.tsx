@@ -3,15 +3,7 @@ import { threadPathStatistics, type EditorStore, type ParabolicSettings, type Zi
 import { useEditorState } from "../useEditorStore";
 import { CheckboxField } from "./fields/CheckboxField";
 import { SliderField } from "./fields/SliderField";
-
-export const PALETTE = ["#5b8def", "#edeff7", "#e8b449", "#d96c6c", "#8fd6c8"];
-
-// docs/specs/34-keyboard-shortcuts.md — Shift+1/2/3 reuses this exact array-building
-// logic (not just PALETTE) so the keyboard shortcut and this panel's own [1,2,3]
-// buttons always agree on which colours survive a count change.
-export function coloursForCount(colours: string[], n: number): string[] {
-  return Array.from({ length: n }, (_, i) => colours[i] ?? PALETTE[i % PALETTE.length]);
-}
+import { coloursForCount } from "./threadColourPalette";
 
 // docs/specs/27-thread-select-tool.md — dual-context, same pattern as
 // PinPropertiesPanel: with a Thread Path selected, these fields edit it; otherwise

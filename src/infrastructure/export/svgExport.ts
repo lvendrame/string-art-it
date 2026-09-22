@@ -9,7 +9,7 @@ import {
 } from "../../application/document";
 import { pathBoundingBoxPoints, type Point } from "../../domain/paths";
 import { boundingBoxOf } from "../../domain/transforms";
-import { boardFillDefsMarkup, boardFillPaint } from "../rendering/boardFill";
+import { boardFillDefsMarkup, boardFillPaint } from "../rendering/boardFillUtils";
 import { pathToSvgD } from "../rendering/svgPath";
 
 export interface ExportDocument {

@@ -6,16 +6,9 @@ import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { canCommitSelectionMerge, type EditorStore, type SelectGranularity, type SelectTool } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
+import { SELECT_TOOL_SHORTCUT_KEY } from "./selectToolShortcuts";
 
 const SELECT_TOOLBAR_TOOLTIP_ID = "select-toolbar-tooltip";
-
-// docs/specs/34-keyboard-shortcuts.md — bare-letter shortcut per Edit-tab tool.
-export const SELECT_TOOL_SHORTCUT_KEY: Record<SelectTool, string> = {
-  select: "S",
-  move: "M",
-  rotate: "R",
-  scale: "C",
-};
 
 function tools(t: TFunction<"toolbars">): { id: SelectTool; label: string; icon: ComponentType<{ size?: number }>; tooltip: string; requiresSelection: boolean }[] {
   return [

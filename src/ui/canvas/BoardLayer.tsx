@@ -1,5 +1,6 @@
 import type { Board } from "../../application/document";
-import { BoardFillDefs, boardFillPaint } from "../../infrastructure/rendering/boardFill";
+import { BoardFillDefs } from "../../infrastructure/rendering/boardFill";
+import { boardFillPaint } from "../../infrastructure/rendering/boardFillUtils";
 
 export function BoardLayer({ board, pathD }: { board: Board; pathD: string }) {
   return (

@@ -11,22 +11,9 @@ import {
 } from "../../application/document";
 import { fitViewportForBoard } from "../canvas/boardViewport";
 import { mapOpenFileError } from "./openFileErrors";
+import { saveProjectFile } from "./projectFileDownload";
 
 const FILE_MENU_TOOLTIP_ID = "file-menu-tooltip";
-
-// docs/specs/34-keyboard-shortcuts.md — hoisted out of the component so Ctrl/Cmd+S's
-// keyboard handler (useKeyboardShortcuts.ts) triggers the exact same download, not a
-// re-implementation of it.
-export function saveProjectFile(store: EditorStore): void {
-  const file = store.toProjectFile();
-  const blob = new Blob([JSON.stringify(file, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "string-art-project.json";
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 // docs/specs/34-keyboard-shortcuts.md — Ctrl/Cmd+O needs to click this component's own
 // hidden file input; exposed imperatively rather than duplicating the picker.

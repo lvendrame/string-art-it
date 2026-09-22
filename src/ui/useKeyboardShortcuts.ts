@@ -10,8 +10,9 @@ import {
 import { fitViewportForBoard } from "./canvas/boardViewport";
 import { VIEWPORT_CENTER, zoomInStep, zoomOutStep } from "./canvas/zoomSteps";
 import { isTextEntryTarget } from "./keyboard";
-import { saveProjectFile, type FileMenuHandle } from "./toolbars/FileMenu";
-import { coloursForCount } from "./panels/ThreadPropertiesPanel";
+import type { FileMenuHandle } from "./toolbars/FileMenu";
+import { saveProjectFile } from "./toolbars/projectFileDownload";
+import { coloursForCount } from "./panels/threadColourPalette";
 import type { PlaybackTransport } from "./toolbars/usePlaybackTransport";
 
 // docs/specs/34-keyboard-shortcuts.md — the six mode tabs in ModeSwitcher.tsx's own

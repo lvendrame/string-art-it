@@ -1,12 +1,63 @@
 {
   "file": "ui/panels/landing/LandingFAQ.tsx",
-  "classes": [],
-  "cssRules": [],
-  "inlineStyleBlocks": [
-    "{{ maxWidth: 760, margin: \"40px auto 56px\", padding: \"0 24px\" }}",
-    "{{\n          fontSize: 11,\n          fontWeight: 700,\n          letterSpacing: \"0.06em\",\n          color: \"var(--text-tertiary)\",\n          textTransform: \"uppercase\",\n          marginBottom: 12,\n          textAlign: \"center\",\n        }}",
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 14 }}",
-    "{{ fontSize: 13.5, fontWeight: 700, color: \"var(--text-primary)\", marginBottom: 4 }}",
-    "{{ fontSize: 12.5, color: \"var(--text-secondary)\", lineHeight: 1.5 }}"
-  ]
+  "classes": [
+    "landing-faq",
+    "landing-faq__answer",
+    "landing-faq__heading",
+    "landing-faq__list",
+    "landing-faq__question"
+  ],
+  "cssRules": [
+    {
+      "selector": ".landing-faq",
+      "file": "ui/panels/landing/LandingFAQ.css",
+      "declarations": {
+        "max-width": "760px",
+        "margin": "40px auto 56px",
+        "padding": "0 24px"
+      }
+    },
+    {
+      "selector": ".landing-faq__heading",
+      "file": "ui/panels/landing/LandingFAQ.css",
+      "declarations": {
+        "font-size": "11px",
+        "font-weight": "700",
+        "letter-spacing": "0.06em",
+        "color": "var(--text-tertiary)",
+        "text-transform": "uppercase",
+        "margin-bottom": "12px",
+        "text-align": "center"
+      }
+    },
+    {
+      "selector": ".landing-faq__list",
+      "file": "ui/panels/landing/LandingFAQ.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "14px"
+      }
+    },
+    {
+      "selector": ".landing-faq__question",
+      "file": "ui/panels/landing/LandingFAQ.css",
+      "declarations": {
+        "font-size": "13.5px",
+        "font-weight": "700",
+        "color": "var(--text-primary)",
+        "margin-bottom": "4px"
+      }
+    },
+    {
+      "selector": ".landing-faq__answer",
+      "file": "ui/panels/landing/LandingFAQ.css",
+      "declarations": {
+        "font-size": "12.5px",
+        "color": "var(--text-secondary)",
+        "line-height": "1.5"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
 }

@@ -1,0 +1,30 @@
+.mode-switcher {
+  display: flex;
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  gap: 2px;
+}
+
+/* Compounded with .btn (not a plain .mode-switcher__tab rule) so this deterministically
+   beats the shared .btn base rule regardless of CSS bundle order — see
+   docs/conventions/ui-patterns.md "Component styling". */
+.btn.mode-switcher__tab {
+  border: none;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  gap: 6px;
+  background: transparent;
+  border-color: transparent;
+}
+
+/* Further compounded with .btn-active so the active-tab look wins over the rule
+   above too (both would otherwise tie at different specificities in the wrong
+   direction: .btn-active alone is less specific than .btn.mode-switcher__tab). */
+.btn.mode-switcher__tab.btn-active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}

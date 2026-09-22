@@ -77,6 +77,13 @@ button {
   border-color: var(--accent);
 }
 
+/* Shared disabled-state modifier for non-.btn controls (CheckboxField, SliderField,
+   ...) — same 0.5 opacity .btn:disabled already uses, factored out since it's now
+   applied via className instead of an inline style ternary. */
+.is-disabled {
+  opacity: 0.5;
+}
+
 /* docs/specs/18-design-system.md — Slider (range input): track/thumb reset for every
    SliderField instance (GeneratorPanel pattern fields + thread-width, both thread-
    width panels). Pseudo-element thumb styling can't go through a React style prop. */

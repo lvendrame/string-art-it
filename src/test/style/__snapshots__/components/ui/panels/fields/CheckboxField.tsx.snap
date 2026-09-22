@@ -1,8 +1,28 @@
 {
   "file": "ui/panels/fields/CheckboxField.tsx",
-  "classes": [],
-  "cssRules": [],
-  "inlineStyleBlocks": [
-    "{{ display: \"flex\", alignItems: \"center\", gap: 6, fontSize: 11.5, color: \"var(--text-secondary)\", opacity: disabled ? 0.5 : 1 }}"
-  ]
+  "classes": [
+    "checkbox-field",
+    "is-disabled"
+  ],
+  "cssRules": [
+    {
+      "selector": ".checkbox-field",
+      "file": "ui/panels/fields/CheckboxField.css",
+      "declarations": {
+        "display": "flex",
+        "align-items": "center",
+        "gap": "6px",
+        "font-size": "11.5px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".is-disabled",
+      "file": "ui/theme.css",
+      "declarations": {
+        "opacity": "0.5"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
 }

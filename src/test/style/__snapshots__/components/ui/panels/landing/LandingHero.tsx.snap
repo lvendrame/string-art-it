@@ -1,10 +1,44 @@
 {
   "file": "ui/panels/landing/LandingHero.tsx",
-  "classes": [],
-  "cssRules": [],
-  "inlineStyleBlocks": [
-    "{{ maxWidth: 760, margin: \"56px auto 0\", padding: \"0 24px\", textAlign: \"center\", display: \"flex\", flexDirection: \"column\", gap: 12 }}",
-    "{{ margin: 0, fontSize: 32, fontWeight: 800, color: \"var(--text-primary)\" }}",
-    "{{ margin: 0, fontSize: 15, color: \"var(--text-secondary)\", lineHeight: 1.5 }}"
-  ]
+  "classes": [
+    "landing-hero",
+    "landing-hero__subtitle",
+    "landing-hero__title"
+  ],
+  "cssRules": [
+    {
+      "selector": ".landing-hero",
+      "file": "ui/panels/landing/LandingHero.css",
+      "declarations": {
+        "max-width": "760px",
+        "margin": "56px auto 0",
+        "padding": "0 24px",
+        "text-align": "center",
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "12px"
+      }
+    },
+    {
+      "selector": ".landing-hero__title",
+      "file": "ui/panels/landing/LandingHero.css",
+      "declarations": {
+        "margin": "0",
+        "font-size": "32px",
+        "font-weight": "800",
+        "color": "var(--text-primary)"
+      }
+    },
+    {
+      "selector": ".landing-hero__subtitle",
+      "file": "ui/panels/landing/LandingHero.css",
+      "declarations": {
+        "margin": "0",
+        "font-size": "15px",
+        "color": "var(--text-secondary)",
+        "line-height": "1.5"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
 }

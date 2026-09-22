@@ -15,8 +15,8 @@ describe("LandingFeatures", () => {
   it("renders one card per entry in LANDING_FEATURES", () => {
     render(<LandingFeatures />);
 
-    expect(screen.getAllByText(/./).filter((el) => el.tagName === "SPAN" && el.style.fontWeight === "700")).toHaveLength(
-      LANDING_FEATURES.length,
-    );
+    expect(
+      screen.getAllByText(/./).filter((el) => el.tagName === "SPAN" && el.className.includes("landing-features__title")),
+    ).toHaveLength(LANDING_FEATURES.length);
   });
 });

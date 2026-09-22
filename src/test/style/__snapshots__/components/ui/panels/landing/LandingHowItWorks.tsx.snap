@@ -1,9 +1,96 @@
 {
   "file": "ui/panels/landing/LandingHowItWorks.tsx",
   "classes": [
+    "landing-how-it-works",
+    "landing-how-it-works__heading",
+    "landing-how-it-works__list",
+    "landing-how-it-works__step",
+    "landing-how-it-works__step-description",
+    "landing-how-it-works__step-index",
+    "landing-how-it-works__step-title",
     "mono"
   ],
   "cssRules": [
+    {
+      "selector": ".landing-how-it-works",
+      "file": "ui/panels/landing/LandingHowItWorks.css",
+      "declarations": {
+        "max-width": "760px",
+        "margin": "40px auto 0",
+        "padding": "0 24px"
+      }
+    },
+    {
+      "selector": ".landing-how-it-works__heading",
+      "file": "ui/panels/landing/LandingHowItWorks.css",
+      "declarations": {
+        "font-size": "11px",
+        "font-weight": "700",
+        "letter-spacing": "0.06em",
+        "color": "var(--text-tertiary)",
+        "text-transform": "uppercase",
+        "margin-bottom": "12px",
+        "text-align": "center"
+      }
+    },
+    {
+      "selector": ".landing-how-it-works__list",
+      "file": "ui/panels/landing/LandingHowItWorks.css",
+      "declarations": {
+        "list-style": "none",
+        "margin": "0",
+        "padding": "0",
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "10px"
+      }
+    },
+    {
+      "selector": ".landing-how-it-works__step",
+      "file": "ui/panels/landing/LandingHowItWorks.css",
+      "declarations": {
+        "display": "flex",
+        "gap": "12px",
+        "align-items": "flex-start",
+        "background": "var(--bg-app)",
+        "border": "1px solid var(--border)",
+        "border-radius": "var(--radius-md)",
+        "padding": "12px"
+      }
+    },
+    {
+      "selector": ".landing-how-it-works__step-index",
+      "file": "ui/panels/landing/LandingHowItWorks.css",
+      "declarations": {
+        "flex": "0 0 24px",
+        "height": "24px",
+        "border-radius": "999px",
+        "background": "var(--accent-soft)",
+        "color": "var(--accent)",
+        "font-size": "12px",
+        "font-weight": "700",
+        "display": "flex",
+        "align-items": "center",
+        "justify-content": "center"
+      }
+    },
+    {
+      "selector": ".landing-how-it-works__step-title",
+      "file": "ui/panels/landing/LandingHowItWorks.css",
+      "declarations": {
+        "font-size": "13px",
+        "font-weight": "700",
+        "color": "var(--text-primary)"
+      }
+    },
+    {
+      "selector": ".landing-how-it-works__step-description",
+      "file": "ui/panels/landing/LandingHowItWorks.css",
+      "declarations": {
+        "font-size": "12px",
+        "color": "var(--text-secondary)"
+      }
+    },
     {
       "selector": ".mono",
       "file": "ui/theme.css",
@@ -12,13 +99,5 @@
       }
     }
   ],
-  "inlineStyleBlocks": [
-    "{{ maxWidth: 760, margin: \"40px auto 0\", padding: \"0 24px\" }}",
-    "{{\n          fontSize: 11,\n          fontWeight: 700,\n          letterSpacing: \"0.06em\",\n          color: \"var(--text-tertiary)\",\n          textTransform: \"uppercase\",\n          marginBottom: 12,\n          textAlign: \"center\",\n        }}",
-    "{{ listStyle: \"none\", margin: 0, padding: 0, display: \"flex\", flexDirection: \"column\", gap: 10 }}",
-    "{{\n              display: \"flex\",\n              gap: 12,\n              alignItems: \"flex-start\",\n              background: \"var(--bg-app)\",\n              border: \"1px solid var(--border)\",\n              borderRadius: \"var(--radius-md)\",\n              padding: 12,\n            }}",
-    "{{\n                flex: \"0 0 24px\",\n                height: 24,\n                borderRadius: \"999px\",\n                background: \"var(--accent-soft)\",\n                color: \"var(--accent)\",\n                fontSize: 12,\n                fontWeight: 700,\n                display: \"flex\",\n                alignItems: \"center\",\n                justifyContent: \"center\",\n              }}",
-    "{{ fontSize: 13, fontWeight: 700, color: \"var(--text-primary)\" }}",
-    "{{ fontSize: 12, color: \"var(--text-secondary)\" }}"
-  ]
+  "inlineStyleBlocks": []
 }

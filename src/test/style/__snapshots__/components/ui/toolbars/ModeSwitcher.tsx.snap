@@ -2,7 +2,9 @@
   "file": "ui/toolbars/ModeSwitcher.tsx",
   "classes": [
     "btn",
-    "btn-active"
+    "btn-active",
+    "mode-switcher",
+    "mode-switcher__tab"
   ],
   "cssRules": [
     {
@@ -26,10 +28,41 @@
         "color": "var(--accent)",
         "border-color": "var(--accent)"
       }
+    },
+    {
+      "selector": ".mode-switcher",
+      "file": "ui/toolbars/ModeSwitcher.css",
+      "declarations": {
+        "display": "flex",
+        "background": "var(--bg-app)",
+        "border": "1px solid var(--border)",
+        "border-radius": "var(--radius-md)",
+        "padding": "3px",
+        "gap": "2px"
+      }
+    },
+    {
+      "selector": ".btn.mode-switcher__tab",
+      "file": "ui/toolbars/ModeSwitcher.css",
+      "declarations": {
+        "border": "none",
+        "border-radius": "8px",
+        "padding": "7px 14px",
+        "font-size": "12.5px",
+        "font-weight": "600",
+        "gap": "6px",
+        "background": "transparent",
+        "border-color": "transparent"
+      }
+    },
+    {
+      "selector": ".btn.mode-switcher__tab.btn-active",
+      "file": "ui/toolbars/ModeSwitcher.css",
+      "declarations": {
+        "background": "var(--accent-soft)",
+        "border-color": "var(--accent)"
+      }
     }
   ],
-  "inlineStyleBlocks": [
-    "{{\n        display: \"flex\",\n        background: \"var(--bg-app)\",\n        border: \"1px solid var(--border)\",\n        borderRadius: \"var(--radius-md)\",\n        padding: 3,\n        gap: 2,\n      }}",
-    "{{\n            border: \"none\",\n            borderRadius: 8,\n            padding: \"7px 14px\",\n            fontSize: 12.5,\n            fontWeight: 600,\n            gap: 6,\n            ...(mode === m.id ? {} : { background: \"transparent\", borderColor: \"transparent\" }),\n          }}"
-  ]
+  "inlineStyleBlocks": []
 }

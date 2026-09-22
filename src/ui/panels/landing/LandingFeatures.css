@@ -1,0 +1,47 @@
+.landing-features {
+  max-width: 760px;
+  margin: 40px auto 0;
+  padding: 0 24px;
+}
+
+.landing-features__heading {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.landing-features__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.landing-features__card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+}
+
+.landing-features__icon {
+  color: var(--accent);
+  display: flex;
+}
+
+.landing-features__title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.landing-features__description {
+  font-size: 12px;
+  color: var(--text-secondary);
+}

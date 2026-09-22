@@ -1,7 +1,4 @@
-import type { CSSProperties } from "react";
-
-const FIELD_LABEL_STYLE: CSSProperties = { display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11.5, color: "var(--text-secondary)" };
-const SLIDER_VALUE_STYLE: CSSProperties = { color: "var(--text-primary)", fontSize: 11.5, minWidth: 34, textAlign: "right" };
+import "./SliderField.css";
 
 // docs/specs/18-design-system.md — Slider (range input): shared numeric-parameter
 // control for GeneratorPanel's pattern fields and both panels' thread-width field.
@@ -27,12 +24,10 @@ export function SliderField({
   disabled?: boolean;
 }) {
   return (
-    <label style={{ display: "flex", flexDirection: "column", gap: 3, opacity: disabled ? 0.5 : 1 }}>
-      <div style={FIELD_LABEL_STYLE}>
+    <label className={`slider-field${disabled ? " is-disabled" : ""}`}>
+      <div className="slider-field__row">
         <span>{label}</span>
-        <span className="mono" style={SLIDER_VALUE_STYLE}>
-          {format ? format(value) : value}
-        </span>
+        <span className="mono slider-field__value">{format ? format(value) : value}</span>
       </div>
       <input
         type="range"

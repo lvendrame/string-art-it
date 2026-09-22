@@ -15,32 +15,44 @@ function mouseDownAt(svg: Element, clientX: number, clientY: number) {
 }
 
 describe("Canvas — pin drawing interaction", () => {
-  it("drag-creates a circle Pin Path (bounding-box corner to corner)", () => {
+  it("drag-creates a circle Pin Path (centre to radius point)", () => {
     const store = new EditorStore();
     render(<Canvas store={store} />);
     const svg = screen.getByRole("img", { name: "Board canvas" });
 
-    // screen(200,200) -> doc(10,10); screen(280,280) -> doc(30,30)
+    // screen(200,200) -> doc(10,10) centre; screen(280,200) -> doc(30,10) -> radius 20
     mouseDownAt(svg, 200, 200);
-    fireEvent.mouseUp(svg, { clientX: 280, clientY: 280 });
+    fireEvent.mouseUp(svg, { clientX: 280, clientY: 200 });
 
     const paths = store.getState().pinLayers[0].pinPaths;
     expect(paths).toHaveLength(1);
-    expect(paths[0].geometry).toMatchObject({ type: "circle", center: { x: 20, y: 20 }, radius: 10 });
+    expect(paths[0].geometry).toMatchObject({ type: "circle", center: { x: 10, y: 10 }, radius: 20 });
   });
 
-  it("two clicks create a Line Pin Path", () => {
+  it("drag creates a Line Pin Path", () => {
     const store = new EditorStore();
     store.setPinTool("line");
     render(<Canvas store={store} />);
     const svg = screen.getByRole("img", { name: "Board canvas" });
 
     mouseDownAt(svg, 200, 200); // doc(10,10)
-    mouseDownAt(svg, 280, 200); // doc(30,10)
+    fireEvent.mouseUp(svg, { clientX: 280, clientY: 200 }); // doc(30,10)
 
     const paths = store.getState().pinLayers[0].pinPaths;
     expect(paths).toHaveLength(1);
     expect(paths[0].geometry).toEqual({ type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } });
+  });
+
+  it("Line drag with mousedown/mouseup at the same point (a plain click) creates nothing", () => {
+    const store = new EditorStore();
+    store.setPinTool("line");
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    mouseDownAt(svg, 200, 200);
+    fireEvent.mouseUp(svg, { clientX: 200, clientY: 200 });
+
+    expect(store.getState().pinLayers[0].pinPaths).toHaveLength(0);
   });
 
   it("three clicks create an Arc Pin Path (start, end, curvature)", () => {

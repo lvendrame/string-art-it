@@ -21,7 +21,7 @@
   "pin": {
     "drawingTools": {
       "heading": "Drawing tools",
-      "line": { "label": "Line", "description": "Click a start point, then an end point, to draw a straight Line Pin Path." },
+      "line": { "label": "Line", "description": "Press-drag-release to draw a straight Line Pin Path." },
       "arc": { "label": "Arc", "description": "Click a start point, then an end point, then drag to shape the curvature and click again to confirm." },
       "ellipse": { "label": "Ellipse", "description": "Press-drag-release a bounding box. Hold Alt while dragging to constrain it to a Circle." },
       "circle": { "label": "Circle", "description": "Press-drag-release to size a Circle Pin Path." },

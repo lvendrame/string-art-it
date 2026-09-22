@@ -82,6 +82,15 @@ Alt + Rectangle → Square
 
 Applied after snapping, per the snapping priority pipeline in [05-canvas-and-viewport.md](./05-canvas-and-viewport.md).
 
+Note: this constraint still drags corner-to-corner (equal width/height forced after the fact) — it is independent of the standalone Circle tool below, which drags centre-to-radius (see Drag Gesture Conventions).
+
+## Drag Gesture Conventions
+
+Every Pin drawing tool except Arc (its own 3-stage interaction, below) uses one press-drag-release gesture: mousedown starts the shape, mousemove previews it live, mouseup commits it. Which point mousedown represents differs by tool:
+
+- **Bounding-box drag** (mousedown/mouseup are opposite corners): Ellipse, Rectangle, Square (and their Alt-constrained forms).
+- **Centre/start-radius drag** (mousedown is the centre or start point, mouseup determines size/direction): Line (mousedown = start, mouseup = end), Circle, and the whole Polygon/Star dropdown family (Pentagon/Hexagon/Octagon, Star-5/6/8, Pentagram/Heptagram/Octagram).
+
 ## Arc Drawing Interaction
 
 The Arc tool uses **Start point + End point + Curvature**:
@@ -121,10 +130,16 @@ Feature: Pin drawing tools
     Then Pentagon, Hexagon, Octagon, 5-point star, 6-point star, 8-point star, Pentagram, Heptagram, and Octagram are all available
     And no separate top-level toolbar icon exists for each of these individually
 
-  Scenario: Selecting a basic tool starts geometry creation
+  Scenario: Circle tool drags from centre outward
     Given the editor is in PIN mode
-    When the user selects the "Circle" tool and clicks-drags on the canvas
-    Then a Circle Pin Path is created with the guide geometry and generated pins per requested spacing
+    When the user selects the "Circle" tool, presses at a point, drags, and releases
+    Then a Circle Pin Path is created whose centre is the press point and whose radius is the distance to the release point
+
+  Scenario: Line tool uses a single press-drag-release gesture
+    Given the editor is in PIN mode
+    When the user selects the "Line" tool, presses at a point, drags, and releases
+    Then a Line Pin Path is created from the press point to the release point
+    And no intermediate click is required to commit the second point
 
 Feature: Guide and pin visibility independence
 

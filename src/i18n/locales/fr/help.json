@@ -21,7 +21,7 @@
   "pin": {
     "drawingTools": {
       "heading": "Outils de dessin",
-      "line": { "label": "Ligne", "description": "Cliquez sur un point de départ, puis sur un point final, pour dessiner un Tracé de Broches en ligne droite." },
+      "line": { "label": "Ligne", "description": "Appuyez, glissez, relâchez pour dessiner un Tracé de Broches en ligne droite." },
       "arc": { "label": "Arc", "description": "Cliquez sur un point de départ, puis sur un point final, puis glissez pour façonner la courbure et cliquez à nouveau pour confirmer." },
       "ellipse": { "label": "Ellipse", "description": "Appuyez, glissez, relâchez une boîte englobante. Maintenez Alt en glissant pour la contraindre à un Cercle." },
       "circle": { "label": "Cercle", "description": "Appuyez, glissez, relâchez pour dimensionner un Tracé de Broches en Cercle." },

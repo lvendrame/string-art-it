@@ -24,8 +24,21 @@ describe("geometryFromDrag", () => {
     expect(g).toEqual({ type: "regular-polygon", center: { x: 0, y: 0 }, radius: 10, sides: 6, rotation: 0 });
   });
 
-  it("returns null for line/arc/eraser (handled by their own interaction models)", () => {
-    expect(geometryFromDrag("line", { x: 0, y: 0 }, { x: 1, y: 1 }, false)).toBeNull();
+  it("circle drag from centre outward (matches polygon/star family)", () => {
+    const g = geometryFromDrag("circle", { x: 0, y: 0 }, { x: 10, y: 0 }, false);
+    expect(g).toEqual({ type: "circle", center: { x: 0, y: 0 }, radius: 10 });
+  });
+
+  it("line drag maps p0/p1 directly to start/end", () => {
+    const g = geometryFromDrag("line", { x: 0, y: 0 }, { x: 10, y: 4 }, false);
+    expect(g).toEqual({ type: "line", start: { x: 0, y: 0 }, end: { x: 10, y: 4 } });
+  });
+
+  it("line drag with no movement (a plain click) returns null", () => {
+    expect(geometryFromDrag("line", { x: 5, y: 5 }, { x: 5, y: 5 }, false)).toBeNull();
+  });
+
+  it("returns null for arc/eraser (handled by their own interaction models)", () => {
     expect(geometryFromDrag("arc", { x: 0, y: 0 }, { x: 1, y: 1 }, false)).toBeNull();
     expect(geometryFromDrag("eraser", { x: 0, y: 0 }, { x: 1, y: 1 }, false)).toBeNull();
   });

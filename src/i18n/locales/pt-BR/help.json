@@ -21,7 +21,7 @@
   "pin": {
     "drawingTools": {
       "heading": "Ferramentas de desenho",
-      "line": { "label": "Linha", "description": "Clique em um ponto inicial e depois em um ponto final para desenhar um Caminho de Pinos em linha reta." },
+      "line": { "label": "Linha", "description": "Pressione, arraste e solte para desenhar um Caminho de Pinos em linha reta." },
       "arc": { "label": "Arco", "description": "Clique em um ponto inicial, depois em um ponto final, então arraste para moldar a curvatura e clique novamente para confirmar." },
       "ellipse": { "label": "Elipse", "description": "Pressione, arraste e solte uma caixa delimitadora. Mantenha Alt pressionado ao arrastar para restringir a um Círculo." },
       "circle": { "label": "Círculo", "description": "Pressione, arraste e solte para dimensionar um Caminho de Pinos em Círculo." },

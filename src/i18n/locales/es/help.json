@@ -21,7 +21,7 @@
   "pin": {
     "drawingTools": {
       "heading": "Herramientas de dibujo",
-      "line": { "label": "Línea", "description": "Haz clic en un punto de inicio, luego en un punto final, para dibujar un Trazado de Pines en línea recta." },
+      "line": { "label": "Línea", "description": "Presiona, arrastra y suelta para dibujar un Trazado de Pines en línea recta." },
       "arc": { "label": "Arco", "description": "Haz clic en un punto de inicio, luego en un punto final, luego arrastra para dar forma a la curvatura y haz clic de nuevo para confirmar." },
       "ellipse": { "label": "Elipse", "description": "Presiona, arrastra y suelta un cuadro delimitador. Mantén Alt presionado mientras arrastras para restringirlo a un Círculo." },
       "circle": { "label": "Círculo", "description": "Presiona, arrastra y suelta para dimensionar un Trazado de Pines en Círculo." },

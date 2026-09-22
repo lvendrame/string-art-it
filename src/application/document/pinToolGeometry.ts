@@ -17,13 +17,21 @@ function radiusFrom(p0: Point, p1: Point): number {
   return Math.max(Math.hypot(p1.x - p0.x, p1.y - p0.y), MIN_SIZE);
 }
 
-// Drag-to-create geometry for every tool that isn't Line (2 clicks) or Arc (3-stage —
-// see docs/specs/14-arc-drawing-interaction). Bounding-box tools (ellipse/circle/
-// rectangle/square) drag from one corner to the opposite; centre-radius tools
-// (polygon/star/polygram family) drag from centre outward. `altHeld` is the shape
-// constraint modifier (docs/specs/13-shape-constraint-modifier).
+// Drag-to-create geometry for every tool except Arc (3-stage — see
+// docs/specs/14-arc-drawing-interaction). All of these share one press(p0)-release(p1)
+// gesture. Bounding-box tools (ellipse/rectangle/square) drag from one corner to the
+// opposite; centre-radius tools (line/circle/polygon/star/polygram family) drag from
+// a centre/start point outward. `altHeld` is the shape constraint modifier
+// (docs/specs/13-shape-constraint-modifier).
+//
+// NOTE: the standalone Circle tool ("circle" case below) is centre-radius, but
+// Alt+Ellipse (the shape constraint modifier) stays bounding-box-with-equal-sides via
+// the "ellipse" case — that's an intentional divergence between the Circle tool and
+// Alt-constrained Ellipse, not an inconsistency to "fix" later.
 export function geometryFromDrag(tool: PinTool, p0: Point, p1: Point, altHeld: boolean): PinPathGeometry | null {
   switch (tool) {
+    case "line":
+      return p0.x === p1.x && p0.y === p1.y ? null : { type: "line", start: p0, end: p1 };
     case "ellipse": {
       const box = normalizeBox(p0, p1);
       let rx = Math.max(box.width / 2, MIN_SIZE);
@@ -31,11 +39,8 @@ export function geometryFromDrag(tool: PinTool, p0: Point, p1: Point, altHeld: b
       if (altHeld) rx = ry = Math.min(rx, ry);
       return { type: "ellipse", center: { x: box.position.x + box.width / 2, y: box.position.y + box.height / 2 }, radiusX: rx, radiusY: ry, rotation: 0 };
     }
-    case "circle": {
-      const box = normalizeBox(p0, p1);
-      const r = Math.max(Math.max(box.width, box.height) / 2, MIN_SIZE);
-      return { type: "circle", center: { x: box.position.x + box.width / 2, y: box.position.y + box.height / 2 }, radius: r };
-    }
+    case "circle":
+      return { type: "circle", center: p0, radius: radiusFrom(p0, p1) };
     case "rectangle": {
       const box = normalizeBox(p0, p1);
       let { width, height } = box;
@@ -72,7 +77,7 @@ export function geometryFromDrag(tool: PinTool, p0: Point, p1: Point, altHeld: b
 }
 
 export const DRAG_TOOLS: PinTool[] = [
-  "ellipse", "circle", "rectangle", "square",
+  "line", "ellipse", "circle", "rectangle", "square",
   "pentagon", "hexagon", "octagon",
   "star-5", "star-6", "star-8",
   "pentagram", "heptagram", "octagram",

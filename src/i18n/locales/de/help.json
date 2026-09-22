@@ -21,7 +21,7 @@
   "pin": {
     "drawingTools": {
       "heading": "Zeichenwerkzeuge",
-      "line": { "label": "Linie", "description": "Klicken Sie auf einen Startpunkt und dann auf einen Endpunkt, um einen geraden Stiftpfad zu zeichnen." },
+      "line": { "label": "Linie", "description": "Drücken, ziehen, loslassen, um einen geraden Stiftpfad zu zeichnen." },
       "arc": { "label": "Bogen", "description": "Klicken Sie auf einen Startpunkt, dann auf einen Endpunkt, ziehen Sie dann, um die Krümmung zu formen, und klicken Sie erneut, um zu bestätigen." },
       "ellipse": { "label": "Ellipse", "description": "Drücken, ziehen, loslassen für ein Begrenzungsrechteck. Halten Sie Alt beim Ziehen, um es auf einen Kreis zu beschränken." },
       "circle": { "label": "Kreis", "description": "Drücken, ziehen, loslassen, um einen kreisförmigen Stiftpfad zu dimensionieren." },

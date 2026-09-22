@@ -15,22 +15,13 @@ interface ArcDraft {
 }
 
 // Pin mode drawing (docs/specs/12-pin-drawing-tools, §14-arc-drawing-interaction):
-// line (2 clicks), arc (3-stage), and the bounding-box/centre-radius drag tools all
-// share one origin/commit state machine.
+// arc (3-stage) and every other tool (a single origin/commit drag, including line and
+// the centre-radius/bounding-box shape tools) share one state machine.
 export function usePinDrawing(store: EditorStore, layerId: string) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [arcDraft, setArcDraft] = useState<ArcDraft | null>(null);
 
   function handleMouseDown(point: Point, pinTool: PinTool): void {
-    if (pinTool === "line") {
-      if (!dragStart) setDragStart(point);
-      else {
-        store.addPinPath(layerId, { type: "line", start: dragStart, end: point });
-        setDragStart(null);
-      }
-      return;
-    }
-
     if (pinTool === "arc") {
       if (!arcDraft) setArcDraft({ start: point });
       else if (!arcDraft.end) setArcDraft({ ...arcDraft, end: point });
@@ -54,7 +45,6 @@ export function usePinDrawing(store: EditorStore, layerId: string) {
 
   function previewGeometry(pinTool: PinTool, cursorDoc: Point | null, altHeld: boolean): PinPathGeometry | null {
     if (!cursorDoc) return null;
-    if (pinTool === "line" && dragStart) return { type: "line", start: dragStart, end: cursorDoc };
     if (pinTool === "arc" && arcDraft?.end) {
       const curvature = curvatureFromCursor(arcDraft.start, arcDraft.end, cursorDoc);
       return { type: "arc", start: arcDraft.start, end: arcDraft.end, curvature };

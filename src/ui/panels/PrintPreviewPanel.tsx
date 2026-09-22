@@ -31,6 +31,8 @@ import { BoardFillDefs } from "../../infrastructure/rendering/boardFill";
 import { boardFillPaint } from "../../infrastructure/rendering/boardFillUtils";
 import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
 import { useEditorState } from "../useEditorStore";
+import { OverlayPanel } from "./OverlayPanel";
+import "./PrintPreviewPanel.css";
 
 function elementLabels(
   t: TFunction<"printPreview">,
@@ -112,57 +114,18 @@ export function PrintPreviewPanel({
   }
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        inset: 0,
-        background: "var(--bg-app)",
-        display: "flex",
-        zIndex: 10,
-      }}
-    >
-      <div
-        style={{
-          width: 300,
-          borderRight: "1px solid var(--border)",
-          padding: 16,
-          display: "flex",
-          flexDirection: "column",
-          gap: 16,
-          overflowY: "auto",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <span style={{ fontWeight: 700, fontSize: 13 }}>
-            {t("panelTitle")}
-          </span>
-          <button
-            className="btn"
-            onClick={onClose}
-            style={{ borderRadius: 6, padding: "4px 8px", fontSize: 12 }}
-          >
+    <OverlayPanel className="print-preview-panel">
+      <div className="print-preview-panel__sidebar">
+        <div className="print-preview-panel__header">
+          <span className="print-preview-panel__title">{t("panelTitle")}</span>
+          <button className="btn print-preview-panel__close" onClick={onClose}>
             {t("actions.close", { ns: "common" })}
           </button>
         </div>
 
         <Section title={t("sections.printElements")}>
           {labels.map(({ key, label }) => (
-            <label
-              key={key}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                fontSize: 12,
-                color: "var(--text-secondary)",
-              }}
-            >
+            <label key={key} className="print-preview-panel__checkbox-row">
               <input
                 type="checkbox"
                 checked={elements[key]}
@@ -179,16 +142,7 @@ export function PrintPreviewPanel({
 
         <Section title={t("sections.scale")}>
           {(["1:1", "fit", "custom"] as PrintScaleMode[]).map((mode) => (
-            <label
-              key={mode}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                fontSize: 12,
-                color: "var(--text-secondary)",
-              }}
-            >
+            <label key={mode} className="print-preview-panel__checkbox-row">
               <input
                 type="radio"
                 name="scale-mode"
@@ -207,7 +161,7 @@ export function PrintPreviewPanel({
           {scale.mode === "custom" && (
             <input
               type="number"
-              className="mono"
+              className="mono print-preview-panel__number-input print-preview-panel__number-input--wide"
               step={0.05}
               value={scale.customRatio}
               onChange={(e) =>
@@ -215,20 +169,9 @@ export function PrintPreviewPanel({
                   scale: { ...scale, customRatio: Number(e.target.value) },
                 })
               }
-              style={{
-                width: 80,
-                background: "var(--bg-panel-2)",
-                border: "1px solid var(--border)",
-                borderRadius: 6,
-                color: "var(--text-primary)",
-                padding: "4px 6px",
-              }}
             />
           )}
-          <div
-            className="mono"
-            style={{ fontSize: 11, color: "var(--accent)" }}
-          >
+          <div className="mono print-preview-panel__accent-readout">
             {t("effective", { value: effectiveScale.toFixed(3) })}
           </div>
         </Section>
@@ -241,37 +184,23 @@ export function PrintPreviewPanel({
                 paper: { ...paper, size: e.target.value as PaperSize },
               })
             }
-            style={{
-              background: "var(--bg-panel-2)",
-              border: "1px solid var(--border)",
-              borderRadius: 6,
-              color: "var(--text-primary)",
-              padding: "4px 6px",
-              fontSize: 12,
-            }}
+            className="print-preview-panel__select"
           >
             <option value="A4">{t("paperSizes.A4")}</option>
             <option value="A3">{t("paperSizes.A3")}</option>
             <option value="Letter">{t("paperSizes.Letter")}</option>
             <option value="custom">{t("paperSizes.custom")}</option>
           </select>
-          <div style={{ display: "flex", gap: 6 }}>
+          <div className="print-preview-panel__orientation-row">
             {(["portrait", "landscape"] as PaperOrientation[]).map((o) => (
               <button
                 key={o}
-                className={`btn${paper.orientation === o ? " btn-active" : ""}`}
+                className={`btn print-preview-panel__orientation-btn${paper.orientation === o ? " btn-active" : ""}`}
                 onClick={() =>
                   store.setPrintSettings({
                     paper: { ...paper, orientation: o },
                   })
                 }
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  borderRadius: 6,
-                  padding: 6,
-                  fontSize: 11.5,
-                }}
               >
                 {t(`orientation.${o}`)}
               </button>
@@ -280,109 +209,44 @@ export function PrintPreviewPanel({
         </Section>
 
         <Section title={t("sections.calibration")}>
-          <div
-            className="mono"
-            style={{ fontSize: 11, color: "var(--text-secondary)" }}
-          >
+          <div className="mono print-preview-panel__calibration-readout">
             {t("calibration.correctionFactor")}{" "}
-            <span style={{ color: "var(--accent)" }}>
+            <span className="print-preview-panel__accent-text">
               {calibration.correctionFactor.toFixed(4)}
             </span>
           </div>
           {!calibrating ? (
             <button
-              className="btn"
+              className="btn print-preview-panel__calibration-test-btn"
               onClick={() => setCalibrating(true)}
-              style={{
-                justifyContent: "center",
-                borderRadius: 6,
-                padding: 8,
-                fontSize: 12,
-              }}
             >
               {t("calibration.testButton")}
             </button>
           ) : (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 8,
-                background: "var(--bg-app)",
-                border: "1px solid var(--border)",
-                borderRadius: "var(--radius-md)",
-                padding: 10,
-              }}
-            >
-              <span style={{ fontSize: 11.5, color: "var(--text-secondary)" }}>
+            <div className="print-preview-panel__calibration-box">
+              <span className="print-preview-panel__calibration-instructions">
                 {t("calibration.instructions", {
                   length: CALIBRATION_LENGTH_CM,
                 })}
               </span>
-              <button
-                className="btn"
-                onClick={() => window.print()}
-                style={{
-                  justifyContent: "center",
-                  borderRadius: 6,
-                  padding: 7,
-                  fontSize: 12,
-                }}
-              >
+              <button className="btn print-preview-panel__calibration-print-btn" onClick={() => window.print()}>
                 {t("calibration.printReference")}
               </button>
-              <label
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  fontSize: 12,
-                  color: "var(--text-secondary)",
-                }}
-              >
+              <label className="print-preview-panel__row-between">
                 {t("calibration.measuredLabel")}
                 <input
                   type="number"
-                  className="mono"
+                  className="mono print-preview-panel__number-input"
                   step={0.01}
                   value={measuredCm}
                   onChange={(e) => setMeasuredCm(Number(e.target.value))}
-                  style={{
-                    width: 70,
-                    background: "var(--bg-panel-2)",
-                    border: "1px solid var(--border)",
-                    borderRadius: 6,
-                    color: "var(--text-primary)",
-                    padding: "4px 6px",
-                  }}
                 />
               </label>
-              <div style={{ display: "flex", gap: 6 }}>
-                <button
-                  className="btn"
-                  onClick={applyCalibration}
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    borderRadius: 6,
-                    padding: 7,
-                    fontSize: 12,
-                    fontWeight: 600,
-                  }}
-                >
+              <div className="print-preview-panel__calibration-row">
+                <button className="btn print-preview-panel__calibration-apply-btn" onClick={applyCalibration}>
                   {t("calibration.apply")}
                 </button>
-                <button
-                  className="btn"
-                  onClick={() => setCalibrating(false)}
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    borderRadius: 6,
-                    padding: 7,
-                    fontSize: 12,
-                  }}
-                >
+                <button className="btn print-preview-panel__calibration-cancel-btn" onClick={() => setCalibrating(false)}>
                   {t("calibration.cancel")}
                 </button>
               </div>
@@ -391,15 +255,7 @@ export function PrintPreviewPanel({
         </Section>
 
         <Section title={t("sections.tiling")}>
-          <label
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              fontSize: 12,
-              color: "var(--text-secondary)",
-            }}
-          >
+          <label className="print-preview-panel__checkbox-row">
             <input
               type="checkbox"
               checked={tiling.enabled}
@@ -413,19 +269,11 @@ export function PrintPreviewPanel({
           </label>
           {tiling.enabled && (
             <>
-              <label
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  fontSize: 12,
-                  color: "var(--text-secondary)",
-                }}
-              >
+              <label className="print-preview-panel__row-between">
                 {t("tiling.overlapLabel")}
                 <input
                   type="number"
-                  className="mono"
+                  className="mono print-preview-panel__number-input"
                   min={0}
                   step={0.5}
                   value={tiling.overlapCm}
@@ -434,14 +282,6 @@ export function PrintPreviewPanel({
                       tiling: { ...tiling, overlapCm: Number(e.target.value) },
                     })
                   }
-                  style={{
-                    width: 70,
-                    background: "var(--bg-panel-2)",
-                    border: "1px solid var(--border)",
-                    borderRadius: 6,
-                    color: "var(--text-primary)",
-                    padding: "4px 6px",
-                  }}
                 />
               </label>
               {(
@@ -452,16 +292,7 @@ export function PrintPreviewPanel({
                   "pageCoordinates",
                 ] as const
               ).map((key) => (
-                <label
-                  key={key}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    fontSize: 12,
-                    color: "var(--text-secondary)",
-                  }}
-                >
+                <label key={key} className="print-preview-panel__checkbox-row">
                   <input
                     type="checkbox"
                     checked={tiling[key]}
@@ -481,10 +312,7 @@ export function PrintPreviewPanel({
                 </label>
               ))}
               {grid && (
-                <div
-                  className="mono"
-                  style={{ fontSize: 11, color: "var(--accent)" }}
-                >
+                <div className="mono print-preview-panel__accent-readout">
                   {t("tiling.pagesCount", {
                     count: grid.cols * grid.rows,
                     cols: grid.cols,
@@ -496,34 +324,12 @@ export function PrintPreviewPanel({
           )}
         </Section>
 
-        <button
-          className="btn"
-          onClick={() => window.print()}
-          style={{
-            justifyContent: "center",
-            borderRadius: "var(--radius-sm)",
-            padding: 10,
-            fontSize: 13,
-            fontWeight: 700,
-            background: "var(--accent-strong)",
-            color: "white",
-            borderColor: "transparent",
-          }}
-        >
+        <button className="btn print-preview-panel__print-btn" onClick={() => window.print()}>
           {t("printButton")}
         </button>
       </div>
 
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "auto",
-          padding: 24,
-        }}
-      >
+      <div className="print-preview-panel__preview">
         {renderPages({
           calibrating,
           grid,
@@ -553,7 +359,7 @@ export function PrintPreviewPanel({
           effectiveScale,
         })}
       </PrintPortal>
-    </div>
+    </OverlayPanel>
   );
 }
 
@@ -585,14 +391,7 @@ function renderPages({
   }
   if (grid) {
     return (
-      <div
-        className="print-tile-grid"
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${grid.cols}, auto)`,
-          gap: 16,
-        }}
-      >
+      <div className="print-tile-grid" style={{ gridTemplateColumns: `repeat(${grid.cols}, auto)` }}>
         {grid.tiles.map((tile) => (
           <PrintPage
             key={`${tile.col}-${tile.row}`}
@@ -677,11 +476,7 @@ function CalibrationPage({
     (paperPx.width - CALIBRATION_LENGTH_CM * PRINT_PX_PER_CM) / 2;
   const lineEndX = lineStartX + CALIBRATION_LENGTH_CM * PRINT_PX_PER_CM;
   return (
-    <svg
-      width={paperPx.width}
-      height={paperPx.height}
-      style={{ background: "white" }}
-    >
+    <svg width={paperPx.width} height={paperPx.height} className="print-preview-panel__page-svg">
       <line
         x1={lineStartX}
         y1={lineY}
@@ -853,12 +648,8 @@ function PrintPage({
   const clipId = `tile-clip-${instanceId}-${tileLabel ?? "single"}-${coordLabel ?? ""}`;
 
   return (
-    <div className="print-page" style={{ position: "relative" }}>
-      <svg
-        width={paperPx.width}
-        height={paperPx.height}
-        style={{ background: "white" }}
-      >
+    <div className="print-page">
+      <svg width={paperPx.width} height={paperPx.height} className="print-preview-panel__page-svg">
         <defs>
           <clipPath id={clipId}>
             <rect x={0} y={0} width={paperPx.width} height={paperPx.height} />
@@ -1105,18 +896,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <div
-        style={{
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: "0.06em",
-          color: "var(--text-tertiary)",
-          textTransform: "uppercase",
-        }}
-      >
-        {title}
-      </div>
+    <div className="print-preview-panel__section">
+      <div className="print-preview-panel__section-heading">{title}</div>
       {children}
     </div>
   );

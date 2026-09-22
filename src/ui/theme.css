@@ -233,6 +233,18 @@ button {
   display: none;
 }
 
+/* On-screen instance of these two classes (the portal's own copy is hidden by
+   #print-portal above, so these are harmless there) — grid.cols is a runtime value,
+   so gridTemplateColumns itself stays inline on the element. */
+.print-tile-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.print-page {
+  position: relative;
+}
+
 @media print {
   #root {
     display: none !important;

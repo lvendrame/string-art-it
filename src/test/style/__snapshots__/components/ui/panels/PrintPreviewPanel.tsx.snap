@@ -5,9 +5,302 @@
     "btn-active",
     "mono",
     "print-page",
+    "print-preview-panel",
+    "print-preview-panel__accent-readout",
+    "print-preview-panel__accent-text",
+    "print-preview-panel__calibration-apply-btn",
+    "print-preview-panel__calibration-box",
+    "print-preview-panel__calibration-cancel-btn",
+    "print-preview-panel__calibration-instructions",
+    "print-preview-panel__calibration-print-btn",
+    "print-preview-panel__calibration-readout",
+    "print-preview-panel__calibration-row",
+    "print-preview-panel__calibration-test-btn",
+    "print-preview-panel__checkbox-row",
+    "print-preview-panel__close",
+    "print-preview-panel__header",
+    "print-preview-panel__number-input",
+    "print-preview-panel__number-input--wide",
+    "print-preview-panel__orientation-btn",
+    "print-preview-panel__orientation-row",
+    "print-preview-panel__page-svg",
+    "print-preview-panel__preview",
+    "print-preview-panel__print-btn",
+    "print-preview-panel__row-between",
+    "print-preview-panel__section",
+    "print-preview-panel__section-heading",
+    "print-preview-panel__select",
+    "print-preview-panel__sidebar",
+    "print-preview-panel__title",
     "print-tile-grid"
   ],
   "cssRules": [
+    {
+      "selector": ".print-preview-panel",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "display": "flex"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__sidebar",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "width": "300px",
+        "border-right": "1px solid var(--border)",
+        "padding": "16px",
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "16px",
+        "overflow-y": "auto"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__header",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "display": "flex",
+        "justify-content": "space-between",
+        "align-items": "center"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__title",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "font-weight": "700",
+        "font-size": "13px"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__close",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "border-radius": "6px",
+        "padding": "4px 8px",
+        "font-size": "12px"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__section",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "8px"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__section-heading",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "font-size": "11px",
+        "font-weight": "700",
+        "letter-spacing": "0.06em",
+        "color": "var(--text-tertiary)",
+        "text-transform": "uppercase"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__checkbox-row",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "display": "flex",
+        "align-items": "center",
+        "gap": "8px",
+        "font-size": "12px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__row-between",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "display": "flex",
+        "justify-content": "space-between",
+        "align-items": "center",
+        "font-size": "12px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__number-input",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "width": "70px",
+        "background": "var(--bg-panel-2)",
+        "border": "1px solid var(--border)",
+        "border-radius": "6px",
+        "color": "var(--text-primary)",
+        "padding": "4px 6px"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__number-input--wide",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "width": "80px"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__accent-text",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "color": "var(--accent)"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__accent-readout",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "font-size": "11px",
+        "color": "var(--accent)"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__select",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "background": "var(--bg-panel-2)",
+        "border": "1px solid var(--border)",
+        "border-radius": "6px",
+        "color": "var(--text-primary)",
+        "padding": "4px 6px",
+        "font-size": "12px"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__orientation-row",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "display": "flex",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__orientation-btn",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "flex": "1",
+        "justify-content": "center",
+        "border-radius": "6px",
+        "padding": "6px",
+        "font-size": "11.5px"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__calibration-readout",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "font-size": "11px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__calibration-test-btn",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "justify-content": "center",
+        "border-radius": "6px",
+        "padding": "8px",
+        "font-size": "12px"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__calibration-box",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "8px",
+        "background": "var(--bg-app)",
+        "border": "1px solid var(--border)",
+        "border-radius": "var(--radius-md)",
+        "padding": "10px"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__calibration-instructions",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "font-size": "11.5px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__calibration-print-btn",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "justify-content": "center",
+        "border-radius": "6px",
+        "padding": "7px",
+        "font-size": "12px"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__calibration-row",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "display": "flex",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__calibration-apply-btn",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "flex": "1",
+        "justify-content": "center",
+        "border-radius": "6px",
+        "padding": "7px",
+        "font-size": "12px",
+        "font-weight": "600"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__calibration-cancel-btn",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "flex": "1",
+        "justify-content": "center",
+        "border-radius": "6px",
+        "padding": "7px",
+        "font-size": "12px"
+      }
+    },
+    {
+      "selector": ".btn.print-preview-panel__print-btn",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "justify-content": "center",
+        "border-radius": "var(--radius-sm)",
+        "padding": "10px",
+        "font-size": "13px",
+        "font-weight": "700",
+        "background": "var(--accent-strong)",
+        "color": "white",
+        "border-color": "transparent"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__preview",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "flex": "1",
+        "display": "flex",
+        "align-items": "center",
+        "justify-content": "center",
+        "overflow": "auto",
+        "padding": "24px"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__page-svg",
+      "file": "ui/panels/PrintPreviewPanel.css",
+      "declarations": {
+        "background": "white"
+      }
+    },
     {
       "selector": ".mono",
       "file": "ui/theme.css",
@@ -36,44 +329,24 @@
         "color": "var(--accent)",
         "border-color": "var(--accent)"
       }
+    },
+    {
+      "selector": ".print-tile-grid",
+      "file": "ui/theme.css",
+      "declarations": {
+        "display": "grid",
+        "gap": "16px"
+      }
+    },
+    {
+      "selector": ".print-page",
+      "file": "ui/theme.css",
+      "declarations": {
+        "position": "relative"
+      }
     }
   ],
   "inlineStyleBlocks": [
-    "{{\n        position: \"absolute\",\n        inset: 0,\n        background: \"var(--bg-app)\",\n        display: \"flex\",\n        zIndex: 10,\n      }}",
-    "{{\n          width: 300,\n          borderRight: \"1px solid var(--border)\",\n          padding: 16,\n          display: \"flex\",\n          flexDirection: \"column\",\n          gap: 16,\n          overflowY: \"auto\",\n        }}",
-    "{{\n            display: \"flex\",\n            justifyContent: \"space-between\",\n            alignItems: \"center\",\n          }}",
-    "{{ fontWeight: 700, fontSize: 13 }}",
-    "{{ borderRadius: 6, padding: \"4px 8px\", fontSize: 12 }}",
-    "{{\n                display: \"flex\",\n                alignItems: \"center\",\n                gap: 8,\n                fontSize: 12,\n                color: \"var(--text-secondary)\",\n              }}",
-    "{{\n                display: \"flex\",\n                alignItems: \"center\",\n                gap: 8,\n                fontSize: 12,\n                color: \"var(--text-secondary)\",\n              }}",
-    "{{\n                width: 80,\n                background: \"var(--bg-panel-2)\",\n                border: \"1px solid var(--border)\",\n                borderRadius: 6,\n                color: \"var(--text-primary)\",\n                padding: \"4px 6px\",\n              }}",
-    "{{ fontSize: 11, color: \"var(--accent)\" }}",
-    "{{\n              background: \"var(--bg-panel-2)\",\n              border: \"1px solid var(--border)\",\n              borderRadius: 6,\n              color: \"var(--text-primary)\",\n              padding: \"4px 6px\",\n              fontSize: 12,\n            }}",
-    "{{ display: \"flex\", gap: 6 }}",
-    "{{\n                  flex: 1,\n                  justifyContent: \"center\",\n                  borderRadius: 6,\n                  padding: 6,\n                  fontSize: 11.5,\n                }}",
-    "{{ fontSize: 11, color: \"var(--text-secondary)\" }}",
-    "{{ color: \"var(--accent)\" }}",
-    "{{\n                justifyContent: \"center\",\n                borderRadius: 6,\n                padding: 8,\n                fontSize: 12,\n              }}",
-    "{{\n                display: \"flex\",\n                flexDirection: \"column\",\n                gap: 8,\n                background: \"var(--bg-app)\",\n                border: \"1px solid var(--border)\",\n                borderRadius: \"var(--radius-md)\",\n                padding: 10,\n              }}",
-    "{{ fontSize: 11.5, color: \"var(--text-secondary)\" }}",
-    "{{\n                  justifyContent: \"center\",\n                  borderRadius: 6,\n                  padding: 7,\n                  fontSize: 12,\n                }}",
-    "{{\n                  display: \"flex\",\n                  justifyContent: \"space-between\",\n                  alignItems: \"center\",\n                  fontSize: 12,\n                  color: \"var(--text-secondary)\",\n                }}",
-    "{{\n                    width: 70,\n                    background: \"var(--bg-panel-2)\",\n                    border: \"1px solid var(--border)\",\n                    borderRadius: 6,\n                    color: \"var(--text-primary)\",\n                    padding: \"4px 6px\",\n                  }}",
-    "{{ display: \"flex\", gap: 6 }}",
-    "{{\n                    flex: 1,\n                    justifyContent: \"center\",\n                    borderRadius: 6,\n                    padding: 7,\n                    fontSize: 12,\n                    fontWeight: 600,\n                  }}",
-    "{{\n                    flex: 1,\n                    justifyContent: \"center\",\n                    borderRadius: 6,\n                    padding: 7,\n                    fontSize: 12,\n                  }}",
-    "{{\n              display: \"flex\",\n              alignItems: \"center\",\n              gap: 8,\n              fontSize: 12,\n              color: \"var(--text-secondary)\",\n            }}",
-    "{{\n                  display: \"flex\",\n                  justifyContent: \"space-between\",\n                  alignItems: \"center\",\n                  fontSize: 12,\n                  color: \"var(--text-secondary)\",\n                }}",
-    "{{\n                    width: 70,\n                    background: \"var(--bg-panel-2)\",\n                    border: \"1px solid var(--border)\",\n                    borderRadius: 6,\n                    color: \"var(--text-primary)\",\n                    padding: \"4px 6px\",\n                  }}",
-    "{{\n                    display: \"flex\",\n                    alignItems: \"center\",\n                    gap: 8,\n                    fontSize: 12,\n                    color: \"var(--text-secondary)\",\n                  }}",
-    "{{ fontSize: 11, color: \"var(--accent)\" }}",
-    "{{\n            justifyContent: \"center\",\n            borderRadius: \"var(--radius-sm)\",\n            padding: 10,\n            fontSize: 13,\n            fontWeight: 700,\n            background: \"var(--accent-strong)\",\n            color: \"white\",\n            borderColor: \"transparent\",\n          }}",
-    "{{\n          flex: 1,\n          display: \"flex\",\n          alignItems: \"center\",\n          justifyContent: \"center\",\n          overflow: \"auto\",\n          padding: 24,\n        }}",
-    "{{\n          display: \"grid\",\n          gridTemplateColumns: `repeat(${grid.cols}, auto)`,\n          gap: 16,\n        }}",
-    "{{ background: \"white\" }}",
-    "{{ position: \"relative\" }}",
-    "{{ background: \"white\" }}",
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 8 }}",
-    "{{\n          fontSize: 11,\n          fontWeight: 700,\n          letterSpacing: \"0.06em\",\n          color: \"var(--text-tertiary)\",\n          textTransform: \"uppercase\",\n        }}"
+    "{{ gridTemplateColumns: `repeat(${grid.cols}, auto)` }}"
   ]
 }

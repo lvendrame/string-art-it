@@ -7,6 +7,7 @@ import { useEditorState } from "../useEditorStore";
 import { isTextEntryTarget } from "../keyboard";
 import { LanguageSwitcher, type LanguageSwitcherHandle } from "../LanguageSwitcher";
 import { BoardAppearancePanel } from "./BoardAppearancePanel";
+import "./BoardSetup.css";
 
 function shapeOptions(t: TFunction<"boardSetup">): { id: BoardShape; label: string }[] {
   return [
@@ -20,23 +21,15 @@ function shapeOptions(t: TFunction<"boardSetup">): { id: BoardShape; label: stri
 
 function DimensionField({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void }) {
   return (
-    <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "var(--text-secondary)" }}>
+    <label className="board-setup__field-label">
       {label}
       <input
         type="number"
-        className="mono"
+        className="mono board-setup__field-input"
         value={value}
         min={0.1}
         step={0.1}
         onChange={(e) => onChange(Number(e.target.value))}
-        style={{
-          background: "var(--bg-app)",
-          border: "1px solid var(--border)",
-          borderRadius: "var(--radius-sm)",
-          color: "var(--text-primary)",
-          padding: "6px 8px",
-          fontSize: 13,
-        }}
       />
     </label>
   );
@@ -69,9 +62,7 @@ function DimensionFields({ board, store, t }: { board: Board; store: EditorStore
           <>
             <DimensionField label={t("fields.base")} value={d.base ?? 40} onChange={(v) => store.setBoardDimensions({ base: v })} />
             <DimensionField label={t("fields.height")} value={d.height ?? 30} onChange={(v) => store.setBoardDimensions({ height: v })} />
-            <div className="mono" style={{ fontSize: 12, color: "var(--text-secondary)" }}>
-              {t("hypotenuse", { value: boardHypotenuse(board)?.toFixed(1) })}
-            </div>
+            <div className="mono board-setup__hypotenuse">{t("hypotenuse", { value: boardHypotenuse(board)?.toFixed(1) })}</div>
           </>
         );
       }
@@ -106,35 +97,20 @@ export function BoardSetup({ store, onContinue }: { store: EditorStore; onContin
   }, [onContinue]);
 
   return (
-    <div
-      style={{
-        maxWidth: 420,
-        margin: "80px auto",
-        display: "flex",
-        flexDirection: "column",
-        gap: 20,
-        padding: 24,
-        background: "var(--bg-panel)",
-        border: "1px solid var(--border)",
-        borderRadius: "var(--radius-md)",
-      }}
-    >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h2 style={{ margin: 0, fontSize: 18 }}>{t("title")}</h2>
+    <div className="board-setup">
+      <div className="board-setup__header">
+        <h2 className="board-setup__title">{t("title")}</h2>
         <LanguageSwitcher ref={languageSwitcherRef} />
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-          {t("sections.shape")}
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
+      <div className="board-setup__section">
+        <div className="board-setup__section-title">{t("sections.shape")}</div>
+        <div className="board-setup__shape-grid">
           {shapes.map((s) => (
             <button
               key={s.id}
-              className={`btn${board.shape === s.id ? " btn-active" : ""}`}
+              className={`btn board-setup__shape-btn${board.shape === s.id ? " btn-active" : ""}`}
               onClick={() => store.setBoardShape(s.id, s.id === "triangle" ? "equilateral" : undefined)}
-              style={{ justifyContent: "center", borderRadius: "var(--radius-sm)", padding: "10px 4px", fontSize: 12, fontWeight: 600 }}
             >
               {s.label}
             </button>
@@ -143,13 +119,12 @@ export function BoardSetup({ store, onContinue }: { store: EditorStore; onContin
       </div>
 
       {board.shape === "triangle" && (
-        <div style={{ display: "flex", gap: 6 }}>
+        <div className="board-setup__triangle-row">
           {(["equilateral", "right-angled"] as TriangleType[]).map((tri) => (
             <button
               key={tri}
-              className={`btn${board.triangleType === tri ? " btn-active" : ""}`}
+              className={`btn board-setup__triangle-btn${board.triangleType === tri ? " btn-active" : ""}`}
               onClick={() => store.setTriangleType(tri)}
-              style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 600 }}
             >
               {t(tri === "equilateral" ? "triangleTypes.equilateral" : "triangleTypes.rightAngled")}
             </button>
@@ -157,29 +132,14 @@ export function BoardSetup({ store, onContinue }: { store: EditorStore; onContin
         </div>
       )}
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-          {t("sections.dimensions")}
-        </div>
+      <div className="board-setup__section board-setup__section--wide-gap">
+        <div className="board-setup__section-title">{t("sections.dimensions")}</div>
         <DimensionFields board={board} store={store} t={t} />
       </div>
 
       <BoardAppearancePanel store={store} />
 
-      <button
-        className="btn"
-        onClick={onContinue}
-        style={{
-          justifyContent: "center",
-          borderRadius: "var(--radius-sm)",
-          padding: 10,
-          fontSize: 13,
-          fontWeight: 700,
-          background: "var(--accent-strong)",
-          color: "white",
-          borderColor: "transparent",
-        }}
-      >
+      <button className="btn board-setup__continue-btn" onClick={onContinue}>
         {t("continueButton")}
       </button>
     </div>

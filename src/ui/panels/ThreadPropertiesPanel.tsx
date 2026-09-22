@@ -4,6 +4,7 @@ import { useEditorState } from "../useEditorStore";
 import { CheckboxField } from "./fields/CheckboxField";
 import { SliderField } from "./fields/SliderField";
 import { coloursForCount } from "./threadColourPalette";
+import "./ThreadPropertiesPanel.css";
 
 // docs/specs/27-thread-select-tool.md — dual-context, same pattern as
 // PinPropertiesPanel: with a Thread Path selected, these fields edit it; otherwise
@@ -22,34 +23,31 @@ export function ThreadPropertiesPanel({ store }: { store: EditorStore }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
+    <div className="thread-properties-panel">
+      <div className="thread-properties-panel__section-title">
         {selected ? t("threadPropertiesPanel.titleSelected") : t("threadPropertiesPanel.titleDefaults")}
       </div>
 
-      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-        {t("threadPropertiesPanel.coloursSectionTitle")}
-      </div>
-      <div style={{ display: "flex", gap: 6 }}>
+      <div className="thread-properties-panel__section-title">{t("threadPropertiesPanel.coloursSectionTitle")}</div>
+      <div className="thread-properties-panel__colour-count-row">
         {[1, 2, 3].map((n) => (
           <button
             key={n}
-            className={`btn${colours.length === n ? " btn-active" : ""}`}
+            className={`btn thread-properties-panel__colour-count-btn${colours.length === n ? " btn-active" : ""}`}
             onClick={() => setColourCount(n)}
-            style={{ flex: 1, justifyContent: "center", borderRadius: "var(--radius-sm)", padding: 9, fontSize: 12, fontWeight: 700 }}
           >
             {n}
           </button>
         ))}
       </div>
-      <div style={{ display: "flex", gap: 6 }}>
+      <div className="thread-properties-panel__swatches">
         {colours.map((c, i) => (
           <input
             key={i}
             type="color"
             value={c}
             onChange={(e) => store.setThreadProperty({ colours: colours.map((existing, idx) => (idx === i ? e.target.value : existing)) })}
-            style={{ width: 24, height: 24, border: "1px solid var(--border-strong)", borderRadius: 5, background: "none", padding: 0 }}
+            className="thread-properties-panel__swatch"
           />
         ))}
       </div>
@@ -64,17 +62,16 @@ export function ThreadPropertiesPanel({ store }: { store: EditorStore }) {
       />
 
       {colours.length > 1 && (
-        <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
+        <label className="thread-properties-panel__row">
           {t("threadPropertiesPanel.twistPitch")}
           <input
             type="number"
-            className="mono"
+            className="mono thread-properties-panel__number-input"
             min={2}
             max={20}
             step={1}
             value={values.twistPitch}
             onChange={(e) => store.setThreadProperty({ twistPitch: Number(e.target.value) })}
-            style={{ width: 60, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "4px 6px" }}
           />
         </label>
       )}
@@ -95,10 +92,8 @@ export function ThreadPropertiesPanel({ store }: { store: EditorStore }) {
 function ZigzagSettingsBox({ store, settings }: { store: EditorStore; settings: ZigzagSettings }) {
   const { t } = useTranslation("panels");
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 10, marginTop: 4 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-        {t("threadPropertiesPanel.zigzagSectionTitle")}
-      </div>
+    <div className="thread-properties-panel__box">
+      <div className="thread-properties-panel__section-title">{t("threadPropertiesPanel.zigzagSectionTitle")}</div>
       <SliderField label={t("threadPropertiesPanel.stepA")} value={settings.stepA} min={0} max={9} step={1} onChange={(v) => store.setZigzagSettings({ stepA: v })} />
       <SliderField label={t("threadPropertiesPanel.stepB")} value={settings.stepB} min={0} max={9} step={1} onChange={(v) => store.setZigzagSettings({ stepB: v })} />
       <CheckboxField label={t("threadPropertiesPanel.fullFill")} checked={settings.fullFill} onChange={(v) => store.setZigzagSettings({ fullFill: v })} />
@@ -112,10 +107,8 @@ function ZigzagSettingsBox({ store, settings }: { store: EditorStore; settings: 
 function ParabolicSettingsBox({ store, settings }: { store: EditorStore; settings: ParabolicSettings }) {
   const { t } = useTranslation("panels");
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 10, marginTop: 4 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-        {t("threadPropertiesPanel.parabolicSectionTitle")}
-      </div>
+    <div className="thread-properties-panel__box">
+      <div className="thread-properties-panel__section-title">{t("threadPropertiesPanel.parabolicSectionTitle")}</div>
       <SliderField label={t("threadPropertiesPanel.stepA")} value={settings.stepA} min={0} max={9} step={1} onChange={(v) => store.setParabolicSettings({ stepA: v })} />
       <SliderField label={t("threadPropertiesPanel.stepB")} value={settings.stepB} min={0} max={9} step={1} onChange={(v) => store.setParabolicSettings({ stepB: v })} />
       <CheckboxField label={t("threadPropertiesPanel.fullFill")} checked={settings.fullFill} onChange={(v) => store.setParabolicSettings({ fullFill: v })} />
@@ -145,14 +138,12 @@ function ThreadStatsBox({ thread, pinLayers }: { thread: NonNullable<ReturnType<
   ];
 
   return (
-    <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 10, display: "flex", flexDirection: "column", gap: 8, marginTop: 4 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-        {t("threadPropertiesPanel.stats.title")}
-      </div>
+    <div className="thread-properties-panel__box">
+      <div className="thread-properties-panel__section-title">{t("threadPropertiesPanel.stats.title")}</div>
       {rows.map(([label, value]) => (
-        <div key={label} className="mono" style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
-          <span style={{ color: "var(--text-secondary)" }}>{label}</span>
-          <span style={{ color: "var(--text-primary)" }}>{value}</span>
+        <div key={label} className="mono thread-properties-panel__stats-row">
+          <span className="thread-properties-panel__stats-label">{label}</span>
+          <span className="thread-properties-panel__stats-value">{value}</span>
         </div>
       ))}
     </div>

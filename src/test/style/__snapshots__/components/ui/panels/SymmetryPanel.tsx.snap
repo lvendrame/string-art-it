@@ -3,9 +3,92 @@
   "classes": [
     "btn",
     "btn-active",
-    "mono"
+    "mono",
+    "symmetry-panel",
+    "symmetry-panel__grid",
+    "symmetry-panel__number-input",
+    "symmetry-panel__option-btn",
+    "symmetry-panel__radial-box",
+    "symmetry-panel__row",
+    "symmetry-panel__section-title"
   ],
   "cssRules": [
+    {
+      "selector": ".symmetry-panel",
+      "file": "ui/panels/SymmetryPanel.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "10px"
+      }
+    },
+    {
+      "selector": ".symmetry-panel__section-title",
+      "file": "ui/panels/SymmetryPanel.css",
+      "declarations": {
+        "font-size": "11px",
+        "font-weight": "700",
+        "letter-spacing": "0.06em",
+        "color": "var(--text-tertiary)",
+        "text-transform": "uppercase"
+      }
+    },
+    {
+      "selector": ".symmetry-panel__grid",
+      "file": "ui/panels/SymmetryPanel.css",
+      "declarations": {
+        "display": "grid",
+        "grid-template-columns": "repeat(3, 1fr)",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".symmetry-panel__option-btn",
+      "file": "ui/panels/SymmetryPanel.css",
+      "declarations": {
+        "justify-content": "center",
+        "border-radius": "var(--radius-sm)",
+        "padding": "9px 4px",
+        "font-size": "10.5px",
+        "font-weight": "600"
+      }
+    },
+    {
+      "selector": ".symmetry-panel__radial-box",
+      "file": "ui/panels/SymmetryPanel.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "8px",
+        "background": "var(--bg-app)",
+        "border": "1px solid var(--border)",
+        "border-radius": "var(--radius-md)",
+        "padding": "10px"
+      }
+    },
+    {
+      "selector": ".symmetry-panel__row",
+      "file": "ui/panels/SymmetryPanel.css",
+      "declarations": {
+        "display": "flex",
+        "justify-content": "space-between",
+        "align-items": "center",
+        "font-size": "11.5px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".symmetry-panel__number-input",
+      "file": "ui/panels/SymmetryPanel.css",
+      "declarations": {
+        "width": "60px",
+        "background": "var(--bg-panel-2)",
+        "border": "1px solid var(--border)",
+        "border-radius": "6px",
+        "color": "var(--text-primary)",
+        "padding": "3px 6px"
+      }
+    },
     {
       "selector": ".mono",
       "file": "ui/theme.css",
@@ -36,17 +119,5 @@
       }
     }
   ],
-  "inlineStyleBlocks": [
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 10 }}",
-    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
-    "{{ display: \"grid\", gridTemplateColumns: \"repeat(3, 1fr)\", gap: 6 }}",
-    "{{ justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: \"9px 4px\", fontSize: 10.5, fontWeight: 600 }}",
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 8, background: \"var(--bg-app)\", border: \"1px solid var(--border)\", borderRadius: \"var(--radius-md)\", padding: 10 }}",
-    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 11.5, color: \"var(--text-secondary)\" }}",
-    "{{ width: 60, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"3px 6px\" }}",
-    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 11.5, color: \"var(--text-secondary)\" }}",
-    "{{ width: 60, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"3px 6px\" }}",
-    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 11.5, color: \"var(--text-secondary)\" }}",
-    "{{ width: 60, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"3px 6px\" }}"
-  ]
+  "inlineStyleBlocks": []
 }

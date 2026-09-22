@@ -5,29 +5,25 @@ import { FONT_CATALOG, getFontCatalogEntry, type FontWeight } from "../../infras
 import { buildTextGeometry } from "../text/buildTextGeometry";
 import { useEditorState } from "../useEditorStore";
 import { SymmetryPanel } from "./SymmetryPanel";
+import "./SelectionPanel.css";
 
 function NumberField({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void }) {
   return (
-    <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
+    <label className="selection-panel__row">
       {label}
       <input
         type="number"
-        className="mono"
+        className="mono selection-panel__number-input"
         step={0.1}
         value={Number(value.toFixed(3))}
         onChange={(e) => onChange(Number(e.target.value))}
-        style={{ width: 80, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "4px 6px" }}
       />
     </label>
   );
 }
 
 function SummaryMessage({ text }: { text: string }) {
-  return (
-    <div style={{ color: "var(--text-secondary)", fontSize: 12, background: "var(--bg-app)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 12 }}>
-      {text}
-    </div>
-  );
+  return <div className="selection-panel__summary-message">{text}</div>;
 }
 
 // docs/specs/17-statistics.md — same Pins/Actual-gap/Perimeter figures the Statistics
@@ -44,14 +40,12 @@ function PinPathStatsBox({ pins, actualGapCm, perimeterCm }: { pins: number; act
   ];
 
   return (
-    <div style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 10, display: "flex", flexDirection: "column", gap: 8 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-        {t("selectionPanel.stats.title")}
-      </div>
+    <div className="selection-panel__stats-box">
+      <div className="selection-panel__section-title">{t("selectionPanel.stats.title")}</div>
       {rows.map(([label, value]) => (
-        <div key={label} className="mono" style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
-          <span style={{ color: "var(--text-secondary)" }}>{label}</span>
-          <span style={{ color: "var(--text-primary)" }}>{value}</span>
+        <div key={label} className="mono selection-panel__stats-row">
+          <span className="selection-panel__stats-label">{label}</span>
+          <span className="selection-panel__stats-value">{value}</span>
         </div>
       ))}
     </div>
@@ -90,11 +84,7 @@ export function SelectionPanel({ store }: { store: EditorStore }) {
   }
 
   if (state.selection.type !== "pinPaths") {
-    return (
-      <div style={{ color: "var(--text-tertiary)", fontSize: 12 }}>
-        {t("selectionPanel.emptyMessage")}
-      </div>
-    );
+    return <div className="selection-panel__empty-message">{t("selectionPanel.emptyMessage")}</div>;
   }
 
   if (state.selection.refs.length > 1) {
@@ -102,7 +92,7 @@ export function SelectionPanel({ store }: { store: EditorStore }) {
     const totalPerimeter = selectedPaths.reduce((sum, p) => sum + pinPathStatistics(p).perimeterCm, 0);
     const totalPins = selectedPaths.reduce((sum, p) => sum + p.pins.length, 0);
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <div className="selection-panel__multi-wrap">
         <SummaryMessage text={t("selectionPanel.multiPathsSelected", { count: state.selection.refs.length })} />
         <PinPathStatsBox pins={totalPins} perimeterCm={totalPerimeter} />
       </div>
@@ -131,11 +121,9 @@ export function SelectionPanel({ store }: { store: EditorStore }) {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-        {t("selectionPanel.title", { type: t(`selectionPanel.shapeTypes.${g.type}`) })}
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 8, background: "var(--bg-app)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 12 }}>
+    <div className="selection-panel">
+      <div className="selection-panel__section-title">{t("selectionPanel.title", { type: t(`selectionPanel.shapeTypes.${g.type}`) })}</div>
+      <div className="selection-panel__box">
         <NumberField
           label={t("selectionPanel.pinDistance")}
           value={selected.requestedSpacing}
@@ -197,23 +185,19 @@ export function SelectionPanel({ store }: { store: EditorStore }) {
         )}
         {g.type === "text" && (
           <>
-            <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
+            <label className="selection-panel__row">
               {f("text")}
               <input
                 ref={textInputRef}
                 type="text"
                 value={g.text}
                 onChange={(e) => setText({ text: e.target.value })}
-                style={{ width: 140, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "4px 6px", fontSize: 12 }}
+                className="selection-panel__text-input"
               />
             </label>
-            <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
+            <label className="selection-panel__row">
               {f("font")}
-              <select
-                value={g.fontId}
-                onChange={(e) => setText({ fontId: e.target.value })}
-                style={{ background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "4px 6px", fontSize: 12 }}
-              >
+              <select value={g.fontId} onChange={(e) => setText({ fontId: e.target.value })} className="selection-panel__select">
                 {FONT_CATALOG.map((font) => (
                   <option key={font.id} value={font.id}>
                     {font.family}
@@ -221,13 +205,9 @@ export function SelectionPanel({ store }: { store: EditorStore }) {
                 ))}
               </select>
             </label>
-            <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
+            <label className="selection-panel__row">
               {f("weight")}
-              <select
-                value={g.weight}
-                onChange={(e) => setText({ weight: e.target.value as FontWeight })}
-                style={{ background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "4px 6px", fontSize: 12 }}
-              >
+              <select value={g.weight} onChange={(e) => setText({ weight: e.target.value as FontWeight })} className="selection-panel__select">
                 {(getFontCatalogEntry(g.fontId)?.weights ?? ["regular"]).map((weight) => (
                   <option key={weight} value={weight}>
                     {t(`selectionPanel.weightOptions.${weight}`)}
@@ -235,7 +215,7 @@ export function SelectionPanel({ store }: { store: EditorStore }) {
                 ))}
               </select>
             </label>
-            <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
+            <label className="selection-panel__row">
               {f("italic")}
               <input
                 type="checkbox"
@@ -251,11 +231,7 @@ export function SelectionPanel({ store }: { store: EditorStore }) {
       </div>
       <SymmetryPanel store={store} />
       <PinPathStatsBox pins={stats.pins} actualGapCm={stats.actualSpacing} perimeterCm={stats.perimeterCm} />
-      <button
-        className="btn"
-        onClick={() => store.deletePinPath(layerId, pathId)}
-        style={{ borderRadius: "var(--radius-sm)", padding: 9, justifyContent: "center", fontSize: 12, fontWeight: 600, color: "var(--danger)", borderColor: "var(--danger-soft)" }}
-      >
+      <button className="btn selection-panel__delete-btn" onClick={() => store.deletePinPath(layerId, pathId)}>
         {t("selectionPanel.deletePinPath")}
       </button>
     </div>

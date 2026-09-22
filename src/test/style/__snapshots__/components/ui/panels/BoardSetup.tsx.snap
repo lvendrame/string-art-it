@@ -1,11 +1,169 @@
 {
   "file": "ui/panels/BoardSetup.tsx",
   "classes": [
+    "board-setup",
+    "board-setup__continue-btn",
+    "board-setup__field-input",
+    "board-setup__field-label",
+    "board-setup__header",
+    "board-setup__hypotenuse",
+    "board-setup__section",
+    "board-setup__section--wide-gap",
+    "board-setup__section-title",
+    "board-setup__shape-btn",
+    "board-setup__shape-grid",
+    "board-setup__title",
+    "board-setup__triangle-btn",
+    "board-setup__triangle-row",
     "btn",
     "btn-active",
     "mono"
   ],
   "cssRules": [
+    {
+      "selector": ".board-setup",
+      "file": "ui/panels/BoardSetup.css",
+      "declarations": {
+        "max-width": "420px",
+        "margin": "80px auto",
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "20px",
+        "padding": "24px",
+        "background": "var(--bg-panel)",
+        "border": "1px solid var(--border)",
+        "border-radius": "var(--radius-md)"
+      }
+    },
+    {
+      "selector": ".board-setup__header",
+      "file": "ui/panels/BoardSetup.css",
+      "declarations": {
+        "display": "flex",
+        "justify-content": "space-between",
+        "align-items": "center"
+      }
+    },
+    {
+      "selector": ".board-setup__title",
+      "file": "ui/panels/BoardSetup.css",
+      "declarations": {
+        "margin": "0",
+        "font-size": "18px"
+      }
+    },
+    {
+      "selector": ".board-setup__section",
+      "file": "ui/panels/BoardSetup.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "8px"
+      }
+    },
+    {
+      "selector": ".board-setup__section--wide-gap",
+      "file": "ui/panels/BoardSetup.css",
+      "declarations": {
+        "gap": "10px"
+      }
+    },
+    {
+      "selector": ".board-setup__section-title",
+      "file": "ui/panels/BoardSetup.css",
+      "declarations": {
+        "font-size": "11px",
+        "font-weight": "700",
+        "letter-spacing": "0.06em",
+        "color": "var(--text-tertiary)",
+        "text-transform": "uppercase"
+      }
+    },
+    {
+      "selector": ".board-setup__shape-grid",
+      "file": "ui/panels/BoardSetup.css",
+      "declarations": {
+        "display": "grid",
+        "grid-template-columns": "repeat(3, 1fr)",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".board-setup__shape-btn",
+      "file": "ui/panels/BoardSetup.css",
+      "declarations": {
+        "justify-content": "center",
+        "border-radius": "var(--radius-sm)",
+        "padding": "10px 4px",
+        "font-size": "12px",
+        "font-weight": "600"
+      }
+    },
+    {
+      "selector": ".board-setup__triangle-row",
+      "file": "ui/panels/BoardSetup.css",
+      "declarations": {
+        "display": "flex",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".board-setup__triangle-btn",
+      "file": "ui/panels/BoardSetup.css",
+      "declarations": {
+        "flex": "1",
+        "justify-content": "center",
+        "border-radius": "var(--radius-sm)",
+        "padding": "9px",
+        "font-size": "12px",
+        "font-weight": "600"
+      }
+    },
+    {
+      "selector": ".board-setup__hypotenuse",
+      "file": "ui/panels/BoardSetup.css",
+      "declarations": {
+        "font-size": "12px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".board-setup__field-label",
+      "file": "ui/panels/BoardSetup.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "4px",
+        "font-size": "12px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".board-setup__field-input",
+      "file": "ui/panels/BoardSetup.css",
+      "declarations": {
+        "background": "var(--bg-app)",
+        "border": "1px solid var(--border)",
+        "border-radius": "var(--radius-sm)",
+        "color": "var(--text-primary)",
+        "padding": "6px 8px",
+        "font-size": "13px"
+      }
+    },
+    {
+      "selector": ".btn.board-setup__continue-btn",
+      "file": "ui/panels/BoardSetup.css",
+      "declarations": {
+        "justify-content": "center",
+        "border-radius": "var(--radius-sm)",
+        "padding": "10px",
+        "font-size": "13px",
+        "font-weight": "700",
+        "background": "var(--accent-strong)",
+        "color": "white",
+        "border-color": "transparent"
+      }
+    },
     {
       "selector": ".mono",
       "file": "ui/theme.css",
@@ -36,21 +194,5 @@
       }
     }
   ],
-  "inlineStyleBlocks": [
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 4, fontSize: 12, color: \"var(--text-secondary)\" }}",
-    "{{\n          background: \"var(--bg-app)\",\n          border: \"1px solid var(--border)\",\n          borderRadius: \"var(--radius-sm)\",\n          color: \"var(--text-primary)\",\n          padding: \"6px 8px\",\n          fontSize: 13,\n        }}",
-    "{{ fontSize: 12, color: \"var(--text-secondary)\" }}",
-    "{{\n        maxWidth: 420,\n        margin: \"80px auto\",\n        display: \"flex\",\n        flexDirection: \"column\",\n        gap: 20,\n        padding: 24,\n        background: \"var(--bg-panel)\",\n        border: \"1px solid var(--border)\",\n        borderRadius: \"var(--radius-md)\",\n      }}",
-    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\" }}",
-    "{{ margin: 0, fontSize: 18 }}",
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 8 }}",
-    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
-    "{{ display: \"grid\", gridTemplateColumns: \"repeat(3, 1fr)\", gap: 6 }}",
-    "{{ justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: \"10px 4px\", fontSize: 12, fontWeight: 600 }}",
-    "{{ display: \"flex\", gap: 6 }}",
-    "{{ flex: 1, justifyContent: \"center\", borderRadius: \"var(--radius-sm)\", padding: 9, fontSize: 12, fontWeight: 600 }}",
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 10 }}",
-    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
-    "{{\n          justifyContent: \"center\",\n          borderRadius: \"var(--radius-sm)\",\n          padding: 10,\n          fontSize: 13,\n          fontWeight: 700,\n          background: \"var(--accent-strong)\",\n          color: \"white\",\n          borderColor: \"transparent\",\n        }}"
-  ]
+  "inlineStyleBlocks": []
 }

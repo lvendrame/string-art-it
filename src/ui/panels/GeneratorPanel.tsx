@@ -1,13 +1,11 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GENERATOR_PATTERNS, maxGeneratorColours, type AssymetryLayerParams, type EditorStore, type FreestyleCircleParams, type GeneratorParams, type GeneratorPatternId } from "../../application/document";
 import { GeneratorToolbar } from "../toolbars/GeneratorToolbar";
 import { useEditorState } from "../useEditorStore";
 import { CheckboxField } from "./fields/CheckboxField";
 import { SliderField } from "./fields/SliderField";
-
-const FIELD_LABEL_STYLE: CSSProperties = { display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 11.5, color: "var(--text-secondary)" };
-const FIELD_INPUT_STYLE: CSSProperties = { width: 60, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "3px 6px" };
+import "./GeneratorPanel.css";
 
 // Same auto-pick palette precedent as ThreadPropertiesPanel.tsx's colour-count buttons
 // — a new swatch (the `+` button) is seeded from here rather than left blank/repeated.
@@ -23,9 +21,9 @@ function updateAssymetryLayer(layers: AssymetryLayerParams[], index: number, pat
 
 function SelectField({ label, value, options, onChange }: { label: string; value: string; options: { value: string; label: string }[]; onChange: (value: string) => void }) {
   return (
-    <label style={FIELD_LABEL_STYLE}>
+    <label className="generator-panel__select-label">
       {label}
-      <select value={value} onChange={(e) => onChange(e.target.value)} style={{ ...FIELD_INPUT_STYLE, width: "auto" }}>
+      <select value={value} onChange={(e) => onChange(e.target.value)} className="generator-panel__select-input">
         {options.map((o) => (
           <option key={o.value} value={o.value}>
             {o.label}
@@ -116,10 +114,10 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <div className="generator-panel">
       <GeneratorToolbar patternId={patternId} onChange={changePattern} />
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 8, background: "var(--bg-app)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 10 }}>
+      <div className="generator-panel__params-box">
         {params.patternId === "mandala" && (
           <>
             <SliderField label={t("generatorPanel.fields.n")} value={params.n} min={3} max={400} onChange={(v) => set("n", v)} />
@@ -143,7 +141,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
             <SliderField label={t("generatorPanel.fields.depth")} value={params.depth} min={1} max={40} onChange={(v) => set("depth", v)} />
             <SliderField label={t("generatorPanel.fields.layerAngle")} value={params.layerAngle} min={0.02} max={0.15} step={0.001} onChange={(v) => set("layerAngle", v)} />
             <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
-            <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, color: "var(--text-secondary)" }}>
+            <label className="generator-panel__toggle-label">
               <input
                 type="checkbox"
                 checked={params.mirrorTiling}
@@ -165,8 +163,8 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
 
         {params.patternId === "freestyle" &&
           params.circles.map((circle, i) => (
-            <div key={i} style={{ display: "flex", flexDirection: "column", gap: 6, paddingTop: i > 0 ? 8 : 0, borderTop: i > 0 ? "1px solid var(--border)" : undefined }}>
-              <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, color: "var(--text-secondary)", fontWeight: 600 }}>
+            <div key={i} className={`generator-panel__sub-item${i > 0 ? " generator-panel__sub-item--separated" : ""}`}>
+              <label className="generator-panel__toggle-label generator-panel__toggle-label--bold">
                 <input
                   type="checkbox"
                   checked={circle.enabled}
@@ -307,8 +305,8 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
             <SliderField label={t("generatorPanel.fields.circleNails")} value={params.circleNails} min={3} max={400} onChange={(v) => set("circleNails", v)} />
             <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
             {params.layers.map((layer, i) => (
-              <div key={i} style={{ display: "flex", flexDirection: "column", gap: 6, paddingTop: 8, borderTop: "1px solid var(--border)" }}>
-                <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, color: "var(--text-secondary)", fontWeight: 600 }}>
+              <div key={i} className="generator-panel__sub-item generator-panel__sub-item--separated">
+                <label className="generator-panel__toggle-label generator-panel__toggle-label--bold">
                   <input
                     type="checkbox"
                     checked={layer.enabled}
@@ -431,35 +429,29 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
         )}
       </div>
 
-      <fieldset
-        style={{ display: "flex", flexDirection: "column", gap: 8, margin: 0, background: "var(--bg-app)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 10 }}
-      >
-        <legend style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", padding: 0 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
-            {t("generatorPanel.coloursSectionTitle")}
-          </span>
-          <span style={{ display: "flex", gap: 6 }}>
+      <fieldset className="generator-panel__colours-fieldset">
+        <legend className="generator-panel__colours-legend">
+          <span className="generator-panel__section-title">{t("generatorPanel.coloursSectionTitle")}</span>
+          <span className="generator-panel__colour-actions">
             <button
-              className="btn"
+              className="btn generator-panel__colour-action-btn"
               aria-label={t("generatorPanel.addColour")}
               disabled={visibleColours.length >= maxColours}
               onClick={addColour}
-              style={{ width: 24, height: 24, padding: 0, justifyContent: "center", borderRadius: 5, fontSize: 14, fontWeight: 700 }}
             >
               +
             </button>
             <button
-              className="btn"
+              className="btn generator-panel__colour-action-btn"
               aria-label={t("generatorPanel.removeColour")}
               disabled={visibleColours.length <= 1}
               onClick={removeColour}
-              style={{ width: 24, height: 24, padding: 0, justifyContent: "center", borderRadius: 5, fontSize: 14, fontWeight: 700 }}
             >
               −
             </button>
           </span>
         </legend>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+        <div className="generator-panel__swatches">
           {visibleColours.map((c, i) => (
             <input
               key={i}
@@ -467,13 +459,11 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
               aria-label={t("generatorPanel.colourN", { n: i + 1 })}
               value={c}
               onChange={(e) => setColourAt(i, e.target.value)}
-              style={{ width: 24, height: 24, border: "1px solid var(--border-strong)", borderRadius: 5, background: "none", padding: 0 }}
+              className="generator-panel__swatch"
             />
           ))}
         </div>
-        {maxColours > 1 && (
-          <div style={{ fontSize: 10.5, color: "var(--text-tertiary)" }}>{t("generatorPanel.coloursMax", { max: maxColours })}</div>
-        )}
+        {maxColours > 1 && <div className="generator-panel__colours-note">{t("generatorPanel.coloursMax", { max: maxColours })}</div>}
       </fieldset>
 
       {/* docs/specs/32-generator-mode.md — intentionally shared with Thread mode's own
@@ -489,20 +479,16 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
         onChange={(v) => store.setThreadProperty({ width: v })}
       />
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <div className="generator-panel__actions">
         {!draft && (
-          <button
-            className="btn btn-active"
-            style={{ width: "100%", justifyContent: "center", borderRadius: "var(--radius-sm)", padding: "9px 4px", fontSize: 12, fontWeight: 700 }}
-            onClick={handleGenerateClick}
-          >
+          <button className="btn btn-active generator-panel__action-btn" onClick={handleGenerateClick}>
             {t("generatorPanel.generate")}
           </button>
         )}
         {draft && (
           <>
-            <div style={{ fontSize: 10.5, color: "var(--text-tertiary)", textAlign: "center" }}>{t("generatorPanel.liveHint")}</div>
-            <button className="btn" style={{ width: "100%", justifyContent: "center", borderRadius: "var(--radius-sm)", padding: "9px 4px", fontSize: 12, fontWeight: 700 }} onClick={() => store.confirmGeneratedPattern()}>
+            <div className="generator-panel__live-hint">{t("generatorPanel.liveHint")}</div>
+            <button className="btn generator-panel__action-btn" onClick={() => store.confirmGeneratedPattern()}>
               {t("generatorPanel.confirm")}
             </button>
           </>

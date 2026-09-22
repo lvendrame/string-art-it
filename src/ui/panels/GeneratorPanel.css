@@ -1,0 +1,138 @@
+.generator-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.generator-panel__select-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+
+.generator-panel__select-input {
+  background: var(--bg-panel-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  padding: 3px 6px;
+}
+
+.generator-panel__params-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px;
+}
+
+.generator-panel__sub-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.generator-panel__sub-item--separated {
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.generator-panel__toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+
+.generator-panel__toggle-label--bold {
+  font-weight: 600;
+}
+
+.generator-panel__section-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.generator-panel__colours-fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px;
+}
+
+.generator-panel__colours-legend {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0;
+}
+
+.generator-panel__colour-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.generator-panel__colour-action-btn {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  justify-content: center;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.generator-panel__swatches {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.generator-panel__swatch {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: none;
+  padding: 0;
+}
+
+.generator-panel__colours-note {
+  font-size: 10.5px;
+  color: var(--text-tertiary);
+}
+
+.generator-panel__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.generator-panel__action-btn {
+  width: 100%;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  padding: 9px 4px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.generator-panel__live-hint {
+  font-size: 10.5px;
+  color: var(--text-tertiary);
+  text-align: center;
+}

@@ -1,9 +1,94 @@
 {
   "file": "ui/panels/PinPropertiesPanel.tsx",
   "classes": [
-    "mono"
+    "mono",
+    "pin-properties-panel",
+    "pin-properties-panel__actual-gap",
+    "pin-properties-panel__box",
+    "pin-properties-panel__color-input",
+    "pin-properties-panel__number-input",
+    "pin-properties-panel__row",
+    "pin-properties-panel__section-title"
   ],
   "cssRules": [
+    {
+      "selector": ".pin-properties-panel",
+      "file": "ui/panels/PinPropertiesPanel.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "10px"
+      }
+    },
+    {
+      "selector": ".pin-properties-panel__section-title",
+      "file": "ui/panels/PinPropertiesPanel.css",
+      "declarations": {
+        "font-size": "11px",
+        "font-weight": "700",
+        "letter-spacing": "0.06em",
+        "color": "var(--text-tertiary)",
+        "text-transform": "uppercase"
+      }
+    },
+    {
+      "selector": ".pin-properties-panel__box",
+      "file": "ui/panels/PinPropertiesPanel.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "8px",
+        "background": "var(--bg-app)",
+        "border": "1px solid var(--border)",
+        "border-radius": "var(--radius-md)",
+        "padding": "12px"
+      }
+    },
+    {
+      "selector": ".pin-properties-panel__row",
+      "file": "ui/panels/PinPropertiesPanel.css",
+      "declarations": {
+        "display": "flex",
+        "justify-content": "space-between",
+        "align-items": "center",
+        "font-size": "12px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".pin-properties-panel__actual-gap",
+      "file": "ui/panels/PinPropertiesPanel.css",
+      "declarations": {
+        "display": "flex",
+        "justify-content": "space-between",
+        "font-size": "12px",
+        "color": "var(--accent)"
+      }
+    },
+    {
+      "selector": ".pin-properties-panel__number-input",
+      "file": "ui/panels/PinPropertiesPanel.css",
+      "declarations": {
+        "width": "70px",
+        "background": "var(--bg-panel-2)",
+        "border": "1px solid var(--border)",
+        "border-radius": "6px",
+        "color": "var(--text-primary)",
+        "padding": "4px 6px"
+      }
+    },
+    {
+      "selector": ".pin-properties-panel__color-input",
+      "file": "ui/panels/PinPropertiesPanel.css",
+      "declarations": {
+        "width": "28px",
+        "height": "20px",
+        "border": "1px solid var(--border)",
+        "border-radius": "4px",
+        "background": "none",
+        "padding": "0"
+      }
+    },
     {
       "selector": ".mono",
       "file": "ui/theme.css",
@@ -12,17 +97,5 @@
       }
     }
   ],
-  "inlineStyleBlocks": [
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 10 }}",
-    "{{ fontSize: 11, fontWeight: 700, letterSpacing: \"0.06em\", color: \"var(--text-tertiary)\", textTransform: \"uppercase\" }}",
-    "{{ display: \"flex\", flexDirection: \"column\", gap: 8, background: \"var(--bg-app)\", border: \"1px solid var(--border)\", borderRadius: \"var(--radius-md)\", padding: 12 }}",
-    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 12, color: \"var(--text-secondary)\" }}",
-    "{{ width: 70, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"4px 6px\" }}",
-    "{{ display: \"flex\", justifyContent: \"space-between\", fontSize: 12, color: \"var(--accent)\" }}",
-    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 12, color: \"var(--text-secondary)\" }}",
-    "{{ width: 70, background: \"var(--bg-panel-2)\", border: \"1px solid var(--border)\", borderRadius: 6, color: \"var(--text-primary)\", padding: \"4px 6px\" }}",
-    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 12, color: \"var(--text-secondary)\" }}",
-    "{{ width: 28, height: 20, border: \"1px solid var(--border)\", borderRadius: 4, background: \"none\", padding: 0 }}",
-    "{{ display: \"flex\", justifyContent: \"space-between\", alignItems: \"center\", fontSize: 12, color: \"var(--text-secondary)\" }}"
-  ]
+  "inlineStyleBlocks": []
 }

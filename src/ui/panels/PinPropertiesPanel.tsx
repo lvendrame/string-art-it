@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { EditorStore } from "../../application/document";
 import { useEditorState } from "../useEditorStore";
+import "./PinPropertiesPanel.css";
 
 // docs/specs/11-existing-object-editing: with no Pin Path selected, edits change the
 // defaults for new objects; with one selected, edits change only that object. Both
@@ -14,51 +15,49 @@ export function PinPropertiesPanel({ store }: { store: EditorStore }) {
     : state.pinDefaults;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
+    <div className="pin-properties-panel">
+      <div className="pin-properties-panel__section-title">
         {selected ? t("pinPropertiesPanel.titleSelected") : t("pinPropertiesPanel.titleDefaults")}
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 8, background: "var(--bg-app)", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", padding: 12 }}>
-        <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
+      <div className="pin-properties-panel__box">
+        <label className="pin-properties-panel__row">
           {t("pinPropertiesPanel.spacing")}
           <input
             type="number"
-            className="mono"
+            className="mono pin-properties-panel__number-input"
             min={0.1}
             step={0.1}
             value={values.spacing}
             onChange={(e) => store.setPinProperty({ spacing: Number(e.target.value) })}
-            style={{ width: 70, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "4px 6px" }}
           />
         </label>
         {selected && (
-          <div className="mono" style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "var(--accent)" }}>
+          <div className="mono pin-properties-panel__actual-gap">
             <span>{t("pinPropertiesPanel.actualGap")}</span>
             <span>{selected.actualSpacing.toFixed(2)} cm</span>
           </div>
         )}
-        <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
+        <label className="pin-properties-panel__row">
           {t("pinPropertiesPanel.diameter")}
           <input
             type="number"
-            className="mono"
+            className="mono pin-properties-panel__number-input"
             min={0.1}
             step={0.1}
             value={values.diameter}
             onChange={(e) => store.setPinProperty({ diameter: Number(e.target.value) })}
-            style={{ width: 70, background: "var(--bg-panel-2)", border: "1px solid var(--border)", borderRadius: 6, color: "var(--text-primary)", padding: "4px 6px" }}
           />
         </label>
-        <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
+        <label className="pin-properties-panel__row">
           {t("pinPropertiesPanel.colour")}
           <input
             type="color"
             value={values.colour}
             onChange={(e) => store.setPinProperty({ colour: e.target.value })}
-            style={{ width: 28, height: 20, border: "1px solid var(--border)", borderRadius: 4, background: "none", padding: 0 }}
+            className="pin-properties-panel__color-input"
           />
         </label>
-        <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-secondary)" }}>
+        <label className="pin-properties-panel__row">
           {t("pinPropertiesPanel.guideVisible")}
           <input type="checkbox" checked={values.guideVisible} onChange={(e) => store.setPinProperty({ guideVisible: e.target.checked })} />
         </label>

@@ -88,6 +88,17 @@ describe("FileMenu", () => {
     await vi.waitFor(() => expect(store.getState().pinLayers[0].pinPaths).toHaveLength(1));
   });
 
+  it("changing the file input with no file selected does nothing", () => {
+    const store = new EditorStore();
+    const before = store.getState().pinLayers[0].pinPaths;
+    render(<FileMenu store={store} onNewProject={() => {}} />);
+
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(input, { target: { files: [] } });
+
+    expect(store.getState().pinLayers[0].pinPaths).toBe(before);
+  });
+
   it("Open shows an error for an invalid file instead of crashing", async () => {
     const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
     const badFile = new File(["not json"], "bad.json", { type: "application/json" });

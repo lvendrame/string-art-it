@@ -63,6 +63,7 @@ export class EllipticalArcSegment implements Segment {
       else hi = mid;
     }
     const segLen = table[hi] - table[lo];
+    /* v8 ignore next -- segLen can only be 0 for a fully-degenerate (zero-radius) ellipse, whose total length is also 0, which the `distance >= total` guard above already returns from */
     const t = segLen === 0 ? 0 : (distance - table[lo]) / segLen;
     const angle = this.angles[lo] + (this.angles[hi] - this.angles[lo]) * t;
     return this.pointAtAngle(angle);

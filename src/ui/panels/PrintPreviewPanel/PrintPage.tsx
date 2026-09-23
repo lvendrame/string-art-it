@@ -47,6 +47,7 @@ function pinLabelPosition(
   const ty = (next?.y ?? pin.y) - (prev?.y ?? pin.y);
   const tlen = Math.hypot(tx, ty);
   let nx: number, ny: number;
+  /* v8 ignore else -- tlen<=1e-6 needs a pin whose two path neighbours both coincide with it; distributePins never produces that from any real geometry */
   if (tlen > 1e-6) {
     nx = -ty / tlen;
     ny = tx / tlen;

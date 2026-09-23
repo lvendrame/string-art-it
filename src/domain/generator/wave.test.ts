@@ -32,6 +32,14 @@ describe("waveLayerSequences", () => {
     expect(layers[0].localIndices).toEqual([1, 4, 8, 2, 3, 12, 16, 4]);
   });
 
+  it("throws for a non-positive n", () => {
+    expect(() => waveLayerSequences(0, 3, 4, 20, 10)).toThrow("n must be positive");
+  });
+
+  it("throws for a non-positive layer count", () => {
+    expect(() => waveLayerSequences(100, 3, 0, 20, 10)).toThrow("layers must be positive");
+  });
+
   it("clamps layerFill to n", () => {
     const layers = waveLayerSequences(10, 3, 1, 999, 0);
     expect(layers[0].localIndices.length).toBeGreaterThan(0);

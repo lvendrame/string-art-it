@@ -62,6 +62,18 @@ describe("SelectToolbar", () => {
     expect(store.getState().pinLayers[0].pinPaths).toHaveLength(1); // combined into one
   });
 
+  it("clicking a tool button sets it as the active Select tool", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    const pathId = store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: 5 })!;
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
+    render(<SelectToolbar store={store} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Move" }));
+
+    expect(store.getState().selectTool).toBe("move");
+  });
+
   it("Move/Rotation/Scale tool buttons are disabled with no selection", () => {
     const store = new EditorStore();
     render(<SelectToolbar store={store} />);

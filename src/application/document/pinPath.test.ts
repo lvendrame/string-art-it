@@ -3,6 +3,7 @@ import {
   createPinPath,
   geometryCenter,
   geometryToContourPaths,
+  geometryToPath,
   recomputePinPath,
   rotateGeometry,
   scaleGeometry,
@@ -87,6 +88,27 @@ describe("createPinPath — closed path", () => {
         path.pins.some((p) => Math.abs(p.x - vertex.x) < 1e-9 && Math.abs(p.y - vertex.y) < 1e-9),
       ).toBe(true);
     }
+  });
+});
+
+describe("geometryToPath — shape kinds not exercised via createPinPath elsewhere", () => {
+  it("ellipse", () => {
+    const path = geometryToPath({ type: "ellipse", center: { x: 0, y: 0 }, radiusX: 10, radiusY: 5, rotation: 0 });
+    expect(path.segments.length).toBeGreaterThan(0);
+  });
+
+  it("square", () => {
+    const path = geometryToPath({ type: "square", position: { x: 0, y: 0 }, side: 4, rotation: 0 });
+    expect(path.segments).toHaveLength(4);
+  });
+
+  it("polygram", () => {
+    const path = geometryToPath({ type: "polygram", center: { x: 0, y: 0 }, radius: 10, points: 5, skip: 2, rotation: 0 });
+    expect(path.segments).toHaveLength(5);
+  });
+
+  it("throws for text geometry — use geometryToContourPaths instead", () => {
+    expect(() => geometryToPath(holeLetterGeometry())).toThrow('geometryToPath does not support "text" geometry');
   });
 });
 

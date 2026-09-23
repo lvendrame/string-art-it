@@ -42,6 +42,7 @@ export function computeNextPatternPinId(layers: PinLayer[], pinIds: string[]): s
   // group 0 (indices 0, 2, 4, ...), even positions are group 1 (indices 1, 3, 5, ...).
   const activeGroupParity = pinIds.length % 2; // next position = length+1; its parity-as-0/1 index
   const group = pinIds.filter((_, i) => i % 2 === activeGroupParity);
+  /* v8 ignore next -- unreachable: the pinIds.length>=4 guard above guarantees every parity-filtered half has at least 2 members */
   if (group.length < 2) return undefined;
 
   const secondLastId = group[group.length - 2];
@@ -56,10 +57,12 @@ export function computeNextPatternPinId(layers: PinLayer[], pinIds: string[]): s
   const step = lastNumber - secondLastNumber;
 
   const pinCount = lastPos.path.pins.length;
+  /* v8 ignore next -- unreachable: lastPos only resolves (real match or mirror match, which is itself sized 1:1 off path.pins) when path.pins is non-empty */
   if (pinCount === 0) return undefined;
 
   const nextNumber = wrap(lastNumber + step, pinCount);
   const nextPin = lastPos.path.pins[nextNumber - 1];
+  /* v8 ignore next -- unreachable: wrap() always returns a 1-based index within [1, pinCount], so this index is always in range */
   if (!nextPin) return undefined;
   // Stay within whichever physical instance `last` belongs to — a mirror copy keeps
   // extrapolating through that same copy, not back onto the source.

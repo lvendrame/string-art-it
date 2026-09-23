@@ -38,4 +38,18 @@ describe("CookieConsentBanner", () => {
     expect(window.gtag).toHaveBeenCalledWith("consent", "update", { analytics_storage: "denied" });
     expect(screen.queryByText(/we use cookies/i)).not.toBeInTheDocument();
   });
+
+  it("re-applies a previously accepted decision found on mount", () => {
+    document.cookie = `${COOKIE_NAME}=true`;
+    render(<CookieConsentBanner />);
+
+    expect(window.gtag).toHaveBeenCalledWith("consent", "update", { analytics_storage: "granted" });
+  });
+
+  it("re-applies a previously declined decision found on mount", () => {
+    document.cookie = `${COOKIE_NAME}=false`;
+    render(<CookieConsentBanner />);
+
+    expect(window.gtag).toHaveBeenCalledWith("consent", "update", { analytics_storage: "denied" });
+  });
 });

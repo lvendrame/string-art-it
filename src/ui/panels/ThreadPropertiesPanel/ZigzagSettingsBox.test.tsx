@@ -11,4 +11,20 @@ describe("ZigzagSettingsBox", () => {
     fireEvent.change(screen.getByLabelText("Step A"), { target: { value: "5" } });
     expect(store.getState().zigzagSettings.stepA).toBe(5);
   });
+
+  it("changing Step B writes through the store", () => {
+    const store = new EditorStore();
+    render(<ZigzagSettingsBox store={store} settings={store.getState().zigzagSettings} />);
+
+    fireEvent.change(screen.getByLabelText("Step B"), { target: { value: "3" } });
+    expect(store.getState().zigzagSettings.stepB).toBe(3);
+  });
+
+  it("toggling Full Fill writes through the store", () => {
+    const store = new EditorStore();
+    render(<ZigzagSettingsBox store={store} settings={store.getState().zigzagSettings} />);
+
+    fireEvent.click(screen.getByLabelText("Full-fill"));
+    expect(store.getState().zigzagSettings.fullFill).toBe(true);
+  });
 });

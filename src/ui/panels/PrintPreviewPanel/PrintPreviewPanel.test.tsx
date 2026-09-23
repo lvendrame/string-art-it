@@ -24,6 +24,25 @@ describe("PrintPreviewPanel", () => {
     expect(store.getState().printSettings.scale.mode).toBe("custom");
   });
 
+  it("changing the custom ratio input updates settings", () => {
+    const store = new EditorStore();
+    render(<PrintPreviewPanel store={store} onClose={() => {}} />);
+    fireEvent.click(screen.getByLabelText("Custom scale"));
+
+    fireEvent.change(screen.getByDisplayValue(String(store.getState().printSettings.scale.customRatio)), { target: { value: "0.5" } });
+
+    expect(store.getState().printSettings.scale.customRatio).toBe(0.5);
+  });
+
+  it("changing paper orientation updates settings", () => {
+    const store = new EditorStore();
+    render(<PrintPreviewPanel store={store} onClose={() => {}} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "landscape" }));
+
+    expect(store.getState().printSettings.paper.orientation).toBe("landscape");
+  });
+
   it("changing paper size updates settings", () => {
     const store = new EditorStore();
     render(<PrintPreviewPanel store={store} onClose={() => {}} />);
@@ -62,6 +81,48 @@ describe("PrintPreviewPanel", () => {
     expect(store.getState().printSettings.tiling.enabled).toBe(true);
     expect(screen.getByLabelText("Overlap (cm)")).toBeInTheDocument();
     expect(screen.getByLabelText("Trim marks")).toBeInTheDocument();
+  });
+
+  it("changing the tiling overlap and toggling a marker checkbox updates settings", () => {
+    const store = new EditorStore();
+    render(<PrintPreviewPanel store={store} onClose={() => {}} />);
+    fireEvent.click(screen.getByLabelText("Enable tiling across multiple pages"));
+
+    fireEvent.change(screen.getByLabelText("Overlap (cm)"), { target: { value: "1.5" } });
+    expect(store.getState().printSettings.tiling.overlapCm).toBe(1.5);
+
+    const before = store.getState().printSettings.tiling.trimMarks;
+    fireEvent.click(screen.getByLabelText("Trim marks"));
+    expect(store.getState().printSettings.tiling.trimMarks).toBe(!before);
+  });
+
+  it("calibration Cancel exits calibration mode without applying anything", () => {
+    const store = new EditorStore();
+    const before = store.getState().printSettings.calibration.correctionFactor;
+    render(<PrintPreviewPanel store={store} onClose={() => {}} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Print calibration test" }));
+    expect(screen.getByLabelText("Measured (cm)")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+
+    expect(screen.queryByLabelText("Measured (cm)")).not.toBeInTheDocument();
+    expect(store.getState().printSettings.calibration.correctionFactor).toBe(before);
+  });
+
+  it("the calibration reference and main Print buttons invoke window.print", () => {
+    const store = new EditorStore();
+    const printSpy = vi.spyOn(window, "print").mockImplementation(() => {});
+    render(<PrintPreviewPanel store={store} onClose={() => {}} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Print" }));
+    expect(printSpy).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByRole("button", { name: "Print calibration test" }));
+    fireEvent.click(screen.getByRole("button", { name: "Print reference" }));
+    expect(printSpy).toHaveBeenCalledTimes(2);
+
+    printSpy.mockRestore();
   });
 
   it("prints mirrored (symmetry-generated) pins, and a Thread connecting to one", () => {

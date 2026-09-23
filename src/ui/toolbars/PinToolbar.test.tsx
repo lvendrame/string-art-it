@@ -23,4 +23,29 @@ describe("PinToolbar", () => {
     fireEvent.click(textButton);
     expect(textButton.className).toContain("btn-active");
   });
+
+  it("clicking Eraser and Path Eraser buttons sets the corresponding pin tool", () => {
+    const store = new EditorStore();
+    render(<PinToolbar store={store} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /^Eraser \[/ }));
+    expect(store.getState().pinTool).toBe("eraser");
+
+    fireEvent.click(screen.getByRole("button", { name: /^Path Eraser \[/ }));
+    expect(store.getState().pinTool).toBe("path-eraser");
+  });
+
+  it("choosing a polygon/star shape sets that pin tool and marks the picker active", () => {
+    const store = new EditorStore();
+    render(<PinToolbar store={store} />);
+    const select = screen.getByLabelText("Polygon / Star");
+    expect(select).toHaveValue("");
+    expect(select.closest("label")!.className).not.toContain("btn-active");
+
+    fireEvent.change(select, { target: { value: "hexagon" } });
+
+    expect(store.getState().pinTool).toBe("hexagon");
+    expect(select).toHaveValue("hexagon");
+    expect(select.closest("label")!.className).toContain("btn-active");
+  });
 });

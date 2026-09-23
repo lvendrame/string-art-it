@@ -70,6 +70,13 @@ describe("findPinPosition", () => {
     expect(findPinPosition(layers, "p3~mirror-0")).toBeUndefined();
   });
 
+  it("returns undefined for an id absent from a path that DOES have mirror groups", () => {
+    // Exercises the loop actually running (mirrorGroups.length > 0) and missing on
+    // every group's own findIndex, not just the no-symmetry short-circuit above.
+    const layers = makeLayer(5, "path-a", { type: "vertical", axis: { x: 0, y: 0 } });
+    expect(findPinPosition(layers, "not-a-real-id")).toBeUndefined();
+  });
+
   it("resolves a mirrored pin id to its source pin's index and a non-negative groupIndex", () => {
     const layers = makeLayer(5, "path-a", { type: "vertical", axis: { x: 0, y: 0 } });
     const found = findPinPosition(layers, mirroredPinId("p3", 0));
@@ -160,5 +167,11 @@ describe("computeNextPatternPinId", () => {
     const layers = makeLayer(20, "path-a", { type: "vertical", axis: { x: 0, y: 0 } });
     const pinIds = ["p3", "p15", mirroredPinId("p4", 0), "p16"];
     expect(computeNextPatternPinId(layers, pinIds)).toBe(mirroredPinId("p5", 0));
+  });
+
+  it("returns undefined when a referenced pin id no longer resolves (stale draft vertex)", () => {
+    const layers = makeLayer(20);
+    const pinIds = ["p3", "p15", "no-such-pin", "p16"];
+    expect(computeNextPatternPinId(layers, pinIds)).toBeUndefined();
   });
 });

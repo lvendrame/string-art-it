@@ -25,6 +25,22 @@ describe("AboutTabContent", () => {
     expect(send).toHaveAttribute("href", "#");
   });
 
+  it("submitting the form does not navigate", () => {
+    render(<AboutTabContent />);
+    const form = screen.getByRole("link", { name: /Send/i }).closest("form")!;
+    const event = new Event("submit", { bubbles: true, cancelable: true });
+    form.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(true);
+  });
+
+  it("clicking Send while disabled does not navigate", () => {
+    render(<AboutTabContent />);
+    const send = screen.getByRole("link", { name: /Send/i });
+    const event = new MouseEvent("click", { bubbles: true, cancelable: true });
+    send.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(true);
+  });
+
   it("Send builds a mailto link addressed to the author with the prefixed subject and the entered fields", () => {
     render(<AboutTabContent />);
     fireEvent.change(screen.getByLabelText("Name"), { target: { value: "Ana" } });

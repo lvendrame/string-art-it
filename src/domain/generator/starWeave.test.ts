@@ -27,6 +27,10 @@ describe("starSpokeCircleZigzag", () => {
     const spokeIndices = nodes.filter((n) => n.kind === "spoke").map((n) => (n as { index: number }).index);
     expect(spokeIndices.sort((a, b) => a - b)).toEqual(Array.from({ length: 9 }, (_, i) => i));
   });
+
+  it("throws when sideNails is less than 2", () => {
+    expect(() => starSpokeCircleZigzag(8, 1, 0, 1)).toThrow("sideNails must be at least 2");
+  });
 });
 
 describe("starAdjacentSpokeZigzag", () => {
@@ -42,5 +46,9 @@ describe("starAdjacentSpokeZigzag", () => {
     expect(nodes[1]).toEqual({ kind: "spoke", spoke: 2, index: 0 });
     expect(nodes[2]).toEqual({ kind: "spoke", spoke: 3, index: 22 });
     expect(nodes.at(-1)).toEqual({ kind: "spoke", spoke: 3, index: 0 });
+  });
+
+  it("throws when sideNails is less than 2", () => {
+    expect(() => starAdjacentSpokeZigzag(1, 2, 3)).toThrow("sideNails must be at least 2");
   });
 });

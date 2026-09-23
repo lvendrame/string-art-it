@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { rotatePoint, scalePoint, boundingBoxOf } from "./point";
+import { rotatePoint, scalePoint, boundingBoxOf, translatePoint } from "./point";
 import {
   toScreen,
   toDocument,
@@ -17,6 +17,12 @@ describe("rotatePoint", () => {
     const result = rotatePoint({ x: 1, y: 0 }, { x: 0, y: 0 }, Math.PI / 2);
     expect(result.x).toBeCloseTo(0, 6);
     expect(result.y).toBeCloseTo(1, 6);
+  });
+});
+
+describe("translatePoint", () => {
+  it("adds the delta to the point", () => {
+    expect(translatePoint({ x: 1, y: 2 }, { x: 3, y: -4 })).toEqual({ x: 4, y: -2 });
   });
 });
 
@@ -41,6 +47,10 @@ describe("boundingBoxOf", () => {
   it("computes the min/max envelope of a point set", () => {
     const box = boundingBoxOf([{ x: -2, y: 5 }, { x: 4, y: -1 }]);
     expect(box).toEqual({ minX: -2, minY: -1, maxX: 4, maxY: 5 });
+  });
+
+  it("returns a zeroed box for an empty point set", () => {
+    expect(boundingBoxOf([])).toEqual({ minX: 0, minY: 0, maxX: 0, maxY: 0 });
   });
 });
 

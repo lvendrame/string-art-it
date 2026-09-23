@@ -63,6 +63,22 @@ describe("getRadialMenuSliceIds", () => {
     expect(getRadialMenuSliceIds(state)).toEqual(["threadCut", "threadBack", "threadNext"]);
   });
 
+  it("Thread mode: Zig-zag/Parabolic draft with no candidates yet shows Back/Cancel only", () => {
+    const state = new EditorStore({
+      mode: "thread",
+      twoPinDraft: { tool: "zigzag", firstPinId: "1", candidates: [], chosenIndex: 0 },
+    }).getState();
+    expect(getRadialMenuSliceIds(state)).toEqual(["twoPinBack", "twoPinCancel"]);
+  });
+
+  it("Thread mode: Zig-zag/Parabolic draft with candidates adds Resolve", () => {
+    const state = new EditorStore({
+      mode: "thread",
+      twoPinDraft: { tool: "zigzag", firstPinId: "1", candidates: [["1", "2"]], chosenIndex: 0 },
+    }).getState();
+    expect(getRadialMenuSliceIds(state)).toEqual(["twoPinResolve", "twoPinBack", "twoPinCancel"]);
+  });
+
   it("Pan mode", () => {
     const state = new EditorStore({ mode: "pan" }).getState();
     expect(getRadialMenuSliceIds(state)).toEqual(["panFit", "panZoomIn", "panZoomOut"]);

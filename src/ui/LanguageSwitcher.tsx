@@ -24,6 +24,7 @@ export const LanguageSwitcher = forwardRef<LanguageSwitcherHandle>(function Lang
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  /* v8 ignore next -- i18next's fallbackLng already normalizes i18n.language to a supported code, so the else branch is unreachable through the public i18n API */
   const current: SupportedLanguage = isSupportedLanguage(i18n.language) ? i18n.language : "en";
 
   usePopoverDismiss(containerRef, open, () => setOpen(false));

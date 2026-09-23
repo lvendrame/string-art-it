@@ -76,6 +76,7 @@ export function migrateProjectFile(raw: unknown): ProjectFile {
 
   while (version < CURRENT_PROJECT_VERSION) {
     const step = MIGRATIONS[version];
+    /* v8 ignore else -- MIGRATIONS is empty until a v2 schema exists; the success path is unreachable until then */
     if (!step) throw new NoMigrationPathError(version);
     data = step(data);
     version += 1;

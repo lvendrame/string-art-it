@@ -70,6 +70,10 @@ describe("regularPolygonShape", () => {
     const side = 2 * radius * Math.sin(Math.PI / 8);
     expect(pathLength(path)).toBeCloseTo(8 * side, 6);
   });
+
+  it("rejects fewer than 3 sides", () => {
+    expect(() => regularPolygonShape({ x: 0, y: 0 }, 10, 2)).toThrow("a polygon needs at least 3 sides");
+  });
 });
 
 describe("starShape", () => {
@@ -77,6 +81,10 @@ describe("starShape", () => {
     const path = starShape({ x: 0, y: 0 }, 10, 4, 5);
     expect(path.segments).toHaveLength(10);
     expect(pathLength(path)).toBeGreaterThan(0);
+  });
+
+  it("rejects fewer than 3 points", () => {
+    expect(() => starShape({ x: 0, y: 0 }, 10, 4, 2)).toThrow("a star needs at least 3 points");
   });
 });
 

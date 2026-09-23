@@ -191,6 +191,7 @@ function buildTools(store: EditorStore): WebMcpTool[] {
         const layerId = args.layerId as string;
         if (isLayerLocked(store.getState().pinLayers, layerId)) return { success: false, reason: "layer_locked" };
         const pathId = store.addPinPath(layerId, args.geometry as PinPathGeometry);
+        /* v8 ignore next -- addPinPath only returns null when the layer is locked, already checked above */
         if (!pathId) return { success: false, reason: "layer_locked" };
         return { success: true, pathId };
       },

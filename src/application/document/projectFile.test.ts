@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { EditorStore } from "./EditorStore";
-import { migrateProjectFile, IncompatibleProjectVersionError, CURRENT_PROJECT_VERSION } from "./projectFile";
+import {
+  migrateProjectFile,
+  serializeProject,
+  createEmptyProject,
+  projectFileToDocument,
+  IncompatibleProjectVersionError,
+  InvalidProjectFileError,
+  NoMigrationPathError,
+  CURRENT_PROJECT_VERSION,
+} from "./projectFile";
 
 describe("EditorStore project save/load round-trip", () => {
   it("a full project round-trips losslessly through save/load", () => {
@@ -73,10 +82,53 @@ describe("migrateProjectFile", () => {
   });
 
   it("rejects a file with no version field", () => {
-    expect(() => migrateProjectFile({ board: {} })).toThrow();
+    expect(() => migrateProjectFile({ board: {} })).toThrow(InvalidProjectFileError);
+  });
+
+  it("rejects null, and non-object raw input", () => {
+    expect(() => migrateProjectFile(null)).toThrow(InvalidProjectFileError);
+    expect(() => migrateProjectFile("not a project")).toThrow(InvalidProjectFileError);
+    expect(() => migrateProjectFile(42)).toThrow(InvalidProjectFileError);
   });
 
   it("rejects a file newer than this app supports", () => {
     expect(() => migrateProjectFile({ version: 999 })).toThrow(IncompatibleProjectVersionError);
+    try {
+      migrateProjectFile({ version: 999 });
+    } catch (e) {
+      expect((e as IncompatibleProjectVersionError).foundVersion).toBe(999);
+    }
+  });
+
+  it("rejects a file older than any known migration path", () => {
+    expect(() => migrateProjectFile({ version: 0 })).toThrow(NoMigrationPathError);
+    try {
+      migrateProjectFile({ version: 0 });
+    } catch (e) {
+      expect((e as NoMigrationPathError).version).toBe(0);
+    }
+  });
+});
+
+describe("serializeProject / createEmptyProject / projectFileToDocument", () => {
+  it("serializeProject stamps the current version onto a document", () => {
+    const doc = createEmptyProject();
+    const file = serializeProject(doc);
+    expect(file.version).toBe(CURRENT_PROJECT_VERSION);
+    expect(file.board).toBe(doc.board);
+  });
+
+  it("createEmptyProject produces a default board, grid, and one layer of each kind", () => {
+    const doc = createEmptyProject();
+    expect(doc.board.shape).toBe("circle");
+    expect(doc.pinLayers).toHaveLength(1);
+    expect(doc.threadLayers).toHaveLength(1);
+  });
+
+  it("projectFileToDocument strips the version field back off", () => {
+    const file = serializeProject(createEmptyProject());
+    const doc = projectFileToDocument(file);
+    expect(doc).toEqual({ board: file.board, grid: file.grid, pinLayers: file.pinLayers, threadLayers: file.threadLayers });
+    expect((doc as { version?: number }).version).toBeUndefined();
   });
 });

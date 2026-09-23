@@ -25,5 +25,19 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
+    // svg2pdf.js's package.json "main" (used by Vitest's Node/SSR module resolution)
+    // points at its UMD build, which expects a pre-existing global `jsPDF` and throws
+    // on import under Vitest even though the real app never hits this — a normal
+    // `vite build` resolves the "browser" condition instead, landing on the ESM build
+    // that imports jsPDF properly. Test-only alias to the same ESM build Vite already
+    // picks in production, so `pdfExport.ts` can be imported/tested at all.
+    alias: [{ find: "svg2pdf.js", replacement: src("../node_modules/svg2pdf.js/dist/svg2pdf.es.min.js") }],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "html", "lcov"],
+      reportsDirectory: "./coverage",
+      include: ["src/**/*.{ts,tsx}"],
+      exclude: ["src/test/**", "src/**/*.d.ts", "src/main.tsx"],
+    },
   },
 });

@@ -18,6 +18,21 @@ describe("maxInscribedRadius", () => {
     expect(maxInscribedRadius({ shape: "oval", dimensions: { width: 60, height: 40 }, appearance: { type: "solid", colour: "#fff" } })).toBe(20);
     expect(maxInscribedRadius({ shape: "rectangle", dimensions: { width: 60, height: 40 }, appearance: { type: "solid", colour: "#fff" } })).toBe(20);
   });
+
+  it("returns half the side for a square board", () => {
+    expect(maxInscribedRadius({ shape: "square", dimensions: { side: 80 }, appearance: { type: "solid", colour: "#fff" } })).toBe(40);
+  });
+
+  it("returns a third of the smaller of side/base and height for a triangle board", () => {
+    expect(maxInscribedRadius({ shape: "triangle", dimensions: { side: 60, height: 30 }, appearance: { type: "solid", colour: "#fff" } })).toBe(10);
+    expect(maxInscribedRadius({ shape: "triangle", dimensions: { base: 60, height: 30 }, appearance: { type: "solid", colour: "#fff" } })).toBe(10);
+  });
+
+  it("falls back to fixed defaults when a board's dimensions are missing", () => {
+    expect(maxInscribedRadius({ shape: "square", dimensions: {}, appearance: { type: "solid", colour: "#fff" } })).toBe(25);
+    expect(maxInscribedRadius({ shape: "rectangle", dimensions: {}, appearance: { type: "solid", colour: "#fff" } })).toBe(20);
+    expect(maxInscribedRadius({ shape: "triangle", dimensions: {}, appearance: { type: "solid", colour: "#fff" } })).toBe(10);
+  });
 });
 
 describe("buildGeneratorPattern — mandala", () => {
@@ -468,6 +483,92 @@ describe("maxGeneratorColours", () => {
     expect(maxGeneratorColours({ ...base, radialColor: false } satisfies GeneratorParams)).toBe(18);
     // sections=9, removed=round(0.5*6)=3, lastSection=9-1=8 => group count = 8-3 = 5
     expect(maxGeneratorColours({ ...base, radialColor: true } satisfies GeneratorParams)).toBe(5);
+  });
+
+  it("wave, vortex and comet cap at their own layers count", () => {
+    expect(maxGeneratorColours({ patternId: "wave", n: 180, base: 2, layers: 4, layerFill: 60, layerSpread: 15 } satisfies GeneratorParams)).toBe(4);
+    expect(maxGeneratorColours({ patternId: "vortex", sides: 4, nailsPerSide: 15, layers: 12, layerAngle: 0.05, rotation: 0 } satisfies GeneratorParams)).toBe(12);
+    expect(maxGeneratorColours({ patternId: "comet", n: 150, layers: 15, firstLayerSize: 70, layerDistance: 3, clusterStrength: 0.7, distortion: 0.38, rotation: 0 } satisfies GeneratorParams)).toBe(15);
+  });
+
+  it("hexagon-spades, dance-of-planets, spiral, maurer-rose and crosses cap at their own fixed counts", () => {
+    expect(maxGeneratorColours({ patternId: "hexagon-spades", depth: 8, layerAngle: 0.05, rotation: 0, mirrorTiling: false } satisfies GeneratorParams)).toBe(18);
+    expect(
+      maxGeneratorColours({
+        patternId: "dance-of-planets",
+        outerType: "circle",
+        outerNails: 100,
+        outerSides: 6,
+        innerType: "circle",
+        innerNails: 40,
+        innerSides: 6,
+        innerSizeRatio: 0.4,
+        rounds: 3,
+        reverse: false,
+        rotation: 0,
+      } satisfies GeneratorParams),
+    ).toBe(1);
+    expect(maxGeneratorColours({ patternId: "spiral", n: 180, repetition: 4, innerLength: 70, rotation: 0 } satisfies GeneratorParams)).toBe(1);
+    expect(maxGeneratorColours({ patternId: "maurer-rose", N: 7, maxSteps: 180, angleDegrees: 71, rotation: 0 } satisfies GeneratorParams)).toBe(1);
+    expect(maxGeneratorColours({ patternId: "crosses", nailsPerLine: 25, orientation: "vertical", gap: 0.27, sidesRotation: 0 } satisfies GeneratorParams)).toBe(10);
+  });
+
+  it("sun caps at 3*starPoints + layers", () => {
+    expect(
+      maxGeneratorColours({
+        patternId: "sun",
+        sideNails: 50,
+        starPoints: 16,
+        starOuterRatio: 1,
+        starInnerRatio: 0.15,
+        rotation: Math.PI,
+        layers: 4,
+        layerSpread: 0.1625,
+      } satisfies GeneratorParams),
+    ).toBe(52);
+  });
+
+  it("polygon caps at `sides`; flower caps at sides*layers", () => {
+    expect(maxGeneratorColours({ patternId: "polygon", sides: 6, nailsPerSide: 20, bezierStep: 2, rotation: 0 } satisfies GeneratorParams)).toBe(6);
+    expect(maxGeneratorColours({ patternId: "flower", sides: 6, nailsPerSide: 16, layers: 5, rotation: 0 } satisfies GeneratorParams)).toBe(30);
+  });
+
+  it("assymetry caps at the count of enabled layers, minimum 1", () => {
+    expect(
+      maxGeneratorColours({
+        patternId: "assymetry",
+        circleNails: 137,
+        layers: [
+          { enabled: true, start: 0.25, end: 1, reverse: false },
+          { enabled: true, start: 0.125, end: 0.888, reverse: false },
+          { enabled: false, start: 0, end: 0.826, reverse: true },
+        ],
+        rotation: 0,
+      } satisfies GeneratorParams),
+    ).toBe(2);
+    expect(
+      maxGeneratorColours({
+        patternId: "assymetry",
+        circleNails: 137,
+        layers: [{ enabled: false, start: 0.25, end: 1, reverse: false }],
+        rotation: 0,
+      } satisfies GeneratorParams),
+    ).toBe(1);
+  });
+
+  it("flower-of-life caps at 6*levels^2, plus 1 more if the outer ring is enabled", () => {
+    const base = { patternId: "flower-of-life" as const, levels: 3, density: 6, rotation: 0, ringNails: 144, ringBase: 2 };
+    expect(maxGeneratorColours({ ...base, ringEnabled: false } satisfies GeneratorParams)).toBe(54);
+    expect(maxGeneratorColours({ ...base, ringEnabled: true } satisfies GeneratorParams)).toBe(55);
+  });
+});
+
+describe("buildGeneratorPattern — empty thread-defaults palette", () => {
+  it("every pattern falls back to a default colour when threadDefaults.colours is empty", () => {
+    const emptyPaletteCtx: GeneratorBuildContext = { ...ctx, threadDefaults: { ...ctx.threadDefaults, colours: [] } };
+    for (const def of Object.values(GENERATOR_PATTERNS)) {
+      expect(() => buildGeneratorPattern(def.defaultParams, emptyPaletteCtx)).not.toThrow();
+    }
   });
 });
 

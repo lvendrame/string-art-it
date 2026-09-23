@@ -45,6 +45,11 @@ describe("generateRadialCopies", () => {
     }
   });
 
+  it("throws for a non-positive interval", () => {
+    expect(() => generateRadialCopies([{ x: 10, y: 0 }], { x: 0, y: 0 }, 0)).toThrow("radial interval must be positive");
+    expect(() => generateRadialCopies([{ x: 10, y: 0 }], { x: 0, y: 0 }, -10)).toThrow("radial interval must be positive");
+  });
+
   it("rotateAround rotates a point 90 degrees about an arbitrary centre", () => {
     const rotated = rotateAround({ x: 1, y: 0 }, { x: 0, y: 0 }, Math.PI / 2);
     expect(rotated.x).toBeCloseTo(0, 6);

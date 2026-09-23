@@ -31,6 +31,7 @@ export function mirrorCopies(
       return [h()];
     case "both":
       return [v(), h(), vh()];
+    /* v8 ignore next 2 -- MirrorMode is an exhaustive union; unreachable through the typed public API */
     default:
       return [];
   }

@@ -24,6 +24,18 @@ describe("App autosave banner", () => {
     expect(screen.queryByText(/autosaved project was found/)).not.toBeInTheDocument();
   });
 
+  it("Restore loads the autosaved project and enters the editor", () => {
+    const seed = new EditorStore();
+    seed.addPinPath(seed.getState().pinLayers[0].id, { type: "circle", center: { x: 0, y: 0 }, radius: 5 });
+    saveAutosave(seed.toProjectFile());
+    render(<App />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Restore" }));
+
+    expect(screen.queryByText(/autosaved project was found/)).not.toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Board canvas" })).toBeInTheDocument();
+  });
+
   it("Discard clears the autosave and hides the banner", () => {
     const seed = new EditorStore();
     saveAutosave(seed.toProjectFile());

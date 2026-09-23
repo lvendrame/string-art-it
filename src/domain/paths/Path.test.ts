@@ -45,4 +45,8 @@ describe("pointAtDistance across segment boundaries", () => {
     expect(points).toHaveLength(7);
     expect(points[4]).toEqual({ x: 10, y: 2 });
   });
+
+  it("a path with no segments returns the origin rather than throwing", () => {
+    expect(pointAtDistance({ closed: false, segments: [] }, 5)).toEqual({ x: 0, y: 0 });
+  });
 });

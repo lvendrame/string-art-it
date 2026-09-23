@@ -15,7 +15,9 @@ import "./HelpPanel.css";
 // with no extra effect needed.
 export function HelpPanel({ currentMode, onClose }: { currentMode: EditorMode; onClose: () => void }) {
   const { t } = useTranslation(["help", "common", "editorShell"]);
+  /* v8 ignore next -- MODE_TO_HELP_TAB is a Record<EditorMode, HelpTabId>, so TS guarantees every mode maps to a tab; the ?? fallback can't be reached */
   const [activeTab, setActiveTab] = useState<HelpTabId>(() => MODE_TO_HELP_TAB[currentMode] ?? HELP_TABS[0].id);
+  /* v8 ignore next -- activeTab is always either the above (always a real tab id) or a tb.id from HELP_TABS.map below, so .find always succeeds */
   const tab = HELP_TABS.find((tb) => tb.id === activeTab) ?? HELP_TABS[0];
 
   return (
@@ -43,6 +45,7 @@ export function HelpPanel({ currentMode, onClose }: { currentMode: EditorMode; o
         {tab.Content ? (
           <tab.Content />
         ) : (
+          /* v8 ignore next -- every HELP_TABS entry without a Content component always defines sections; the ?? fallback is dead */
           (tab.sections ?? []).map((section, i) => <HelpSectionView key={section.headingKey ?? i} section={section} t={t} />)
         )}
       </div>

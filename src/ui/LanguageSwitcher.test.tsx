@@ -58,6 +58,51 @@ describe("LanguageSwitcher", () => {
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
 
+  it("ArrowDown/ArrowUp move focus between options, wrapping at each end", () => {
+    render(<LanguageSwitcher />);
+    fireEvent.click(screen.getByRole("button", { name: "Change language: English" }));
+
+    const listbox = screen.getByRole("listbox");
+    const options = screen.getAllByRole("option");
+
+    fireEvent.keyDown(listbox, { key: "ArrowDown" });
+    expect(options[0]).toHaveFocus();
+
+    options[0].focus();
+    fireEvent.keyDown(listbox, { key: "ArrowDown" });
+    expect(options[1]).toHaveFocus();
+
+    fireEvent.keyDown(listbox, { key: "ArrowUp" });
+    expect(options[0]).toHaveFocus();
+
+    fireEvent.keyDown(listbox, { key: "ArrowUp" });
+    expect(options[options.length - 1]).toHaveFocus();
+  });
+
+  it("ignores keys other than ArrowUp/ArrowDown in the menu", () => {
+    render(<LanguageSwitcher />);
+    fireEvent.click(screen.getByRole("button", { name: "Change language: English" }));
+
+    const listbox = screen.getByRole("listbox");
+    const options = screen.getAllByRole("option");
+    options[0].focus();
+
+    fireEvent.keyDown(listbox, { key: "Tab" });
+    expect(options[0]).toHaveFocus();
+  });
+
+  it("ArrowUp with no option focused wraps to the last option", () => {
+    render(<LanguageSwitcher />);
+    fireEvent.click(screen.getByRole("button", { name: "Change language: English" }));
+
+    const listbox = screen.getByRole("listbox");
+    const options = screen.getAllByRole("option");
+    (document.activeElement as HTMLElement | null)?.blur();
+
+    fireEvent.keyDown(listbox, { key: "ArrowUp" });
+    expect(options[options.length - 1]).toHaveFocus();
+  });
+
   it("openOrCycle opens the dropdown when closed, then cycles to the next language when open", async () => {
     const ref = createRef<LanguageSwitcherHandle>();
     render(<LanguageSwitcher ref={ref} />);

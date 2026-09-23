@@ -20,6 +20,29 @@ function updateAssymetryLayer(layers: AssymetryLayerParams[], index: number, pat
   return layers.map((l, i) => (i === index ? { ...l, ...patch } : l));
 }
 
+// Every per-pattern field's onChange goes through this: patch only applies if `p` (the
+// LATEST state, from setParams's functional-updater form) is still the same pattern
+// this field belongs to. `id` is always the pattern the field itself was rendered
+// under, and React flushes each onChange synchronously before the next one can fire, so
+// p.patternId can't actually have changed underneath it by the time this runs — the
+// guard exists only as the type-narrowing setParams needs to accept `patch`.
+/* v8 ignore next -- p.patternId always matches id, per the above; the mismatch path is unreachable through the UI */
+function patchParams<Id extends GeneratorPatternId>(p: GeneratorParams, id: Id, patch: Partial<Extract<GeneratorParams, { patternId: Id }>>): GeneratorParams {
+  return p.patternId === id ? ({ ...p, ...patch } as GeneratorParams) : p;
+}
+
+// Same unreachable-mismatch reasoning as patchParams, for the two patterns whose
+// per-item field update needs to read the existing array (p.circles/p.layers) first.
+/* v8 ignore next -- see patchParams */
+function patchFreestyleCircle(p: GeneratorParams, index: number, patch: Partial<FreestyleCircleParams>): GeneratorParams {
+  return p.patternId === "freestyle" ? { ...p, circles: updateFreestyleCircle(p.circles, index, patch) } : p;
+}
+
+/* v8 ignore next -- see patchParams */
+function patchAssymetryLayer(p: GeneratorParams, index: number, patch: Partial<AssymetryLayerParams>): GeneratorParams {
+  return p.patternId === "assymetry" ? { ...p, layers: updateAssymetryLayer(p.layers, index, patch) } : p;
+}
+
 // docs/specs/32-generator-mode.md — pattern/param SELECTION is local, ephemeral UI
 // state, not document state: it's discarded on Re-generate (a fresh draft replaces the
 // old one wholesale) and on leaving Generator mode entirely (EditorStore.setMode drops
@@ -131,7 +154,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
               <input
                 type="checkbox"
                 checked={params.mirrorTiling}
-                onChange={(e) => setParams((p) => (p.patternId === "star-of-david" ? { ...p, mirrorTiling: e.target.checked } : p))}
+                onChange={(e) => setParams((p) => patchParams(p, "star-of-david", { mirrorTiling: e.target.checked }))}
               />
               {t("generatorPanel.fields.mirrorTiling")}
             </label>
@@ -154,7 +177,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
                 <input
                   type="checkbox"
                   checked={circle.enabled}
-                  onChange={(e) => setParams((p) => (p.patternId === "freestyle" ? { ...p, circles: updateFreestyleCircle(p.circles, i, { enabled: e.target.checked }) } : p))}
+                  onChange={(e) => setParams((p) => patchFreestyleCircle(p, i, { enabled: e.target.checked }))}
                 />
                 {t("generatorPanel.fields.circleN", { n: i + 1 })}
               </label>
@@ -163,7 +186,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
                 value={circle.nails}
                 min={1}
                 max={300}
-                onChange={(v) => setParams((p) => (p.patternId === "freestyle" ? { ...p, circles: updateFreestyleCircle(p.circles, i, { nails: v }) } : p))}
+                onChange={(v) => setParams((p) => patchFreestyleCircle(p, i, { nails: v }))}
               />
               <SliderField
                 label={t("generatorPanel.fields.radiusRatio")}
@@ -171,7 +194,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
                 min={0.05}
                 max={1}
                 step={0.05}
-                onChange={(v) => setParams((p) => (p.patternId === "freestyle" ? { ...p, circles: updateFreestyleCircle(p.circles, i, { radiusRatio: v }) } : p))}
+                onChange={(v) => setParams((p) => patchFreestyleCircle(p, i, { radiusRatio: v }))}
               />
               <SliderField
                 label={t("generatorPanel.fields.centerXRatio")}
@@ -179,7 +202,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
                 min={-1}
                 max={1}
                 step={0.05}
-                onChange={(v) => setParams((p) => (p.patternId === "freestyle" ? { ...p, circles: updateFreestyleCircle(p.circles, i, { centerXRatio: v }) } : p))}
+                onChange={(v) => setParams((p) => patchFreestyleCircle(p, i, { centerXRatio: v }))}
               />
               <SliderField
                 label={t("generatorPanel.fields.centerYRatio")}
@@ -187,7 +210,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
                 min={-1}
                 max={1}
                 step={0.05}
-                onChange={(v) => setParams((p) => (p.patternId === "freestyle" ? { ...p, circles: updateFreestyleCircle(p.circles, i, { centerYRatio: v }) } : p))}
+                onChange={(v) => setParams((p) => patchFreestyleCircle(p, i, { centerYRatio: v }))}
               />
             </div>
           ))}
@@ -210,7 +233,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
             <CheckboxField
               label={t("generatorPanel.fields.mirrorTiling")}
               checked={params.mirrorTiling}
-              onChange={(v) => setParams((p) => (p.patternId === "hexagon-spades" ? { ...p, mirrorTiling: v } : p))}
+              onChange={(v) => setParams((p) => patchParams(p, "hexagon-spades", { mirrorTiling: v }))}
             />
           </>
         )}
@@ -224,7 +247,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
                 { value: "circle", label: t("generatorPanel.fields.shapeCircle") },
                 { value: "polygon", label: t("generatorPanel.fields.shapePolygon") },
               ]}
-              onChange={(v) => setParams((p) => (p.patternId === "dance-of-planets" ? { ...p, outerType: v as "circle" | "polygon" } : p))}
+              onChange={(v) => setParams((p) => patchParams(p, "dance-of-planets", { outerType: v as "circle" | "polygon" }))}
             />
             <SliderField label={t("generatorPanel.fields.outerNails")} value={params.outerNails} min={3} max={400} onChange={(v) => set("outerNails", v)} />
             {params.outerType === "polygon" && <SliderField label={t("generatorPanel.fields.outerSides")} value={params.outerSides} min={3} max={20} onChange={(v) => set("outerSides", v)} />}
@@ -235,13 +258,13 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
                 { value: "circle", label: t("generatorPanel.fields.shapeCircle") },
                 { value: "polygon", label: t("generatorPanel.fields.shapePolygon") },
               ]}
-              onChange={(v) => setParams((p) => (p.patternId === "dance-of-planets" ? { ...p, innerType: v as "circle" | "polygon" } : p))}
+              onChange={(v) => setParams((p) => patchParams(p, "dance-of-planets", { innerType: v as "circle" | "polygon" }))}
             />
             <SliderField label={t("generatorPanel.fields.innerNails")} value={params.innerNails} min={3} max={400} onChange={(v) => set("innerNails", v)} />
             {params.innerType === "polygon" && <SliderField label={t("generatorPanel.fields.innerSides")} value={params.innerSides} min={3} max={20} onChange={(v) => set("innerSides", v)} />}
             <SliderField label={t("generatorPanel.fields.innerSizeRatio")} value={params.innerSizeRatio} min={0.05} max={0.95} step={0.05} onChange={(v) => set("innerSizeRatio", v)} />
             <SliderField label={t("generatorPanel.fields.rounds")} value={params.rounds} min={1} max={20} onChange={(v) => set("rounds", v)} />
-            <CheckboxField label={t("generatorPanel.fields.reverse")} checked={params.reverse} onChange={(v) => setParams((p) => (p.patternId === "dance-of-planets" ? { ...p, reverse: v } : p))} />
+            <CheckboxField label={t("generatorPanel.fields.reverse")} checked={params.reverse} onChange={(v) => setParams((p) => patchParams(p, "dance-of-planets", { reverse: v }))} />
             <SliderField label={t("generatorPanel.fields.rotation")} value={params.rotation} min={-3.15} max={3.15} step={0.05} onChange={(v) => set("rotation", v)} />
           </>
         )}
@@ -296,7 +319,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
                   <input
                     type="checkbox"
                     checked={layer.enabled}
-                    onChange={(e) => setParams((p) => (p.patternId === "assymetry" ? { ...p, layers: updateAssymetryLayer(p.layers, i, { enabled: e.target.checked }) } : p))}
+                    onChange={(e) => setParams((p) => patchAssymetryLayer(p, i, { enabled: e.target.checked }))}
                   />
                   {t("generatorPanel.fields.layerN", { n: i + 1 })}
                 </label>
@@ -306,7 +329,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
                   min={0}
                   max={1}
                   step={0.005}
-                  onChange={(v) => setParams((p) => (p.patternId === "assymetry" ? { ...p, layers: updateAssymetryLayer(p.layers, i, { start: v }) } : p))}
+                  onChange={(v) => setParams((p) => patchAssymetryLayer(p, i, { start: v }))}
                 />
                 <SliderField
                   label={t("generatorPanel.fields.endFraction")}
@@ -314,12 +337,12 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
                   min={0}
                   max={1}
                   step={0.005}
-                  onChange={(v) => setParams((p) => (p.patternId === "assymetry" ? { ...p, layers: updateAssymetryLayer(p.layers, i, { end: v }) } : p))}
+                  onChange={(v) => setParams((p) => patchAssymetryLayer(p, i, { end: v }))}
                 />
                 <CheckboxField
                   label={t("generatorPanel.fields.reverse")}
                   checked={layer.reverse}
-                  onChange={(v) => setParams((p) => (p.patternId === "assymetry" ? { ...p, layers: updateAssymetryLayer(p.layers, i, { reverse: v }) } : p))}
+                  onChange={(v) => setParams((p) => patchAssymetryLayer(p, i, { reverse: v }))}
                 />
               </div>
             ))}
@@ -364,7 +387,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
             <CheckboxField
               label={t("generatorPanel.fields.ringEnabled")}
               checked={params.ringEnabled}
-              onChange={(v) => setParams((p) => (p.patternId === "flower-of-life" ? { ...p, ringEnabled: v } : p))}
+              onChange={(v) => setParams((p) => patchParams(p, "flower-of-life", { ringEnabled: v }))}
             />
             {params.ringEnabled && (
               <>
@@ -385,7 +408,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
                 { value: "vertical", label: t("generatorPanel.fields.orientationVertical") },
                 { value: "horizontal", label: t("generatorPanel.fields.orientationHorizontal") },
               ]}
-              onChange={(v) => setParams((p) => (p.patternId === "crosses" ? { ...p, orientation: v as "vertical" | "horizontal" } : p))}
+              onChange={(v) => setParams((p) => patchParams(p, "crosses", { orientation: v as "vertical" | "horizontal" }))}
             />
             <SliderField label={t("generatorPanel.fields.gap")} value={params.gap} min={0} max={1} step={0.01} onChange={(v) => set("gap", v)} />
             <SliderField label={t("generatorPanel.fields.sidesRotation")} value={params.sidesRotation} min={-1.57} max={1.57} step={0.02} onChange={(v) => set("sidesRotation", v)} />
@@ -401,7 +424,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
             <CheckboxField
               label={t("generatorPanel.fields.renderCenter")}
               checked={params.renderCenter}
-              onChange={(v) => setParams((p) => (p.patternId === "lotus" ? { ...p, renderCenter: v } : p))}
+              onChange={(v) => setParams((p) => patchParams(p, "lotus", { renderCenter: v }))}
             />
             {params.renderCenter && (
               <SliderField label={t("generatorPanel.fields.centerRadius")} value={params.centerRadius} min={0} max={1} step={0.02} onChange={(v) => set("centerRadius", v)} />
@@ -409,7 +432,7 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
             <CheckboxField
               label={t("generatorPanel.fields.radialColor")}
               checked={params.radialColor}
-              onChange={(v) => setParams((p) => (p.patternId === "lotus" ? { ...p, radialColor: v } : p))}
+              onChange={(v) => setParams((p) => patchParams(p, "lotus", { radialColor: v }))}
             />
           </>
         )}

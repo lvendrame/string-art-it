@@ -77,6 +77,7 @@ export function useMoveTool(store: EditorStore, state: EditorState) {
       const updates = drag.paths
         .map((p) => {
           const path = findPinPath(drag.snapshot, p.layerId, p.pathId); // geometry untouched by preview, still original
+          /* v8 ignore next -- handleMouseDown only enters "paths" drag for refs already resolved against this same snapshot, so the lookup can't miss here */
           if (!path) return null;
           return {
             layerId: p.layerId,

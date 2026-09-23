@@ -103,4 +103,18 @@ describe("usePlaybackTransport", () => {
     expect(result.current.frame).toBe(0);
     expect(result.current.isPlaying).toBe(false);
   });
+
+  it("leaving Play mode (active flips false) doesn't reset the frame", () => {
+    const { result, rerender } = renderHook(({ active }) => usePlaybackTransport(5, active), { initialProps: { active: true } });
+    act(() => result.current.goToFrame(3));
+    expect(result.current.frame).toBe(3);
+    rerender({ active: false });
+    expect(result.current.frame).toBe(3);
+  });
+
+  it("play is a no-op when there are no frames to play", () => {
+    const { result } = renderHook(() => usePlaybackTransport(0, true));
+    act(() => result.current.play());
+    expect(result.current.isPlaying).toBe(false);
+  });
 });

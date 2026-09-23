@@ -289,6 +289,16 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
     expect(candidates[1].extraSequences).toBeUndefined();
   });
 
+  it("diametrically-opposite anchors on a closed path (forward arc length == backward arc length): only one candidate, no duplicate", () => {
+    const layers = makeLayer(8, true);
+    const withoutFullFill = computeSamePathCandidates(layers, "p1", "p5", "zigzag", { stepA: 0, stepB: 0, fullFill: false });
+    expect(withoutFullFill).toHaveLength(1);
+
+    const withFullFill = computeSamePathCandidates(layers, "p1", "p5", "zigzag", { stepA: 0, stepB: 0, fullFill: true });
+    expect(withFullFill).toHaveLength(1);
+    expect(withFullFill[0].extraSequences).toBeUndefined();
+  });
+
   it("Parabolic same-closed-path pair: full-fill is a single continuous constant-offset walk, NOT the two-arc shape", () => {
     // Confirmed against a real reported example (141-pin ring, pins 125 & 22): the
     // resulting sequence keeps the SAME (A,B) offset constant while both pins advance

@@ -71,6 +71,47 @@ describe("ThreadPropertiesPanel", () => {
     expect(store.getState().threadLayers[0].threadPaths[0].colours).toHaveLength(3);
   });
 
+  it("editing the second swatch changes only that colour", () => {
+    const store = new EditorStore();
+    const { threadLayerId, threadPathId } = seedThread(store);
+    store.select({ type: "threadPath", layerId: threadLayerId, pathId: threadPathId });
+    store.setThreadProperty({ colours: ["#111111", "#222222"] });
+
+    const { container } = render(<ThreadPropertiesPanel store={store} />);
+    const swatches = container.querySelectorAll('input[type="color"]');
+    fireEvent.change(swatches[1], { target: { value: "#333333" } });
+
+    expect(store.getState().threadLayers[0].threadPaths[0].colours).toEqual(["#111111", "#333333"]);
+  });
+
+  it("with 2+ colours, editing the twist pitch changes only the selected thread", () => {
+    const store = new EditorStore();
+    const { threadLayerId, threadPathId } = seedThread(store);
+    store.select({ type: "threadPath", layerId: threadLayerId, pathId: threadPathId });
+    store.setThreadProperty({ colours: ["#111111", "#222222"] });
+
+    render(<ThreadPropertiesPanel store={store} />);
+    fireEvent.change(screen.getByLabelText("Twist pitch"), { target: { value: "10" } });
+
+    expect(store.getState().threadLayers[0].threadPaths[0].twistPitch).toBe(10);
+  });
+
+  it("shows the Zig-zag settings box while the Zig-zag tool is active", () => {
+    const store = new EditorStore();
+    store.setMode("thread");
+    store.setThreadTool("zigzag");
+    render(<ThreadPropertiesPanel store={store} />);
+    expect(screen.getByText(/zig-?zag/i)).toBeInTheDocument();
+  });
+
+  it("shows the Parabolic settings box while the Parabolic tool is active", () => {
+    const store = new EditorStore();
+    store.setMode("thread");
+    store.setThreadTool("parabolic");
+    render(<ThreadPropertiesPanel store={store} />);
+    expect(screen.getByText(/parabolic/i)).toBeInTheDocument();
+  });
+
   it("only one set of colour/width fields is ever rendered (no duplication)", () => {
     const store = new EditorStore();
     const { threadLayerId, threadPathId } = seedThread(store);

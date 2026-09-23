@@ -74,6 +74,16 @@ describe("Canvas — keyboard transform: Move", () => {
     expect(store.getState().pinLayers[0].pinPaths[0]).toEqual(before);
   });
 
+  it("ArrowUp nudges in the negative y direction", () => {
+    const { store, pathId } = setup();
+    render(<Canvas store={store} />);
+
+    fireEvent.keyDown(window, { key: "ArrowUp" });
+
+    const moved = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathId)!;
+    expect(moved.geometry).toEqual({ type: "line", start: { x: 10, y: 9.75 }, end: { x: 30, y: 9.75 } });
+  });
+
   it("does nothing while Select tool (not Move) is active", () => {
     const { store, pathId, originalPath } = setup();
     store.setSelectTool("select");
@@ -253,6 +263,84 @@ describe("Canvas — keyboard transform: Scale", () => {
   });
 });
 
+describe("Canvas — keyboard transform: Pins granularity", () => {
+  function setup(selectTool: "move" | "rotate" | "scale") {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    const pathId = store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } })!;
+    const pins = store.getState().pinLayers[0].pinPaths[0].pins;
+    store.setMode("select");
+    store.setSelectTool(selectTool);
+    store.setSelectGranularity("pins");
+    store.select({ type: "pins", refs: [{ layerId, pathId, pinId: pins[0].id }] });
+    return { store, layerId, pathId, pins };
+  }
+
+  it("Move: ArrowRight nudges only the selected pin, as one undo step", () => {
+    const { store, pathId, pins } = setup("move");
+    render(<Canvas store={store} />);
+
+    fireEvent.keyDown(window, { key: "ArrowRight" });
+
+    const moved = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathId)!;
+    expect(moved.pins[0]).toMatchObject({ x: 10.25, y: 10 });
+    expect(moved.pins[1]).toMatchObject({ x: pins[1].x, y: pins[1].y });
+
+    store.undo();
+    expect(store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathId)!.pins[0]).toMatchObject({ x: pins[0].x, y: pins[0].y });
+  });
+
+  it("Rotate: ArrowUp/ArrowDown rotate only the selected pin about the selection's own centroid", () => {
+    const { store, pathId, pins } = setup("rotate");
+    render(<Canvas store={store} />);
+
+    fireEvent.keyDown(window, { key: "ArrowUp" });
+    fireEvent.keyDown(window, { key: "ArrowDown" });
+
+    const moved = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathId)!;
+    expect(moved.pins[0]).toEqual(pins[0]); // single-pin selection: its own centroid is itself, so rotation is a no-op on it
+    expect(moved.pins[1]).toEqual(pins[1]);
+  });
+
+  it("Scale: ArrowUp/ArrowDown scale only the selected pin about the selection's own centroid", () => {
+    const { store, pathId, pins } = setup("scale");
+    render(<Canvas store={store} />);
+
+    fireEvent.keyDown(window, { key: "ArrowUp" });
+    fireEvent.keyDown(window, { key: "ArrowDown" });
+
+    const moved = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathId)!;
+    expect(moved.pins[0]).toEqual(pins[0]); // single-pin selection: its own centroid is itself, so scaling is a no-op on it
+    expect(moved.pins[1]).toEqual(pins[1]);
+  });
+
+  it("does nothing while Select tool (not Move/Rotate/Scale) is active", () => {
+    const { store, pathId, pins } = setup("move");
+    store.setSelectTool("select");
+    render(<Canvas store={store} />);
+
+    fireEvent.keyDown(window, { key: "ArrowRight" });
+
+    expect(store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathId)!.pins[0]).toEqual(pins[0]);
+  });
+
+  it("with a Pins-granularity selection where the owning path no longer exists, the key is a no-op", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 10, y: 10 }, end: { x: 30, y: 10 } });
+    store.setMode("select");
+    store.setSelectTool("move");
+    store.setSelectGranularity("pins");
+    store.select({ type: "pins", refs: [{ layerId, pathId: "missing-path", pinId: "missing-pin" }] });
+    const before = store.getState().pinLayers[0].pinPaths[0];
+    render(<Canvas store={store} />);
+
+    fireEvent.keyDown(window, { key: "ArrowRight" });
+
+    expect(store.getState().pinLayers[0].pinPaths[0]).toEqual(before);
+  });
+});
+
 describe("Canvas — keyboard transform: hold-to-repeat", () => {
   function setup() {
     const store = new EditorStore();
@@ -321,6 +409,33 @@ describe("Canvas — keyboard transform: hold-to-repeat", () => {
 
     store.togglePinLayerLocked(layerId);
     vi.advanceTimersByTime(300); // would be 3 more ticks if still unlocked
+
+    expect(startX(store, pathId)).toBe(xAfterOneTick);
+  });
+
+  it("ignores non-arrow keys", () => {
+    const { store, pathId } = setup();
+    render(<Canvas store={store} />);
+
+    fireEvent.keyDown(window, { key: "a" });
+
+    const geometry = store.getState().pinLayers[0].pinPaths.find((p) => p.id === pathId)!.geometry;
+    if (geometry.type !== "line") throw new Error("expected line");
+    expect(geometry.start.x).toBe(10);
+  });
+
+  it("stops repeating (without erroring) if the selection is cleared mid-hold", () => {
+    vi.useFakeTimers();
+    const { store, pathId } = setup();
+    render(<Canvas store={store} />);
+
+    fireEvent.keyDown(window, { key: "ArrowRight" });
+    vi.advanceTimersByTime(500);
+    vi.advanceTimersByTime(100);
+    const xAfterOneTick = startX(store, pathId);
+
+    store.select({ type: "none" });
+    vi.advanceTimersByTime(300); // would be 3 more ticks if the gate still passed
 
     expect(startX(store, pathId)).toBe(xAfterOneTick);
   });

@@ -58,6 +58,16 @@ describe("combinePinPaths", () => {
     const collapsed = pins.find((p) => p.id === remap.get("a1"));
     expect(collapsed).toMatchObject({ x: 3, y: 3 });
   });
+
+  it("collapses three mutually-coincident pins into one (transitive union, no redundant re-union)", () => {
+    const a: PinPath = { ...createPinPath({ type: "line", start: { x: 0, y: 0 }, end: { x: 0, y: 0 } }, 1, STYLE), pins: [pin("a1", 3, 3)] };
+    const b: PinPath = { ...createPinPath({ type: "line", start: { x: 0, y: 0 }, end: { x: 0, y: 0 } }, 1, STYLE), pins: [pin("b1", 3, 3)] };
+    const c: PinPath = { ...createPinPath({ type: "line", start: { x: 0, y: 0 }, end: { x: 0, y: 0 } }, 1, STYLE), pins: [pin("c1", 3, 3)] };
+    const { pins, remap } = combinePinPaths([a, b, c]);
+    expect(pins).toHaveLength(1);
+    expect(remap.get("a1")).toBe(remap.get("b1"));
+    expect(remap.get("b1")).toBe(remap.get("c1"));
+  });
 });
 
 function layerWithPath(layerId: string, path: PinPath): PinLayer {
@@ -103,5 +113,41 @@ describe("resolveMergeDestinationPath", () => {
     // proving it isn't doing a lexicographic string comparison ("10" < "9" as strings)
     const dest = resolveMergeDestinationPath(layers, refs, { x: 5, y: 0 });
     expect(dest).toEqual({ layerId: "layer-2", pathId: "pinpath-9" });
+  });
+
+  it("full tie: the first candidate wins when its numeric id is already the lower one", () => {
+    const pathA: PinPath = { ...createPinPath({ type: "line", start: { x: 0, y: 0 }, end: { x: 0, y: 0 } }, 1, STYLE), id: "pinpath-2", pins: [pin("p1", 0, 0)] };
+    const pathB: PinPath = { ...createPinPath({ type: "line", start: { x: 0, y: 0 }, end: { x: 0, y: 0 } }, 1, STYLE), id: "pinpath-9", pins: [pin("q1", 10, 0)] };
+    const layers = [layerWithPath("layer-1", pathA), layerWithPath("layer-2", pathB)];
+    const refs = [
+      { layerId: "layer-1", pathId: "pinpath-2", pinId: "p1" },
+      { layerId: "layer-2", pathId: "pinpath-9", pinId: "q1" },
+    ];
+    const dest = resolveMergeDestinationPath(layers, refs, { x: 5, y: 0 });
+    expect(dest).toEqual({ layerId: "layer-1", pathId: "pinpath-2" });
+  });
+
+  it("ignores a ref whose pinId no longer exists on its path", () => {
+    const pathA: PinPath = { ...createPinPath({ type: "line", start: { x: 0, y: 0 }, end: { x: 0, y: 0 } }, 1, STYLE), id: "pinpath-1", pins: [pin("p1", 0, 0)] };
+    const pathB: PinPath = { ...createPinPath({ type: "line", start: { x: 0, y: 0 }, end: { x: 0, y: 0 } }, 1, STYLE), id: "pinpath-2", pins: [pin("q1", 10, 10)] };
+    const layers = [layerWithPath("layer-1", pathA), layerWithPath("layer-2", pathB)];
+    const refs = [
+      { layerId: "layer-1", pathId: "pinpath-1", pinId: "stale-pin-id" },
+      { layerId: "layer-2", pathId: "pinpath-2", pinId: "q1" },
+    ];
+    const dest = resolveMergeDestinationPath(layers, refs, { x: 10, y: 10 });
+    expect(dest).toEqual({ layerId: "layer-2", pathId: "pinpath-2" });
+  });
+
+  it("treats a Pin Path id with no numeric suffix as the lowest-priority candidate", () => {
+    const pathA: PinPath = { ...createPinPath({ type: "line", start: { x: 0, y: 0 }, end: { x: 0, y: 0 } }, 1, STYLE), id: "custom-path", pins: [pin("p1", 0, 0)] };
+    const pathB: PinPath = { ...createPinPath({ type: "line", start: { x: 0, y: 0 }, end: { x: 0, y: 0 } }, 1, STYLE), id: "pinpath-1", pins: [pin("q1", 10, 0)] };
+    const layers = [layerWithPath("layer-1", pathA), layerWithPath("layer-2", pathB)];
+    const refs = [
+      { layerId: "layer-1", pathId: "custom-path", pinId: "p1" },
+      { layerId: "layer-2", pathId: "pinpath-1", pinId: "q1" },
+    ];
+    const dest = resolveMergeDestinationPath(layers, refs, { x: 5, y: 0 });
+    expect(dest).toEqual({ layerId: "layer-2", pathId: "pinpath-1" });
   });
 });

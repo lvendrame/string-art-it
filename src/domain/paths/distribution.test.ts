@@ -50,6 +50,10 @@ describe("distributeOpenPath", () => {
     const points = distributeOpenPath(openLine(0.01), 0.001);
     expect(points).toHaveLength(11);
   });
+
+  it("rejects a non-positive spacing", () => {
+    expect(() => distributeOpenPath(openLine(8), 0)).toThrow("spacing must be positive");
+  });
 });
 
 describe("closestIntervalCount", () => {
@@ -117,6 +121,10 @@ describe("distributeClosedPath", () => {
     const result = distributeClosedPath(closedLoopOfPerimeter(5), 20);
     expect(result.n).toBe(1);
   });
+
+  it("rejects a non-positive spacing", () => {
+    expect(() => distributeClosedPath(closedLoopOfPerimeter(31), 0)).toThrow("spacing must be positive");
+  });
 });
 
 describe("distributePathPerVertex", () => {
@@ -159,5 +167,9 @@ describe("distributePathPerVertex", () => {
       const dist = Math.hypot(next.x - result.points[i].x, next.y - result.points[i].y);
       expect(dist).toBeCloseTo(spacing, 4);
     }
+  });
+
+  it("rejects a non-positive spacing", () => {
+    expect(() => distributePathPerVertex(regularHexagon(2), 0)).toThrow("spacing must be positive");
   });
 });

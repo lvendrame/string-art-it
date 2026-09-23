@@ -169,6 +169,176 @@ describe("registerWebMcpTools", () => {
     expect(store.getState().threadLayers[0].threadPaths).toHaveLength(0);
   });
 
+  it("set_board_shape sets shape and optional triangle type", () => {
+    const { registered } = installMockModelContext();
+    const store = new EditorStore();
+    registerWebMcpTools(store);
+
+    registered.get("set_board_shape")!.execute({ shape: "triangle", triangleType: "right-angled" });
+
+    expect(store.getState().board.shape).toBe("triangle");
+    expect(store.getState().board.triangleType).toBe("right-angled");
+  });
+
+  it("set_board_appearance sets a solid colour", () => {
+    const { registered } = installMockModelContext();
+    const store = new EditorStore();
+    registerWebMcpTools(store);
+
+    const result = registered.get("set_board_appearance")!.execute({ type: "solid", colour: "#ff0000" }) as {
+      board: { appearance: { type: string; colour: string } };
+    };
+
+    expect(store.getState().board.appearance).toEqual({ type: "solid", colour: "#ff0000" });
+    expect(result.board.appearance.colour).toBe("#ff0000");
+  });
+
+  it("add_pin_layer creates a layer and makes it active", () => {
+    const { registered } = installMockModelContext();
+    const store = new EditorStore();
+    registerWebMcpTools(store);
+
+    const result = registered.get("add_pin_layer")!.execute({}) as { layerId: string };
+
+    expect(store.getState().pinLayers).toHaveLength(2);
+    expect(store.getState().activePinLayerId).toBe(result.layerId);
+  });
+
+  it("set_active_pin_layer switches the active layer", () => {
+    const { registered } = installMockModelContext();
+    const store = new EditorStore();
+    store.addPinLayer();
+    const [firstId] = store.getState().pinLayers.map((l) => l.id);
+    registerWebMcpTools(store);
+
+    const result = registered.get("set_active_pin_layer")!.execute({ layerId: firstId }) as { activePinLayerId: string };
+
+    expect(result.activePinLayerId).toBe(firstId);
+    expect(store.getState().activePinLayerId).toBe(firstId);
+  });
+
+  it("toggle_pin_layer_visible and toggle_pin_layer_locked flip their flags", () => {
+    const { registered } = installMockModelContext();
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    registerWebMcpTools(store);
+
+    registered.get("toggle_pin_layer_visible")!.execute({ layerId });
+    expect(store.getState().pinLayers[0].visible).toBe(false);
+
+    registered.get("toggle_pin_layer_locked")!.execute({ layerId });
+    expect(store.getState().pinLayers[0].locked).toBe(true);
+  });
+
+  it("delete_pin_path removes the path", () => {
+    const { registered } = installMockModelContext();
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    const pathId = store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: 10 })!;
+    registerWebMcpTools(store);
+
+    const result = registered.get("delete_pin_path")!.execute({ layerId, pathId });
+
+    expect(result).toEqual({ success: true });
+    expect(store.getState().pinLayers[0].pinPaths).toHaveLength(0);
+  });
+
+  it("add_thread_layer creates a thread layer and makes it active", () => {
+    const { registered } = installMockModelContext();
+    const store = new EditorStore();
+    registerWebMcpTools(store);
+
+    const result = registered.get("add_thread_layer")!.execute({}) as { layerId: string };
+
+    expect(store.getState().threadLayers).toHaveLength(2);
+    expect(store.getState().activeThreadLayerId).toBe(result.layerId);
+  });
+
+  it("set_active_thread_layer switches the active thread layer", () => {
+    const { registered } = installMockModelContext();
+    const store = new EditorStore();
+    store.addThreadLayer();
+    const [firstId] = store.getState().threadLayers.map((l) => l.id);
+    registerWebMcpTools(store);
+
+    const result = registered.get("set_active_thread_layer")!.execute({ layerId: firstId }) as { activeThreadLayerId: string };
+
+    expect(result.activeThreadLayerId).toBe(firstId);
+  });
+
+  it("toggle_thread_layer_visible and toggle_thread_layer_locked flip their flags", () => {
+    const { registered } = installMockModelContext();
+    const store = new EditorStore();
+    const layerId = store.getState().threadLayers[0].id;
+    registerWebMcpTools(store);
+
+    registered.get("toggle_thread_layer_visible")!.execute({ layerId });
+    expect(store.getState().threadLayers[0].visible).toBe(false);
+
+    registered.get("toggle_thread_layer_locked")!.execute({ layerId });
+    expect(store.getState().threadLayers[0].locked).toBe(true);
+  });
+
+  it("add_thread_path fails structurally when the thread layer doesn't exist", () => {
+    const { registered } = installMockModelContext();
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 0, y: 0 }, end: { x: 8, y: 0 } });
+    const path = store.getState().pinLayers[0].pinPaths[0];
+    registerWebMcpTools(store);
+
+    const result = registered.get("add_thread_path")!.execute({ layerId: "does-not-exist", pinIds: [path.pins[0].id, path.pins[1].id] });
+
+    expect(result).toEqual({ success: false, reason: "not_created" });
+  });
+
+  it("add_thread_path fails structurally on a locked thread layer", () => {
+    const { registered } = installMockModelContext();
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 0, y: 0 }, end: { x: 8, y: 0 } });
+    const path = store.getState().pinLayers[0].pinPaths[0];
+    const threadLayerId = store.getState().threadLayers[0].id;
+    store.toggleThreadLayerLocked(threadLayerId);
+    registerWebMcpTools(store);
+
+    const result = registered.get("add_thread_path")!.execute({ layerId: threadLayerId, pinIds: [path.pins[0].id, path.pins[1].id] });
+
+    expect(result).toEqual({ success: false, reason: "layer_locked" });
+  });
+
+  it("add_thread_path fails structurally with fewer than 2 pins", () => {
+    const { registered } = installMockModelContext();
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 0, y: 0 }, end: { x: 8, y: 0 } });
+    const path = store.getState().pinLayers[0].pinPaths[0];
+    const threadLayerId = store.getState().threadLayers[0].id;
+    registerWebMcpTools(store);
+
+    const result = registered.get("add_thread_path")!.execute({ layerId: threadLayerId, pinIds: [path.pins[0].id] });
+
+    expect(result).toEqual({ success: false, reason: "too_few_pins" });
+  });
+
+  it("delete_thread_path removes the thread path", () => {
+    const { registered } = installMockModelContext();
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 0, y: 0 }, end: { x: 8, y: 0 } });
+    const pins = store.getState().pinLayers[0].pinPaths[0].pins;
+    const threadLayerId = store.getState().threadLayers[0].id;
+    store.extendThreadDraft(pins[0].id);
+    store.finishThreadDraftWithSegment(threadLayerId, pins[5].id);
+    const pathId = store.getState().threadLayers[0].threadPaths[0].id;
+    registerWebMcpTools(store);
+
+    const result = registered.get("delete_thread_path")!.execute({ layerId: threadLayerId, pathId });
+
+    expect(result).toEqual({ success: true });
+    expect(store.getState().threadLayers[0].threadPaths).toHaveLength(0);
+  });
+
   it("undo/redo report resulting history state", () => {
     const { registered } = installMockModelContext();
     const store = new EditorStore();

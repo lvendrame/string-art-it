@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { EditorStore } from "@application/document";
+import { EditorStore, GENERATOR_PATTERNS } from "@application/document";
 import { GeneratorPanel } from "./GeneratorPanel";
 
 // docs/specs/32-generator-mode.md
@@ -217,5 +217,47 @@ describe("GeneratorPanel", () => {
 
     expect(store.getState().generatorDraft?.threadPaths[0].width).toBe(4);
     vi.useRealTimers();
+  });
+
+  // Every pattern has its own field set (docs/specs/32-generator-mode.md), several with
+  // conditionally-shown sub-fields (dance-of-planets' outer/innerSides, flower-of-life's
+  // ring fields, lotus' centerRadius). One fresh render per pattern: flip every
+  // select/checkbox (revealing any conditional fields, exercising both branch outcomes
+  // for each toggle), then drag every range input (including any newly revealed ones)
+  // to its own max, then Generate — confirms the whole field set for that pattern
+  // renders and feeds a real draft without throwing.
+  describe("every pattern's field set renders, responds to input, and generates", () => {
+    for (const patternId of Object.keys(GENERATOR_PATTERNS) as (keyof typeof GENERATOR_PATTERNS)[]) {
+      it(`pattern: ${patternId}`, () => {
+        const store = new EditorStore();
+        const { container } = render(<GeneratorPanel store={store} />);
+        fireEvent.change(screen.getByRole("combobox", { name: "Pattern" }), { target: { value: patternId } });
+
+        const paramsBox = container.querySelector(".generator-panel__params-box")!;
+
+        // Flip every <select> to its non-default option, revealing any conditional
+        // fields that depend on it (e.g. dance-of-planets' outer/innerSides).
+        paramsBox.querySelectorAll("select").forEach((select) => {
+          const options = Array.from(select.querySelectorAll("option"));
+          const other = options.find((o) => o.value !== select.value) ?? options[0];
+          if (other) fireEvent.change(select, { target: { value: other.value } });
+        });
+
+        // Toggle every checkbox once, both revealing/hiding any conditional fields
+        // (flower-of-life's ring fields, lotus' centerRadius) and exercising the
+        // opposite of whatever its default was.
+        paramsBox.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+          fireEvent.click(checkbox);
+        });
+
+        // Drag every range input (including ones just revealed above) to its own max.
+        paramsBox.querySelectorAll('input[type="range"]').forEach((range) => {
+          fireEvent.change(range, { target: { value: (range as HTMLInputElement).max } });
+        });
+
+        expect(() => fireEvent.click(screen.getByRole("button", { name: "Generate" }))).not.toThrow();
+        expect(store.getState().generatorDraft).not.toBeNull();
+      });
+    }
   });
 });

@@ -141,6 +141,79 @@ describe("SelectionPanel", () => {
     expect(screen.getByText(/2 pins selected/)).toBeInTheDocument();
   });
 
+  // Every non-text shape's field group: exercising each shape's onChange call sites
+  // (the panel's per-shape ternary branches) in one data-driven pass.
+  describe.each<{ name: string; geometry: PinPathGeometry; fields: Record<string, string> }>([
+    {
+      name: "line",
+      geometry: { type: "line", start: { x: 0, y: 0 }, end: { x: 10, y: 10 } },
+      fields: { "Start X": "1", "Start Y": "2", "End X": "3", "End Y": "4" },
+    },
+    {
+      name: "circle",
+      geometry: { type: "circle", center: { x: 0, y: 0 }, radius: 5 },
+      fields: { "Centre X": "1", "Centre Y": "2", Radius: "8" },
+    },
+    {
+      name: "ellipse",
+      geometry: { type: "ellipse", center: { x: 0, y: 0 }, radiusX: 5, radiusY: 3, rotation: 0 },
+      fields: { "Centre X": "1", "Centre Y": "2", "Radius X": "6", "Radius Y": "7", "Rotation": "45" },
+    },
+    {
+      name: "rectangle",
+      geometry: { type: "rectangle", position: { x: 0, y: 0 }, width: 10, height: 5, rotation: 0 },
+      fields: { "Position X": "1", "Position Y": "2", Width: "12", Height: "6", "Rotation": "30" },
+    },
+    {
+      name: "square",
+      geometry: { type: "square", position: { x: 0, y: 0 }, side: 10, rotation: 0 },
+      fields: { "Position X": "1", "Position Y": "2", Side: "9", "Rotation": "15" },
+    },
+    {
+      name: "regular-polygon",
+      geometry: { type: "regular-polygon", center: { x: 0, y: 0 }, radius: 5, sides: 6, rotation: 0 },
+      fields: { "Centre X": "1", "Centre Y": "2", "Rotation": "20", Radius: "9" },
+    },
+    {
+      name: "star",
+      geometry: { type: "star", center: { x: 0, y: 0 }, outerRadius: 8, innerRadius: 3, points: 5, rotation: 0 },
+      fields: { "Centre X": "1", "Centre Y": "2", "Rotation": "20", "Outer radius": "9", "Inner radius": "4" },
+    },
+    {
+      name: "polygram",
+      geometry: { type: "polygram", center: { x: 0, y: 0 }, radius: 5, points: 7, skip: 2, rotation: 0 },
+      fields: { "Centre X": "1", "Centre Y": "2", "Rotation": "20", Radius: "9" },
+    },
+  ])("$name Pin Path", ({ geometry, fields }) => {
+    it("shows and edits every field for this shape", () => {
+      const store = new EditorStore();
+      const layerId = store.getState().pinLayers[0].id;
+      const pathId = store.addPinPath(layerId, geometry)!;
+      store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
+
+      render(<SelectionPanel store={store} />);
+
+      for (const [label, value] of Object.entries(fields)) {
+        fireEvent.change(screen.getByLabelText(label), { target: { value } });
+      }
+
+      const updated = store.getState().pinLayers[0].pinPaths[0].geometry;
+      expect(updated).not.toEqual(geometry);
+    });
+  });
+
+  it("editing Pin distance clamps to a minimum of 0.01", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    const pathId = store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: 5 })!;
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
+
+    render(<SelectionPanel store={store} />);
+    fireEvent.change(screen.getByLabelText("Pin distance"), { target: { value: "0" } });
+
+    expect(store.getState().pinLayers[0].pinPaths[0].requestedSpacing).toBe(0.01);
+  });
+
   // docs/specs/29-text-pin-path.md
   describe("text Pin Path", () => {
     it("shows the Font/Weight/Italic/Size/Letter spacing/Text field group", () => {
@@ -191,6 +264,52 @@ describe("SelectionPanel", () => {
         if (geometry.type !== "text") throw new Error("expected text geometry");
         expect(geometry.weight).toBe("bold");
         expect(geometry.text).toBe("Hi");
+      });
+    });
+
+    it("changing Font, Size, and Letter spacing all commit through the store", async () => {
+      const store = new EditorStore();
+      const layerId = store.getState().pinLayers[0].id;
+      const pathId = store.addPinPath(layerId, textGeometry())!;
+      store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
+
+      render(<SelectionPanel store={store} />);
+      fireEvent.change(screen.getByLabelText("Font"), { target: { value: "pacifico" } });
+
+      await vi.waitFor(() => {
+        const geometry = store.getState().pinLayers[0].pinPaths[0].geometry;
+        if (geometry.type !== "text") throw new Error("expected text geometry");
+        expect(geometry.fontId).toBe("pacifico");
+      });
+
+      fireEvent.change(screen.getByLabelText("Size (cm)"), { target: { value: "9" } });
+      await vi.waitFor(() => {
+        const geometry = store.getState().pinLayers[0].pinPaths[0].geometry;
+        if (geometry.type !== "text") throw new Error("expected text geometry");
+        expect(geometry.size).toBe(9);
+      });
+
+      fireEvent.change(screen.getByLabelText("Letter spacing (cm)"), { target: { value: "3" } });
+      await vi.waitFor(() => {
+        const geometry = store.getState().pinLayers[0].pinPaths[0].geometry;
+        if (geometry.type !== "text") throw new Error("expected text geometry");
+        expect(geometry.letterSpacing).toBe(3);
+      });
+    });
+
+    it("toggling Italic commits through the store", async () => {
+      const store = new EditorStore();
+      const layerId = store.getState().pinLayers[0].id;
+      const pathId = store.addPinPath(layerId, textGeometry())!;
+      store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
+
+      render(<SelectionPanel store={store} />);
+      fireEvent.click(screen.getByLabelText("Italic"));
+
+      await vi.waitFor(() => {
+        const geometry = store.getState().pinLayers[0].pinPaths[0].geometry;
+        if (geometry.type !== "text") throw new Error("expected text geometry");
+        expect(geometry.italic).toBe(true);
       });
     });
 

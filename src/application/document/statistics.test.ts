@@ -78,6 +78,19 @@ describe("threadPathStatistics", () => {
     expect(stats.lengthCm).toBeCloseTo(10, 6); // 0->5 (5cm) + 5->0 (5cm)
     expect(stats.colours).toEqual(["red", "white"]);
   });
+
+  it("skips a segment whose pin id no longer resolves (stale reference), without throwing", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.addPinPath(layerId, { type: "line", start: { x: 0, y: 0 }, end: { x: 8, y: 0 } });
+    const pins = store.getState().pinLayers[0].pinPaths[0].pins;
+
+    const thread = { id: "t1", pinIds: [pins[0].id, "missing-pin-id", pins[1].id], colours: ["red"], width: 1, twistPitch: 6 };
+    const stats = threadPathStatistics(thread, store.getState().pinLayers);
+
+    expect(stats.pinsVisited).toBe(3);
+    expect(stats.lengthCm).toBe(0); // neither segment has both endpoints resolvable
+  });
 });
 
 describe("projectThreadTotals", () => {

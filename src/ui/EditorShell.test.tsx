@@ -67,6 +67,10 @@ describe("EditorShell undo/redo shortcuts", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Undo" }));
     expect(store.getState().board.dimensions.diameter).not.toBe(90);
+
+    expect(screen.getByRole("button", { name: "Redo" })).not.toBeDisabled();
+    fireEvent.click(screen.getByRole("button", { name: "Redo" }));
+    expect(store.getState().board.dimensions.diameter).toBe(90);
   });
 });
 
@@ -157,5 +161,29 @@ describe("EditorShell Help overlay", () => {
     fireEvent.click(screen.getByRole("button", { name: "Help" }));
 
     expect(screen.getByRole("tablist", { name: "Help topics" })).toBeInTheDocument();
+  });
+});
+
+describe("EditorShell Stats and Print overlays", () => {
+  it("Stats button opens the Statistics overlay, closable via its Close button", () => {
+    const store = new EditorStore();
+    render(<EditorShell store={store} onNewProject={() => {}} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Stats" }));
+    expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Close" }));
+    expect(screen.queryByRole("button", { name: "Close" })).not.toBeInTheDocument();
+  });
+
+  it("Print button opens the Print Preview overlay, closable via its Close button", () => {
+    const store = new EditorStore();
+    render(<EditorShell store={store} onNewProject={() => {}} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Print" }));
+    expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Close" }));
+    expect(screen.queryByRole("button", { name: "Close" })).not.toBeInTheDocument();
   });
 });

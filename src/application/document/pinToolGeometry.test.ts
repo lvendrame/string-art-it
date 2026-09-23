@@ -42,6 +42,63 @@ describe("geometryFromDrag", () => {
     expect(geometryFromDrag("arc", { x: 0, y: 0 }, { x: 1, y: 1 }, false)).toBeNull();
     expect(geometryFromDrag("eraser", { x: 0, y: 0 }, { x: 1, y: 1 }, false)).toBeNull();
   });
+
+  it("square drag takes the larger of width/height for the side", () => {
+    const g = geometryFromDrag("square", { x: 0, y: 0 }, { x: 10, y: 4 }, false);
+    expect(g).toEqual({ type: "square", position: { x: 0, y: 0 }, side: 10, rotation: 0 });
+  });
+
+  it("a zero-size square drag clamps to the minimum size", () => {
+    const g = geometryFromDrag("square", { x: 5, y: 5 }, { x: 5, y: 5 }, false);
+    expect(g?.type).toBe("square");
+    if (g?.type === "square") expect(g.side).toBeGreaterThan(0);
+  });
+
+  it("a zero-size ellipse drag clamps radii to the minimum size", () => {
+    const g = geometryFromDrag("ellipse", { x: 5, y: 5 }, { x: 5, y: 5 }, false);
+    expect(g?.type).toBe("ellipse");
+    if (g?.type === "ellipse") {
+      expect(g.radiusX).toBeGreaterThan(0);
+      expect(g.radiusY).toBeGreaterThan(0);
+    }
+  });
+
+  it("a zero-size rectangle drag clamps dimensions to the minimum size", () => {
+    const g = geometryFromDrag("rectangle", { x: 5, y: 5 }, { x: 5, y: 5 }, false);
+    expect(g?.type).toBe("rectangle");
+    if (g?.type === "rectangle") {
+      expect(g.width).toBeGreaterThan(0);
+      expect(g.height).toBeGreaterThan(0);
+    }
+  });
+
+  it("pentagon/octagon drag from centre outward", () => {
+    expect(geometryFromDrag("pentagon", { x: 0, y: 0 }, { x: 10, y: 0 }, false)).toEqual({
+      type: "regular-polygon", center: { x: 0, y: 0 }, radius: 10, sides: 5, rotation: 0,
+    });
+    expect(geometryFromDrag("octagon", { x: 0, y: 0 }, { x: 10, y: 0 }, false)).toEqual({
+      type: "regular-polygon", center: { x: 0, y: 0 }, radius: 10, sides: 8, rotation: 0,
+    });
+  });
+
+  it("a zero-length drag clamps the radius to the minimum size", () => {
+    const g = geometryFromDrag("hexagon", { x: 5, y: 5 }, { x: 5, y: 5 }, false);
+    expect(g?.type).toBe("regular-polygon");
+    if (g?.type === "regular-polygon") expect(g.radius).toBeGreaterThan(0);
+  });
+
+  it("star-5/star-6/star-8 drag from centre with an inner radius half the outer", () => {
+    for (const [tool, points] of [["star-5", 5], ["star-6", 6], ["star-8", 8]] as const) {
+      const g = geometryFromDrag(tool, { x: 0, y: 0 }, { x: 10, y: 0 }, false);
+      expect(g).toEqual({ type: "star", center: { x: 0, y: 0 }, outerRadius: 10, innerRadius: 5, points, rotation: 0 });
+    }
+  });
+
+  it("pentagram/heptagram/octagram drag from centre outward", () => {
+    expect(geometryFromDrag("pentagram", { x: 0, y: 0 }, { x: 10, y: 0 }, false)?.type).toBe("polygram");
+    expect(geometryFromDrag("heptagram", { x: 0, y: 0 }, { x: 10, y: 0 }, false)?.type).toBe("polygram");
+    expect(geometryFromDrag("octagram", { x: 0, y: 0 }, { x: 10, y: 0 }, false)?.type).toBe("polygram");
+  });
 });
 
 describe("curvatureFromCursor", () => {
@@ -51,5 +108,9 @@ describe("curvatureFromCursor", () => {
 
   it("is the perpendicular distance from the chord midpoint", () => {
     expect(curvatureFromCursor({ x: 0, y: 0 }, { x: 10, y: 0 }, { x: 5, y: 3 })).toBeCloseTo(3, 6);
+  });
+
+  it("is zero for a degenerate (zero-length) chord", () => {
+    expect(curvatureFromCursor({ x: 5, y: 5 }, { x: 5, y: 5 }, { x: 8, y: 8 })).toBe(0);
   });
 });

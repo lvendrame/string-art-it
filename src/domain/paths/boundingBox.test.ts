@@ -24,4 +24,8 @@ describe("pathBoundingBoxPoints", () => {
     expect(box.minY).toBeCloseTo(15, 1);
     expect(box.maxY).toBeCloseTo(25, 1);
   });
+
+  it("a path with no segments falls back to a single point at the origin", () => {
+    expect(pathBoundingBoxPoints({ segments: [], closed: false })).toEqual([{ x: 0, y: 0 }]);
+  });
 });

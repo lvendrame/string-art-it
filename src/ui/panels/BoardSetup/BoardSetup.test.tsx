@@ -86,4 +86,12 @@ describe("BoardSetup keyboard shortcuts", () => {
     fireEvent.keyDown(window, { key: "l" });
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument(); // closes after applying the next language
   });
+
+  it("uppercase L also opens the language dropdown", () => {
+    const store = new EditorStore();
+    render(<BoardSetup store={store} onContinue={() => {}} />);
+
+    fireEvent.keyDown(window, { key: "L" });
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+  });
 });

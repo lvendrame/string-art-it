@@ -1,7 +1,7 @@
 import type { ComponentType } from "react";
 import { Hand, Info, Keyboard, Layers as LayersIcon, MousePointer2, Pin as PinIcon, Play, Spline } from "lucide-react";
 import type { EditorMode } from "../../../application/document";
-import { AboutTabContent } from "./AboutTabContent";
+import { AboutTabContent } from "./AboutTabContent/AboutTabContent";
 
 export type HelpTabId = "edit" | "pin" | "thread" | "pan" | "play" | "layers" | "keyboard-mouse" | "about";
 

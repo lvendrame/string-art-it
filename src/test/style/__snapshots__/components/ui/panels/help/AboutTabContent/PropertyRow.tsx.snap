@@ -1,0 +1,50 @@
+{
+  "file": "ui/panels/help/AboutTabContent/PropertyRow.tsx",
+  "classes": [
+    "about-tab-content__property-label",
+    "about-tab-content__property-row",
+    "about-tab-content__property-value",
+    "mono"
+  ],
+  "cssRules": [
+    {
+      "selector": ".about-tab-content__property-row",
+      "file": "ui/panels/help/AboutTabContent/PropertyRow.css",
+      "declarations": {
+        "display": "flex",
+        "justify-content": "space-between",
+        "gap": "12px",
+        "background": "var(--bg-app)",
+        "border": "1px solid var(--border)",
+        "border-radius": "var(--radius-md)",
+        "padding": "12px"
+      }
+    },
+    {
+      "selector": ".about-tab-content__property-label",
+      "file": "ui/panels/help/AboutTabContent/PropertyRow.css",
+      "declarations": {
+        "font-size": "12px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".about-tab-content__property-value",
+      "file": "ui/panels/help/AboutTabContent/PropertyRow.css",
+      "declarations": {
+        "font-size": "12px",
+        "font-weight": "600",
+        "color": "var(--text-primary)",
+        "text-align": "right"
+      }
+    },
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

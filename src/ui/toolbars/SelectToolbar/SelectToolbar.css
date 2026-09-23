@@ -1,0 +1,37 @@
+.select-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.select-toolbar__section-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.select-toolbar__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.select-toolbar__tool {
+  flex-direction: column;
+  border-radius: var(--radius-sm);
+  padding: 10px 4px 7px;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.select-toolbar__merge-btn {
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  padding: 9px;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}

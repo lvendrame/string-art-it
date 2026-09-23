@@ -1,0 +1,32 @@
+{
+  "file": "ui/panels/GeneratorPanel/SelectField.tsx",
+  "classes": [
+    "generator-panel__select-input",
+    "generator-panel__select-label"
+  ],
+  "cssRules": [
+    {
+      "selector": ".generator-panel__select-label",
+      "file": "ui/panels/GeneratorPanel/SelectField.css",
+      "declarations": {
+        "display": "flex",
+        "justify-content": "space-between",
+        "align-items": "center",
+        "font-size": "11.5px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".generator-panel__select-input",
+      "file": "ui/panels/GeneratorPanel/SelectField.css",
+      "declarations": {
+        "background": "var(--bg-panel-2)",
+        "border": "1px solid var(--border)",
+        "border-radius": "6px",
+        "color": "var(--text-primary)",
+        "padding": "3px 6px"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

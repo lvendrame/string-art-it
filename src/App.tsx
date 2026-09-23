@@ -8,7 +8,7 @@ import { LandingFeatures } from "./ui/panels/landing/LandingFeatures";
 import { LandingHero } from "./ui/panels/landing/LandingHero";
 import { LandingHowItWorks } from "./ui/panels/landing/LandingHowItWorks";
 import { AutosaveDialog } from "./ui/panels/landing/AutosaveDialog";
-import { BoardSetup } from "./ui/panels/BoardSetup";
+import { BoardSetup } from "./ui/panels/BoardSetup/BoardSetup";
 import { useAutosave } from "./ui/useAutosave";
 import { registerWebMcpTools } from "./infrastructure/webmcp/tools";
 

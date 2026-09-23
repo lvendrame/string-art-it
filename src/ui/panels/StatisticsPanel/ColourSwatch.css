@@ -1,0 +1,11 @@
+/* Swatch colour itself stays inline (style={{background: colour}}) — it's an
+   arbitrary per-thread runtime value, not a themed token, and
+   StatisticsPanel.test.tsx asserts on it directly. */
+.statistics-panel__swatch {
+  display: inline-block;
+  width: 14px;
+  height: 10px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  vertical-align: middle;
+}

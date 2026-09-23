@@ -1,0 +1,22 @@
+.selection-panel__stats-box {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selection-panel__stats-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.selection-panel__stats-label {
+  color: var(--text-secondary);
+}
+
+.selection-panel__stats-value {
+  color: var(--text-primary);
+}

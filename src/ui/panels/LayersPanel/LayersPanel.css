@@ -1,0 +1,35 @@
+.layers-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.layers-panel__tabs {
+  display: flex;
+  padding: 0 16px;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Bare .tab-underline, no .btn — matches this component's pre-migration behavior,
+   which had no hover feedback (unlike HelpPanel's tabs, which do combine with .btn).
+   See docs/conventions/ui-patterns.md §Tab-switcher styles. */
+.layers-panel__tab {
+  flex: 1;
+  justify-content: center;
+  padding: 9px 0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.layers-panel__rows {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.layers-panel__footer {
+  display: flex;
+  gap: 6px;
+  padding: 10px;
+  border-top: 1px solid var(--border);
+}

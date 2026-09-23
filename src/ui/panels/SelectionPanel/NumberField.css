@@ -1,0 +1,8 @@
+.selection-panel__number-input {
+  width: 80px;
+  background: var(--bg-panel-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  padding: 4px 6px;
+}

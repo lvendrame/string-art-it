@@ -1,0 +1,41 @@
+{
+  "file": "ui/panels/BoardSetup/DimensionField.tsx",
+  "classes": [
+    "board-setup__field-input",
+    "board-setup__field-label",
+    "mono"
+  ],
+  "cssRules": [
+    {
+      "selector": ".board-setup__field-label",
+      "file": "ui/panels/BoardSetup/DimensionField.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "4px",
+        "font-size": "12px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".board-setup__field-input",
+      "file": "ui/panels/BoardSetup/DimensionField.css",
+      "declarations": {
+        "background": "var(--bg-app)",
+        "border": "1px solid var(--border)",
+        "border-radius": "var(--radius-sm)",
+        "color": "var(--text-primary)",
+        "padding": "6px 8px",
+        "font-size": "13px"
+      }
+    },
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

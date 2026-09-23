@@ -1,0 +1,28 @@
+{
+  "file": "ui/panels/OverlayPanel/OverlayPanelHeader.tsx",
+  "classes": [
+    "overlay-panel__header",
+    "overlay-panel__title"
+  ],
+  "cssRules": [
+    {
+      "selector": ".overlay-panel__header",
+      "file": "ui/panels/OverlayPanel/OverlayPanelHeader.css",
+      "declarations": {
+        "display": "flex",
+        "justify-content": "space-between",
+        "align-items": "center",
+        "margin-bottom": "20px"
+      }
+    },
+    {
+      "selector": ".overlay-panel__title",
+      "file": "ui/panels/OverlayPanel/OverlayPanelHeader.css",
+      "declarations": {
+        "font-weight": "700",
+        "font-size": "15px"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

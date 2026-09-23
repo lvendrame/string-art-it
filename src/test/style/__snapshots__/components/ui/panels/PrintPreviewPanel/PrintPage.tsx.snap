@@ -1,0 +1,24 @@
+{
+  "file": "ui/panels/PrintPreviewPanel/PrintPage.tsx",
+  "classes": [
+    "print-page",
+    "print-preview-panel__page-svg"
+  ],
+  "cssRules": [
+    {
+      "selector": ".print-preview-panel__page-svg",
+      "file": "ui/panels/PrintPreviewPanel/PrintPreviewPanel.css",
+      "declarations": {
+        "background": "white"
+      }
+    },
+    {
+      "selector": ".print-page",
+      "file": "ui/theme.css",
+      "declarations": {
+        "position": "relative"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

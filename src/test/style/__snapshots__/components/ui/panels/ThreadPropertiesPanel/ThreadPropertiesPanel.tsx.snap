@@ -1,0 +1,131 @@
+{
+  "file": "ui/panels/ThreadPropertiesPanel/ThreadPropertiesPanel.tsx",
+  "classes": [
+    "btn",
+    "btn-active",
+    "mono",
+    "thread-properties-panel",
+    "thread-properties-panel__colour-count-btn",
+    "thread-properties-panel__colour-count-row",
+    "thread-properties-panel__number-input",
+    "thread-properties-panel__row",
+    "thread-properties-panel__section-title",
+    "thread-properties-panel__swatch",
+    "thread-properties-panel__swatches"
+  ],
+  "cssRules": [
+    {
+      "selector": ".thread-properties-panel",
+      "file": "ui/panels/ThreadPropertiesPanel/ThreadPropertiesPanel.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "10px"
+      }
+    },
+    {
+      "selector": ".thread-properties-panel__section-title",
+      "file": "ui/panels/ThreadPropertiesPanel/ThreadPropertiesPanel.css",
+      "declarations": {
+        "font-size": "11px",
+        "font-weight": "700",
+        "letter-spacing": "0.06em",
+        "color": "var(--text-tertiary)",
+        "text-transform": "uppercase"
+      }
+    },
+    {
+      "selector": ".thread-properties-panel__colour-count-row",
+      "file": "ui/panels/ThreadPropertiesPanel/ThreadPropertiesPanel.css",
+      "declarations": {
+        "display": "flex",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".thread-properties-panel__colour-count-btn",
+      "file": "ui/panels/ThreadPropertiesPanel/ThreadPropertiesPanel.css",
+      "declarations": {
+        "flex": "1",
+        "justify-content": "center",
+        "border-radius": "var(--radius-sm)",
+        "padding": "9px",
+        "font-size": "12px",
+        "font-weight": "700"
+      }
+    },
+    {
+      "selector": ".thread-properties-panel__swatches",
+      "file": "ui/panels/ThreadPropertiesPanel/ThreadPropertiesPanel.css",
+      "declarations": {
+        "display": "flex",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".thread-properties-panel__swatch",
+      "file": "ui/panels/ThreadPropertiesPanel/ThreadPropertiesPanel.css",
+      "declarations": {
+        "width": "24px",
+        "height": "24px",
+        "border": "1px solid var(--border-strong)",
+        "border-radius": "5px",
+        "background": "none",
+        "padding": "0"
+      }
+    },
+    {
+      "selector": ".thread-properties-panel__row",
+      "file": "ui/panels/ThreadPropertiesPanel/ThreadPropertiesPanel.css",
+      "declarations": {
+        "display": "flex",
+        "justify-content": "space-between",
+        "align-items": "center",
+        "font-size": "12px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".thread-properties-panel__number-input",
+      "file": "ui/panels/ThreadPropertiesPanel/ThreadPropertiesPanel.css",
+      "declarations": {
+        "width": "60px",
+        "background": "var(--bg-panel-2)",
+        "border": "1px solid var(--border)",
+        "border-radius": "6px",
+        "color": "var(--text-primary)",
+        "padding": "4px 6px"
+      }
+    },
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    },
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    },
+    {
+      "selector": ".btn-active",
+      "file": "ui/theme.css",
+      "declarations": {
+        "background": "var(--accent-soft)",
+        "color": "var(--accent)",
+        "border-color": "var(--accent)"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

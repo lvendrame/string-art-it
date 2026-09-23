@@ -4,7 +4,7 @@ import { boardPath, truncateThreadLayersAtFrame, type EditorState } from "../../
 import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
 import { CANVAS_VIEWPORT_PX, fitViewportForBoard } from "./boardViewport";
 import { BoardLayer } from "./BoardLayer";
-import { GridLayer } from "./GridLayer";
+import { GridLayer } from "./GridLayer/GridLayer";
 import { PinLayersView } from "./PinLayersView";
 import { ThreadLayersView } from "./ThreadLayersView";
 import "./PlaybackCanvas.css";

@@ -1,0 +1,31 @@
+.statistics-panel__card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statistics-panel__card-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.statistics-panel__card-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.statistics-panel__card-row-label {
+  color: var(--text-secondary);
+}
+
+.statistics-panel__card-row-value {
+  color: var(--text-primary);
+}

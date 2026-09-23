@@ -1,0 +1,13 @@
+.thread-properties-panel__stats-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.thread-properties-panel__stats-label {
+  color: var(--text-secondary);
+}
+
+.thread-properties-panel__stats-value {
+  color: var(--text-primary);
+}

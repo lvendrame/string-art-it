@@ -1,0 +1,70 @@
+.thread-properties-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.thread-properties-panel__section-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.thread-properties-panel__colour-count-row {
+  display: flex;
+  gap: 6px;
+}
+
+.thread-properties-panel__colour-count-btn {
+  flex: 1;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  padding: 9px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.thread-properties-panel__swatches {
+  display: flex;
+  gap: 6px;
+}
+
+.thread-properties-panel__swatch {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: none;
+  padding: 0;
+}
+
+.thread-properties-panel__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.thread-properties-panel__number-input {
+  width: 60px;
+  background: var(--bg-panel-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  padding: 4px 6px;
+}
+
+/* Shared shape for ZigzagSettingsBox, ParabolicSettingsBox, and ThreadStatsBox. */
+.thread-properties-panel__box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  margin-top: 4px;
+}
+

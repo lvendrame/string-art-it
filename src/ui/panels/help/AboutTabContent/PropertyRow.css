@@ -1,0 +1,21 @@
+.about-tab-content__property-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+}
+
+.about-tab-content__property-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.about-tab-content__property-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+}

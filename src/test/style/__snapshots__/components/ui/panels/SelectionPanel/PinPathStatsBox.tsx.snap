@@ -1,0 +1,67 @@
+{
+  "file": "ui/panels/SelectionPanel/PinPathStatsBox.tsx",
+  "classes": [
+    "mono",
+    "selection-panel__section-title",
+    "selection-panel__stats-box",
+    "selection-panel__stats-label",
+    "selection-panel__stats-row",
+    "selection-panel__stats-value"
+  ],
+  "cssRules": [
+    {
+      "selector": ".selection-panel__stats-box",
+      "file": "ui/panels/SelectionPanel/PinPathStatsBox.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "border-radius": "var(--radius-md)",
+        "padding": "10px",
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "8px"
+      }
+    },
+    {
+      "selector": ".selection-panel__stats-row",
+      "file": "ui/panels/SelectionPanel/PinPathStatsBox.css",
+      "declarations": {
+        "display": "flex",
+        "justify-content": "space-between",
+        "font-size": "12px"
+      }
+    },
+    {
+      "selector": ".selection-panel__stats-label",
+      "file": "ui/panels/SelectionPanel/PinPathStatsBox.css",
+      "declarations": {
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".selection-panel__stats-value",
+      "file": "ui/panels/SelectionPanel/PinPathStatsBox.css",
+      "declarations": {
+        "color": "var(--text-primary)"
+      }
+    },
+    {
+      "selector": ".selection-panel__section-title",
+      "file": "ui/panels/SelectionPanel/SelectionPanel.css",
+      "declarations": {
+        "font-size": "11px",
+        "font-weight": "700",
+        "letter-spacing": "0.06em",
+        "color": "var(--text-tertiary)",
+        "text-transform": "uppercase"
+      }
+    },
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

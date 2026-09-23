@@ -1,0 +1,28 @@
+{
+  "file": "ui/panels/StatisticsPanel/ColoursValue.tsx",
+  "classes": [
+    "statistics-panel__colour-item",
+    "statistics-panel__colours"
+  ],
+  "cssRules": [
+    {
+      "selector": ".statistics-panel__colours",
+      "file": "ui/panels/StatisticsPanel/ColoursValue.css",
+      "declarations": {
+        "display": "inline-flex",
+        "align-items": "center",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".statistics-panel__colour-item",
+      "file": "ui/panels/StatisticsPanel/ColoursValue.css",
+      "declarations": {
+        "display": "inline-flex",
+        "align-items": "center",
+        "gap": "4px"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

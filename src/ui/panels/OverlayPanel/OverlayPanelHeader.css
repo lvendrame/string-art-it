@@ -1,0 +1,11 @@
+.overlay-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.overlay-panel__title {
+  font-weight: 700;
+  font-size: 15px;
+}

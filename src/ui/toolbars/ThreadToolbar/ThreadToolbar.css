@@ -1,0 +1,83 @@
+.thread-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.thread-toolbar__section-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.thread-toolbar__tools {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.thread-toolbar__tool {
+  flex: 1;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  padding: 9px;
+  font-size: 12px;
+  font-weight: 600;
+  gap: 6px;
+}
+
+.thread-toolbar__legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  margin-top: 4px;
+}
+
+.thread-toolbar__swatch-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.thread-toolbar__swatch-dot--normal {
+  background: #c7cad3;
+}
+
+.thread-toolbar__swatch-dot--active {
+  background: var(--accent);
+}
+
+.thread-toolbar__swatch-dot--used {
+  background: var(--accent);
+  opacity: 0.5;
+}
+
+.thread-toolbar__swatch-candidate {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thread-toolbar__swatch-candidate-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid #e8b449;
+}
+
+.thread-toolbar__swatch-candidate-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e8b449;
+}

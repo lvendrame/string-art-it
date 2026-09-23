@@ -1,0 +1,72 @@
+{
+  "file": "ui/canvas/CanvasToolbar/CanvasToolbar.tsx",
+  "classes": [
+    "btn",
+    "canvas-toolbar",
+    "canvas-toolbar__fit-btn",
+    "canvas-toolbar__spacer",
+    "canvas-toolbar__zoom-btn",
+    "mono"
+  ],
+  "cssRules": [
+    {
+      "selector": ".canvas-toolbar",
+      "file": "ui/canvas/CanvasToolbar/CanvasToolbar.css",
+      "declarations": {
+        "flex": "0 0 auto",
+        "display": "flex",
+        "align-items": "center",
+        "gap": "10px",
+        "padding": "10px 16px",
+        "border-bottom": "1px solid var(--border)"
+      }
+    },
+    {
+      "selector": ".canvas-toolbar__spacer",
+      "file": "ui/canvas/CanvasToolbar/CanvasToolbar.css",
+      "declarations": {
+        "flex": "1"
+      }
+    },
+    {
+      "selector": ".canvas-toolbar__zoom-btn",
+      "file": "ui/canvas/CanvasToolbar/CanvasToolbar.css",
+      "declarations": {
+        "border-radius": "8px",
+        "padding": "6px 10px",
+        "font-size": "12px"
+      }
+    },
+    {
+      "selector": ".canvas-toolbar__fit-btn",
+      "file": "ui/canvas/CanvasToolbar/CanvasToolbar.css",
+      "declarations": {
+        "border-radius": "8px",
+        "padding": "6px 10px",
+        "font-size": "12px",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    },
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

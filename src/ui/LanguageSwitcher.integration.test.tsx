@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import i18n from "../i18n";
 import { EditorStore } from "../application/document";
-import { BoardSetup } from "./panels/BoardSetup";
+import { BoardSetup } from "./panels/BoardSetup/BoardSetup";
 import { EditorShell } from "./EditorShell";
 
 describe("LanguageSwitcher integration", () => {

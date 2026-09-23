@@ -1,0 +1,25 @@
+.canvas-toolbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.canvas-toolbar__spacer {
+  flex: 1;
+}
+
+.canvas-toolbar__zoom-btn {
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.canvas-toolbar__fit-btn {
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  gap: 6px;
+}

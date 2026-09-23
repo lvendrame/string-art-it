@@ -1,0 +1,50 @@
+.layers-panel__row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 16px;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  background: transparent;
+}
+
+.layers-panel__row--active {
+  border-left-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.layers-panel__icon-btn {
+  border: none;
+  background: transparent;
+  padding: 2px;
+  cursor: pointer;
+  color: var(--text-tertiary);
+}
+
+.layers-panel__icon-btn--visible {
+  color: var(--text-secondary);
+}
+
+.layers-panel__icon-btn--locked {
+  color: var(--accent);
+}
+
+.layers-panel__rename-input {
+  flex: 1;
+  font-size: 12.5px;
+  background: var(--bg-panel-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  padding: 2px 4px;
+}
+
+.layers-panel__name {
+  flex: 1;
+  font-size: 12.5px;
+  color: var(--text-tertiary);
+}
+
+.layers-panel__name--visible {
+  color: var(--text-primary);
+}

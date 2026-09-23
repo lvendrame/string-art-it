@@ -1,0 +1,21 @@
+{
+  "file": "ui/panels/SelectionPanel/SummaryMessage.tsx",
+  "classes": [
+    "selection-panel__summary-message"
+  ],
+  "cssRules": [
+    {
+      "selector": ".selection-panel__summary-message",
+      "file": "ui/panels/SelectionPanel/SummaryMessage.css",
+      "declarations": {
+        "color": "var(--text-secondary)",
+        "font-size": "12px",
+        "background": "var(--bg-app)",
+        "border": "1px solid var(--border)",
+        "border-radius": "var(--radius-md)",
+        "padding": "12px"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

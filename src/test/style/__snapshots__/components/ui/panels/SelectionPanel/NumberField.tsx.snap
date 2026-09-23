@@ -1,0 +1,41 @@
+{
+  "file": "ui/panels/SelectionPanel/NumberField.tsx",
+  "classes": [
+    "mono",
+    "selection-panel__number-input",
+    "selection-panel__row"
+  ],
+  "cssRules": [
+    {
+      "selector": ".selection-panel__number-input",
+      "file": "ui/panels/SelectionPanel/NumberField.css",
+      "declarations": {
+        "width": "80px",
+        "background": "var(--bg-panel-2)",
+        "border": "1px solid var(--border)",
+        "border-radius": "6px",
+        "color": "var(--text-primary)",
+        "padding": "4px 6px"
+      }
+    },
+    {
+      "selector": ".selection-panel__row",
+      "file": "ui/panels/SelectionPanel/SelectionPanel.css",
+      "declarations": {
+        "display": "flex",
+        "justify-content": "space-between",
+        "align-items": "center",
+        "font-size": "12px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".mono",
+      "file": "ui/theme.css",
+      "declarations": {
+        "font-family": "\"JetBrains Mono\", ui-monospace, monospace"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

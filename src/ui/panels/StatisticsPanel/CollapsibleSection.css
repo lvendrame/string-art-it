@@ -1,0 +1,19 @@
+.statistics-panel__section {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.statistics-panel__section-summary {
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.statistics-panel__section-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}

@@ -1,0 +1,11 @@
+.statistics-panel__colours {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.statistics-panel__colour-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}

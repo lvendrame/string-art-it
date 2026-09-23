@@ -1,0 +1,62 @@
+.select-toolbar__granularity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.select-toolbar__granularity-label {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: color 120ms ease;
+}
+
+.select-toolbar__granularity-label--active {
+  color: var(--accent);
+}
+
+.select-toolbar__switch {
+  position: relative;
+  width: 44px;
+  height: 32px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.select-toolbar__track {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 20px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-app);
+}
+
+/* left values pre-computed from the original TRACK_WIDTH=40/KNOB_SIZE=14/
+   KNOB_INSET=3 constants: (44-40)/2 + KNOB_INSET = 5px (path state, default below),
+   (44-40)/2 + (40-14-3) = 25px (pins state, --pins modifier). */
+.select-toolbar__knob {
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translateY(-50%);
+  transition: left 150ms ease;
+}
+
+.select-toolbar__knob--pins {
+  left: 25px;
+}

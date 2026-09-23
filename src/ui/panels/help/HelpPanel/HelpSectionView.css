@@ -1,0 +1,28 @@
+.help-panel__section-heading {
+  font-size: 12.5px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+.help-panel__section-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.help-panel__section-item {
+  display: flex;
+  gap: 12px;
+  font-size: 12.5px;
+}
+
+.help-panel__section-item-label {
+  font-weight: 700;
+  flex: 0 0 160px;
+  color: var(--text-primary);
+}
+
+.help-panel__section-item-description {
+  color: var(--text-secondary);
+}

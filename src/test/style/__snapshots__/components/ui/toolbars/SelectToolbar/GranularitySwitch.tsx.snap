@@ -1,0 +1,96 @@
+{
+  "file": "ui/toolbars/SelectToolbar/GranularitySwitch.tsx",
+  "classes": [
+    "select-toolbar__granularity",
+    "select-toolbar__granularity-label",
+    "select-toolbar__granularity-label--active",
+    "select-toolbar__knob",
+    "select-toolbar__knob--pins",
+    "select-toolbar__switch",
+    "select-toolbar__track"
+  ],
+  "cssRules": [
+    {
+      "selector": ".select-toolbar__granularity",
+      "file": "ui/toolbars/SelectToolbar/GranularitySwitch.css",
+      "declarations": {
+        "display": "flex",
+        "align-items": "center",
+        "gap": "8px"
+      }
+    },
+    {
+      "selector": ".select-toolbar__granularity-label",
+      "file": "ui/toolbars/SelectToolbar/GranularitySwitch.css",
+      "declarations": {
+        "background": "none",
+        "border": "none",
+        "padding": "0",
+        "cursor": "pointer",
+        "font-size": "12px",
+        "font-weight": "600",
+        "color": "var(--text-secondary)",
+        "transition": "color 120ms ease"
+      }
+    },
+    {
+      "selector": ".select-toolbar__granularity-label--active",
+      "file": "ui/toolbars/SelectToolbar/GranularitySwitch.css",
+      "declarations": {
+        "color": "var(--accent)"
+      }
+    },
+    {
+      "selector": ".select-toolbar__switch",
+      "file": "ui/toolbars/SelectToolbar/GranularitySwitch.css",
+      "declarations": {
+        "position": "relative",
+        "width": "44px",
+        "height": "32px",
+        "background": "none",
+        "border": "none",
+        "padding": "0",
+        "cursor": "pointer",
+        "flex-shrink": "0"
+      }
+    },
+    {
+      "selector": ".select-toolbar__track",
+      "file": "ui/toolbars/SelectToolbar/GranularitySwitch.css",
+      "declarations": {
+        "position": "absolute",
+        "top": "50%",
+        "left": "50%",
+        "transform": "translate(-50%, -50%)",
+        "width": "40px",
+        "height": "20px",
+        "border-radius": "999px",
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-app)"
+      }
+    },
+    {
+      "selector": ".select-toolbar__knob",
+      "file": "ui/toolbars/SelectToolbar/GranularitySwitch.css",
+      "declarations": {
+        "position": "absolute",
+        "top": "50%",
+        "left": "5px",
+        "width": "14px",
+        "height": "14px",
+        "border-radius": "50%",
+        "background": "var(--accent)",
+        "transform": "translateY(-50%)",
+        "transition": "left 150ms ease"
+      }
+    },
+    {
+      "selector": ".select-toolbar__knob--pins",
+      "file": "ui/toolbars/SelectToolbar/GranularitySwitch.css",
+      "declarations": {
+        "left": "25px"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

@@ -1,0 +1,27 @@
+{
+  "file": "ui/toolbars/ThreadToolbar/PinStateLegend.tsx",
+  "classes": [
+    "thread-toolbar__legend-label",
+    "thread-toolbar__legend-row"
+  ],
+  "cssRules": [
+    {
+      "selector": ".thread-toolbar__legend-row",
+      "file": "ui/toolbars/ThreadToolbar/PinStateLegend.css",
+      "declarations": {
+        "display": "flex",
+        "align-items": "center",
+        "gap": "9px"
+      }
+    },
+    {
+      "selector": ".thread-toolbar__legend-label",
+      "file": "ui/toolbars/ThreadToolbar/PinStateLegend.css",
+      "declarations": {
+        "font-size": "11.5px",
+        "color": "var(--text-secondary)"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

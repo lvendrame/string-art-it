@@ -1,0 +1,13 @@
+.layers-panel__action-btn {
+  flex: 1;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  padding: 8px;
+}
+
+/* Compounded with .btn — color needs to beat the plain .btn rule deterministically.
+   Always used alongside .btn (IconActionButton always sets it), so this never needs
+   to work standalone. */
+.btn.layers-panel__action-btn--danger {
+  color: var(--danger);
+}

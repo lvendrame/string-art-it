@@ -1,0 +1,83 @@
+{
+  "file": "ui/panels/LayersPanel/LayersPanel.tsx",
+  "classes": [
+    "layers-panel",
+    "layers-panel__footer",
+    "layers-panel__rows",
+    "layers-panel__tab",
+    "layers-panel__tabs",
+    "tab-underline",
+    "tab-underline--active"
+  ],
+  "cssRules": [
+    {
+      "selector": ".layers-panel",
+      "file": "ui/panels/LayersPanel/LayersPanel.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "height": "100%"
+      }
+    },
+    {
+      "selector": ".layers-panel__tabs",
+      "file": "ui/panels/LayersPanel/LayersPanel.css",
+      "declarations": {
+        "display": "flex",
+        "padding": "0 16px",
+        "gap": "4px",
+        "border-bottom": "1px solid var(--border)"
+      }
+    },
+    {
+      "selector": ".layers-panel__tab",
+      "file": "ui/panels/LayersPanel/LayersPanel.css",
+      "declarations": {
+        "flex": "1",
+        "justify-content": "center",
+        "padding": "9px 0",
+        "font-size": "12px",
+        "font-weight": "700"
+      }
+    },
+    {
+      "selector": ".layers-panel__rows",
+      "file": "ui/panels/LayersPanel/LayersPanel.css",
+      "declarations": {
+        "flex": "1",
+        "overflow-y": "auto"
+      }
+    },
+    {
+      "selector": ".layers-panel__footer",
+      "file": "ui/panels/LayersPanel/LayersPanel.css",
+      "declarations": {
+        "display": "flex",
+        "gap": "6px",
+        "padding": "10px",
+        "border-top": "1px solid var(--border)"
+      }
+    },
+    {
+      "selector": ".tab-underline",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "none",
+        "border-radius": "0",
+        "background": "transparent",
+        "color": "var(--text-tertiary)",
+        "cursor": "pointer",
+        "border-bottom": "2px solid transparent"
+      }
+    },
+    {
+      "selector": ".tab-underline--active",
+      "file": "ui/theme.css",
+      "declarations": {
+        "color": "var(--text-primary)",
+        "border-bottom-color": "var(--accent)"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

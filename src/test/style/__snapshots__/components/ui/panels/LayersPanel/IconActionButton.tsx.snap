@@ -1,0 +1,41 @@
+{
+  "file": "ui/panels/LayersPanel/IconActionButton.tsx",
+  "classes": [
+    "btn",
+    "layers-panel__action-btn",
+    "layers-panel__action-btn--danger"
+  ],
+  "cssRules": [
+    {
+      "selector": ".layers-panel__action-btn",
+      "file": "ui/panels/LayersPanel/IconActionButton.css",
+      "declarations": {
+        "flex": "1",
+        "justify-content": "center",
+        "border-radius": "var(--radius-sm)",
+        "padding": "8px"
+      }
+    },
+    {
+      "selector": ".btn.layers-panel__action-btn--danger",
+      "file": "ui/panels/LayersPanel/IconActionButton.css",
+      "declarations": {
+        "color": "var(--danger)"
+      }
+    },
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

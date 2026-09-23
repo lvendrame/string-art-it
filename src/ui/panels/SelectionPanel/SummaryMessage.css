@@ -1,0 +1,8 @@
+.selection-panel__summary-message {
+  color: var(--text-secondary);
+  font-size: 12px;
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+}

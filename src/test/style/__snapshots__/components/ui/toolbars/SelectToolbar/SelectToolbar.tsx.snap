@@ -1,0 +1,90 @@
+{
+  "file": "ui/toolbars/SelectToolbar/SelectToolbar.tsx",
+  "classes": [
+    "btn",
+    "btn-active",
+    "select-toolbar",
+    "select-toolbar__grid",
+    "select-toolbar__merge-btn",
+    "select-toolbar__section-title",
+    "select-toolbar__tool"
+  ],
+  "cssRules": [
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    },
+    {
+      "selector": ".btn-active",
+      "file": "ui/theme.css",
+      "declarations": {
+        "background": "var(--accent-soft)",
+        "color": "var(--accent)",
+        "border-color": "var(--accent)"
+      }
+    },
+    {
+      "selector": ".select-toolbar",
+      "file": "ui/toolbars/SelectToolbar/SelectToolbar.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "10px"
+      }
+    },
+    {
+      "selector": ".select-toolbar__section-title",
+      "file": "ui/toolbars/SelectToolbar/SelectToolbar.css",
+      "declarations": {
+        "font-size": "11px",
+        "font-weight": "700",
+        "letter-spacing": "0.06em",
+        "color": "var(--text-tertiary)",
+        "text-transform": "uppercase"
+      }
+    },
+    {
+      "selector": ".select-toolbar__grid",
+      "file": "ui/toolbars/SelectToolbar/SelectToolbar.css",
+      "declarations": {
+        "display": "grid",
+        "grid-template-columns": "repeat(2, 1fr)",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".select-toolbar__tool",
+      "file": "ui/toolbars/SelectToolbar/SelectToolbar.css",
+      "declarations": {
+        "flex-direction": "column",
+        "border-radius": "var(--radius-sm)",
+        "padding": "10px 4px 7px",
+        "gap": "5px",
+        "font-size": "11px",
+        "font-weight": "600"
+      }
+    },
+    {
+      "selector": ".select-toolbar__merge-btn",
+      "file": "ui/toolbars/SelectToolbar/SelectToolbar.css",
+      "declarations": {
+        "justify-content": "center",
+        "border-radius": "var(--radius-sm)",
+        "padding": "9px",
+        "gap": "6px",
+        "font-size": "12px",
+        "font-weight": "600"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

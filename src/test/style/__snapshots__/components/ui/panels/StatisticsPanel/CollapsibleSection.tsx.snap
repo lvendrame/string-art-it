@@ -1,0 +1,40 @@
+{
+  "file": "ui/panels/StatisticsPanel/CollapsibleSection.tsx",
+  "classes": [
+    "statistics-panel__section",
+    "statistics-panel__section-grid",
+    "statistics-panel__section-summary"
+  ],
+  "cssRules": [
+    {
+      "selector": ".statistics-panel__section",
+      "file": "ui/panels/StatisticsPanel/CollapsibleSection.css",
+      "declarations": {
+        "background": "var(--bg-panel)",
+        "border": "1px solid var(--border)",
+        "border-radius": "var(--radius-md)",
+        "padding": "16px"
+      }
+    },
+    {
+      "selector": ".statistics-panel__section-summary",
+      "file": "ui/panels/StatisticsPanel/CollapsibleSection.css",
+      "declarations": {
+        "font-weight": "700",
+        "font-size": "13px",
+        "cursor": "pointer"
+      }
+    },
+    {
+      "selector": ".statistics-panel__section-grid",
+      "file": "ui/panels/StatisticsPanel/CollapsibleSection.css",
+      "declarations": {
+        "display": "grid",
+        "grid-template-columns": "repeat(auto-fill, minmax(260px, 1fr))",
+        "gap": "16px",
+        "margin-top": "16px"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

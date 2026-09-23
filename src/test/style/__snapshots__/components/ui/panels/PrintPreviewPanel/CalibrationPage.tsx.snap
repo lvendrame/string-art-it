@@ -1,0 +1,16 @@
+{
+  "file": "ui/panels/PrintPreviewPanel/CalibrationPage.tsx",
+  "classes": [
+    "print-preview-panel__page-svg"
+  ],
+  "cssRules": [
+    {
+      "selector": ".print-preview-panel__page-svg",
+      "file": "ui/panels/PrintPreviewPanel/PrintPreviewPanel.css",
+      "declarations": {
+        "background": "white"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

@@ -1,0 +1,23 @@
+{
+  "file": "ui/panels/StatisticsPanel/ColourSwatch.tsx",
+  "classes": [
+    "statistics-panel__swatch"
+  ],
+  "cssRules": [
+    {
+      "selector": ".statistics-panel__swatch",
+      "file": "ui/panels/StatisticsPanel/ColourSwatch.css",
+      "declarations": {
+        "display": "inline-block",
+        "width": "14px",
+        "height": "10px",
+        "border-radius": "2px",
+        "border": "1px solid var(--border)",
+        "vertical-align": "middle"
+      }
+    }
+  ],
+  "inlineStyleBlocks": [
+    "{{ background: colour }}"
+  ]
+}

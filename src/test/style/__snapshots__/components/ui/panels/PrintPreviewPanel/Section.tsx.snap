@@ -1,0 +1,30 @@
+{
+  "file": "ui/panels/PrintPreviewPanel/Section.tsx",
+  "classes": [
+    "print-preview-panel__section",
+    "print-preview-panel__section-heading"
+  ],
+  "cssRules": [
+    {
+      "selector": ".print-preview-panel__section",
+      "file": "ui/panels/PrintPreviewPanel/Section.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "8px"
+      }
+    },
+    {
+      "selector": ".print-preview-panel__section-heading",
+      "file": "ui/panels/PrintPreviewPanel/Section.css",
+      "declarations": {
+        "font-size": "11px",
+        "font-weight": "700",
+        "letter-spacing": "0.06em",
+        "color": "var(--text-tertiary)",
+        "text-transform": "uppercase"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

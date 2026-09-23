@@ -1,0 +1,10 @@
+.thread-toolbar__legend-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.thread-toolbar__legend-label {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}

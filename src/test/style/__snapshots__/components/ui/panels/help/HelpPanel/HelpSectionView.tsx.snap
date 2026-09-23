@@ -1,0 +1,57 @@
+{
+  "file": "ui/panels/help/HelpPanel/HelpSectionView.tsx",
+  "classes": [
+    "help-panel__section-heading",
+    "help-panel__section-item",
+    "help-panel__section-item-description",
+    "help-panel__section-item-label",
+    "help-panel__section-items"
+  ],
+  "cssRules": [
+    {
+      "selector": ".help-panel__section-heading",
+      "file": "ui/panels/help/HelpPanel/HelpSectionView.css",
+      "declarations": {
+        "font-size": "12.5px",
+        "font-weight": "700",
+        "margin-bottom": "8px",
+        "color": "var(--text-secondary)"
+      }
+    },
+    {
+      "selector": ".help-panel__section-items",
+      "file": "ui/panels/help/HelpPanel/HelpSectionView.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "8px"
+      }
+    },
+    {
+      "selector": ".help-panel__section-item",
+      "file": "ui/panels/help/HelpPanel/HelpSectionView.css",
+      "declarations": {
+        "display": "flex",
+        "gap": "12px",
+        "font-size": "12.5px"
+      }
+    },
+    {
+      "selector": ".help-panel__section-item-label",
+      "file": "ui/panels/help/HelpPanel/HelpSectionView.css",
+      "declarations": {
+        "font-weight": "700",
+        "flex": "0 0 160px",
+        "color": "var(--text-primary)"
+      }
+    },
+    {
+      "selector": ".help-panel__section-item-description",
+      "file": "ui/panels/help/HelpPanel/HelpSectionView.css",
+      "declarations": {
+        "color": "var(--text-secondary)"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

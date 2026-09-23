@@ -1,0 +1,52 @@
+/* Button.tsx's cva variants. Every rule here is `.btn.btn--x` (double class), never
+   `.btn--x` alone: a single-class rule is the same specificity as theme.css's `.btn`
+   and `.btn:hover`, so which one wins becomes dependent on CSS chunk bundling order
+   (bit us for real in OverlayPanel/PrintPreviewPanel's old bespoke close-button
+   classes, in both dev and the production build) — the double class guarantees this
+   always wins regardless of order. */
+
+.btn.btn--toggle {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn.btn--toggle:hover {
+  background: var(--accent-soft-2);
+  color: var(--accent-strong);
+}
+
+/* Matches PrintPreviewPanel's Print button look (solid fill) — the one "this is the
+   primary action of the panel" treatment, so use it sparingly. */
+.btn.btn--primary {
+  background: var(--accent-strong);
+  border-color: transparent;
+  color: white;
+}
+
+.btn.btn--primary:hover {
+  background: var(--accent);
+}
+
+/* Matches LayersPanel's delete-action styling: colour only, no background/border
+   change — deliberately the quietest variant since it sits next to non-destructive
+   icon buttons that must not visually dominate. */
+.btn.btn--danger {
+  color: var(--danger);
+}
+
+.btn.btn--icon-md {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 6px;
+}
+
+.btn.btn--icon-sm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  padding: 5px;
+}

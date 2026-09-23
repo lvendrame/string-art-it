@@ -1,8 +1,6 @@
 {
   "file": "ui/panels/OverlayPanel.tsx",
   "classes": [
-    "btn",
-    "overlay-panel__close",
     "overlay-panel__header",
     "overlay-panel__title"
   ],
@@ -23,33 +21,6 @@
       "declarations": {
         "font-weight": "700",
         "font-size": "15px"
-      }
-    },
-    {
-      "selector": ".btn.overlay-panel__close",
-      "file": "ui/panels/OverlayPanel.css",
-      "declarations": {
-        "display": "flex",
-        "align-items": "center",
-        "justify-content": "center",
-        "border-radius": "8px",
-        "padding": "6px",
-        "background": "var(--accent-soft)",
-        "border-color": "var(--accent)",
-        "color": "var(--accent)"
-      }
-    },
-    {
-      "selector": ".btn",
-      "file": "ui/theme.css",
-      "declarations": {
-        "border": "1px solid var(--border)",
-        "background": "var(--bg-panel-2)",
-        "color": "var(--text-secondary)",
-        "cursor": "pointer",
-        "display": "flex",
-        "align-items": "center",
-        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
       }
     }
   ],

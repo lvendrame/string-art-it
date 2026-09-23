@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@spaceymonk/react-radial-menu": "^2.1.0",
+    "class-variance-authority": "^0.7.1",
     "i18next": "^26.4.2",
     "jspdf": "^4.2.1",
     "lucide-react": "^1.44.0",

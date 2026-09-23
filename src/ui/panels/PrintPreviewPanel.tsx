@@ -31,6 +31,7 @@ import {
 import { BoardFillDefs } from "../../infrastructure/rendering/boardFill";
 import { boardFillPaint } from "../../infrastructure/rendering/boardFillUtils";
 import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
+import { Button } from "../Button";
 import { useEditorState } from "../useEditorStore";
 import { OverlayPanel } from "./OverlayPanel";
 import "./PrintPreviewPanel.css";
@@ -119,13 +120,14 @@ export function PrintPreviewPanel({
       <div className="print-preview-panel__sidebar">
         <div className="print-preview-panel__header">
           <span className="print-preview-panel__title">{t("panelTitle")}</span>
-          <button
-            className="btn print-preview-panel__close"
+          <Button
+            variant="toggle"
+            size="icon-sm"
             onClick={onClose}
             aria-label={t("actions.close", { ns: "common" })}
           >
             <X size={14} />
-          </button>
+          </Button>
         </div>
 
         <Section title={t("sections.printElements")}>

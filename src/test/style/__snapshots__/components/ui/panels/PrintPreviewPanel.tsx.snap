@@ -17,7 +17,6 @@
     "print-preview-panel__calibration-row",
     "print-preview-panel__calibration-test-btn",
     "print-preview-panel__checkbox-row",
-    "print-preview-panel__close",
     "print-preview-panel__header",
     "print-preview-panel__number-input",
     "print-preview-panel__number-input--wide",
@@ -70,20 +69,6 @@
       "declarations": {
         "font-weight": "700",
         "font-size": "13px"
-      }
-    },
-    {
-      "selector": ".btn.print-preview-panel__close",
-      "file": "ui/panels/PrintPreviewPanel.css",
-      "declarations": {
-        "display": "flex",
-        "align-items": "center",
-        "justify-content": "center",
-        "border-radius": "6px",
-        "padding": "5px",
-        "background": "var(--accent-soft)",
-        "border-color": "var(--accent)",
-        "color": "var(--accent)"
       }
     },
     {

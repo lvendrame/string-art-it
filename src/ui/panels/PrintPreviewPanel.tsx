@@ -1,5 +1,6 @@
 import { useEffect, useId, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import {
@@ -118,8 +119,12 @@ export function PrintPreviewPanel({
       <div className="print-preview-panel__sidebar">
         <div className="print-preview-panel__header">
           <span className="print-preview-panel__title">{t("panelTitle")}</span>
-          <button className="btn print-preview-panel__close" onClick={onClose}>
-            {t("actions.close", { ns: "common" })}
+          <button
+            className="btn print-preview-panel__close"
+            onClick={onClose}
+            aria-label={t("actions.close", { ns: "common" })}
+          >
+            <X size={14} />
           </button>
         </div>
 

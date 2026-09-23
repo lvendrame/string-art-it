@@ -28,10 +28,25 @@
   font-size: 13px;
 }
 
-.print-preview-panel__close {
+/* .btn.print-preview-panel__close (not just .print-preview-panel__close): a
+   same-specificity rule loses to theme.css's .btn depending on CSS chunk order —
+   see OverlayPanel.css's matching comment. Accent-tinted, same treatment as
+   OverlayPanelHeader's close — not solid-filled like __print-btn below, since
+   that reads as *the* primary CTA and Close isn't it. */
+.btn.print-preview-panel__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 12px;
+  padding: 5px;
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn.print-preview-panel__close:hover {
+  background: var(--accent-soft-2);
+  color: var(--accent-strong);
 }
 
 .print-preview-panel__section {

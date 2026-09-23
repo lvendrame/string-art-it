@@ -26,12 +26,17 @@
       }
     },
     {
-      "selector": ".overlay-panel__close",
+      "selector": ".btn.overlay-panel__close",
       "file": "ui/panels/OverlayPanel.css",
       "declarations": {
-        "border-radius": "6px",
-        "padding": "4px 10px",
-        "font-size": "12px"
+        "display": "flex",
+        "align-items": "center",
+        "justify-content": "center",
+        "border-radius": "8px",
+        "padding": "6px",
+        "background": "var(--accent-soft)",
+        "border-color": "var(--accent)",
+        "color": "var(--accent)"
       }
     },
     {

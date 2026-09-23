@@ -21,8 +21,25 @@
   font-size: 15px;
 }
 
-.overlay-panel__close {
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 12px;
+/* .btn.overlay-panel__close (not just .overlay-panel__close): a same-specificity
+   .overlay-panel__close rule loses to theme.css's .btn depending on CSS chunk
+   order (bundle-order dependent, not import-order — bit us in both dev and the
+   production build), same reason PrintPreviewPanel's __print-btn double-classes
+   itself. Accent-tinted (not solid-filled like __print-btn) — it's the way back
+   to the real app, worth more than a plain neutral icon, but a full solid accent
+   fill read as *the* primary CTA of the panel, which it isn't. */
+.btn.overlay-panel__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 6px;
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn.overlay-panel__close:hover {
+  background: var(--accent-soft-2);
+  color: var(--accent-strong);
 }

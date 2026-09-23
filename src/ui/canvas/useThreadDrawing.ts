@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { findPinById, type EditorState, type EditorStore } from "../../application/document";
-import type { Point } from "../../domain/paths";
+import { findPinById, type EditorState, type EditorStore } from "@application/document";
+import type { Point } from "@domain/paths";
 import { nearestThreadInsertionPin, nearestThreadPath } from "./hitTesting";
 
 // Thread mode drawing workflow (docs/specs/12-thread-editor.md §26-29): click extends

@@ -1,4 +1,4 @@
-import type { Point } from "../paths";
+import type { Point } from "@domain/paths";
 
 // docs/specs/32-generator-mode.md Lotus pattern — `sides` overlapping "petal" circles
 // arranged around a helper circle, each carrying its own arc of nails; strings fan out

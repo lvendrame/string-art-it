@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { EditorStore } from "../../application/document";
+import { EditorStore } from "@application/document";
 import { clearAutosave, loadAutosave, saveAutosave } from "./autosave";
 
 describe("autosave", () => {

@@ -1,4 +1,4 @@
-import { isSupportedLanguage, type SupportedLanguage } from "../../i18n/languages";
+import { isSupportedLanguage, type SupportedLanguage } from "@i18n/languages";
 
 // Mirrors autosave.ts's storage-key convention and best-effort try/catch posture —
 // language preference is a UI convenience, never something a language switch should

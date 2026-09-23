@@ -9,7 +9,7 @@ import {
   selectablePinsTouchingRect,
   type Rect,
 } from "./hitTesting";
-import { createPinPath, type Pin, type PinLayer, type PinPath } from "../../application/document";
+import { createPinPath, type Pin, type PinLayer, type PinPath } from "@application/document";
 
 const STYLE = { colour: "#fff", diameter: 2, guideVisible: true };
 

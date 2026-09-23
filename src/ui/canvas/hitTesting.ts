@@ -1,5 +1,5 @@
-import { allPinsWithMirrors, findPinById, type Pin, type PinLayer, type PinPath, type ThreadLayer } from "../../application/document";
-import type { Point } from "../../domain/paths";
+import { allPinsWithMirrors, findPinById, type Pin, type PinLayer, type PinPath, type ThreadLayer } from "@application/document";
+import type { Point } from "@domain/paths";
 
 export interface PinHit {
   layerId: string;

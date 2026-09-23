@@ -1,5 +1,5 @@
-import { CircularArcSegment, LineSegment } from "../paths";
-import type { Path, Point } from "../paths";
+import { CircularArcSegment, LineSegment } from "@domain/paths";
+import type { Path, Point } from "@domain/paths";
 
 function normalizeAngleDiff(angle: number): number {
   let d = angle % (2 * Math.PI);

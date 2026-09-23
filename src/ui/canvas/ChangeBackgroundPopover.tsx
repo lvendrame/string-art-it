@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
 import { Wallpaper } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { EditorStore } from "../../application/document";
-import { BoardAppearancePanel } from "../panels/BoardAppearancePanel";
-import { AnchoredPopover } from "../AnchoredPopover";
-import { usePopoverDismiss } from "../usePopoverDismiss";
+import type { EditorStore } from "@application/document";
+import { BoardAppearancePanel } from "@ui/panels/BoardAppearancePanel";
+import { AnchoredPopover } from "@ui/AnchoredPopover";
+import { usePopoverDismiss } from "@ui/usePopoverDismiss";
 import "./ChangeBackgroundPopover.css";
 
 // Matches CanvasToolbar.tsx's CANVAS_TOOLBAR_TOOLTIP_ID — this button renders inside

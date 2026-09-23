@@ -1,7 +1,7 @@
 // docs/specs/26-edit-mode-multi-select.md — pure geometry/algorithm helpers for the
 // Edit-mode multi-select feature. No UI/React imports (Clean Architecture boundary,
 // docs/specs/01-architecture.md), same as symmetryConfig.ts.
-import type { Point } from "../../domain/paths";
+import type { Point } from "@domain/paths";
 import { findPinPath, type PinLayer } from "./pinLayer";
 import { geometryCenter, nextPinId, type Pin, type PinPath } from "./pinPath";
 import type { PinPathRef, PinRef } from "./EditorState";

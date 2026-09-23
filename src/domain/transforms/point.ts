@@ -1,4 +1,4 @@
-import type { Point } from "../paths";
+import type { Point } from "@domain/paths";
 
 export function rotatePoint(point: Point, pivot: Point, radians: number): Point {
   const cos = Math.cos(radians);

@@ -1,4 +1,4 @@
-import type { Point } from "../paths";
+import type { Point } from "@domain/paths";
 
 export interface SnapPin extends Point {
   id: string;

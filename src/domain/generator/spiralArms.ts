@@ -1,4 +1,4 @@
-import type { Point } from "../paths";
+import type { Point } from "@domain/paths";
 
 // docs/specs/32-generator-mode.md Spirals pattern — pins sampled along `arms` polar
 // curves radiating from a shared centre, matching the researched competitor's Spirals

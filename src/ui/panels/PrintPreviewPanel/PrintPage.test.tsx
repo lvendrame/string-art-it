@@ -1,8 +1,8 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { boardPath, EditorStore, paperDimensionsCm } from "../../../application/document";
-import { pathBoundingBoxPoints } from "../../../domain/paths";
-import { boundingBoxOf } from "../../../domain/transforms";
+import { boardPath, EditorStore, paperDimensionsCm } from "@application/document";
+import { pathBoundingBoxPoints } from "@domain/paths";
+import { boundingBoxOf } from "@domain/transforms";
 import { PrintPage } from "./PrintPage";
 
 describe("PrintPage", () => {

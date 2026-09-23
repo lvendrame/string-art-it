@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { EditorStore } from "../application/document";
+import { EditorStore } from "@application/document";
 import { EditorShell } from "./EditorShell";
 import { fitViewportForBoard } from "./canvas/boardViewport";
 

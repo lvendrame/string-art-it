@@ -1,5 +1,5 @@
-import { percentToZoom, zoomAtPoint, type Viewport } from "../../domain/transforms";
-import type { Point } from "../../domain/paths";
+import { percentToZoom, zoomAtPoint, type Viewport } from "@domain/transforms";
+import type { Point } from "@domain/paths";
 import { CANVAS_VIEWPORT_PX } from "./boardViewport";
 
 // docs/specs/05-canvas-and-viewport.md §Zoom and Pan — shared by CanvasToolbar's

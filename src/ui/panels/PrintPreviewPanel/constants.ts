@@ -1,4 +1,4 @@
-import { CSS_PIXELS_PER_CM } from "../../../domain/transforms";
+import { CSS_PIXELS_PER_CM } from "@domain/transforms";
 
 // docs/specs/14-printing.md — printed/on-screen-preview pages both use the CSS
 // reference-pixel/cm ratio (96dpi ÷ 2.54, same anchor as the editor zoom baseline) so

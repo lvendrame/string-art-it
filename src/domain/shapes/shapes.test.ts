@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pathLength } from "../paths";
+import { pathLength } from "@domain/paths";
 import { arcShape } from "./arc";
 import { circleShape, ellipseShape } from "./ellipseCircle";
 import { rectangleShape, squareShape } from "./rectangleSquare";

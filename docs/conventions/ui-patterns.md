@@ -2,6 +2,16 @@
 
 Conventions this codebase has already settled on. Match them instead of inventing a new variant — consistency matters more than any individual pattern being "better."
 
+## Import paths (repo-wide, not just `src/ui/`)
+
+Any import that crosses out of the current directory (`../...`) uses a path alias instead of a relative specifier — established in M32 (`docs/plan/orchestrator.md`) across the whole `src/` tree (`domain/`, `application/`, `infrastructure/`, `i18n/`, `ui/`), not just UI code.
+
+- **Aliases** (`tsconfig.app.json`'s `paths` + matching `resolve.alias` entries in `vite.config.ts`): `@application/*` → `src/application/*`, `@domain/*` → `src/domain/*`, `@i18n/*` (+ the bare `@i18n` exact-match, for `src/i18n/index.ts`) → `src/i18n/*`, `@infrastructure/*` → `src/infrastructure/*`, `@ui/*` → `src/ui/*`, and the catch-all `@/*` → `src/*` for anything at the `src/` root outside those five folders (e.g. `@/App`, `@/test/setup`).
+- **A same-directory import stays relative** — `./Sibling` (or `./Sibling.css`, always relative per §Component styling above) is left as-is; only a specifier starting with `../` gets rewritten to the alias form matching where it actually points (e.g. `../../application/document` → `@application/document`, `../boardViewport` → `@ui/canvas/boardViewport`).
+- **Applies to every quoted module specifier**, not just static `import`/`export from`: `vi.mock("../x/y")` and `import("../x/y")` (dynamic import) get the same treatment, since both need to resolve to the same physical module a sibling `import` statement in the same file would.
+- **An import that resolves above `src/` entirely** (e.g. `AboutTabContent.tsx`'s `import pkg from "../../../../../package.json"`, reaching the repo-root `package.json`) has no alias to use and stays relative — the alias map only covers paths under `src/`.
+- **The Clean Architecture boundary guard is alias-aware**: `import/no-restricted-paths` (`eslint.config.js`, scoped to `src/domain/**`/`src/application/**`) uses `import/resolver: { typescript: { project: "./tsconfig.app.json" } }`, not the plain `node` resolver — the `node` resolver can't resolve an alias at all, which would let an aliased cross-boundary import (e.g. a domain file importing `@ui/canvas`) silently slip past the rule. `boundaries.test.ts` has both a relative-path and an alias-path regression case for this so the gap can't reopen unnoticed.
+
 ## Overlay panels (Stats / Print / Help)
 
 `StatisticsPanel.tsx`, `PrintPreviewPanel.tsx`, and `HelpPanel.tsx` (in `src/ui/panels/`) all follow the same convention, driven from one `EditorShell.tsx` state slot:

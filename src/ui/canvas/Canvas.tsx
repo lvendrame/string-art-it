@@ -10,12 +10,12 @@ import {
   type PinTool,
   type SelectTool,
   type ThreadTool,
-} from "../../application/document";
-import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
-import { DEFAULT_FONT_ID } from "../../infrastructure/fonts/fontCatalog";
-import { zoomToPercent } from "../../domain/transforms";
-import { buildTextGeometry } from "../text/buildTextGeometry";
-import { useEditorState } from "../useEditorStore";
+} from "@application/document";
+import { pathToSvgD } from "@infrastructure/rendering/svgPath";
+import { DEFAULT_FONT_ID } from "@infrastructure/fonts/fontCatalog";
+import { zoomToPercent } from "@domain/transforms";
+import { buildTextGeometry } from "@ui/text/buildTextGeometry";
+import { useEditorState } from "@ui/useEditorStore";
 import { CANVAS_VIEWPORT_PX } from "./boardViewport";
 import { CanvasToolbar } from "./CanvasToolbar/CanvasToolbar";
 import { StatusBar } from "./StatusBar";

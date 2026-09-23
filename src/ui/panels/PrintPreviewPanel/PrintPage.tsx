@@ -7,13 +7,13 @@ import {
   geometryToContourPaths,
   type EditorState,
   type PinPath,
-} from "../../../application/document";
-import type { Point } from "../../../domain/paths";
-import { generateRadialCopies, mirrorCopies } from "../../../domain/symmetry";
-import type { BoundingBox } from "../../../domain/transforms";
-import { BoardFillDefs } from "../../../infrastructure/rendering/boardFill/boardFill";
-import { boardFillPaint } from "../../../infrastructure/rendering/boardFillUtils";
-import { pathToSvgD } from "../../../infrastructure/rendering/svgPath";
+} from "@application/document";
+import type { Point } from "@domain/paths";
+import { generateRadialCopies, mirrorCopies } from "@domain/symmetry";
+import type { BoundingBox } from "@domain/transforms";
+import { BoardFillDefs } from "@infrastructure/rendering/boardFill/boardFill";
+import { boardFillPaint } from "@infrastructure/rendering/boardFillUtils";
+import { pathToSvgD } from "@infrastructure/rendering/svgPath";
 import {
   GRID_OPACITY,
   MIN_GRID_STROKE_PX,

@@ -14,12 +14,12 @@ import {
   type PaperSize,
   type PrintElements,
   type PrintScaleMode,
-} from "../../../application/document";
-import { pathBoundingBoxPoints } from "../../../domain/paths";
-import { boundingBoxOf, type BoundingBox } from "../../../domain/transforms";
-import { Button } from "../../Button";
-import { useEditorState } from "../../useEditorStore";
-import { OverlayPanel } from "../OverlayPanel/OverlayPanel";
+} from "@application/document";
+import { pathBoundingBoxPoints } from "@domain/paths";
+import { boundingBoxOf, type BoundingBox } from "@domain/transforms";
+import { Button } from "@ui/Button";
+import { useEditorState } from "@ui/useEditorStore";
+import { OverlayPanel } from "@ui/panels/OverlayPanel/OverlayPanel";
 import { CALIBRATION_LENGTH_CM } from "./constants";
 import { PrintPortal } from "./PrintPortal";
 import { CalibrationPage } from "./CalibrationPage";

@@ -1,4 +1,4 @@
-import type { Point } from "../paths";
+import type { Point } from "@domain/paths";
 
 // docs/specs/32-generator-mode.md Flower of Life pattern — a proper hexagonal grid of
 // small triangles, not a fixed 6-tile ring (an earlier, much sparser simplification).

@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
-import type { EditorStore, ParabolicSettings } from "../../../application/document";
-import { CheckboxField } from "../fields/CheckboxField";
-import { SliderField } from "../fields/SliderField";
+import type { EditorStore, ParabolicSettings } from "@application/document";
+import { CheckboxField } from "@ui/panels/fields/CheckboxField";
+import { SliderField } from "@ui/panels/fields/SliderField";
 
 // Same shape as ZigzagSettingsBox plus Cycles, enabled only while Full-fill is
 // checked — it has no effect otherwise (twoPinSequence.ts: cycles only applies to a

@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { createPinPath, type PinPathGeometry } from "../../application/document";
+import { createPinPath, type PinPathGeometry } from "@application/document";
 import { PinPathVisual } from "./PinPathVisual";
 
 const STYLE = { colour: "#fff", diameter: 2, guideVisible: true };

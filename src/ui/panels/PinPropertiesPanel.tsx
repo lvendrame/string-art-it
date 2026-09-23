@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
-import type { EditorStore } from "../../application/document";
-import { useEditorState } from "../useEditorStore";
+import type { EditorStore } from "@application/document";
+import { useEditorState } from "@ui/useEditorStore";
 import "./PinPropertiesPanel.css";
 
 // docs/specs/11-existing-object-editing: with no Pin Path selected, edits change the

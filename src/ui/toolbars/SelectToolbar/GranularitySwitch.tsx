@@ -1,4 +1,4 @@
-import type { EditorStore, SelectGranularity } from "../../../application/document";
+import type { EditorStore, SelectGranularity } from "@application/document";
 import "./GranularitySwitch.css";
 
 // docs/specs/26-edit-mode-multi-select.md, docs/specs/18-design-system.md §Labeled

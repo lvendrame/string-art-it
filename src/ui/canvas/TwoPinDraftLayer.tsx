@@ -1,5 +1,5 @@
-import { findPinById, type EditorState, type TwoPinDraft } from "../../application/document";
-import type { Point } from "../../domain/paths";
+import { findPinById, type EditorState, type TwoPinDraft } from "@application/document";
+import type { Point } from "@domain/paths";
 import { ThreadPathVisual } from "./ThreadPathVisual";
 
 interface Props {

@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Check, ChevronDown, Globe } from "lucide-react";
-import { LANGUAGE_META, SUPPORTED_LANGUAGES, isSupportedLanguage, type SupportedLanguage } from "../i18n/languages";
+import { LANGUAGE_META, SUPPORTED_LANGUAGES, isSupportedLanguage, type SupportedLanguage } from "@i18n/languages";
 import { AnchoredPopover } from "./AnchoredPopover";
 import { usePopoverDismiss } from "./usePopoverDismiss";
 import "./LanguageSwitcher.css";

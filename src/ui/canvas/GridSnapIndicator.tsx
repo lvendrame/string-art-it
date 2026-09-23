@@ -1,4 +1,4 @@
-import type { Point } from "../../domain/paths";
+import type { Point } from "@domain/paths";
 
 // docs/specs/05-canvas-and-viewport.md §Grid Snap Feedback — the nearest grid
 // intersection gets a visual indicator whenever grid-snap is active, independent of

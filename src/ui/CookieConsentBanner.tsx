@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import CookieConsent, { getCookieConsentValue } from "react-cookie-consent";
-import { denyAnalyticsConsent, grantAnalyticsConsent } from "../infrastructure/analytics/consent";
+import { denyAnalyticsConsent, grantAnalyticsConsent } from "@infrastructure/analytics/consent";
 
 const COOKIE_NAME = "stringartit:cookieConsent:v1";
 

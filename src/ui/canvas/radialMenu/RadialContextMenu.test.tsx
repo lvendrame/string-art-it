@@ -1,7 +1,7 @@
 import { fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { EditorStore, type EditorState } from "../../../application/document";
-import type { PlaybackTransport } from "../../toolbars/usePlaybackTransport";
+import { EditorStore, type EditorState } from "@application/document";
+import type { PlaybackTransport } from "@ui/toolbars/usePlaybackTransport";
 import { RadialContextMenu } from "./RadialContextMenu";
 
 function fakeTransport(overrides: Partial<PlaybackTransport> = {}): PlaybackTransport {

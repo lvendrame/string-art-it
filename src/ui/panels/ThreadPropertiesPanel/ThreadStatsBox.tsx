@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { threadPathStatistics, type EditorStore } from "../../../application/document";
+import { threadPathStatistics, type EditorStore } from "@application/document";
 import "./ThreadStatsBox.css";
 
 // docs/specs/17-statistics.md — same figures as the Statistics overlay's per-thread

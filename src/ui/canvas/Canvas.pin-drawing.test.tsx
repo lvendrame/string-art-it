@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { beforeAll, describe, expect, it } from "vitest";
-import { EditorStore } from "../../application/document";
+import { EditorStore } from "@application/document";
 import { Canvas } from "./Canvas";
 
 // Fixed viewport: zoom 4, panOrigin (-40,-40) — chosen so simple screen coordinates map

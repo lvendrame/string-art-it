@@ -1,14 +1,14 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronDown, Download, FileImage, FileType } from "lucide-react";
-import { boardPath, type EditorStore } from "../../application/document";
-import { pathBoundingBoxPoints } from "../../domain/paths";
-import { boundingBoxOf } from "../../domain/transforms";
-import { buildExportSvg } from "../../infrastructure/export/svgExport";
-import { exportToRaster } from "../../infrastructure/export/rasterExport";
-import { useEditorState } from "../useEditorStore";
-import { AnchoredPopover } from "../AnchoredPopover";
-import { usePopoverDismiss } from "../usePopoverDismiss";
+import { boardPath, type EditorStore } from "@application/document";
+import { pathBoundingBoxPoints } from "@domain/paths";
+import { boundingBoxOf } from "@domain/transforms";
+import { buildExportSvg } from "@infrastructure/export/svgExport";
+import { exportToRaster } from "@infrastructure/export/rasterExport";
+import { useEditorState } from "@ui/useEditorStore";
+import { AnchoredPopover } from "@ui/AnchoredPopover";
+import { usePopoverDismiss } from "@ui/usePopoverDismiss";
 import "./ExportMenu.css";
 
 function downloadBlob(blob: Blob, filename: string) {
@@ -65,7 +65,7 @@ export function ExportMenu({ store }: { store: EditorStore }) {
       // Dynamic import: svg2pdf.js has real-DOM requirements (see infrastructure/
       // export/pdfExport.ts) and pulls in a sizable library — load it only when the
       // user actually asks for a PDF.
-      const { exportToPdf } = await import("../../infrastructure/export/pdfExport");
+      const { exportToPdf } = await import("@infrastructure/export/pdfExport");
       const blob = await exportToPdf(svg, size.width, size.height);
       downloadBlob(blob, "string-art-design.pdf");
     } catch (err) {

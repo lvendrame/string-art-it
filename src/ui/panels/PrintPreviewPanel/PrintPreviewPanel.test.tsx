@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { computeEffectiveScale, EditorStore, paperDimensionsCm } from "../../../application/document";
-import { CSS_PIXELS_PER_CM } from "../../../domain/transforms";
+import { computeEffectiveScale, EditorStore, paperDimensionsCm } from "@application/document";
+import { CSS_PIXELS_PER_CM } from "@domain/transforms";
 import { PrintPreviewPanel } from "./PrintPreviewPanel";
 
 describe("PrintPreviewPanel", () => {

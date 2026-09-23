@@ -1,8 +1,8 @@
 import { useState, type RefObject } from "react";
-import type { Board } from "../../application/document";
-import { exportBoundingBox } from "../../infrastructure/export/svgExport";
-import { cmToPixels } from "../../infrastructure/export/rasterExport";
-import { drawSvgElementToCanvas, pickSupportedVideoMimeType, recordFramesToVideo } from "../../infrastructure/export/videoExport";
+import type { Board } from "@application/document";
+import { exportBoundingBox } from "@infrastructure/export/svgExport";
+import { cmToPixels } from "@infrastructure/export/rasterExport";
+import { drawSvgElementToCanvas, pickSupportedVideoMimeType, recordFramesToVideo } from "@infrastructure/export/videoExport";
 
 const VIDEO_DPI = 150; // fixed — not user-configurable, matches the scope of the requested controls
 const VIDEO_FPS = 30;

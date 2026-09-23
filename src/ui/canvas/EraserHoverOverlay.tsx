@@ -1,5 +1,5 @@
-import { findPinById, geometryToContourPaths, type PinLayer, type ThreadLayer } from "../../application/document";
-import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
+import { findPinById, geometryToContourPaths, type PinLayer, type ThreadLayer } from "@application/document";
+import { pathToSvgD } from "@infrastructure/rendering/svgPath";
 import type { PinHit, ThreadHit } from "./hitTesting";
 
 interface Props {

@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { EditorStore } from "../../application/document";
+import { EditorStore } from "@application/document";
 import { Canvas } from "./Canvas";
 
 // docs/specs/29-text-pin-path.md — the Text tool's placement click awaits the default

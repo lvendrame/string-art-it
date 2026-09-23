@@ -1,7 +1,7 @@
 import { createRef } from "react";
 import { act, render, screen, fireEvent } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import i18n from "../i18n";
+import i18n from "@i18n";
 import { LanguageSwitcher, type LanguageSwitcherHandle } from "./LanguageSwitcher";
 
 describe("LanguageSwitcher", () => {

@@ -1,4 +1,4 @@
-import type { PinPath, ThreadPath } from "../../application/document";
+import type { PinPath, ThreadPath } from "@application/document";
 import { PinPathVisual } from "./PinPathVisual";
 import { ThreadPathVisual } from "./ThreadPathVisual";
 

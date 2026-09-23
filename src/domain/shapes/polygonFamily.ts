@@ -1,5 +1,5 @@
-import { LineSegment } from "../paths";
-import type { Path, Point } from "../paths";
+import { LineSegment } from "@domain/paths";
+import type { Path, Point } from "@domain/paths";
 
 function vertexAt(center: Point, radius: number, angle: number): Point {
   return { x: center.x + radius * Math.cos(angle), y: center.y + radius * Math.sin(angle) };

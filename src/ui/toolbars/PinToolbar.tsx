@@ -2,8 +2,8 @@ import { Circle, Ellipse, Eraser, Minus, PenTool, RectangleHorizontal, Shapes, S
 import type { ComponentType } from "react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
-import type { EditorStore, PinTool } from "../../application/document";
-import { useEditorState } from "../useEditorStore";
+import type { EditorStore, PinTool } from "@application/document";
+import { useEditorState } from "@ui/useEditorStore";
 import { PIN_TOOL_SHORTCUT_KEY } from "./pinToolShortcuts";
 import "./PinToolbar.css";
 

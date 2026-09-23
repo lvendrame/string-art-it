@@ -6,8 +6,8 @@ import {
   rightTriangleHypotenuse,
   rightTriangleShape,
   squareShape,
-} from "../../domain/shapes";
-import type { Path } from "../../domain/paths";
+} from "@domain/shapes";
+import type { Path } from "@domain/paths";
 
 // docs/specs/03-board-configuration.md
 export type BoardShape = "circle" | "oval" | "rectangle" | "square" | "triangle";

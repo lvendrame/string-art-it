@@ -1,4 +1,4 @@
-import { findPinById, type PinLayer, type ThreadPath } from "../../application/document";
+import { findPinById, type PinLayer, type ThreadPath } from "@application/document";
 
 // docs/specs/25-thread-colour-rendering: geometry is one path (A -> B -> ...)
 // regardless of strand count — 2/3 colours render as the SAME line repeated with an

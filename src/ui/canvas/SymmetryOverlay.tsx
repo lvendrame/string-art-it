@@ -1,4 +1,4 @@
-import type { SymmetryConfig } from "../../application/document";
+import type { SymmetryConfig } from "@application/document";
 
 export function SymmetryOverlay({ config }: { config: SymmetryConfig }) {
   if (config.type === "none") return null;

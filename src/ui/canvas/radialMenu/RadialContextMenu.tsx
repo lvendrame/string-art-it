@@ -35,11 +35,11 @@ import {
   ZoomIn,
   ZoomOut,
 } from "lucide-react";
-import type { EditorState, EditorStore } from "../../../application/document";
-import type { Point } from "../../../domain/paths";
-import type { PlaybackTransport } from "../../toolbars/usePlaybackTransport";
-import { fitViewportForBoard } from "../boardViewport";
-import { zoomInStep, zoomOutStep } from "../zoomSteps";
+import type { EditorState, EditorStore } from "@application/document";
+import type { Point } from "@domain/paths";
+import type { PlaybackTransport } from "@ui/toolbars/usePlaybackTransport";
+import { fitViewportForBoard } from "@ui/canvas/boardViewport";
+import { zoomInStep, zoomOutStep } from "@ui/canvas/zoomSteps";
 import { getRadialMenuSliceIds, type RadialMenuSliceId } from "./radialMenuSlices";
 import "./RadialContextMenu.css";
 

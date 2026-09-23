@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EditorStore } from "../../../application/document";
+import { EditorStore } from "@application/document";
 import { getRadialMenuSliceIds } from "./radialMenuSlices";
 
 describe("getRadialMenuSliceIds", () => {

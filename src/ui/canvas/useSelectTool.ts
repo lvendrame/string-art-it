@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import type { EditorState, EditorStore, PinPathRef, PinRef } from "../../application/document";
-import type { Point } from "../../domain/paths";
+import type { EditorState, EditorStore, PinPathRef, PinRef } from "@application/document";
+import type { Point } from "@domain/paths";
 import { nearestSelectPathHit, nearestSelectPinHit, selectablePinPathsTouchingRect, selectablePinsTouchingRect, type Rect } from "./hitTesting";
 
 // docs/specs/26-edit-mode-multi-select.md — click vs. drag is decided by a small

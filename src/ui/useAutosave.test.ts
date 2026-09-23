@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { EditorStore } from "../application/document";
-import { loadAutosave, saveAutosave } from "../infrastructure/persistence/autosave";
+import { EditorStore } from "@application/document";
+import { loadAutosave, saveAutosave } from "@infrastructure/persistence/autosave";
 import { useAutosave } from "./useAutosave";
 
 describe("useAutosave", () => {

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import type { EditorStore } from "../../application/document";
-import type { Point } from "../../domain/paths";
-import { screenDistanceToDocument, type Viewport } from "../../domain/transforms";
+import type { EditorStore } from "@application/document";
+import type { Point } from "@domain/paths";
+import { screenDistanceToDocument, type Viewport } from "@domain/transforms";
 
 const MIN_POINT_DISTANCE_PX = 3;
 

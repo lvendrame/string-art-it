@@ -1,4 +1,4 @@
-import type { PinLayer, ThreadLayer } from "../../application/document";
+import type { PinLayer, ThreadLayer } from "@application/document";
 import { ThreadPathVisual } from "./ThreadPathVisual";
 
 export function ThreadLayersView({

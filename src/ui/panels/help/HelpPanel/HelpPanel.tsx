@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { EditorMode } from "../../../../application/document";
-import { HELP_TABS, MODE_TO_HELP_TAB, type HelpTabId } from "../helpContent";
-import { OverlayPanel } from "../../OverlayPanel/OverlayPanel";
-import { OverlayPanelHeader } from "../../OverlayPanel/OverlayPanelHeader";
+import type { EditorMode } from "@application/document";
+import { HELP_TABS, MODE_TO_HELP_TAB, type HelpTabId } from "@ui/panels/help/helpContent";
+import { OverlayPanel } from "@ui/panels/OverlayPanel/OverlayPanel";
+import { OverlayPanelHeader } from "@ui/panels/OverlayPanel/OverlayPanelHeader";
 import { HelpSectionView } from "./HelpSectionView";
 import "./HelpPanel.css";
 

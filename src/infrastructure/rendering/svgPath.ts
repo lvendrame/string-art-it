@@ -1,5 +1,5 @@
-import { LineSegment, CircularArcSegment, EllipticalArcSegment } from "../../domain/paths";
-import type { Path, Point } from "../../domain/paths";
+import { LineSegment, CircularArcSegment, EllipticalArcSegment } from "@domain/paths";
+import type { Path, Point } from "@domain/paths";
 
 const FULL_TURN_EPSILON = 1e-6;
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { projectFileToDocument, type EditorStore, type ProjectFile } from "../application/document";
-import { clearAutosave, loadAutosave, saveAutosave } from "../infrastructure/persistence/autosave";
+import { projectFileToDocument, type EditorStore, type ProjectFile } from "@application/document";
+import { clearAutosave, loadAutosave, saveAutosave } from "@infrastructure/persistence/autosave";
 
 const DEBOUNCE_MS = 2000;
 

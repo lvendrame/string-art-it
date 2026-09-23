@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { findPinPath, translateGeometry, type EditorState, type EditorStore, type Pin, type PinLayer } from "../../application/document";
-import { translatePoint } from "../../domain/transforms";
-import type { Point } from "../../domain/paths";
+import { findPinPath, translateGeometry, type EditorState, type EditorStore, type Pin, type PinLayer } from "@application/document";
+import { translatePoint } from "@domain/transforms";
+import type { Point } from "@domain/paths";
 import { buildPinGroups, type PinGroup } from "./pinGroups";
 
 type MoveDrag =

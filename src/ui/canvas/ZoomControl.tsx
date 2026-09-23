@@ -1,12 +1,12 @@
 import { useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { EditorStore } from "../../application/document";
-import type { Viewport } from "../../domain/transforms";
-import { zoomToPercent } from "../../domain/transforms";
+import type { EditorStore } from "@application/document";
+import type { Viewport } from "@domain/transforms";
+import { zoomToPercent } from "@domain/transforms";
 import { VIEWPORT_CENTER, ZOOM_PRESET_PERCENTS, zoomToPercentStep } from "./zoomSteps";
-import { AnchoredPopover } from "../AnchoredPopover";
-import { usePopoverDismiss } from "../usePopoverDismiss";
+import { AnchoredPopover } from "@ui/AnchoredPopover";
+import { usePopoverDismiss } from "@ui/usePopoverDismiss";
 import "./ZoomControl.css";
 
 const ZOOM_LISTBOX_ID = "zoom-control-listbox";

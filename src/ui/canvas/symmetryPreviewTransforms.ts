@@ -1,4 +1,4 @@
-import type { SymmetryConfig } from "../../application/document";
+import type { SymmetryConfig } from "@application/document";
 
 // SVG `transform` strings, one per mirrored/radial copy under `config` (excluding the
 // source) — the same math as domain/symmetry's mirrorCopies/generateRadialCopies, just

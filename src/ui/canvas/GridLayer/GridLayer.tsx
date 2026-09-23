@@ -1,5 +1,5 @@
-import type { GridSettings } from "../../../application/document";
-import type { Viewport } from "../../../domain/transforms";
+import type { GridSettings } from "@application/document";
+import type { Viewport } from "@domain/transforms";
 import { UnclippedGridDot } from "./UnclippedGridDot";
 
 interface Props {

@@ -1,5 +1,5 @@
-import { HistoryStack } from "../commands/HistoryStack";
-import { SetValueCommand } from "../commands/SetValueCommand";
+import { HistoryStack } from "@application/commands/HistoryStack";
+import { SetValueCommand } from "@application/commands/SetValueCommand";
 import { createDefaultBoard, defaultDimensionsFor, clampDimension, type Board, type BoardAppearance, type BoardDimensions, type BoardShape, type TriangleType } from "./board";
 import type {
   EditorMode,
@@ -17,7 +17,7 @@ import type {
   ZigzagSettings,
   ParabolicSettings,
 } from "./EditorState";
-import type { Point } from "../../domain/paths";
+import type { Point } from "@domain/paths";
 import { buildGeneratorPattern, GENERATOR_PATTERN_NAMES, maxInscribedRadius, type GeneratorParams } from "./generator/generatorPatterns";
 import {
   addPinPathToLayers,

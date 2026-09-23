@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { pinPathStatistics, type EditorStore, type PinPathGeometry } from "../../../application/document";
-import { FONT_CATALOG, getFontCatalogEntry, type FontWeight } from "../../../infrastructure/fonts/fontCatalog";
-import { buildTextGeometry } from "../../text/buildTextGeometry";
-import { useEditorState } from "../../useEditorStore";
-import { SymmetryPanel } from "../SymmetryPanel";
+import { pinPathStatistics, type EditorStore, type PinPathGeometry } from "@application/document";
+import { FONT_CATALOG, getFontCatalogEntry, type FontWeight } from "@infrastructure/fonts/fontCatalog";
+import { buildTextGeometry } from "@ui/text/buildTextGeometry";
+import { useEditorState } from "@ui/useEditorStore";
+import { SymmetryPanel } from "@ui/panels/SymmetryPanel";
 import { NumberField } from "./NumberField";
 import { SummaryMessage } from "./SummaryMessage";
 import { PinPathStatsBox } from "./PinPathStatsBox";

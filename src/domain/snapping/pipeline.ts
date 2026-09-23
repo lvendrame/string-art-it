@@ -1,5 +1,5 @@
-import type { Point } from "../paths";
-import { screenDistanceToDocument, type Viewport } from "../transforms";
+import type { Point } from "@domain/paths";
+import { screenDistanceToDocument, type Viewport } from "@domain/transforms";
 import { snapToGrid, type GridGap } from "./grid";
 import { findNearestPin, type SnapPin } from "./pins";
 

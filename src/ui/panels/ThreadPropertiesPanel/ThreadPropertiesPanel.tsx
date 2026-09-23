@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
-import type { EditorStore } from "../../../application/document";
-import { useEditorState } from "../../useEditorStore";
-import { SliderField } from "../fields/SliderField";
-import { coloursForCount } from "../threadColourPalette";
+import type { EditorStore } from "@application/document";
+import { useEditorState } from "@ui/useEditorStore";
+import { SliderField } from "@ui/panels/fields/SliderField";
+import { coloursForCount } from "@ui/panels/threadColourPalette";
 import { ZigzagSettingsBox } from "./ZigzagSettingsBox";
 import { ParabolicSettingsBox } from "./ParabolicSettingsBox";
 import { ThreadStatsBox } from "./ThreadStatsBox";

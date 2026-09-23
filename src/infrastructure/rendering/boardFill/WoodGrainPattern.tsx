@@ -1,4 +1,4 @@
-import type { WoodGrainGeometry } from "../woodGrain";
+import type { WoodGrainGeometry } from "@infrastructure/rendering/woodGrain";
 
 // Growth-ring pattern shared by "wood-texture" and "painted-wood": just the procedural
 // noise-banded rings from woodGrain.ts, centred on the board so every ring is complete.

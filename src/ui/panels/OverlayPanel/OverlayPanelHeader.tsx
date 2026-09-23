@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Button } from "../../Button";
+import { Button } from "@ui/Button";
 import "./OverlayPanelHeader.css";
 
 // The title + Close button row, identical across StatisticsPanel and HelpPanel.

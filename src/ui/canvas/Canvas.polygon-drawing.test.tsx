@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { beforeAll, describe, expect, it } from "vitest";
-import { EditorStore } from "../../application/document";
+import { EditorStore } from "@application/document";
 import { Canvas } from "./Canvas";
 
 // docs/specs/33-pin-path-tool.md — same fixed-viewport setup as Canvas.pin-drawing.test.tsx

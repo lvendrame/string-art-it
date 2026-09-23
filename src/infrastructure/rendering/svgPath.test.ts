@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { circleShape, rectangleShape } from "../../domain/shapes";
+import { circleShape, rectangleShape } from "@domain/shapes";
 import { pathToSvgD } from "./svgPath";
 
 describe("pathToSvgD", () => {

@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { EditorStore } from "../../../application/document";
+import { EditorStore } from "@application/document";
 import { GeneratorPanel } from "./GeneratorPanel";
 
 // docs/specs/32-generator-mode.md

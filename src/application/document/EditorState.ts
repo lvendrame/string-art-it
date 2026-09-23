@@ -1,5 +1,5 @@
-import type { Viewport } from "../../domain/transforms";
-import type { Point } from "../../domain/paths";
+import type { Viewport } from "@domain/transforms";
+import type { Point } from "@domain/paths";
 import type { Board } from "./board";
 import type { GeneratorParams } from "./generator/generatorPatterns";
 import type { PinLayer } from "./pinLayer";

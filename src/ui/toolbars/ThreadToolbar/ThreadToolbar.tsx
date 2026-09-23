@@ -1,7 +1,7 @@
 import { Croissant, Eraser, MousePointer2, PenLine, Scissors, Waypoints } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { EditorStore } from "../../../application/document";
-import { useEditorState } from "../../useEditorStore";
+import type { EditorStore } from "@application/document";
+import { useEditorState } from "@ui/useEditorStore";
 import { PinStateLegend } from "./PinStateLegend";
 import "./ThreadToolbar.css";
 

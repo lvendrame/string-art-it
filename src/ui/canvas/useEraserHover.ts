@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { EditorState, PinTool, ThreadTool } from "../../application/document";
-import type { Point } from "../../domain/paths";
+import type { EditorState, PinTool, ThreadTool } from "@application/document";
+import type { Point } from "@domain/paths";
 import { nearestPinOwner, nearestThreadPath, type PinHit, type ThreadHit } from "./hitTesting";
 
 // docs/specs/11-erasers.md — none of the four erasers previously showed what a click

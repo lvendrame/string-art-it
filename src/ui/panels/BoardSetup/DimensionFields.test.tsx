@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { useTranslation } from "react-i18next";
-import { EditorStore } from "../../../application/document";
+import { EditorStore } from "@application/document";
 import { DimensionFields } from "./DimensionFields";
 
 function Harness({ store }: { store: EditorStore }) {

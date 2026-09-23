@@ -36,13 +36,13 @@ import {
   type LotusNode,
   type RayZigzagNode,
   type TileRingTile,
-} from "../../../domain/generator";
-import { spacingForPinCount, type Point } from "../../../domain/paths";
-import type { Board } from "../board";
-import { createPinPath, nextPathId, nextPinId, type Pin, type PinPath, type PinPathGeometry, type PinStyle } from "../pinPath";
-import { createThreadPath, type ThreadPath } from "../threadPath";
-import { NO_SYMMETRY } from "../symmetryConfig";
-import type { ThreadDefaults } from "../EditorState";
+} from "@domain/generator";
+import { spacingForPinCount, type Point } from "@domain/paths";
+import type { Board } from "@application/document/board";
+import { createPinPath, nextPathId, nextPinId, type Pin, type PinPath, type PinPathGeometry, type PinStyle } from "@application/document/pinPath";
+import { createThreadPath, type ThreadPath } from "@application/document/threadPath";
+import { NO_SYMMETRY } from "@application/document/symmetryConfig";
+import type { ThreadDefaults } from "@application/document/EditorState";
 
 // docs/specs/32-generator-mode.md — the 5 generator patterns this milestone ships,
 // chosen to exercise every engine capability (single-shape modular math, 2-shape and

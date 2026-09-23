@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { snapToGrid } from "./grid";
 import { findNearestPin, type SnapPin } from "./pins";
 import { resolveSnapPosition } from "./pipeline";
-import type { Viewport } from "../transforms";
+import type { Viewport } from "@domain/transforms";
 
 describe("snapToGrid", () => {
   it("snaps to the nearest grid intersection", () => {

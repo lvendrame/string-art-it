@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { findPinPath, rotateGeometry, type EditorState, type EditorStore, type Pin, type PinLayer } from "../../application/document";
-import { rotatePoint } from "../../domain/transforms";
-import type { Point } from "../../domain/paths";
+import { findPinPath, rotateGeometry, type EditorState, type EditorStore, type Pin, type PinLayer } from "@application/document";
+import { rotatePoint } from "@domain/transforms";
+import type { Point } from "@domain/paths";
 import { buildPinGroups, type PinGroup } from "./pinGroups";
 
 // docs/specs/09-selection-and-editing.md Rotation tool — horizontal-drag-to-angle:

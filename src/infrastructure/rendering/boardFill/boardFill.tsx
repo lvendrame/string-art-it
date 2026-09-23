@@ -1,6 +1,6 @@
-import type { BoardAppearance } from "../../../application/document";
-import { buildWoodGrainGeometry } from "../woodGrain";
-import { PAINT_PRESETS, WOOD_PRESETS } from "../boardFillUtils";
+import type { BoardAppearance } from "@application/document";
+import { buildWoodGrainGeometry } from "@infrastructure/rendering/woodGrain";
+import { PAINT_PRESETS, WOOD_PRESETS } from "@infrastructure/rendering/boardFillUtils";
 import { WoodGrainPattern } from "./WoodGrainPattern";
 
 // docs/specs/04-board-appearance.md: appearance is independent from pins/threads/

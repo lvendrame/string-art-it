@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
 import { Settings } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { EditorStore } from "../../application/document";
-import { useEditorState } from "../useEditorStore";
-import { AnchoredPopover } from "../AnchoredPopover";
-import { usePopoverDismiss } from "../usePopoverDismiss";
+import type { EditorStore } from "@application/document";
+import { useEditorState } from "@ui/useEditorStore";
+import { AnchoredPopover } from "@ui/AnchoredPopover";
+import { usePopoverDismiss } from "@ui/usePopoverDismiss";
 import "./GridSettingsPopover.css";
 
 // Matches CanvasToolbar.tsx's CANVAS_TOOLBAR_TOOLTIP_ID — this button renders inside

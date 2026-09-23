@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { computeMirroredPinGroups, geometryToContourPaths, type PinPath } from "../../application/document";
-import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
+import { computeMirroredPinGroups, geometryToContourPaths, type PinPath } from "@application/document";
+import { pathToSvgD } from "@infrastructure/rendering/svgPath";
 
 // docs/specs/06-symmetry.md: mirrored copies are derived from the source pins on every
 // render — never stored, so editing the source always keeps them in sync.

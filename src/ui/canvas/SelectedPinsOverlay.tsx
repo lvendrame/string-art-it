@@ -1,4 +1,4 @@
-import type { PinLayer } from "../../application/document";
+import type { PinLayer } from "@application/document";
 
 // docs/specs/26-edit-mode-multi-select.md — highlights every individually selected pin
 // in Pins granularity. Replaces the old MergeSelectionOverlay (no hover-candidate

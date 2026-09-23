@@ -6,8 +6,8 @@ import {
   type EditorStore,
   type PinPathGeometry,
   type PinTool,
-} from "../../application/document";
-import type { Point } from "../../domain/paths";
+} from "@application/document";
+import type { Point } from "@domain/paths";
 
 interface ArcDraft {
   start: Point;

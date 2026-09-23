@@ -59,8 +59,13 @@ export default tseslint.config(
     files: ["src/domain/**/*.{ts,tsx}", "src/application/**/*.{ts,tsx}"],
     plugins: { import: importPlugin },
     settings: {
+      // typescript (not node): import/no-restricted-paths below must resolve the
+      // @application/@domain/@i18n/@infrastructure/@ui/@ path aliases (tsconfig.app.json)
+      // the same way the bundler does, or an aliased cross-boundary import (e.g. a
+      // domain file importing "@ui/canvas") would silently resolve to nothing and slip
+      // past the zone check — see boundaries.test.ts's alias-import regression case.
       "import/resolver": {
-        node: { extensions: [".js", ".jsx", ".ts", ".tsx"] },
+        typescript: { project: "./tsconfig.app.json" },
       },
     },
     rules: {

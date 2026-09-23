@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { boundingBoxOf } from "../transforms";
-import { circleShape } from "../shapes";
+import { boundingBoxOf } from "@domain/transforms";
+import { circleShape } from "@domain/shapes";
 import { pathBoundingBoxPoints } from "./Path";
 
 describe("pathBoundingBoxPoints", () => {

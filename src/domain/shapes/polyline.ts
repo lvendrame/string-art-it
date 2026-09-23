@@ -1,5 +1,5 @@
-import { LineSegment } from "../paths";
-import type { Path, Point } from "../paths";
+import { LineSegment } from "@domain/paths";
+import type { Path, Point } from "@domain/paths";
 
 // A closed contour (e.g. one loop of a flattened glyph outline — the outer ring of an
 // "o", or the dot of an "i") is just many short line segments chained end-to-end, with

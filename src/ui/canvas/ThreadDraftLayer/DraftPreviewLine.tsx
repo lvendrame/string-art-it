@@ -1,5 +1,5 @@
-import { findPinById, type PinLayer } from "../../../application/document";
-import type { Point } from "../../../domain/paths";
+import { findPinById, type PinLayer } from "@application/document";
+import type { Point } from "@domain/paths";
 
 export function DraftPreviewLine({
   pinLayers,

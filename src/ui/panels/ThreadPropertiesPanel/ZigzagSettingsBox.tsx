@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
-import type { EditorStore, ZigzagSettings } from "../../../application/document";
-import { CheckboxField } from "../fields/CheckboxField";
-import { SliderField } from "../fields/SliderField";
+import type { EditorStore, ZigzagSettings } from "@application/document";
+import { CheckboxField } from "@ui/panels/fields/CheckboxField";
+import { SliderField } from "@ui/panels/fields/SliderField";
 
 // docs/specs/35-zigzag-parabolic-tools.md §Configuration — shown only while the
 // Zig-zag tool is active (setThreadTool already clears any threadPath selection when

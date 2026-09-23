@@ -6,7 +6,7 @@ import {
   type EditorMode,
   type EditorState,
   type EditorStore,
-} from "../application/document";
+} from "@application/document";
 import { fitViewportForBoard } from "./canvas/boardViewport";
 import { VIEWPORT_CENTER, zoomInStep, zoomOutStep } from "./canvas/zoomSteps";
 import { isTextEntryTarget } from "./keyboard";

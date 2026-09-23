@@ -1,4 +1,4 @@
-import type { Point } from "../paths";
+import type { Point } from "@domain/paths";
 
 // A neutral, library-agnostic description of one glyph-outline drawing command —
 // deliberately NOT opentype.js's own Path/PathCommand classes, so this module (and the

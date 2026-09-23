@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
-import { distributeClosedPath, distributeOpenPath, distributePathPerVertex, pathLength } from "../../domain/paths";
-import { geometryToPath, isVertexAnchoredGeometry, type EditorMode, type PinPathGeometry, type PinTool } from "../../application/document";
+import { distributeClosedPath, distributeOpenPath, distributePathPerVertex, pathLength } from "@domain/paths";
+import { geometryToPath, isVertexAnchoredGeometry, type EditorMode, type PinPathGeometry, type PinTool } from "@application/document";
 import "./StatusBar.css";
 
 export function StatusBar({

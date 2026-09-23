@@ -9,7 +9,7 @@ import {
   type BoardShape,
   type PinPathGeometry,
   type TriangleType,
-} from "../../application/document";
+} from "@application/document";
 
 // docs/specs/31-webmcp-agent-tools.md — a genuinely public, stable-contract surface,
 // unlike the unstable window.stringArtItDebug test hook (App.tsx). No native browser

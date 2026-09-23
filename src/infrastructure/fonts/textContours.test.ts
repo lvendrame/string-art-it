@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parse, type Font } from "opentype.js";
 import { beforeAll, describe, expect, it } from "vitest";
-import type { Point } from "../../domain/paths";
+import type { Point } from "@domain/paths";
 import { getTextContours } from "./textContours";
 
 // Integration-style test against a real bundled font file — this is what actually

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { EditorStore } from "../../application/document";
+import { EditorStore } from "@application/document";
 import { registerWebMcpTools } from "./tools";
 
 interface RegisteredTool {

@@ -1,7 +1,7 @@
 import { forwardRef, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { boardPath, truncateThreadLayersAtFrame, type EditorState } from "../../application/document";
-import { pathToSvgD } from "../../infrastructure/rendering/svgPath";
+import { boardPath, truncateThreadLayersAtFrame, type EditorState } from "@application/document";
+import { pathToSvgD } from "@infrastructure/rendering/svgPath";
 import { CANVAS_VIEWPORT_PX, fitViewportForBoard } from "./boardViewport";
 import { BoardLayer } from "./BoardLayer";
 import { GridLayer } from "./GridLayer/GridLayer";

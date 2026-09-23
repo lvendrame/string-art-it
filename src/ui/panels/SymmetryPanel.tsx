@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
-import { symmetryConfigForType, type EditorStore, type SymmetryConfig } from "../../application/document";
-import { useEditorState } from "../useEditorStore";
+import { symmetryConfigForType, type EditorStore, type SymmetryConfig } from "@application/document";
+import { useEditorState } from "@ui/useEditorStore";
 import "./SymmetryPanel.css";
 
 function options(t: TFunction<"panels">): { id: SymmetryConfig["type"]; label: string }[] {

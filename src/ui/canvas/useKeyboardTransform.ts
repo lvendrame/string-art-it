@@ -9,10 +9,10 @@ import {
   translateGeometry,
   type EditorStore,
   type PinPath,
-} from "../../application/document";
-import { rotatePoint, scalePoint, screenDistanceToDocument, translatePoint } from "../../domain/transforms";
-import type { Point } from "../../domain/paths";
-import { isTextEntryTarget } from "../keyboard";
+} from "@application/document";
+import { rotatePoint, scalePoint, screenDistanceToDocument, translatePoint } from "@domain/transforms";
+import type { Point } from "@domain/paths";
+import { isTextEntryTarget } from "@ui/keyboard";
 import { MIN_SCALE_FACTOR } from "./useScaleTool";
 import { buildPinGroups, selectedPinsFromGroups } from "./pinGroups";
 

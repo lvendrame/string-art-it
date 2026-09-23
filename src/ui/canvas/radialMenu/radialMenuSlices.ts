@@ -1,4 +1,4 @@
-import { canCommitSelectionMerge, type EditorState } from "../../../application/document";
+import { canCommitSelectionMerge, type EditorState } from "@application/document";
 
 // docs/specs/25-radial-context-menu.md — which slices the radial context menu shows,
 // derived purely from EditorState (mode + the relevant sub-state per mode). Kept

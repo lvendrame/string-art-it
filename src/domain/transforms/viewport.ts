@@ -1,4 +1,4 @@
-import type { Point } from "../paths";
+import type { Point } from "@domain/paths";
 import type { BoundingBox } from "./point";
 
 // docs/specs/05-canvas-and-viewport.md §Physical Coordinate System:

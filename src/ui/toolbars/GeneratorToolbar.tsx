@@ -1,6 +1,6 @@
 import { Wand2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { GENERATOR_PATTERNS, type GeneratorPatternId } from "../../application/document";
+import { GENERATOR_PATTERNS, type GeneratorPatternId } from "@application/document";
 import "./GeneratorToolbar.css";
 
 // docs/specs/32-generator-mode.md — the pattern selector. Same native-<select>-in-

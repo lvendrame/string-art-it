@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { findPinById, type EditorState, type EditorStore } from "../../application/document";
-import type { Point } from "../../domain/paths";
+import { findPinById, type EditorState, type EditorStore } from "@application/document";
+import type { Point } from "@domain/paths";
 import { nearestThreadInsertionPin } from "./hitTesting";
 
 function isTwoPinTool(tool: EditorState["threadTool"]): tool is "zigzag" | "parabolic" {

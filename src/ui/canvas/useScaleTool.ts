@@ -11,9 +11,9 @@ import {
   type PinLayer,
   type PinPath,
   type ThreadLayer,
-} from "../../application/document";
-import { scalePoint } from "../../domain/transforms";
-import type { Point } from "../../domain/paths";
+} from "@application/document";
+import { scalePoint } from "@domain/transforms";
+import type { Point } from "@domain/paths";
 import { buildPinGroups, selectedPinsFromGroups, type PinGroup } from "./pinGroups";
 
 // docs/specs/21-scale-and-pin-distance.md Scale tool — horizontal-drag-to-factor, same

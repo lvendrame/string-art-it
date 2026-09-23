@@ -1,5 +1,5 @@
-import { LineSegment } from "../paths";
-import type { Path, Point } from "../paths";
+import { LineSegment } from "@domain/paths";
+import type { Path, Point } from "@domain/paths";
 
 // A hand-drawn shape is just many short line segments chained end-to-end — the Path
 // engine (length/pointAtDistance) already treats any Segment sequence uniformly, so

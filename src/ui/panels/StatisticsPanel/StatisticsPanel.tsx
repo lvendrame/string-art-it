@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
-import { pinPathStatistics, projectTotalPins, threadPathStatistics, threadStatisticsByType, type EditorStore } from "../../../application/document";
-import { useEditorState } from "../../useEditorStore";
-import { OverlayPanel } from "../OverlayPanel/OverlayPanel";
-import { OverlayPanelHeader } from "../OverlayPanel/OverlayPanelHeader";
+import { pinPathStatistics, projectTotalPins, threadPathStatistics, threadStatisticsByType, type EditorStore } from "@application/document";
+import { useEditorState } from "@ui/useEditorStore";
+import { OverlayPanel } from "@ui/panels/OverlayPanel/OverlayPanel";
+import { OverlayPanelHeader } from "@ui/panels/OverlayPanel/OverlayPanelHeader";
 import { CollapsibleSection } from "./CollapsibleSection";
 import { ColoursValue } from "./ColoursValue";
 import { StatCard } from "./StatCard";

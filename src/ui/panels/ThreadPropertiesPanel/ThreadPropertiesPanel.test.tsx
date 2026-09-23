@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { EditorStore } from "../../../application/document";
+import { EditorStore } from "@application/document";
 import { ThreadPropertiesPanel } from "./ThreadPropertiesPanel";
 
 function seedThread(store: EditorStore) {

@@ -1,8 +1,8 @@
 import { useMemo, useState, type MouseEvent as ReactMouseEvent } from "react";
-import type { EditorState } from "../../application/document";
-import { resolveSnapPosition, type SnapPin, type SnapResult } from "../../domain/snapping";
-import type { Point } from "../../domain/paths";
-import { toDocument, type Viewport } from "../../domain/transforms";
+import type { EditorState } from "@application/document";
+import { resolveSnapPosition, type SnapPin, type SnapResult } from "@domain/snapping";
+import type { Point } from "@domain/paths";
+import { toDocument, type Viewport } from "@domain/transforms";
 
 // Translates raw mouse events into document coordinates and applies the snap pipeline
 // (docs/specs/22-snapping-priority), while tracking the live cursor position for

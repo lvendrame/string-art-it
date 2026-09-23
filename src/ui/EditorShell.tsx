@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { BarChart3, HelpCircle, Printer, Redo2, Undo2 } from "lucide-react";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
-import { totalThreadFrames, type EditorStore } from "../application/document";
+import { totalThreadFrames, type EditorStore } from "@application/document";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Canvas } from "./canvas/Canvas";
 import { PlaybackCanvas } from "./canvas/PlaybackCanvas";

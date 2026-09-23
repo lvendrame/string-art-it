@@ -1,5 +1,5 @@
-import { generateRadialCopies, mirrorCopies, type MirrorMode } from "../../domain/symmetry";
-import type { Point } from "../../domain/paths";
+import { generateRadialCopies, mirrorCopies, type MirrorMode } from "@domain/symmetry";
+import type { Point } from "@domain/paths";
 import type { Pin, PinPath } from "./pinPath";
 
 // docs/specs/06-symmetry.md §54 Symmetry Model — attached per Pin Path, linked to its

@@ -2,7 +2,7 @@ import { Hand, MousePointer2, Pin as PinIcon, Play, Spline, Wand2 } from "lucide
 import type { ComponentType } from "react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
-import type { EditorMode } from "../../application/document";
+import type { EditorMode } from "@application/document";
 import "./ModeSwitcher.css";
 
 function modes(t: TFunction<["common", "toolbars"]>): { id: EditorMode; label: string; icon: ComponentType<{ size?: number }> }[] {

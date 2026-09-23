@@ -8,8 +8,8 @@ import {
   migrateProjectFile,
   projectFileToDocument,
   type EditorStore,
-} from "../../application/document";
-import { fitViewportForBoard } from "../canvas/boardViewport";
+} from "@application/document";
+import { fitViewportForBoard } from "@ui/canvas/boardViewport";
 import { mapOpenFileError } from "./openFileErrors";
 import { saveProjectFile } from "./projectFileDownload";
 import "./FileMenu.css";

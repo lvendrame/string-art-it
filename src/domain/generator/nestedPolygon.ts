@@ -1,4 +1,4 @@
-import type { Point } from "../paths";
+import type { Point } from "@domain/paths";
 
 // docs/specs/32-generator-mode.md Star of David pattern — the general "nested polygon
 // fan" string-art technique: a base polygon copied `depth` times about its own centre,

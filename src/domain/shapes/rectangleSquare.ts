@@ -1,6 +1,6 @@
-import { LineSegment } from "../paths";
-import { rotatePoint } from "../transforms";
-import type { Path, Point } from "../paths";
+import { LineSegment } from "@domain/paths";
+import { rotatePoint } from "@domain/transforms";
+import type { Path, Point } from "@domain/paths";
 
 // position is the top-left corner before rotation; rotation is applied about the
 // rectangle's own centre, in radians.

@@ -1,6 +1,6 @@
-import { LineSegment } from "../paths";
+import { LineSegment } from "@domain/paths";
 import { regularPolygonShape } from "./polygonFamily";
-import type { Path, Point } from "../paths";
+import type { Path, Point } from "@domain/paths";
 
 // docs/specs/03-board-configuration.md: equilateral triangle is fully described by one
 // side length. A regular 3-gon inscribed in radius R has side length R*sqrt(3), so

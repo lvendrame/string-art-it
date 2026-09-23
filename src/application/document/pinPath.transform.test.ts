@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { rotatePoint } from "../../domain/transforms";
+import { rotatePoint } from "@domain/transforms";
 import { rotateGeometry, scaleGeometry, translateGeometry, type PinPathGeometry } from "./pinPath";
 
 describe("translateGeometry", () => {

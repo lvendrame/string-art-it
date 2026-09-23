@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { EditorStore } from "../../application/document";
-import { zoomToPercent } from "../../domain/transforms";
+import { EditorStore } from "@application/document";
+import { zoomToPercent } from "@domain/transforms";
 import { ZoomControl } from "./ZoomControl";
 
 function renderControl(store: EditorStore) {

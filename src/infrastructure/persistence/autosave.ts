@@ -1,4 +1,4 @@
-import { migrateProjectFile, type ProjectFile } from "../../application/document";
+import { migrateProjectFile, type ProjectFile } from "@application/document";
 
 // docs/specs §00 Phase 2 "autosave" — real browser storage I/O, so this stays in
 // infrastructure/ (docs/specs/01-architecture.md) rather than application/document,

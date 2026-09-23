@@ -1,4 +1,4 @@
-import type { BoardAppearance } from "../../application/document";
+import type { BoardAppearance } from "@application/document";
 import { buildWoodGrainGeometry, type WoodGrainGeometry } from "./woodGrain";
 
 // docs/specs §00 Phase 2 "rich board textures" — expanded preset set.

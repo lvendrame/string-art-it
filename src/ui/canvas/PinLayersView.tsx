@@ -1,4 +1,4 @@
-import type { PinLayer } from "../../application/document";
+import type { PinLayer } from "@application/document";
 import { PinPathVisual } from "./PinPathVisual";
 
 export function PinLayersView({ pinLayers, selectedPathIds }: { pinLayers: PinLayer[]; selectedPathIds: string[] }) {

@@ -6,11 +6,11 @@ import {
   type PinLayer,
   type PrintElements,
   type ThreadLayer,
-} from "../../application/document";
-import { pathBoundingBoxPoints, type Point } from "../../domain/paths";
-import { boundingBoxOf } from "../../domain/transforms";
-import { boardFillDefsMarkup, boardFillPaint } from "../rendering/boardFillUtils";
-import { pathToSvgD } from "../rendering/svgPath";
+} from "@application/document";
+import { pathBoundingBoxPoints, type Point } from "@domain/paths";
+import { boundingBoxOf } from "@domain/transforms";
+import { boardFillDefsMarkup, boardFillPaint } from "@infrastructure/rendering/boardFillUtils";
+import { pathToSvgD } from "@infrastructure/rendering/svgPath";
 
 export interface ExportDocument {
   board: Board;

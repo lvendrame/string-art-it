@@ -4,9 +4,9 @@ import "react-tooltip/dist/react-tooltip.css";
 import type { ComponentType } from "react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
-import { canCommitSelectionMerge, type EditorStore, type SelectTool } from "../../../application/document";
-import { useEditorState } from "../../useEditorStore";
-import { SELECT_TOOL_SHORTCUT_KEY } from "../selectToolShortcuts";
+import { canCommitSelectionMerge, type EditorStore, type SelectTool } from "@application/document";
+import { useEditorState } from "@ui/useEditorStore";
+import { SELECT_TOOL_SHORTCUT_KEY } from "@ui/toolbars/selectToolShortcuts";
 import { GranularitySwitch } from "./GranularitySwitch";
 import "./SelectToolbar.css";
 

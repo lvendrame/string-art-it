@@ -1,4 +1,4 @@
-import { findPinPath, type Pin, type PinLayer, type PinRef } from "../../application/document";
+import { findPinPath, type Pin, type PinLayer, type PinRef } from "@application/document";
 
 // docs/specs/26-edit-mode-multi-select.md pins granularity — Move/Rotation/Scale need
 // to patch only the SELECTED pins within a path's full pins[] array (a partial

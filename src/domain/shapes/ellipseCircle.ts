@@ -1,5 +1,5 @@
-import { CircularArcSegment, EllipticalArcSegment } from "../paths";
-import type { Path, Point } from "../paths";
+import { CircularArcSegment, EllipticalArcSegment } from "@domain/paths";
+import type { Path, Point } from "@domain/paths";
 
 export function circleShape(center: Point, radius: number): Path {
   return { closed: true, segments: [new CircularArcSegment(center, radius, 0, 2 * Math.PI)] };

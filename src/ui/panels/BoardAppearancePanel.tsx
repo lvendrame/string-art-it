@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
-import type { BoardAppearance, EditorStore } from "../../application/document";
-import { PAINT_PRESET_IDS, WOOD_PRESET_IDS } from "../../infrastructure/rendering/boardFillUtils";
-import { useEditorState } from "../useEditorStore";
+import type { BoardAppearance, EditorStore } from "@application/document";
+import { PAINT_PRESET_IDS, WOOD_PRESET_IDS } from "@infrastructure/rendering/boardFillUtils";
+import { useEditorState } from "@ui/useEditorStore";
 import "./BoardAppearancePanel.css";
 
 function typeOptions(t: TFunction<"boardSetup">): { id: BoardAppearance["type"]; label: string }[] {

@@ -2,7 +2,7 @@ import i18n, { type InitOptions } from "i18next";
 import { initReactI18next } from "react-i18next";
 import { resources, NAMESPACES } from "./resources";
 import { detectInitialLanguage } from "./detectLanguage";
-import { getStoredLanguage, setStoredLanguage } from "../infrastructure/persistence/languagePreference";
+import { getStoredLanguage, setStoredLanguage } from "@infrastructure/persistence/languagePreference";
 import { isSupportedLanguage } from "./languages";
 
 const initialLanguage = detectInitialLanguage(

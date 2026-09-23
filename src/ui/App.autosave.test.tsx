@@ -1,8 +1,8 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
-import { App } from "../App";
-import { EditorStore } from "../application/document";
-import { saveAutosave } from "../infrastructure/persistence/autosave";
+import { App } from "@/App";
+import { EditorStore } from "@application/document";
+import { saveAutosave } from "@infrastructure/persistence/autosave";
 
 describe("App autosave banner", () => {
   beforeEach(() => {

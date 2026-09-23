@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EditorStore } from "../../application/document";
+import { EditorStore } from "@application/document";
 import { buildExportSvg, exportBoundingBox } from "./svgExport";
 
 const ALL_ELEMENTS = { boardOutline: true, background: true, pins: true, pinGuides: true, pinNumbers: true, threads: true, grid: true };

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { EditorStore } from "../../../application/document";
+import { EditorStore } from "@application/document";
 import { ThreadStatsBox } from "./ThreadStatsBox";
 
 describe("ThreadStatsBox", () => {

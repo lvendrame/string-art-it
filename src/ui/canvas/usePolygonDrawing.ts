@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import type { EditorState, EditorStore } from "../../application/document";
-import type { Point } from "../../domain/paths";
+import type { EditorState, EditorStore } from "@application/document";
+import type { Point } from "@domain/paths";
 
 // docs/specs/33-pin-path-tool.md — Path tool click-per-vertex draft: each left click
 // extends it (or closes it, if the click lands back on the first vertex); Esc and

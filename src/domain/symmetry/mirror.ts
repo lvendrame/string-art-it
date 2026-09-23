@@ -1,4 +1,4 @@
-import type { Point } from "../paths";
+import type { Point } from "@domain/paths";
 
 export function reflectVertical(point: Point, axisX: number): Point {
   return { x: 2 * axisX - point.x, y: point.y };

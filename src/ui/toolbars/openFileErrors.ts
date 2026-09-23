@@ -4,7 +4,7 @@ import {
   IncompatibleProjectVersionError,
   InvalidProjectFileError,
   NoMigrationPathError,
-} from "../../application/document";
+} from "@application/document";
 
 // Discriminates on the named error classes from projectFile.ts rather than matching
 // their (English, internal-diagnostic) `.message` text, so translation never depends on

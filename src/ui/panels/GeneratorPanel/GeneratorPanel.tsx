@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { GENERATOR_PATTERNS, maxGeneratorColours, type AssymetryLayerParams, type EditorStore, type FreestyleCircleParams, type GeneratorParams, type GeneratorPatternId } from "../../../application/document";
-import { GeneratorToolbar } from "../../toolbars/GeneratorToolbar";
-import { useEditorState } from "../../useEditorStore";
-import { CheckboxField } from "../fields/CheckboxField";
-import { SliderField } from "../fields/SliderField";
+import { GENERATOR_PATTERNS, maxGeneratorColours, type AssymetryLayerParams, type EditorStore, type FreestyleCircleParams, type GeneratorParams, type GeneratorPatternId } from "@application/document";
+import { GeneratorToolbar } from "@ui/toolbars/GeneratorToolbar";
+import { useEditorState } from "@ui/useEditorStore";
+import { CheckboxField } from "@ui/panels/fields/CheckboxField";
+import { SliderField } from "@ui/panels/fields/SliderField";
 import { SelectField } from "./SelectField";
 import "./GeneratorPanel.css";
 

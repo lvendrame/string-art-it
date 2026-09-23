@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pathLength } from "../paths";
+import { pathLength } from "@domain/paths";
 import { equilateralTriangleShape, rightTriangleShape, rightTriangleHypotenuse } from "./triangle";
 
 describe("equilateralTriangleShape", () => {

@@ -1,5 +1,5 @@
-import { HEPTAGRAM, OCTAGRAM, PENTAGRAM } from "../../domain/shapes";
-import type { Point } from "../../domain/paths";
+import { HEPTAGRAM, OCTAGRAM, PENTAGRAM } from "@domain/shapes";
+import type { Point } from "@domain/paths";
 import type { PinTool } from "./EditorState";
 import type { PinPathGeometry } from "./pinPath";
 

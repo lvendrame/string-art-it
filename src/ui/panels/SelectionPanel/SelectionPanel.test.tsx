@@ -1,13 +1,13 @@
 import { render, screen, fireEvent, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { EditorStore, pinPathStatistics, type PinPathGeometry } from "../../../application/document";
+import { EditorStore, pinPathStatistics, type PinPathGeometry } from "@application/document";
 import { SelectionPanel } from "./SelectionPanel";
 
 // docs/specs/29-text-pin-path.md — buildTextGeometry is the one place these tests would
 // otherwise need a real font fetch+parse (already covered at the infrastructure layer,
 // src/infrastructure/fonts/*.test.ts); mocking it isolates what THIS panel is
 // responsible for: calling it with the right field values, then committing the result.
-vi.mock("../../text/buildTextGeometry", () => ({
+vi.mock("@ui/text/buildTextGeometry", () => ({
   buildTextGeometry: vi.fn(async (origin, text, fontId, weight, italic, size, letterSpacing) => ({
     type: "text",
     origin,

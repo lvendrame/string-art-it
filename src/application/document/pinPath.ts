@@ -10,10 +10,10 @@ import {
   regularPolygonShape,
   squareShape,
   starShape,
-} from "../../domain/shapes";
-import { distributeClosedPath, distributeOpenPath, distributePathPerVertex } from "../../domain/paths";
-import type { Path, Point } from "../../domain/paths";
-import { rotatePoint, scalePoint, translatePoint } from "../../domain/transforms";
+} from "@domain/shapes";
+import { distributeClosedPath, distributeOpenPath, distributePathPerVertex } from "@domain/paths";
+import type { Path, Point } from "@domain/paths";
+import { rotatePoint, scalePoint, translatePoint } from "@domain/transforms";
 import { NO_SYMMETRY, type SymmetryConfig } from "./symmetryConfig";
 import { nextId } from "./idCounter";
 

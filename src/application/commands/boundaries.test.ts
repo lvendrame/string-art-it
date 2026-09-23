@@ -41,4 +41,16 @@ describe("Clean Architecture boundaries", () => {
 
     expect(messages.some((m) => m.ruleId === "import/no-restricted-paths")).toBe(true);
   });
+
+  // The @application/@domain/@i18n/@infrastructure/@ui/@ path aliases (tsconfig.app.json)
+  // require import/resolver: typescript, not node — the node resolver can't resolve an
+  // alias at all, so a plain relative-path check like the one above would keep passing
+  // even if the resolver silently stopped enforcing this rule for aliased imports.
+  it("flags a domain-layer file reaching into ui/ via the @ui alias", async () => {
+    const source = "import { Foo } from '@ui/canvas';\nexport const y = Foo;\n";
+
+    const messages = await lint(source, "src/domain/shapes/_check.ts");
+
+    expect(messages.some((m) => m.ruleId === "import/no-restricted-paths")).toBe(true);
+  });
 });

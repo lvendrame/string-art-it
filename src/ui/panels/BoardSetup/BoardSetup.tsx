@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
-import type { BoardShape, EditorStore, TriangleType } from "../../../application/document";
-import { useEditorState } from "../../useEditorStore";
-import { isTextEntryTarget } from "../../keyboard";
-import { LanguageSwitcher, type LanguageSwitcherHandle } from "../../LanguageSwitcher";
-import { BoardAppearancePanel } from "../BoardAppearancePanel";
+import type { BoardShape, EditorStore, TriangleType } from "@application/document";
+import { useEditorState } from "@ui/useEditorStore";
+import { isTextEntryTarget } from "@ui/keyboard";
+import { LanguageSwitcher, type LanguageSwitcherHandle } from "@ui/LanguageSwitcher";
+import { BoardAppearancePanel } from "@ui/panels/BoardAppearancePanel";
 import { DimensionFields } from "./DimensionFields";
 import "./BoardSetup.css";
 

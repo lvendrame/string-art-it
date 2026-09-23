@@ -1,5 +1,5 @@
 import type { TFunction } from "i18next";
-import type { HelpSection } from "../helpContent";
+import type { HelpSection } from "@ui/panels/help/helpContent";
 import "./HelpSectionView.css";
 
 export function HelpSectionView({ section, t }: { section: HelpSection; t: TFunction<["help", "common"]> }) {

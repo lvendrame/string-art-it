@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { beforeAll, describe, expect, it } from "vitest";
-import { EditorStore } from "../../application/document";
-import { rotatePoint } from "../../domain/transforms";
+import { EditorStore } from "@application/document";
+import { rotatePoint } from "@domain/transforms";
 import { Canvas } from "./Canvas";
 
 beforeAll(() => {

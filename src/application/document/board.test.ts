@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pathLength } from "../../domain/paths";
+import { pathLength } from "@domain/paths";
 import { boardHypotenuse, boardPath, clampDimension, createDefaultBoard, defaultDimensionsFor } from "./board";
 import type { Board } from "./board";
 

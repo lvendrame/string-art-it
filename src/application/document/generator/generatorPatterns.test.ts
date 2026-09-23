@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildGeneratorPattern, GENERATOR_PATTERNS, maxGeneratorColours, maxInscribedRadius, type GeneratorBuildContext, type GeneratorParams } from "./generatorPatterns";
-import { createDefaultBoard } from "../board";
+import { createDefaultBoard } from "@application/document/board";
 
 const ctx: GeneratorBuildContext = {
   center: { x: 0, y: 0 },

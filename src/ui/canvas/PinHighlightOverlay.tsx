@@ -1,4 +1,4 @@
-import { allPinsWithMirrors, type PinLayer } from "../../application/document";
+import { allPinsWithMirrors, type PinLayer } from "@application/document";
 
 interface Props {
   pinLayers: PinLayer[];

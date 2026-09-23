@@ -1,6 +1,6 @@
-import { boardPath, type Board } from "../../application/document";
-import { pathBoundingBoxPoints } from "../../domain/paths";
-import { boundingBoxOf, fitToViewport, type Viewport } from "../../domain/transforms";
+import { boardPath, type Board } from "@application/document";
+import { pathBoundingBoxPoints } from "@domain/paths";
+import { boundingBoxOf, fitToViewport, type Viewport } from "@domain/transforms";
 
 export const CANVAS_VIEWPORT_PX = { width: 720, height: 640 };
 

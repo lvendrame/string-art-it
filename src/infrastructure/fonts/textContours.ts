@@ -1,6 +1,6 @@
 import type { Font } from "opentype.js";
-import type { Point } from "../../domain/paths";
-import { commandsToContours, type GlyphCommand } from "../../domain/text/glyphOutline";
+import type { Point } from "@domain/paths";
+import { commandsToContours, type GlyphCommand } from "@domain/text/glyphOutline";
 
 // docs/plan M22 — Text Pin Path. Synchronous given an already-loaded Font (this is the
 // piece that lets plain typing skip the async font-loading path entirely). Walks the

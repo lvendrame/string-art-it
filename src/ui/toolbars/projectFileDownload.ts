@@ -1,4 +1,4 @@
-import type { EditorStore } from "../../application/document";
+import type { EditorStore } from "@application/document";
 
 // docs/specs/34-keyboard-shortcuts.md — hoisted out of FileMenu.tsx so Ctrl/Cmd+S's
 // keyboard handler (useKeyboardShortcuts.ts) triggers the exact same download, not a

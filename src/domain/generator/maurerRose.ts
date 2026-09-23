@@ -1,4 +1,4 @@
-import type { Point } from "../paths";
+import type { Point } from "@domain/paths";
 
 // docs/specs/32-generator-mode.md Maurer Rose pattern — the classic public "Maurer
 // rose" construction (Peter M. Maurer, 1987): sample a rose curve r = sin(N * theta) at

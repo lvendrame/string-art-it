@@ -1,6 +1,6 @@
-import type { EditorState, ThreadDraft } from "../../../application/document";
-import type { Point } from "../../../domain/paths";
-import { ThreadPathVisual } from "../ThreadPathVisual";
+import type { EditorState, ThreadDraft } from "@application/document";
+import type { Point } from "@domain/paths";
+import { ThreadPathVisual } from "@ui/canvas/ThreadPathVisual";
 import { DraftPreviewLine } from "./DraftPreviewLine";
 
 interface Props {

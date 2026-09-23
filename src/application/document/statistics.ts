@@ -1,4 +1,4 @@
-import { pathLength } from "../../domain/paths";
+import { pathLength } from "@domain/paths";
 import { findPinById, type PinLayer } from "./pinLayer";
 import { geometryToContourPaths, type PinPath } from "./pinPath";
 import type { ThreadLayer } from "./threadLayer";

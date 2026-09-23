@@ -1,6 +1,6 @@
 import type { TFunction } from "i18next";
-import type { Board, EditorStore } from "../../../application/document";
-import { boardHypotenuse } from "../../../application/document";
+import type { Board, EditorStore } from "@application/document";
+import { boardHypotenuse } from "@application/document";
 import { DimensionField } from "./DimensionField";
 import "./DimensionFields.css";
 

@@ -63,6 +63,21 @@ export function duplicateThreadLayer(layer: ThreadLayer): ThreadLayer {
   };
 }
 
+// docs/specs/36-layer-merge.md — mirrors mergePinLayerAbove (pinLayer.ts): moves
+// layerId's Thread Paths into the layer above it (appended after that layer's
+// existing content) and removes layerId. No-op if layerId is already the topmost
+// layer. pinIds are not rewritten — Thread Paths reference pins by stable
+// document-wide ID, independent of which Thread Layer they live in.
+export function mergeThreadLayerAbove(layers: ThreadLayer[], layerId: string): ThreadLayer[] {
+  const index = layers.findIndex((l) => l.id === layerId);
+  if (index <= 0) return layers;
+  const source = layers[index];
+  const targetId = layers[index - 1].id;
+  return layers
+    .filter((l) => l.id !== layerId)
+    .map((l) => (l.id === targetId ? { ...l, threadPaths: [...l.threadPaths, ...source.threadPaths] } : l));
+}
+
 // docs/specs/11-erasers.md cascading deletion — applied across every thread layer at
 // once so the caller can fold it into the SAME undo step as the pin removal.
 export function removePinFromAllThreadLayers(layers: ThreadLayer[], pinId: string): ThreadLayer[] {

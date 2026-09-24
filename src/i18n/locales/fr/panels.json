@@ -105,6 +105,7 @@
     "lockLayer": "Verrouiller {{name}}",
     "newLayer": "Nouveau Calque",
     "duplicate": "Dupliquer",
+    "mergeUp": "Fusionner avec le calque au-dessus",
     "moveUp": "Monter le calque",
     "moveDown": "Descendre le calque",
     "delete": "Supprimer"

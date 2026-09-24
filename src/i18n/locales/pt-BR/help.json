@@ -115,6 +115,7 @@
       "heading": "Ações de camada",
       "newLayer": { "label": "Nova Camada", "description": "Cria uma nova camada vazia, visível e desbloqueada do tipo ativo." },
       "duplicate": { "label": "Duplicar", "description": "Duplica a camada ativa e seus objetos com novos IDs estáveis. Referências de linha a pinos duplicados continuam apontando para os originais, não para as cópias." },
+      "merge": { "label": "Mesclar com a camada acima", "description": "Move os objetos da camada ativa para a camada acima, adicionados após seu conteúdo existente, e então exclui a camada ativa, em um único passo de desfazer. Desativado na camada mais acima ou quando qualquer uma das camadas está bloqueada." },
       "moveLayer": { "label": "Mover camada para cima / baixo", "description": "Move a camada ativa para cima ou para baixo na ordem de empilhamento/renderização." },
       "delete": { "label": "Excluir", "description": "Exclui a camada ativa e todo o seu conteúdo em um único passo de desfazer. Desativado quando resta apenas uma camada." }
     }

@@ -5,6 +5,7 @@ import {
   duplicateThreadLayer,
   findThreadPath,
   isThreadLayerLocked,
+  mergeThreadLayerAbove,
   remapPinsInAllThreadLayers,
   remapPinsInAllThreadLayersByMap,
   removePinFromAllThreadLayers,
@@ -99,6 +100,35 @@ describe("duplicateThreadLayer", () => {
     expect(dup.name).toBe("l1 copy");
     expect(dup.threadPaths[0].id).not.toBe(path.id);
     expect(dup.threadPaths[0].pinIds).toEqual(path.pinIds);
+  });
+});
+
+describe("mergeThreadLayerAbove", () => {
+  it("moves the layer's threadPaths into the layer above, appended after its existing content, and removes the layer", () => {
+    const above = createThreadPath(["p1", "p2"], ["red"], 1);
+    const below = createThreadPath(["p3", "p4"], ["blue"], 1);
+    const layers = [layerWith("l1", [above]), layerWith("l2", [below])];
+
+    const next = mergeThreadLayerAbove(layers, "l2");
+
+    expect(next).toHaveLength(1);
+    expect(next[0].id).toBe("l1");
+    expect(next[0].threadPaths).toEqual([above, below]);
+  });
+
+  it("is a no-op on the topmost layer (no layer above)", () => {
+    const layers = [layerWith("l1")];
+    const next = mergeThreadLayerAbove(layers, "l1");
+    expect(next).toBe(layers);
+  });
+
+  it("does not mutate the original layers array", () => {
+    const above = createThreadPath(["p1", "p2"], ["red"], 1);
+    const below = createThreadPath(["p3", "p4"], ["blue"], 1);
+    const layers = [layerWith("l1", [above]), layerWith("l2", [below])];
+    mergeThreadLayerAbove(layers, "l2");
+    expect(layers).toHaveLength(2);
+    expect(layers[1].threadPaths).toEqual([below]);
   });
 });
 

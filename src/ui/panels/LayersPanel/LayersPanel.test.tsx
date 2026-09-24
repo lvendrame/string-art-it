@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { act, render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { EditorStore } from "@application/document";
 import { LayersPanel } from "./LayersPanel";
@@ -103,6 +103,38 @@ describe("LayersPanel", () => {
     fireEvent.click(screen.getByRole("button", { name: "Move layer down" }));
     expect(store.getState().pinLayers.map((l) => l.id)[1]).toBe(secondId);
     expect(firstId).toBeTruthy();
+  });
+
+  it("Merge into layer above is disabled on the topmost layer and enabled otherwise, merging on click", () => {
+    const store = new EditorStore();
+    const firstId = store.getState().pinLayers[0].id;
+    render(<LayersPanel store={store} />);
+
+    expect(screen.getByRole("button", { name: "Merge into layer above" })).toBeDisabled();
+
+    act(() => store.addPinLayer());
+    const secondId = store.getState().activePinLayerId!;
+    expect(screen.getByRole("button", { name: "Merge into layer above" })).toBeEnabled();
+
+    fireEvent.click(screen.getByRole("button", { name: "Merge into layer above" }));
+
+    expect(store.getState().pinLayers).toHaveLength(1);
+    expect(store.getState().pinLayers[0].id).toBe(firstId);
+    expect(secondId).toBeTruthy();
+  });
+
+  it("Merge into layer above is disabled when either the active or target layer is locked", () => {
+    const store = new EditorStore();
+    store.addPinLayer();
+    const secondId = store.getState().activePinLayerId!;
+    render(<LayersPanel store={store} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Lock Layer 1" }));
+    expect(screen.getByRole("button", { name: "Merge into layer above" })).toBeDisabled();
+
+    fireEvent.click(screen.getByRole("button", { name: "Unlock Layer 1" }));
+    act(() => store.togglePinLayerLocked(secondId));
+    expect(screen.getByRole("button", { name: "Merge into layer above" })).toBeDisabled();
   });
 
   describe("Thread Layers tab", () => {

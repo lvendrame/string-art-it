@@ -39,6 +39,7 @@ Each layer supports:
 - Lock
 - Unlock
 - Select all objects (on that layer)
+- Merge with the layer above (see [36-layer-merge.md](./36-layer-merge.md) for the full rules — disabled on the topmost layer or when either layer is locked)
 
 ## Guarantees
 

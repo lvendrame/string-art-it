@@ -3,7 +3,7 @@ import "./IconActionButton.css";
 
 export const LAYERS_TOOLTIP_ID = "layers-panel-actions-tooltip";
 
-// Icon-only so the 5-button row always fits the fixed-width side panel — the full
+// Icon-only so the 6-button row always fits the fixed-width side panel — the full
 // label still reaches assistive tech via aria-label and sighted users via the
 // react-tooltip hover/focus tooltip (docs/specs/13-layers.md action bar).
 export function IconActionButton({

@@ -64,6 +64,20 @@ export function duplicatePinLayer(layer: PinLayer): PinLayer {
   };
 }
 
+// docs/specs/36-layer-merge.md — moves layerId's Pin Paths into the layer above it
+// (appended after that layer's existing content) and removes layerId. No-op if
+// layerId is already the topmost layer. Pin IDs are not regenerated (unlike
+// duplicatePinLayer) so existing Thread Path references keep resolving.
+export function mergePinLayerAbove(layers: PinLayer[], layerId: string): PinLayer[] {
+  const index = layers.findIndex((l) => l.id === layerId);
+  if (index <= 0) return layers;
+  const source = layers[index];
+  const targetId = layers[index - 1].id;
+  return layers
+    .filter((l) => l.id !== layerId)
+    .map((l) => (l.id === targetId ? { ...l, pinPaths: [...l.pinPaths, ...source.pinPaths] } : l));
+}
+
 // Threads reference pins by stable ID across the whole document, not by layer
 // (docs/specs/02-document-model.md) — so lookup scans every layer/path. A Thread
 // endpoint may also be a mirrored pin's derived id (docs/specs/06-symmetry.md), so

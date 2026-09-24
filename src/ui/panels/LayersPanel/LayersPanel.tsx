@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, Copy, Plus, Trash2 } from "lucide-react";
+import { ArrowUpToLine, ChevronDown, ChevronUp, Copy, Plus, Trash2 } from "lucide-react";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import { useTranslation } from "react-i18next";
@@ -28,6 +28,7 @@ export function LayersPanel({ store }: { store: EditorStore }) {
         duplicate: (id: string) => store.duplicatePinLayer(id),
         remove: (id: string) => store.deletePinLayer(id),
         reorder: (id: string, dir: -1 | 1) => store.reorderPinLayer(id, dir),
+        mergeUp: (id: string) => store.mergePinLayerAbove(id),
       }
     : {
         select: (id: string) => store.setActiveThreadLayer(id),
@@ -38,7 +39,11 @@ export function LayersPanel({ store }: { store: EditorStore }) {
         duplicate: (id: string) => store.duplicateThreadLayer(id),
         remove: (id: string) => store.deleteThreadLayer(id),
         reorder: (id: string, dir: -1 | 1) => store.reorderThreadLayer(id, dir),
+        mergeUp: (id: string) => store.mergeThreadLayerAbove(id),
       };
+
+  const activeIndex = rows.findIndex((r) => r.id === activeId);
+  const mergeDisabled = activeIndex <= 0 || rows[activeIndex].locked || rows[activeIndex - 1].locked;
 
   return (
     <div className="layers-panel">
@@ -75,6 +80,12 @@ export function LayersPanel({ store }: { store: EditorStore }) {
       <div className="layers-panel__footer">
         <IconActionButton icon={Plus} label={t("layersPanel.newLayer")} onClick={actions.add} />
         <IconActionButton icon={Copy} label={t("layersPanel.duplicate")} onClick={() => actions.duplicate(activeId)} />
+        <IconActionButton
+          icon={ArrowUpToLine}
+          label={t("layersPanel.mergeUp")}
+          onClick={() => actions.mergeUp(activeId)}
+          disabled={mergeDisabled}
+        />
         <IconActionButton icon={ChevronUp} label={t("layersPanel.moveUp")} onClick={() => actions.reorder(activeId, -1)} />
         <IconActionButton icon={ChevronDown} label={t("layersPanel.moveDown")} onClick={() => actions.reorder(activeId, 1)} />
         <IconActionButton

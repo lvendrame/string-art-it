@@ -115,6 +115,7 @@
       "heading": "Layer actions",
       "newLayer": { "label": "New Layer", "description": "Creates a new, empty, visible, unlocked layer of the active kind." },
       "duplicate": { "label": "Duplicate", "description": "Duplicates the active layer and its objects with new stable IDs. Thread references to duplicated pins still point at the originals, not the copies." },
+      "merge": { "label": "Merge into layer above", "description": "Moves the active layer's objects into the layer above, appended after its existing content, then deletes the active layer, in one undo step. Disabled on the topmost layer or when either layer is locked." },
       "moveLayer": { "label": "Move layer up / down", "description": "Moves the active layer up or down in stacking/render order." },
       "delete": { "label": "Delete", "description": "Deletes the active layer and all its contents in one undo step. Disabled when only one layer remains." }
     }

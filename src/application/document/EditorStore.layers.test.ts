@@ -114,6 +114,70 @@ describe("EditorStore pin layer operations", () => {
 
     expect(store.getState().activePinLayerId).toBe(second);
   });
+
+  it("merging a Pin Layer moves its Pin Paths into the layer above, appended after its existing content, in one undo step", () => {
+    const store = new EditorStore();
+    const first = store.getState().pinLayers[0].id;
+    store.addPinPath(first, { type: "circle", center: { x: 0, y: 0 }, radius: 5 });
+    store.addPinLayer();
+    const second = store.getState().pinLayers[1].id;
+    store.addPinPath(second, { type: "circle", center: { x: 0, y: 0 }, radius: 8 });
+
+    store.mergePinLayerAbove(second);
+
+    expect(store.getState().pinLayers).toHaveLength(1);
+    expect(store.getState().pinLayers[0].id).toBe(first);
+    expect(store.getState().pinLayers[0].pinPaths).toHaveLength(2);
+    expect(store.getState().activePinLayerId).toBe(first);
+
+    store.undo();
+    expect(store.getState().pinLayers).toHaveLength(2);
+    expect(store.getState().pinLayers[0].pinPaths).toHaveLength(1);
+    expect(store.getState().pinLayers[1].pinPaths).toHaveLength(1);
+  });
+
+  it("merging is a no-op on the topmost Pin Layer", () => {
+    const store = new EditorStore();
+    const first = store.getState().pinLayers[0].id;
+
+    store.mergePinLayerAbove(first);
+
+    expect(store.getState().pinLayers).toHaveLength(1);
+  });
+
+  it("merging is blocked when the active (source) Pin Layer is locked", () => {
+    const store = new EditorStore();
+    store.addPinLayer();
+    const second = store.getState().pinLayers[1].id;
+    store.togglePinLayerLocked(second);
+
+    store.mergePinLayerAbove(second);
+
+    expect(store.getState().pinLayers).toHaveLength(2);
+  });
+
+  it("merging is blocked when the target (above) Pin Layer is locked", () => {
+    const store = new EditorStore();
+    const first = store.getState().pinLayers[0].id;
+    store.togglePinLayerLocked(first);
+    store.addPinLayer();
+    const second = store.getState().pinLayers[1].id;
+
+    store.mergePinLayerAbove(second);
+
+    expect(store.getState().pinLayers).toHaveLength(2);
+  });
+
+  it("merging a hidden Pin Layer succeeds", () => {
+    const store = new EditorStore();
+    store.addPinLayer();
+    const second = store.getState().pinLayers[1].id;
+    store.togglePinLayerVisible(second);
+
+    store.mergePinLayerAbove(second);
+
+    expect(store.getState().pinLayers).toHaveLength(1);
+  });
 });
 
 describe("EditorStore thread layer operations mirror pin layers", () => {
@@ -128,5 +192,53 @@ describe("EditorStore thread layer operations mirror pin layers", () => {
 
     store.toggleThreadLayerLocked(layerId);
     expect(store.getState().threadLayers[0].locked).toBe(true);
+  });
+
+  it("merging a Thread Layer moves its Thread Paths into the layer above, appended after its existing content, in one undo step", () => {
+    const store = new EditorStore();
+    const first = store.getState().threadLayers[0].id;
+    const pinLayerId = store.getState().pinLayers[0].id;
+    store.addPinPath(pinLayerId, { type: "line", start: { x: 0, y: 0 }, end: { x: 10, y: 0 } });
+    const pins = store.getState().pinLayers[0].pinPaths[0].pins;
+    store.extendThreadDraft(pins[0].id);
+    store.finishThreadDraftWithSegment(first, pins[1].id);
+
+    store.addThreadLayer();
+    const second = store.getState().threadLayers[1].id;
+    store.setActiveThreadLayer(second);
+    store.extendThreadDraft(pins[1].id);
+    store.finishThreadDraftWithSegment(second, pins[0].id);
+
+    store.mergeThreadLayerAbove(second);
+
+    expect(store.getState().threadLayers).toHaveLength(1);
+    expect(store.getState().threadLayers[0].id).toBe(first);
+    expect(store.getState().threadLayers[0].threadPaths).toHaveLength(2);
+    expect(store.getState().activeThreadLayerId).toBe(first);
+
+    store.undo();
+    expect(store.getState().threadLayers).toHaveLength(2);
+    expect(store.getState().threadLayers[0].threadPaths).toHaveLength(1);
+    expect(store.getState().threadLayers[1].threadPaths).toHaveLength(1);
+  });
+
+  it("merging is a no-op on the topmost Thread Layer", () => {
+    const store = new EditorStore();
+    const first = store.getState().threadLayers[0].id;
+
+    store.mergeThreadLayerAbove(first);
+
+    expect(store.getState().threadLayers).toHaveLength(1);
+  });
+
+  it("merging is blocked when either Thread Layer is locked", () => {
+    const store = new EditorStore();
+    store.addThreadLayer();
+    const second = store.getState().threadLayers[1].id;
+    store.toggleThreadLayerLocked(second);
+
+    store.mergeThreadLayerAbove(second);
+
+    expect(store.getState().threadLayers).toHaveLength(2);
   });
 });

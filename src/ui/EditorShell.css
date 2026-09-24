@@ -75,7 +75,7 @@
 }
 
 .editor-shell__layers-panel {
-  width: 260px;
+  width: 300px;
   flex: 0 0 auto;
   background: var(--bg-panel);
   border-left: 1px solid var(--border);

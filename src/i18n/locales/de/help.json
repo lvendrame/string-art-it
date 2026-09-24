@@ -115,6 +115,7 @@
       "heading": "Ebenenaktionen",
       "newLayer": { "label": "Neue Ebene", "description": "Erstellt eine neue, leere, sichtbare, entsperrte Ebene des aktiven Typs." },
       "duplicate": { "label": "Duplizieren", "description": "Dupliziert die aktive Ebene und ihre Objekte mit neuen stabilen IDs. Fadenreferenzen auf duplizierte Stifte zeigen weiterhin auf die Originale, nicht auf die Kopien." },
+      "merge": { "label": "Mit Ebene darüber zusammenführen", "description": "Verschiebt die Objekte der aktiven Ebene in die Ebene darüber, angehängt nach deren vorhandenem Inhalt, und löscht dann die aktive Ebene, in einem einzigen Rückgängig-Schritt. Deaktiviert bei der obersten Ebene oder wenn eine der beiden Ebenen gesperrt ist." },
       "moveLayer": { "label": "Ebene nach oben / unten verschieben", "description": "Verschiebt die aktive Ebene in der Stapel-/Renderreihenfolge nach oben oder unten." },
       "delete": { "label": "Löschen", "description": "Löscht die aktive Ebene und ihren gesamten Inhalt in einem einzigen Rückgängig-Schritt. Deaktiviert, wenn nur noch eine Ebene übrig ist." }
     }

@@ -105,6 +105,7 @@
     "lockLayer": "Bloquear {{name}}",
     "newLayer": "Nueva Capa",
     "duplicate": "Duplicar",
+    "mergeUp": "Fusionar con la capa de arriba",
     "moveUp": "Subir capa",
     "moveDown": "Bajar capa",
     "delete": "Eliminar"

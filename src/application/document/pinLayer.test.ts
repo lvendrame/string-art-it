@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mergePinsInLayers, removePinPathFromLayers, updatePinPathInLayers, type PinLayer } from "./pinLayer";
+import { mergePinLayerAbove, mergePinsInLayers, removePinPathFromLayers, updatePinPathInLayers, type PinLayer } from "./pinLayer";
 import type { Pin } from "./pinPath";
 
 function pin(id: string, x: number, y: number): Pin {
@@ -58,6 +58,30 @@ describe("removePinPathFromLayers", () => {
 
     expect(next[0].pinPaths.map((p) => p.id)).toEqual(["path-b"]);
     expect(next[1].pinPaths.map((p) => p.id)).toEqual(["path-c"]);
+  });
+});
+
+describe("mergePinLayerAbove", () => {
+  it("moves the layer's pinPaths into the layer above, appended after its existing content, and removes the layer", () => {
+    const layers = makeLayers();
+    const next = mergePinLayerAbove(layers, "layer-2");
+
+    expect(next).toHaveLength(1);
+    expect(next[0].id).toBe("layer-1");
+    expect(next[0].pinPaths.map((p) => p.id)).toEqual(["path-a", "path-b", "path-c"]);
+  });
+
+  it("is a no-op on the topmost layer (no layer above)", () => {
+    const layers = makeLayers();
+    const next = mergePinLayerAbove(layers, "layer-1");
+    expect(next).toBe(layers);
+  });
+
+  it("does not mutate the original layers array", () => {
+    const layers = makeLayers();
+    mergePinLayerAbove(layers, "layer-2");
+    expect(layers).toHaveLength(2);
+    expect(layers[0].pinPaths.map((p) => p.id)).toEqual(["path-a", "path-b"]);
   });
 });
 

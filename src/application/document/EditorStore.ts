@@ -26,6 +26,7 @@ import {
   erasePinFromLayers,
   findPinPath,
   isLayerLocked,
+  mergePinLayerAbove as mergePinLayerIntoAbove,
   mergePinsInLayers,
   removePinPathFromLayers,
   updatePinPathInLayers,
@@ -41,6 +42,7 @@ import {
   duplicateThreadLayer as cloneThreadLayer,
   findThreadPath,
   isThreadLayerLocked,
+  mergeThreadLayerAbove as mergeThreadLayerIntoAbove,
   remapPinsInAllThreadLayers,
   remapPinsInAllThreadLayersByMap,
   removePinFromAllThreadLayers,
@@ -1133,6 +1135,25 @@ export class EditorStore {
     this.history.run(command);
   }
 
+  // docs/specs/36-layer-merge.md — moves layerId's pinPaths into the layer above it
+  // and deletes layerId, as one undo step. Pin IDs stay stable, so no thread-layer
+  // cascade is needed (unlike deletePinLayer). No-op on the topmost layer or when
+  // either the source or target layer is locked.
+  mergePinLayerAbove(layerId: string): void {
+    const index = this.state.pinLayers.findIndex((l) => l.id === layerId);
+    if (index <= 0) return;
+    const source = this.state.pinLayers[index];
+    const target = this.state.pinLayers[index - 1];
+    if (source.locked || target.locked) return;
+    const command = new SetValueCommand<PinLayer[]>(
+      (l) => this.setPinLayers(l),
+      this.state.pinLayers,
+      mergePinLayerIntoAbove(this.state.pinLayers, layerId),
+    );
+    this.history.run(command);
+    if (this.state.activePinLayerId === layerId) this.setActivePinLayer(target.id);
+  }
+
   // Deleting a Pin Layer removes every pin it contains, cascading into any thread
   // segments referencing them — same one-undo-step guarantee as erasePin.
   deletePinLayer(layerId: string): void {
@@ -1188,6 +1209,22 @@ export class EditorStore {
     const copy = cloneThreadLayer(layer);
     const command = new SetValueCommand<ThreadLayer[]>((l) => this.setThreadLayers(l), this.state.threadLayers, [...this.state.threadLayers, copy]);
     this.history.run(command);
+  }
+
+  // docs/specs/36-layer-merge.md — mirrors mergePinLayerAbove.
+  mergeThreadLayerAbove(layerId: string): void {
+    const index = this.state.threadLayers.findIndex((l) => l.id === layerId);
+    if (index <= 0) return;
+    const source = this.state.threadLayers[index];
+    const target = this.state.threadLayers[index - 1];
+    if (source.locked || target.locked) return;
+    const command = new SetValueCommand<ThreadLayer[]>(
+      (l) => this.setThreadLayers(l),
+      this.state.threadLayers,
+      mergeThreadLayerIntoAbove(this.state.threadLayers, layerId),
+    );
+    this.history.run(command);
+    if (this.state.activeThreadLayerId === layerId) this.setActiveThreadLayer(target.id);
   }
 
   deleteThreadLayer(layerId: string): void {

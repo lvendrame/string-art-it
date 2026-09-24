@@ -85,6 +85,7 @@ The application must allow users to:
 | Pin Path tool (click-per-vertex free-form polygon) | [33-pin-path-tool.md](./33-pin-path-tool.md) |
 | Keyboard shortcuts | [34-keyboard-shortcuts.md](./34-keyboard-shortcuts.md) |
 | Zig-Zag and Parabolic thread tools | [35-zigzag-parabolic-tools.md](./35-zigzag-parabolic-tools.md) |
+| Layer merge (merge a layer into the layer above) | [36-layer-merge.md](./36-layer-merge.md) |
 
 ## MVP Scope
 

@@ -115,6 +115,7 @@
       "heading": "Actions de calque",
       "newLayer": { "label": "Nouveau Calque", "description": "Crée un nouveau calque vide, visible et déverrouillé du type actif." },
       "duplicate": { "label": "Dupliquer", "description": "Duplique le calque actif et ses objets avec de nouveaux identifiants stables. Les références de fil vers des broches dupliquées continuent de pointer vers les originales, pas vers les copies." },
+      "merge": { "label": "Fusionner avec le calque au-dessus", "description": "Déplace les objets du calque actif vers le calque au-dessus, ajoutés après son contenu existant, puis supprime le calque actif, en une seule étape d'annulation. Désactivé sur le calque du dessus ou lorsque l'un des deux calques est verrouillé." },
       "moveLayer": { "label": "Monter / descendre le calque", "description": "Déplace le calque actif vers le haut ou vers le bas dans l'ordre d'empilement/rendu." },
       "delete": { "label": "Supprimer", "description": "Supprime le calque actif et tout son contenu en une seule étape d'annulation. Désactivé lorsqu'il ne reste qu'un seul calque." }
     }

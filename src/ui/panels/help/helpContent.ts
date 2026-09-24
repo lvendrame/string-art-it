@@ -215,6 +215,7 @@ export const HELP_TABS: HelpTab[] = [
         items: [
           { labelKey: "layers.actions.newLayer.label", descriptionKey: "layers.actions.newLayer.description" },
           { labelKey: "layers.actions.duplicate.label", descriptionKey: "layers.actions.duplicate.description" },
+          { labelKey: "layers.actions.merge.label", descriptionKey: "layers.actions.merge.description" },
           { labelKey: "layers.actions.moveLayer.label", descriptionKey: "layers.actions.moveLayer.description" },
           { labelKey: "layers.actions.delete.label", descriptionKey: "layers.actions.delete.description" },
         ],

@@ -115,6 +115,7 @@
       "heading": "Acciones de capa",
       "newLayer": { "label": "Nueva Capa", "description": "Crea una nueva capa vacía, visible y desbloqueada del tipo activo." },
       "duplicate": { "label": "Duplicar", "description": "Duplica la capa activa y sus objetos con nuevos IDs estables. Las referencias de hilo a pines duplicados siguen apuntando a los originales, no a las copias." },
+      "merge": { "label": "Fusionar con la capa de arriba", "description": "Mueve los objetos de la capa activa a la capa de arriba, añadidos después de su contenido existente, y luego elimina la capa activa, en un único paso de deshacer. Desactivado en la capa superior o cuando cualquiera de las dos capas está bloqueada." },
       "moveLayer": { "label": "Subir / bajar capa", "description": "Mueve la capa activa hacia arriba o hacia abajo en el orden de apilamiento/renderizado." },
       "delete": { "label": "Eliminar", "description": "Elimina la capa activa y todo su contenido en un único paso de deshacer. Desactivado cuando solo queda una capa." }
     }

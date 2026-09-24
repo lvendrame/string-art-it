@@ -105,6 +105,7 @@
     "lockLayer": "Bloquear {{name}}",
     "newLayer": "Nova Camada",
     "duplicate": "Duplicar",
+    "mergeUp": "Mesclar com a camada acima",
     "moveUp": "Mover camada para cima",
     "moveDown": "Mover camada para baixo",
     "delete": "Excluir"

@@ -138,7 +138,9 @@
       "leftButton": { "label": "Bouton gauche", "description": "Pilote tous les gestes de dessin, de sélection et de glissement dans tous les modes." },
       "rightClick": { "label": "Clic droit", "description": "Ouvre un menu contextuel radial avec des tranches d'icônes correspondant au mode actuel de l'Éditeur — Sélectionner/Déplacer/Tourner/Redimensionner/Fusionner (plus Valider la Fusion une fois 2 broches ou plus accumulées) en mode Édition, les outils de dessin de Broche en mode Broche (ou Couper/Retour/Annuler pendant un brouillon de l'outil Tracé en cours), Dessiner/Gomme/Segment en mode Fil (ou Couper/Retour/Suivant pendant un brouillon de fil en cours), Ajuster/Zoom avant/Zoom arrière en mode Déplacement, et les commandes de lecture en mode Lecture. Échap ou un clic hors du menu le ferme sans effectuer d'action." },
       "doubleClick": { "label": "Double-clic", "description": "Outil Dessiner Fil — termine le brouillon en cours, en ajoutant un segment final à la broche cliquée." },
-      "leftDrag": { "label": "Glisser avec le bouton gauche", "description": "Déplace la zone de visualisation en mode Déplacement ; appuyer-glisser-relâcher pilote aussi Déplacer/Rotation en mode Édition et la plupart des outils de forme en mode Broche." }
+      "leftDrag": { "label": "Glisser avec le bouton gauche", "description": "Déplace la zone de visualisation en mode Déplacement ; appuyer-glisser-relâcher pilote aussi Déplacer/Rotation en mode Édition et la plupart des outils de forme en mode Broche." },
+      "wheel": { "label": "Molette de la souris", "description": "Zoome/dézoome sur le canevas, ancré sur le curseur, dans tous les modes sauf Lecture. Le pincement/défilement du pavé tactile fonctionne de la même façon." },
+      "middleDrag": { "label": "Glisser avec le bouton du milieu", "description": "Maintenez la molette (bouton du milieu) enfoncée et faites glisser pour déplacer la planche, dans tous les modes sauf Lecture." }
     },
     "shortcuts": {
       "general": {

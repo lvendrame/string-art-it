@@ -38,6 +38,7 @@ import { symmetryPreviewTransforms } from "./symmetryPreviewTransforms";
 import { useAltModifier } from "./useAltModifier";
 import { useSnappedPointer } from "./useSnappedPointer";
 import { usePanInteraction } from "./usePanInteraction";
+import { useWheelZoom } from "./useWheelZoom";
 import { usePinDrawing } from "./usePinDrawing";
 import { useFreehandDrawing } from "./useFreehandDrawing";
 import { usePolygonDrawing } from "./usePolygonDrawing";
@@ -136,7 +137,8 @@ function canvasCursor(
   threadTool: ThreadTool,
   isPanning: boolean,
 ): string {
-  if (mode === "pan") return isPanning ? "grabbing" : "grab";
+  if (isPanning) return "grabbing";
+  if (mode === "pan") return "grab";
   if (mode === "select") return SELECT_TOOL_CURSORS[selectTool];
   if (mode === "pin") return PIN_TOOL_CURSORS[pinTool];
   if (mode === "thread") return THREAD_TOOL_CURSORS[threadTool];
@@ -181,6 +183,7 @@ export function Canvas({ store }: { store: EditorStore }) {
   const pathD = useMemo(() => pathToSvgD(path), [path]);
   const viewportRef = useRef<HTMLDivElement>(null);
   useMeasureCanvasViewport(viewportRef, store, fitForStore);
+  useWheelZoom(viewportRef, store);
   const viewportPx = useCanvasViewportSize();
   const viewBox = `${viewport.panOrigin.x} ${viewport.panOrigin.y} ${viewportPx.width / viewport.zoom} ${viewportPx.height / viewport.zoom}`;
 
@@ -190,6 +193,13 @@ export function Canvas({ store }: { store: EditorStore }) {
     // context-menu.md, wired in EditorShell.tsx). Without this guard, right-clicking
     // directly on an already-selected Merge candidate would toggle it off via this
     // handler a moment before the menu's Commit Merge action fires.
+    if (e.button === 1) {
+      // Middle-button drag pans in every mode; preventDefault suppresses the browser's
+      // autoscroll (Windows) / primary-selection paste (Linux).
+      e.preventDefault();
+      pan.begin(e, viewport);
+      return;
+    }
     if (e.button !== 0) return;
     if (state.mode === "pan") {
       pan.begin(e, viewport);

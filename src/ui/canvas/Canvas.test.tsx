@@ -109,6 +109,26 @@ describe("Canvas", () => {
     expect(after.y).toBeCloseTo(before.y - -40 / zoom, 6);
   });
 
+  it.each(["select", "pin", "thread"] as const)("middle-button drag pans in %s mode without drawing", (mode) => {
+    const store = new EditorStore();
+    store.setMode(mode);
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+    const before = store.getState().viewport.panOrigin;
+    const zoom = store.getState().viewport.zoom;
+
+    fireEvent.mouseDown(svg, { button: 1, clientX: 200, clientY: 200 });
+    expect(svg.style.cursor).toBe("grabbing");
+    fireEvent.mouseMove(svg, { clientX: 240, clientY: 160 });
+    fireEvent.mouseUp(svg, { button: 1, clientX: 240, clientY: 160 });
+
+    const after = store.getState().viewport.panOrigin;
+    expect(after.x).toBeCloseTo(before.x - 40 / zoom, 6);
+    expect(after.y).toBeCloseTo(before.y + 40 / zoom, 6);
+    expect(store.getState().pinLayers[0].pinPaths).toHaveLength(0);
+    expect(store.getState().threadDraft).toBeNull();
+  });
+
   it("pan mode: releasing the mouse stops the drag", () => {
     const store = new EditorStore();
     store.setMode("pan");

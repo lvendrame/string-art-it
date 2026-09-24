@@ -248,6 +248,8 @@ export const HELP_TABS: HelpTab[] = [
           { labelKey: "keyboardMouse.mouse.rightClick.label", descriptionKey: "keyboardMouse.mouse.rightClick.description" },
           { labelKey: "keyboardMouse.mouse.doubleClick.label", descriptionKey: "keyboardMouse.mouse.doubleClick.description" },
           { labelKey: "keyboardMouse.mouse.leftDrag.label", descriptionKey: "keyboardMouse.mouse.leftDrag.description" },
+          { labelKey: "keyboardMouse.mouse.wheel.label", descriptionKey: "keyboardMouse.mouse.wheel.description" },
+          { labelKey: "keyboardMouse.mouse.middleDrag.label", descriptionKey: "keyboardMouse.mouse.middleDrag.description" },
         ],
       },
       // docs/specs/34-keyboard-shortcuts.md — the full app-wide/per-tab shortcut

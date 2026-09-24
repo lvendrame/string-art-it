@@ -138,7 +138,9 @@
       "leftButton": { "label": "Botão esquerdo", "description": "Controla todo gesto de desenho, seleção e arraste em todos os modos." },
       "rightClick": { "label": "Clique direito", "description": "Abre um menu de contexto radial com ícones de acordo com o modo atual do editor — Selecionar/Mover/Rotação/Escala/Mesclar (mais Confirmar Mesclagem quando 2 ou mais pinos estiverem acumulados) no modo Editar, as ferramentas de desenho de pino no modo Pino (ou Cortar/Voltar/Cancelar durante um rascunho da ferramenta Caminho em andamento), Desenhar/Borracha/Segmento no modo Linha (ou Cortar/Voltar/Avançar durante um rascunho de linha em andamento), Ajustar/Aumentar zoom/Diminuir zoom no modo Mover, e os controles de reprodução no modo Reproduzir. Esc ou clicar fora do menu o fecha sem executar nenhuma ação." },
       "doubleClick": { "label": "Duplo clique", "description": "Ferramenta Desenhar Linha — finaliza o rascunho em andamento, adicionando um segmento final ao pino clicado." },
-      "leftDrag": { "label": "Arrastar com botão esquerdo", "description": "Move a área de visualização no modo Mover; pressionar-arrastar-soltar também controla Mover/Rotação no modo Editar e a maioria das ferramentas de forma no modo Pino." }
+      "leftDrag": { "label": "Arrastar com botão esquerdo", "description": "Move a área de visualização no modo Mover; pressionar-arrastar-soltar também controla Mover/Rotação no modo Editar e a maioria das ferramentas de forma no modo Pino." },
+      "wheel": { "label": "Roda do mouse", "description": "Aumenta/diminui o zoom da tela, ancorado no cursor, em todos os modos exceto Reproduzir. Pinça/rolagem no trackpad funciona da mesma forma." },
+      "middleDrag": { "label": "Arrastar com botão do meio", "description": "Segure a roda do mouse (botão do meio) e arraste para mover o quadro, em todos os modos exceto Reproduzir." }
     },
     "shortcuts": {
       "general": {

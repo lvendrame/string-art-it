@@ -104,8 +104,8 @@ The radius is expressed in **screen-space pixels**, not physical document units,
 Required capabilities:
 
 - Zoom in / zoom out
-- Mouse wheel / trackpad zoom
-- Pan
+- Mouse wheel / trackpad zoom (anchored at the cursor)
+- Pan (Pan mode left-drag, or middle-button drag in any mode)
 - Fit board to viewport
 - 100% view
 

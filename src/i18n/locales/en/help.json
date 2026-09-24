@@ -138,7 +138,9 @@
       "leftButton": { "label": "Left button", "description": "Drives every draw, select, and drag gesture across every mode." },
       "rightClick": { "label": "Right-click", "description": "Opens a radial context menu with icon slices matching the current Editor mode — Select/Move/Rotate/Scale/Merge (plus Commit Merge once 2+ pins are accumulated) in Edit mode, the Pin drawing tools in Pin mode (or Cut/Back/Cancel while a Path tool draft is in progress), Draw/Eraser/Segment in Thread mode (or Cut/Back/Next while a thread draft is in progress), Fit/Zoom In/Zoom Out in Pan mode, and the playback transport in Play mode. Escape or clicking outside the menu closes it without acting." },
       "doubleClick": { "label": "Double-click", "description": "Thread Draw tool — finishes the in-progress draft, adding one final segment to the clicked pin." },
-      "leftDrag": { "label": "Left-drag", "description": "Pans the viewport in Pan mode; press-drag-release also drives Move/Rotation in Edit mode and most shape tools in Pin mode." }
+      "leftDrag": { "label": "Left-drag", "description": "Pans the viewport in Pan mode; press-drag-release also drives Move/Rotation in Edit mode and most shape tools in Pin mode." },
+      "wheel": { "label": "Mouse wheel", "description": "Zooms in/out on the canvas, anchored at the cursor, in every mode except Play. Trackpad pinch/scroll works the same way." },
+      "middleDrag": { "label": "Middle-drag", "description": "Hold the mouse wheel (middle button) and drag to pan the board, in every mode except Play." }
     },
     "shortcuts": {
       "general": {

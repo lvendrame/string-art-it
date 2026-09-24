@@ -138,7 +138,9 @@
       "leftButton": { "label": "Linke Taste", "description": "Steuert jede Zeichen-, Auswahl- und Ziehgeste in allen Modi." },
       "rightClick": { "label": "Rechtsklick", "description": "Öffnet ein radiales Kontextmenü mit Symbolabschnitten passend zum aktuellen Editor-Modus — Auswählen/Verschieben/Drehen/Skalieren/Zusammenführen (plus Zusammenführung Bestätigen bei 2 oder mehr angesammelten Stiften) im Bearbeiten-Modus, die Stift-Zeichenwerkzeuge im Stift-Modus (oder Schneiden/Zurück/Abbrechen während eines laufenden Pfad-Werkzeug-Entwurfs), Zeichnen/Radierer/Segment im Faden-Modus (oder Schneiden/Zurück/Weiter während eines laufenden Fadenentwurfs), Einpassen/Vergrößern/Verkleinern im Verschieben-Modus, und die Wiedergabesteuerung im Wiedergabe-Modus. Escape oder ein Klick außerhalb des Menüs schließt es, ohne etwas auszuführen." },
       "doubleClick": { "label": "Doppelklick", "description": "Faden-Zeichenwerkzeug — beendet den laufenden Entwurf, indem ein letztes Segment zum angeklickten Stift hinzugefügt wird." },
-      "leftDrag": { "label": "Ziehen mit linker Taste", "description": "Verschiebt den Ansichtsbereich im Verschieben-Modus; Drücken-Ziehen-Loslassen steuert auch Verschieben/Drehung im Bearbeiten-Modus und die meisten Formwerkzeuge im Stift-Modus." }
+      "leftDrag": { "label": "Ziehen mit linker Taste", "description": "Verschiebt den Ansichtsbereich im Verschieben-Modus; Drücken-Ziehen-Loslassen steuert auch Verschieben/Drehung im Bearbeiten-Modus und die meisten Formwerkzeuge im Stift-Modus." },
+      "wheel": { "label": "Mausrad", "description": "Zoomt die Zeichenfläche hinein/heraus, verankert am Mauszeiger, in allen Modi außer Wiedergabe. Pinch/Scrollen auf dem Trackpad funktioniert genauso." },
+      "middleDrag": { "label": "Ziehen mit mittlerer Taste", "description": "Mausrad (mittlere Taste) gedrückt halten und ziehen, um das Brett zu verschieben, in allen Modi außer Wiedergabe." }
     },
     "shortcuts": {
       "general": {

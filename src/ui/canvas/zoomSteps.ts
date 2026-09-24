@@ -16,6 +16,17 @@ export function zoomOutStep(viewport: Viewport, anchor: Point): Viewport {
   return zoomAtPoint(viewport, Math.max(percentToZoom(MIN_ZOOM_PERCENT), viewport.zoom / ZOOM_STEP_FACTOR), anchor);
 }
 
+// Mouse wheel / trackpad zoom. Continuous rather than one fixed step per event, so a
+// trackpad's many small deltas stay smooth; a standard 100px wheel notch lands close
+// to one ZOOM_STEP_FACTOR step. Same clamp + anchor behaviour as the buttons.
+const WHEEL_ZOOM_SENSITIVITY = 0.0022;
+
+export function zoomByWheelDelta(viewport: Viewport, deltaY: number, anchor: Point): Viewport {
+  const target = viewport.zoom * Math.exp(-deltaY * WHEEL_ZOOM_SENSITIVITY);
+  const clamped = Math.min(percentToZoom(MAX_ZOOM_PERCENT), Math.max(percentToZoom(MIN_ZOOM_PERCENT), target));
+  return zoomAtPoint(viewport, clamped, anchor);
+}
+
 // docs/specs/05-canvas-and-viewport.md §Zoom and Pan — the CanvasToolbar zoom
 // control's typed-value/preset-dropdown paths. Same clamp + anchor behaviour as
 // zoomInStep/zoomOutStep so all four ways of changing zoom (buttons, +/- keys,

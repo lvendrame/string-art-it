@@ -2,7 +2,8 @@ import { forwardRef, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { boardPath, truncateThreadLayersAtFrame, type EditorState } from "@application/document";
 import { pathToSvgD } from "@infrastructure/rendering/svgPath";
-import { CANVAS_VIEWPORT_PX, fitViewportForBoard } from "./boardViewport";
+import { fitViewportForBoard } from "./boardViewport";
+import { useCanvasViewportSize } from "./canvasViewportSize";
 import { BoardLayer } from "./BoardLayer";
 import { GridLayer } from "./GridLayer/GridLayer";
 import { PinLayersView } from "./PinLayersView";
@@ -17,20 +18,21 @@ export const PlaybackCanvas = forwardRef<SVGSVGElement, { state: EditorState; fr
   svgRef,
 ) {
   const { t } = useTranslation("canvas");
-  const viewport = useMemo(() => fitViewportForBoard(state.board), [state.board]);
+  const viewportPx = useCanvasViewportSize();
+  const viewport = useMemo(() => fitViewportForBoard(state.board, viewportPx), [state.board, viewportPx]);
   const path = useMemo(() => boardPath(state.board), [state.board]);
   const pathD = useMemo(() => pathToSvgD(path), [path]);
   const visibleThreadLayers = useMemo(
     () => truncateThreadLayersAtFrame(state.threadLayers, frame),
     [state.threadLayers, frame],
   );
-  const viewBox = `${viewport.panOrigin.x} ${viewport.panOrigin.y} ${CANVAS_VIEWPORT_PX.width / viewport.zoom} ${CANVAS_VIEWPORT_PX.height / viewport.zoom}`;
+  const viewBox = `${viewport.panOrigin.x} ${viewport.panOrigin.y} ${viewportPx.width / viewport.zoom} ${viewportPx.height / viewport.zoom}`;
 
   return (
     <div className="playback-canvas">
-      <svg ref={svgRef} width={CANVAS_VIEWPORT_PX.width} height={CANVAS_VIEWPORT_PX.height} viewBox={viewBox} role="img" aria-label={t("playModeCanvasAriaLabel")}>
+      <svg ref={svgRef} width="100%" height="100%" viewBox={viewBox} role="img" aria-label={t("playModeCanvasAriaLabel")}>
         <BoardLayer board={state.board} pathD={pathD} />
-        <GridLayer grid={state.grid} viewport={viewport} viewportPx={CANVAS_VIEWPORT_PX} />
+        <GridLayer grid={state.grid} viewport={viewport} viewportPx={viewportPx} />
         <ThreadLayersView threadLayers={visibleThreadLayers} pinLayers={state.pinLayers} />
         <PinLayersView pinLayers={state.pinLayers} selectedPathIds={[]} />
       </svg>

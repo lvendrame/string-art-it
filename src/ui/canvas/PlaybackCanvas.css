@@ -1,7 +1,13 @@
 .playback-canvas {
   flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
   background: var(--bg-canvas);
+}
+
+.playback-canvas > svg {
+  position: absolute;
+  inset: 0;
+  display: block;
 }

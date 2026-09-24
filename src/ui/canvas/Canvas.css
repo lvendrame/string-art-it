@@ -14,3 +14,9 @@
   align-items: center;
   justify-content: center;
 }
+
+.canvas-viewport > svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+}

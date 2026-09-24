@@ -7,7 +7,8 @@ import { useEditorState } from "@ui/useEditorStore";
 import { fitViewportForBoard } from "@ui/canvas/boardViewport";
 import { ChangeBackgroundPopover } from "@ui/canvas/ChangeBackgroundPopover";
 import { GridSettingsPopover } from "@ui/canvas/GridSettingsPopover";
-import { VIEWPORT_CENTER, zoomInStep, zoomOutStep } from "@ui/canvas/zoomSteps";
+import { zoomInStep, zoomOutStep } from "@ui/canvas/zoomSteps";
+import { getCanvasViewportCenter } from "@ui/canvas/canvasViewportSize";
 import { ZoomControl } from "@ui/canvas/ZoomControl";
 import { CANVAS_TOOLBAR_TOOLTIP_ID, ToggleChip } from "./ToggleChip";
 import "./CanvasToolbar.css";
@@ -28,11 +29,11 @@ export function CanvasToolbar({ store }: { store: EditorStore }) {
 
       <div className="canvas-toolbar__spacer" />
 
-      <button aria-label={t("canvasToolbar.zoomOut")} className="btn mono canvas-toolbar__zoom-btn" onClick={() => store.setViewport(zoomOutStep(viewport, VIEWPORT_CENTER))}>
+      <button aria-label={t("canvasToolbar.zoomOut")} className="btn mono canvas-toolbar__zoom-btn" onClick={() => store.setViewport(zoomOutStep(viewport, getCanvasViewportCenter()))}>
         <ZoomOut size={14} />
       </button>
       <ZoomControl store={store} viewport={viewport} />
-      <button aria-label={t("canvasToolbar.zoomIn")} className="btn mono canvas-toolbar__zoom-btn" onClick={() => store.setViewport(zoomInStep(viewport, VIEWPORT_CENTER))}>
+      <button aria-label={t("canvasToolbar.zoomIn")} className="btn mono canvas-toolbar__zoom-btn" onClick={() => store.setViewport(zoomInStep(viewport, getCanvasViewportCenter()))}>
         <ZoomIn size={14} />
       </button>
       <button className="btn canvas-toolbar__fit-btn" onClick={() => store.setViewport(fitViewportForBoard(state.board))}>

@@ -4,7 +4,8 @@ import { useTranslation } from "react-i18next";
 import type { EditorStore } from "@application/document";
 import type { Viewport } from "@domain/transforms";
 import { zoomToPercent } from "@domain/transforms";
-import { VIEWPORT_CENTER, ZOOM_PRESET_PERCENTS, zoomToPercentStep } from "./zoomSteps";
+import { ZOOM_PRESET_PERCENTS, zoomToPercentStep } from "./zoomSteps";
+import { getCanvasViewportCenter } from "./canvasViewportSize";
 import { AnchoredPopover } from "@ui/AnchoredPopover";
 import { usePopoverDismiss } from "@ui/usePopoverDismiss";
 import "./ZoomControl.css";
@@ -37,7 +38,7 @@ export function ZoomControl({ store, viewport }: { store: EditorStore; viewport:
   usePopoverDismiss(containerRef, open, () => setOpen(false), { escapeKey: false });
 
   function applyPercent(percent: number) {
-    store.setViewport(zoomToPercentStep(viewport, percent, VIEWPORT_CENTER));
+    store.setViewport(zoomToPercentStep(viewport, percent, getCanvasViewportCenter()));
   }
 
   function commit() {

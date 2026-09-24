@@ -8,7 +8,8 @@ import {
   type EditorStore,
 } from "@application/document";
 import { fitViewportForBoard } from "./canvas/boardViewport";
-import { VIEWPORT_CENTER, zoomInStep, zoomOutStep } from "./canvas/zoomSteps";
+import { zoomInStep, zoomOutStep } from "./canvas/zoomSteps";
+import { getCanvasViewportCenter } from "./canvas/canvasViewportSize";
 import { isTextEntryTarget } from "./keyboard";
 import type { FileMenuHandle } from "./toolbars/FileMenu";
 import { saveProjectFile } from "./toolbars/projectFileDownload";
@@ -272,13 +273,13 @@ export function useKeyboardShortcuts(store: EditorStore, deps: KeyboardShortcutD
       if (!primary && !e.altKey && (e.key === "+" || e.key === "=")) {
         e.preventDefault();
         const state = store.getState();
-        store.setViewport(zoomInStep(state.viewport, VIEWPORT_CENTER));
+        store.setViewport(zoomInStep(state.viewport, getCanvasViewportCenter()));
         return;
       }
       if (!primary && !e.altKey && (e.key === "-" || e.key === "_")) {
         e.preventDefault();
         const state = store.getState();
-        store.setViewport(zoomOutStep(state.viewport, VIEWPORT_CENTER));
+        store.setViewport(zoomOutStep(state.viewport, getCanvasViewportCenter()));
         return;
       }
       if (!primary && !e.altKey && !e.shiftKey && e.key === "0") {

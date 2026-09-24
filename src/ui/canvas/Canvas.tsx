@@ -1,4 +1,4 @@
-import { useMemo, type MouseEvent as ReactMouseEvent } from "react";
+import { useMemo, useRef, type MouseEvent as ReactMouseEvent } from "react";
 import { useTranslation } from "react-i18next";
 import {
   boardPath,
@@ -16,7 +16,8 @@ import { DEFAULT_FONT_ID } from "@infrastructure/fonts/fontCatalog";
 import { zoomToPercent } from "@domain/transforms";
 import { buildTextGeometry } from "@ui/text/buildTextGeometry";
 import { useEditorState } from "@ui/useEditorStore";
-import { CANVAS_VIEWPORT_PX } from "./boardViewport";
+import { fitViewportForBoard } from "./boardViewport";
+import { useCanvasViewportSize, useMeasureCanvasViewport } from "./canvasViewportSize";
 import { CanvasToolbar } from "./CanvasToolbar/CanvasToolbar";
 import { StatusBar } from "./StatusBar";
 import { BoardLayer } from "./BoardLayer";
@@ -50,7 +51,6 @@ import { useKeyboardTransform } from "./useKeyboardTransform";
 import { useEraserHover } from "./useEraserHover";
 import "./Canvas.css";
 
-const VIEWPORT_PX = CANVAS_VIEWPORT_PX;
 
 // docs/specs/29-text-pin-path.md — initial font size for a newly placed Text Pin Path,
 // in the app's physical document units (cm), same convention as every other numeric
@@ -143,6 +143,10 @@ function canvasCursor(
   return "default";
 }
 
+function fitForStore(store: EditorStore) {
+  return fitViewportForBoard(store.getState().board);
+}
+
 export function Canvas({ store }: { store: EditorStore }) {
   const { t } = useTranslation("canvas");
   const state = useEditorState(store);
@@ -175,7 +179,10 @@ export function Canvas({ store }: { store: EditorStore }) {
 
   const path = useMemo(() => boardPath(state.board), [state.board]);
   const pathD = useMemo(() => pathToSvgD(path), [path]);
-  const viewBox = `${viewport.panOrigin.x} ${viewport.panOrigin.y} ${VIEWPORT_PX.width / viewport.zoom} ${VIEWPORT_PX.height / viewport.zoom}`;
+  const viewportRef = useRef<HTMLDivElement>(null);
+  useMeasureCanvasViewport(viewportRef, store, fitForStore);
+  const viewportPx = useCanvasViewportSize();
+  const viewBox = `${viewport.panOrigin.x} ${viewport.panOrigin.y} ${viewportPx.width / viewport.zoom} ${viewportPx.height / viewport.zoom}`;
 
   function handlePointerDown(e: ReactMouseEvent<SVGSVGElement>) {
     // Only the primary (left) button starts a drawing/drag/select/accumulate gesture —
@@ -345,10 +352,10 @@ export function Canvas({ store }: { store: EditorStore }) {
     <div className="canvas-root">
       <CanvasToolbar store={store} />
 
-      <div className="canvas-viewport">
+      <div className="canvas-viewport" ref={viewportRef}>
         <svg
-          width={VIEWPORT_PX.width}
-          height={VIEWPORT_PX.height}
+          width={viewportPx.width}
+          height={viewportPx.height}
           viewBox={viewBox}
           style={{
             cursor: canvasCursor(state.mode, state.selectTool, state.pinTool, state.threadTool, pan.isPanning),
@@ -365,7 +372,7 @@ export function Canvas({ store }: { store: EditorStore }) {
           <GridLayer
             grid={state.grid}
             viewport={viewport}
-            viewportPx={VIEWPORT_PX}
+            viewportPx={viewportPx}
           />
 
           <ThreadLayersView

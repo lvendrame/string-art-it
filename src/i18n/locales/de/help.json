@@ -151,7 +151,8 @@
         "zoomOut": { "label": "-", "description": "Verkleinert, zentriert auf die Mitte des Ansichtsbereichs." },
         "fit": { "label": "0", "description": "Setzt den Ansichtsbereich zurück, um das ganze Board anzuzeigen." },
         "grid": { "label": "Strg/Cmd+Umschalt+G", "description": "Schaltet die Sichtbarkeit der Gitterlinien um." },
-        "snap": { "label": "Strg/Cmd+Umschalt+A", "description": "Schaltet das Einrasten am Gitter um." }
+        "snap": { "label": "Strg/Cmd+Umschalt+A", "description": "Schaltet das Einrasten am Gitter um." },
+        "delete": { "label": "Delete / Backspace", "description": "Löscht die ausgewählten Stiftpfade, Stifte oder den Fadenpfad sowie alle Fadensegmente, die an gelöschten Stiften hängen." }
       },
       "tabs": {
         "heading": "Tabs wechseln",

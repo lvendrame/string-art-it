@@ -151,7 +151,8 @@
         "zoomOut": { "label": "-", "description": "Zoom arrière, centré sur le centre de la zone de visualisation." },
         "fit": { "label": "0", "description": "Réinitialise la zone de visualisation pour afficher tout le plateau." },
         "grid": { "label": "Ctrl/Cmd+Maj+G", "description": "Active ou désactive la visibilité des lignes de grille." },
-        "snap": { "label": "Ctrl/Cmd+Maj+A", "description": "Active ou désactive l'alignement sur la grille." }
+        "snap": { "label": "Ctrl/Cmd+Maj+A", "description": "Active ou désactive l'alignement sur la grille." },
+        "delete": { "label": "Delete / Backspace", "description": "Supprime les Tracés de Broches, broches ou le Tracé de Fil sélectionnés, ainsi que tout segment de fil attaché aux broches supprimées." }
       },
       "tabs": {
         "heading": "Changer d'onglet",

@@ -151,7 +151,8 @@
         "zoomOut": { "label": "-", "description": "Reduz o zoom, centralizado no centro da área de visualização." },
         "fit": { "label": "0", "description": "Redefine a área de visualização para ajustar todo o quadro." },
         "grid": { "label": "Ctrl/Cmd+Shift+G", "description": "Ativa ou desativa a visibilidade das linhas da grade." },
-        "snap": { "label": "Ctrl/Cmd+Shift+A", "description": "Ativa ou desativa o alinhamento à grade." }
+        "snap": { "label": "Ctrl/Cmd+Shift+A", "description": "Ativa ou desativa o alinhamento à grade." },
+        "delete": { "label": "Delete / Backspace", "description": "Exclui os Caminhos de Pinos, pinos ou o Caminho de Linha selecionados, junto com quaisquer segmentos de linha ligados aos pinos excluídos." }
       },
       "tabs": {
         "heading": "Trocar de aba",

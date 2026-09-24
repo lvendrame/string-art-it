@@ -43,6 +43,7 @@ Scoped to `BoardSetup.tsx` only, via its own local `keydown` listener (not the c
 | `Ctrl/Cmd+Shift+G` | Toggles grid visibility. |
 | `Ctrl/Cmd+Shift+A` | Toggles snap-to-grid. |
 | `ArrowUp` / `ArrowDown` / `ArrowLeft` / `ArrowRight` | **Fallback pan** — moves the viewport, only when the arrow key isn't already claimed by something else (see "Arrow-key pan" below). `Shift+Arrow` pans by a bigger step, same "Shift = bigger step" convention as the existing Edit-mode nudge. |
+| `Delete` / `Backspace` | Deletes the current selection — Pin Paths, individual pins, or a Thread Path — as one undo step, cascading deleted pins into referencing thread segments (same as the erasers). No-op with nothing selected, or if any involved layer is locked. |
 | bare `1`–`6` | Switches to the Edit / Pin / Thread / Generate / Pan / Play tab, respectively (same order as `ModeSwitcher.tsx`). |
 
 ## Edit tab (`mode === "select"`)

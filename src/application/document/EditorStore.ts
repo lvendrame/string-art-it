@@ -526,6 +526,59 @@ export class EditorStore {
     }
   }
 
+  // docs/specs/34-keyboard-shortcuts.md Delete — removes whatever is selected (Pin
+  // Paths, individual pins, or a Thread Path) as ONE undo step, cascading pin removals
+  // into referencing thread segments like the erasers. All-or-nothing on locked layers,
+  // same rule as Merge.
+  deleteSelection(): void {
+    const { selection } = this.state;
+    if (selection.type === "threadPath") {
+      if (isThreadLayerLocked(this.state.threadLayers, selection.layerId)) return;
+      this.deleteThreadPath(selection.layerId, selection.pathId);
+      this.select({ type: "none" });
+      return;
+    }
+    if (selection.type === "pinPaths" && selection.refs.length > 0) {
+      this.deleteSelectedPinPaths(selection.refs);
+      return;
+    }
+    if (selection.type === "pins" && selection.refs.length > 0) {
+      this.deleteSelectedPins(selection.refs);
+    }
+  }
+
+  private deleteSelectedPinPaths(refs: PinPathRef[]): void {
+    if (refs.some((r) => isLayerLocked(this.state.pinLayers, r.layerId))) return;
+    const pinIds = refs.flatMap((r) => findPinPath(this.state.pinLayers, r.layerId, r.pathId)?.pins.map((p) => p.id) ?? []);
+    const nextPinLayers = refs.reduce((layers, r) => removePinPathFromLayers(layers, r.layerId, r.pathId), this.state.pinLayers);
+    this.runPinDeletion(nextPinLayers, pinIds);
+  }
+
+  private deleteSelectedPins(refs: PinRef[]): void {
+    if (refs.some((r) => isLayerLocked(this.state.pinLayers, r.layerId))) return;
+    const nextPinLayers = refs.reduce((layers, r) => erasePinFromLayers(layers, r.layerId, r.pathId, r.pinId), this.state.pinLayers);
+    this.runPinDeletion(
+      nextPinLayers,
+      refs.map((r) => r.pinId),
+    );
+  }
+
+  private runPinDeletion(nextPinLayers: PinLayer[], removedPinIds: string[]): void {
+    const nextThreadLayers = removedPinIds.reduce((acc, pinId) => removePinFromAllThreadLayers(acc, pinId), this.state.threadLayers);
+    const prev = { pinLayers: this.state.pinLayers, threadLayers: this.state.threadLayers };
+    const next = { pinLayers: nextPinLayers, threadLayers: nextThreadLayers };
+    const command = new SetValueCommand<typeof next>(
+      (v) => {
+        this.state = { ...this.state, ...v };
+        this.notify();
+      },
+      prev,
+      next,
+    );
+    this.history.run(command);
+    this.select({ type: "none" });
+  }
+
   // docs/specs/26-edit-mode-multi-select.md — every selected Pin Path's live document
   // object, in selection order. Empty unless the current selection is path-granularity.
   getSelectedPinPaths(): PinPath[] {

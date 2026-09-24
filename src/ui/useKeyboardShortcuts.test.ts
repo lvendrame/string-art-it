@@ -83,3 +83,18 @@ describe("useKeyboardShortcuts — arrow pan claimed elsewhere", () => {
     expect(store.getState().viewport.panOrigin).toEqual(before);
   });
 });
+
+describe("useKeyboardShortcuts — Delete", () => {
+  it.each(["Delete", "Backspace"])("%s deletes the current selection", (key) => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    const pathId = store.addPinPath(layerId, { type: "line", start: { x: 0, y: 0 }, end: { x: 10, y: 0 } })!;
+    store.setMode("select");
+    store.select({ type: "pinPaths", refs: [{ layerId, pathId }] });
+    renderHook(() => useKeyboardShortcuts(store, makeDeps()));
+
+    fireEvent.keyDown(window, { key });
+
+    expect(store.getState().pinLayers[0].pinPaths).toHaveLength(0);
+  });
+});

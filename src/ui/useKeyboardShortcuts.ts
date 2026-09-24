@@ -253,6 +253,11 @@ export function useKeyboardShortcuts(store: EditorStore, deps: KeyboardShortcutD
         deps.fileMenuRef.current?.openFilePicker();
         return;
       }
+      if (!primary && !e.altKey && !e.shiftKey && (e.key === "Delete" || e.key === "Backspace")) {
+        e.preventDefault();
+        store.deleteSelection();
+        return;
+      }
       if (!primary && !e.altKey && e.key === "?") {
         e.preventDefault();
         deps.openHelp();

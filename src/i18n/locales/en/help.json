@@ -151,7 +151,8 @@
         "zoomOut": { "label": "-", "description": "Zooms out, centred on the viewport centre." },
         "fit": { "label": "0", "description": "Resets the viewport to fit the whole board in view." },
         "grid": { "label": "Ctrl/Cmd+Shift+G", "description": "Toggles grid line visibility." },
-        "snap": { "label": "Ctrl/Cmd+Shift+A", "description": "Toggles snap-to-grid." }
+        "snap": { "label": "Ctrl/Cmd+Shift+A", "description": "Toggles snap-to-grid." },
+        "delete": { "label": "Delete / Backspace", "description": "Deletes the selected Pin Paths, pins, or Thread Path, along with any thread segments attached to deleted pins." }
       },
       "tabs": {
         "heading": "Switch tabs",

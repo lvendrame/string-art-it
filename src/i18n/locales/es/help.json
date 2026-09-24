@@ -151,7 +151,8 @@
         "zoomOut": { "label": "-", "description": "Aleja el zoom, centrado en el centro del área de visualización." },
         "fit": { "label": "0", "description": "Restablece el área de visualización para ajustar todo el tablero." },
         "grid": { "label": "Ctrl/Cmd+Mayús+G", "description": "Activa o desactiva la visibilidad de las líneas de la cuadrícula." },
-        "snap": { "label": "Ctrl/Cmd+Mayús+A", "description": "Activa o desactiva el ajuste a la cuadrícula." }
+        "snap": { "label": "Ctrl/Cmd+Mayús+A", "description": "Activa o desactiva el ajuste a la cuadrícula." },
+        "delete": { "label": "Delete / Backspace", "description": "Elimina los Trazados de Pines, pines o el Trazado de Hilo seleccionados, junto con cualquier segmento de hilo unido a los pines eliminados." }
       },
       "tabs": {
         "heading": "Cambiar de pestaña",

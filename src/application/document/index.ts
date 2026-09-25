@@ -2,6 +2,7 @@ export {
   createDefaultBoard,
   defaultDimensionsFor,
   clampDimension,
+  BOARD_CENTER,
   boardHypotenuse,
   boardPath,
   type Board,

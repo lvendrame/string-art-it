@@ -10,19 +10,23 @@ export interface SnapOptions {
   gridSnapEnabled: boolean;
   gridGap: GridGap;
   viewport: Viewport;
+  centerSnap?: Point | null;
 }
 
 export type SnapResult =
+  | { point: Point; source: "center" }
   | { point: Point; source: "pin"; pin: SnapPin }
   | { point: Point; source: "grid" }
   | { point: Point; source: "raw" };
 
 // docs/specs/22-snapping-priority (deterministic, fixed order):
-//   Raw pointer -> Nearest pin/object snap -> Grid snap -> (geometry constraint,
+//   Raw pointer -> Board-centre override (Ctrl/Cmd held) -> Nearest pin/object snap -> Grid snap -> (geometry constraint,
 //   mirror/symmetry — tool-specific, applied by the caller after this).
 // Grid visibility and snap-to-grid are independent settings (docs/specs/07-grid) —
 // this function only reads `gridSnapEnabled`, never grid visibility.
 export function resolveSnapPosition(rawPoint: Point, options: SnapOptions): SnapResult {
+  if (options.centerSnap) return { point: options.centerSnap, source: "center" };
+
   if (options.pinSnapEnabled) {
     const maxDocumentDistance = screenDistanceToDocument(options.snapRadiusPx, options.viewport);
     const pin = findNearestPin(rawPoint, options.pins, maxDocumentDistance);

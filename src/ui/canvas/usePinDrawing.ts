@@ -54,5 +54,5 @@ export function usePinDrawing(store: EditorStore, layerId: string) {
     return null;
   }
 
-  return { handleMouseDown, handleMouseUp, previewGeometry };
+  return { isDrawing: dragStart !== null || arcDraft !== null, handleMouseDown, handleMouseUp, previewGeometry };
 }

@@ -7,7 +7,7 @@ import {
   rightTriangleShape,
   squareShape,
 } from "@domain/shapes";
-import type { Path } from "@domain/paths";
+import type { Path, Point } from "@domain/paths";
 
 // docs/specs/03-board-configuration.md
 export type BoardShape = "circle" | "oval" | "rectangle" | "square" | "triangle";
@@ -82,13 +82,15 @@ export function boardHypotenuse(board: Board): number | null {
 
 // Board geometry is always centred on the document origin at this stage — repositioning
 // the board itself is not in scope for MVP (docs/specs §00 MVP Scope).
+export const BOARD_CENTER: Point = { x: 0, y: 0 };
+
 export function boardPath(board: Board): Path {
   const d = board.dimensions;
   switch (board.shape) {
     case "circle":
-      return circleShape({ x: 0, y: 0 }, (d.diameter ?? 60) / 2);
+      return circleShape(BOARD_CENTER, (d.diameter ?? 60) / 2);
     case "oval":
-      return ellipseShape({ x: 0, y: 0 }, (d.width ?? 60) / 2, (d.height ?? 40) / 2);
+      return ellipseShape(BOARD_CENTER, (d.width ?? 60) / 2, (d.height ?? 40) / 2);
     case "rectangle": {
       const w = d.width ?? 60;
       const h = d.height ?? 40;
@@ -104,6 +106,6 @@ export function boardPath(board: Board): Path {
         const height = d.height ?? 30;
         return rightTriangleShape({ x: -base / 2, y: -height / 2 }, base, height);
       }
-      return equilateralTriangleShape({ x: 0, y: 0 }, d.side ?? 50);
+      return equilateralTriangleShape(BOARD_CENTER, d.side ?? 50);
   }
 }

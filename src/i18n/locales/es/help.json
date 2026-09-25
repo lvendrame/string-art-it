@@ -131,7 +131,8 @@
       "arrowUpDown": { "label": "Flecha Arriba / Flecha Abajo", "description": "Modo Editar con Mover/Rotación/Escala activo: desplaza/gira/escala la selección. En caso contrario, desplaza el área de visualización (Mayús para un paso mayor)." },
       "shift": { "label": "Shift (mantenido con una flecha en modo Editar)", "description": "Multiplica por 10 el paso de Mover/Rotación/Escala de la flecha." },
       "holdArrow": { "label": "Mantener presionada una flecha en modo Editar", "description": "Repite el paso de Mover/Rotación/Escala automáticamente tras un retraso de 500ms, luego cada 100ms hasta que se suelte." },
-      "alt": { "label": "Alt (mantenido al arrastrar)", "description": "Solo herramientas Elipse/Rectángulo del modo Pin — restringe la forma a un Círculo/Cuadrado. Soltar Alt a mitad del arrastre vuelve al modo sin restricción." }
+      "alt": { "label": "Alt (mantenido al arrastrar)", "description": "Solo herramientas Elipse/Rectángulo del modo Pin — restringe la forma a un Círculo/Cuadrado. Soltar Alt a mitad del arrastre vuelve al modo sin restricción." },
+      "centerSnap": { "label": "Ctrl/Cmd (mantenido)", "description": "Modo Pin — ajusta el cursor al centro del tablero, con prioridad sobre el ajuste a pines y a la cuadrícula. Tras un clic que lo haya usado, se ignora hasta terminar la forma (herramienta Trazado: solo en el siguiente clic), así que no hace falta soltarlo." }
     },
     "mouse": {
       "heading": "Ratón",

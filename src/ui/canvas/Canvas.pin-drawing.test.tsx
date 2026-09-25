@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { beforeAll, describe, expect, it } from "vitest";
-import { EditorStore } from "@application/document";
+import { curvatureFromCursor, EditorStore } from "@application/document";
 import { Canvas } from "./Canvas";
 
 // Fixed viewport: zoom 4, panOrigin (-40,-40) — chosen so simple screen coordinates map
@@ -210,5 +210,106 @@ describe("Canvas — pin drawing interaction", () => {
     mouseDownAt(svg, 200, 200); // doc(10,10), the line's start pin
 
     expect(store.getState().selection).toEqual({ type: "pinPaths", refs: [{ layerId, pathId }] });
+  });
+
+  it("holding Ctrl snaps the drag origin to the board centre", () => {
+    const store = new EditorStore();
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.keyDown(window, { key: "Control" });
+    mouseDownAt(svg, 200, 200); // doc(10,10), snapped to doc(0,0)
+    fireEvent.keyUp(window, { key: "Control" });
+    fireEvent.mouseUp(svg, { clientX: 240, clientY: 160 }); // doc(20,0) -> radius 20
+
+    const paths = store.getState().pinLayers[0].pinPaths;
+    expect(paths[0].geometry).toMatchObject({ type: "circle", center: { x: 0, y: 0 }, radius: 20 });
+  });
+
+  it("holding Cmd (Meta) also snaps to the board centre and shows the snap indicator", () => {
+    const store = new EditorStore();
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    const indicatorCircle = () => screen.getByTestId("grid-snap-indicator").querySelector("circle");
+
+    fireEvent.mouseMove(svg, { clientX: 200, clientY: 200 }); // doc(10,10)
+    expect(indicatorCircle()).toHaveAttribute("cx", "10");
+    fireEvent.keyDown(window, { key: "Meta" });
+    expect(indicatorCircle()).toHaveAttribute("cx", "0");
+    expect(indicatorCircle()).toHaveAttribute("cy", "0");
+  });
+
+  it("ignores Ctrl for the rest of a drag once the drag started on the centre", () => {
+    const store = new EditorStore();
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.keyDown(window, { key: "Control" });
+    mouseDownAt(svg, 200, 200); // snapped to doc(0,0)
+    fireEvent.mouseUp(svg, { clientX: 280, clientY: 200 }); // Ctrl still held -> doc(30,10)
+    fireEvent.keyUp(window, { key: "Control" });
+
+    const geometry = store.getState().pinLayers[0].pinPaths[0].geometry;
+    expect(geometry).toMatchObject({ type: "circle", center: { x: 0, y: 0 } });
+    expect(geometry.type === "circle" && geometry.radius).toBeCloseTo(Math.hypot(30, 10));
+  });
+
+  it("still snaps the drag end to the centre when the drag did not start there", () => {
+    const store = new EditorStore();
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    mouseDownAt(svg, 200, 200); // doc(10,10)
+    fireEvent.keyDown(window, { key: "Control" });
+    fireEvent.mouseUp(svg, { clientX: 280, clientY: 200 }); // snapped to doc(0,0)
+    fireEvent.keyUp(window, { key: "Control" });
+
+    const geometry = store.getState().pinLayers[0].pinPaths[0].geometry;
+    expect(geometry).toMatchObject({ type: "circle", center: { x: 10, y: 10 } });
+    expect(geometry.type === "circle" && geometry.radius).toBeCloseTo(Math.hypot(10, 10));
+  });
+
+  it("Arc: after snapping the end point to the centre, the curvature click ignores a still-held Ctrl", () => {
+    const store = new EditorStore();
+    store.setPinTool("arc");
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    mouseDownAt(svg, 200, 200); // start doc(10,10)
+    fireEvent.keyDown(window, { key: "Control" });
+    mouseDownAt(svg, 280, 200); // end snapped to doc(0,0)
+    mouseDownAt(svg, 240, 240); // curvature at raw doc(20,20)
+    fireEvent.keyUp(window, { key: "Control" });
+
+    const start = { x: 10, y: 10 };
+    const end = { x: 0, y: 0 };
+    expect(store.getState().pinLayers[0].pinPaths[0].geometry).toEqual({
+      type: "arc",
+      start,
+      end,
+      curvature: curvatureFromCursor(start, end, { x: 20, y: 20 }),
+    });
+  });
+
+  it("Path: Ctrl is ignored only for the click right after one that used the centre", () => {
+    const store = new EditorStore();
+    store.setPinTool("polygon");
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    mouseDownAt(svg, 200, 200); // doc(10,10)
+    fireEvent.keyDown(window, { key: "Control" });
+    mouseDownAt(svg, 280, 200); // snapped to doc(0,0)
+    mouseDownAt(svg, 280, 280); // ignored -> doc(30,30)
+    mouseDownAt(svg, 200, 280); // snaps again -> doc(0,0)
+    fireEvent.keyUp(window, { key: "Control" });
+
+    expect(store.getState().polygonDraft?.points).toEqual([
+      { x: 10, y: 10 },
+      { x: 0, y: 0 },
+      { x: 30, y: 30 },
+      { x: 0, y: 0 },
+    ]);
   });
 });

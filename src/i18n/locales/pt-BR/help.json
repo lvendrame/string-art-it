@@ -131,7 +131,8 @@
       "arrowUpDown": { "label": "Seta Cima / Seta Baixo", "description": "Modo Editar com Mover/Rotação/Escala ativo: desloca/gira/redimensiona a seleção. Caso contrário, move a área de visualização (Shift para um passo maior)." },
       "shift": { "label": "Shift (mantido com uma seta no modo Editar)", "description": "Multiplica por 10 o passo de Mover/Rotação/Escala da seta." },
       "holdArrow": { "label": "Manter pressionada uma seta no modo Editar", "description": "Repete o passo de Mover/Rotação/Escala automaticamente após um atraso de 500ms, depois a cada 100ms até ser solta." },
-      "alt": { "label": "Alt (mantido ao arrastar)", "description": "Apenas ferramentas Elipse/Retângulo do modo Pino — restringe a forma a um Círculo/Quadrado. Soltar Alt no meio do arraste volta ao modo sem restrição." }
+      "alt": { "label": "Alt (mantido ao arrastar)", "description": "Apenas ferramentas Elipse/Retângulo do modo Pino — restringe a forma a um Círculo/Quadrado. Soltar Alt no meio do arraste volta ao modo sem restrição." },
+      "centerSnap": { "label": "Ctrl/Cmd (mantido)", "description": "Modo Pino — encaixa o cursor no centro da placa, com prioridade sobre o encaixe em pinos e na grade. Depois de um clique que o usou, ele é ignorado até terminar a forma (ferramenta Caminho: só no próximo clique), então não é preciso soltá-lo." }
     },
     "mouse": {
       "heading": "Mouse",

@@ -186,4 +186,33 @@ describe("EditorShell Stats and Print overlays", () => {
     fireEvent.click(screen.getByRole("button", { name: "Close" }));
     expect(screen.queryByRole("button", { name: "Close" })).not.toBeInTheDocument();
   });
+
+  it("Ctrl+contextmenu in Pin mode (macOS Ctrl+click, the centre-snap gesture) does not open the menu", () => {
+    const store = new EditorStore();
+    store.setMode("pin");
+    const { container } = render(<EditorShell store={store} onNewProject={() => {}} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.contextMenu(svg, { ctrlKey: true });
+    expect(container.querySelector('[data-tooltip-content="Line"]')).toBeNull();
+
+    fireEvent.contextMenu(svg);
+    expect(container.querySelector('[data-tooltip-content="Line"]')).not.toBeNull();
+  });
+
+  it("Ctrl+click that commits an Arc (switching to Edit mode) does not open the menu", () => {
+    const store = new EditorStore();
+    store.setMode("pin");
+    store.setPinTool("arc");
+    const { container } = render(<EditorShell store={store} onNewProject={() => {}} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.mouseDown(svg, { clientX: 200, clientY: 200 });
+    fireEvent.mouseDown(svg, { clientX: 280, clientY: 200 });
+    fireEvent.mouseDown(svg, { clientX: 240, clientY: 240, ctrlKey: true });
+    expect(store.getState().mode).toBe("select");
+    fireEvent.contextMenu(svg, { ctrlKey: true });
+
+    expect(container.querySelector(".radial-context-menu__backdrop")).toBeNull();
+  });
 });

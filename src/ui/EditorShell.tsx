@@ -44,6 +44,9 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
   const canvasAreaRef = useRef<HTMLDivElement>(null);
   const fileMenuRef = useRef<FileMenuHandle>(null);
   const [radialMenuPosition, setRadialMenuPosition] = useState<RadialMenuPosition | null>(null);
+  // The contextmenu event follows mousedown, which may already have switched modes
+  // (a pin tool committing on click hands off to Edit mode).
+  const modeAtMouseDownRef = useRef(state.mode);
 
   // "Adjusting state when a prop changes" (react.dev), same technique as
   // usePlaybackTransport.ts's prevTotalFrames/prevActive: a mode switch invalidates
@@ -61,6 +64,9 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
   // not inside Canvas.tsx, since it must cover both canvas components identically.
   function handleCanvasAreaContextMenu(e: ReactMouseEvent<HTMLDivElement>) {
     e.preventDefault();
+    // macOS turns Ctrl+click into a contextmenu; in Pin mode that's the board-centre
+    // snap gesture (docs/specs/05-canvas-and-viewport.md), so it must not open the menu.
+    if (modeAtMouseDownRef.current === "pin" && e.ctrlKey) return;
     const wrapperRect = canvasAreaRef.current?.getBoundingClientRect();
     if (!wrapperRect) return;
     // The zoom-anchor point (Pan mode's Zoom In/Out) must be in the interactive
@@ -200,7 +206,12 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
             <GeneratorPanel store={store} />
           </div>
         )}
-        <div ref={canvasAreaRef} className="editor-shell__canvas-area" onContextMenu={handleCanvasAreaContextMenu}>
+        <div
+          ref={canvasAreaRef}
+          className="editor-shell__canvas-area"
+          onMouseDownCapture={() => { modeAtMouseDownRef.current = state.mode; }}
+          onContextMenu={handleCanvasAreaContextMenu}
+        >
           {state.mode === "play" ? <PlaybackCanvas ref={playSvgRef} state={state} frame={transport.frame} /> : <Canvas store={store} />}
           {radialMenuPosition && (
             <RadialContextMenu

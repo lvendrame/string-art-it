@@ -29,6 +29,22 @@ describe("resolveSnapPosition (deterministic priority)", () => {
   const viewport: Viewport = { zoom: 2, panOrigin: { x: 0, y: 0 } };
   const pins: SnapPin[] = [{ id: "p1", x: 5.02, y: 5.02 }];
 
+  it("centre snap overrides pin and grid snap", () => {
+    const result = resolveSnapPosition(
+      { x: 5, y: 5 },
+      {
+        pins,
+        pinSnapEnabled: true,
+        snapRadiusPx: 20,
+        gridSnapEnabled: true,
+        gridGap: { x: 1, y: 1 },
+        viewport,
+        centerSnap: { x: 0, y: 0 },
+      },
+    );
+    expect(result).toEqual({ point: { x: 0, y: 0 }, source: "center" });
+  });
+
   it("pin snap takes priority over grid snap when both are in range", () => {
     const result = resolveSnapPosition(
       { x: 5, y: 5 },

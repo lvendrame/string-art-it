@@ -6,10 +6,10 @@ import { toDocument, type Viewport } from "@domain/transforms";
 
 // Translates raw mouse events into document coordinates and applies the snap pipeline
 // (docs/specs/22-snapping-priority), while tracking the live cursor position for
-// status-bar/preview rendering.
-export function useSnappedPointer(state: EditorState, viewport: Viewport) {
-  const [cursorDoc, setCursorDoc] = useState<Point | null>(null);
-  const [cursorSnapSource, setCursorSnapSource] = useState<SnapResult["source"] | null>(null);
+// status-bar/preview rendering. The snapped cursor is derived from the raw one on every
+// render so a modifier change (e.g. centre snap) takes effect without a mouse move.
+export function useSnappedPointer(state: EditorState, viewport: Viewport, centerSnap: Point | null = null) {
+  const [rawCursor, setRawCursor] = useState<Point | null>(null);
 
   const allPins: SnapPin[] = useMemo(
     () => state.pinLayers.flatMap((l) => l.pinPaths.flatMap((p) => p.pins)),
@@ -29,6 +29,7 @@ export function useSnappedPointer(state: EditorState, viewport: Viewport) {
       gridSnapEnabled: state.grid.snapEnabled,
       gridGap: { x: state.grid.gapX, y: state.grid.gapY },
       viewport,
+      centerSnap,
     });
   }
 
@@ -38,11 +39,13 @@ export function useSnappedPointer(state: EditorState, viewport: Viewport) {
 
   function updateCursor(e: ReactMouseEvent<SVGSVGElement>): { raw: Point; point: Point } {
     const raw = screenToDoc(e);
-    const result = resolveSnap(raw);
-    setCursorDoc(result.point);
-    setCursorSnapSource(result.source);
-    return { raw, point: result.point };
+    setRawCursor(raw);
+    return { raw, point: resolvePoint(raw) };
   }
+
+  const cursorSnap = rawCursor ? resolveSnap(rawCursor) : null;
+  const cursorDoc = cursorSnap?.point ?? null;
+  const cursorSnapSource = cursorSnap?.source ?? null;
 
   return { cursorDoc, cursorSnapSource, screenToDoc, resolvePoint, updateCursor };
 }

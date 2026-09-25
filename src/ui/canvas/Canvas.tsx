@@ -36,6 +36,7 @@ import { EraserHoverOverlay } from "./EraserHoverOverlay";
 import { nearestPinOwner } from "./hitTesting";
 import { symmetryPreviewTransforms } from "./symmetryPreviewTransforms";
 import { useAltModifier } from "./useAltModifier";
+import { useCenterSnap } from "./useCenterSnap";
 import { useSnappedPointer } from "./useSnappedPointer";
 import { usePanInteraction } from "./usePanInteraction";
 import { useWheelZoom } from "./useWheelZoom";
@@ -158,11 +159,13 @@ export function Canvas({ store }: { store: EditorStore }) {
   const maxDist = state.snap.radiusPx / viewport.zoom;
 
   const altHeld = useAltModifier();
-  const { cursorDoc, cursorSnapSource, screenToDoc, resolvePoint, updateCursor } =
-    useSnappedPointer(state, viewport);
-  const pan = usePanInteraction(store);
   const pinDrawing = usePinDrawing(store, layerId);
   const freehandDrawing = useFreehandDrawing(store, layerId);
+  const pinGestureInProgress = pinDrawing.isDrawing || freehandDrawing.isDrawing || state.polygonDraft !== null;
+  const { centerSnap, registerClick: registerCenterSnapClick } = useCenterSnap(state.mode === "pin", pinGestureInProgress);
+  const { cursorDoc, cursorSnapSource, screenToDoc, resolvePoint, updateCursor } =
+    useSnappedPointer(state, viewport, centerSnap);
+  const pan = usePanInteraction(store);
   const polygonDrawing = usePolygonDrawing(store, state, layerId);
   const threadDrawing = useThreadDrawing(
     store,
@@ -246,6 +249,8 @@ export function Canvas({ store }: { store: EditorStore }) {
       if (hit) store.erasePinPath(hit.layerId, hit.pathId);
       return;
     }
+
+    registerCenterSnapClick(state.pinTool === "polygon" ? "lastClick" : "gesture");
 
     if (state.pinTool === "freehand") {
       freehandDrawing.handleMouseDown(point);
@@ -423,7 +428,7 @@ export function Canvas({ store }: { store: EditorStore }) {
             <SymmetryOverlay config={activeSymmetry} />
           )}
 
-          {state.mode === "pin" && cursorSnapSource === "grid" && cursorDoc && (
+          {state.mode === "pin" && (cursorSnapSource === "grid" || cursorSnapSource === "center") && cursorDoc && (
             <GridSnapIndicator point={cursorDoc} />
           )}
 

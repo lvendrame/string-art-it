@@ -131,7 +131,8 @@
       "arrowUpDown": { "label": "Flèche Haut / Flèche Bas", "description": "Mode Édition avec Déplacer/Rotation/Échelle actif : déplace/tourne/redimensionne la sélection. Sinon, déplace la zone de visualisation (Maj pour un pas plus grand)." },
       "shift": { "label": "Shift (maintenu avec une flèche en mode Édition)", "description": "Multiplie par 10 le pas de Déplacement/Rotation/Échelle de la flèche." },
       "holdArrow": { "label": "Maintenir une flèche en mode Édition", "description": "Répète le pas de Déplacement/Rotation/Échelle automatiquement après un délai de 500 ms, puis toutes les 100 ms jusqu'au relâchement." },
-      "alt": { "label": "Alt (maintenu en glissant)", "description": "Outils Ellipse/Rectangle du mode Broche uniquement — contraint la forme à un Cercle/Carré. Relâcher Alt en cours de glissement revient au mode sans contrainte." }
+      "alt": { "label": "Alt (maintenu en glissant)", "description": "Outils Ellipse/Rectangle du mode Broche uniquement — contraint la forme à un Cercle/Carré. Relâcher Alt en cours de glissement revient au mode sans contrainte." },
+      "centerSnap": { "label": "Ctrl/Cmd (maintenu)", "description": "Mode Broche — aimante le curseur au centre de la planche, prioritaire sur l'aimantation aux broches et à la grille. Après un clic qui l'a utilisé, il est ignoré jusqu'à la fin de la forme (outil Tracé : seulement pour le clic suivant), inutile donc de le relâcher." }
     },
     "mouse": {
       "heading": "Souris",

@@ -73,6 +73,8 @@ Confirmed, deterministic processing order applied to every raw pointer position 
 ```text
 Raw pointer
      ↓
+Board-centre override (Pin mode, Ctrl/Cmd held)
+     ↓
 Nearest pin / object snap
      ↓
 Grid snap
@@ -83,6 +85,8 @@ Mirror / symmetry
 ```
 
 Each stage either passes the coordinate through unchanged or transforms it; the pipeline always runs in this fixed order so the same input always produces the same output (determinism requirement).
+
+**Board-centre override**: in Pin mode, while Ctrl (or Cmd — macOS turns Ctrl+click into a right-click) is held, the cursor snaps to the board centre (the document origin) regardless of distance, skipping pin and grid snap. The snap indicator is shown at the centre. Once a click has used the centre snap, the modifier is ignored until the current tool's gesture finishes (e.g. the rest of a Circle drag, or an Arc's curvature click after snapping its end point), so the key need not be released. The Path tool is the exception: the modifier is ignored only for the click right after one that snapped to the centre. Erasers are unaffected (they hit-test the raw pointer). A Ctrl-modified `contextmenu` in Pin mode does not open the radial menu, so macOS Ctrl+click stays usable for this gesture.
 
 ## Pin Snap Radius
 
@@ -172,6 +176,31 @@ Feature: Editor modes
     When the user switches to SELECT mode
     Then the arc is not added to the document
     And no partial Pin Path is created
+
+Feature: Board-centre snap
+
+  Scenario: Ctrl/Cmd snaps a pin tool to the board centre
+    Given the editor is in Pin mode with the Circle tool
+    When the user holds Ctrl (or Cmd) and presses anywhere on the canvas
+    And releases the modifier and drags to set the radius
+    Then the Circle Pin Path is centred on the board centre
+
+  Scenario: Centre snap is used once per gesture
+    Given the Circle tool and Ctrl held
+    When the user presses on the canvas (snapped to the centre)
+    And drags and releases elsewhere with Ctrl still held
+    Then the release point is not snapped to the centre
+
+  Scenario: Path tool ignores the modifier only for the next click
+    Given the Path tool with a draft in progress and Ctrl held
+    When a vertex snaps to the centre
+    Then the next vertex is placed at the pointer
+    And the vertex after that snaps to the centre again
+
+  Scenario: Centre snap is Pin mode only
+    Given the editor is in Edit mode
+    When the user holds Ctrl (or Cmd)
+    Then the cursor is not snapped to the board centre
 
 Feature: Grid visibility and snapping independence
 

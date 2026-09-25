@@ -131,7 +131,8 @@
       "arrowUpDown": { "label": "Pfeil-Auf / Pfeil-Ab", "description": "Bearbeiten-Modus mit aktivem Verschieben/Drehung/Skalieren: verschiebt/dreht/skaliert die Auswahl. Andernfalls wird der Ansichtsbereich verschoben (mit Umschalt für einen größeren Schritt)." },
       "shift": { "label": "Shift (gehalten mit einer Pfeiltaste im Bearbeiten-Modus)", "description": "Multipliziert den Verschiebe-/Dreh-/Skalierschritt der Pfeiltaste mit 10." },
       "holdArrow": { "label": "Eine Pfeiltaste im Bearbeiten-Modus gehalten", "description": "Wiederholt den Verschiebe-/Dreh-/Skalierschritt automatisch nach einer Verzögerung von 500 ms, danach alle 100 ms bis zum Loslassen." },
-      "alt": { "label": "Alt (beim Ziehen gehalten)", "description": "Nur Ellipse-/Rechteck-Werkzeuge im Stift-Modus — beschränkt die Form auf einen Kreis/ein Quadrat. Das Loslassen von Alt während des Ziehens kehrt zum uneingeschränkten Modus zurück." }
+      "alt": { "label": "Alt (beim Ziehen gehalten)", "description": "Nur Ellipse-/Rechteck-Werkzeuge im Stift-Modus — beschränkt die Form auf einen Kreis/ein Quadrat. Das Loslassen von Alt während des Ziehens kehrt zum uneingeschränkten Modus zurück." },
+      "centerSnap": { "label": "Strg/Cmd (gehalten)", "description": "Stift-Modus — rastet den Cursor in der Brettmitte ein und hat Vorrang vor Stift- und Rasterfang. Nach einem Klick, der sie genutzt hat, wird sie bis zum Abschluss der Form ignoriert (Pfad-Werkzeug: nur für den nächsten Klick), sodass sie nicht losgelassen werden muss." }
     },
     "mouse": {
       "heading": "Maus",

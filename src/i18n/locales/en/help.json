@@ -131,7 +131,8 @@
       "arrowUpDown": { "label": "ArrowUp / ArrowDown", "description": "Edit mode with Move/Rotation/Scale active: nudges/rotates/scales the selection. Otherwise, pans the viewport (Shift for a bigger step)." },
       "shift": { "label": "Shift (held with an Edit-mode arrow key)", "description": "Multiplies the arrow key's Move/Rotation/Scale step by 10." },
       "holdArrow": { "label": "Holding an Edit-mode arrow key", "description": "Repeats the Move/Rotation/Scale step automatically after a 500ms delay, then every 100ms until released." },
-      "alt": { "label": "Alt (held while dragging)", "description": "Pin mode Ellipse/Rectangle tools only — constrains the shape to a Circle/Square. Releasing Alt mid-drag reverts to unconstrained." }
+      "alt": { "label": "Alt (held while dragging)", "description": "Pin mode Ellipse/Rectangle tools only — constrains the shape to a Circle/Square. Releasing Alt mid-drag reverts to unconstrained." },
+      "centerSnap": { "label": "Ctrl/Cmd (held)", "description": "Pin mode — snaps the cursor to the board centre, overriding pin and grid snap. Once a click has used it, it is ignored until the shape is finished (the Path tool: only for the next click), so it need not be released." }
     },
     "mouse": {
       "heading": "Mouse",

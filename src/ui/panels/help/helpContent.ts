@@ -239,6 +239,7 @@ export const HELP_TABS: HelpTab[] = [
           { labelKey: "keyboardMouse.keyboard.shift.label", descriptionKey: "keyboardMouse.keyboard.shift.description" },
           { labelKey: "keyboardMouse.keyboard.holdArrow.label", descriptionKey: "keyboardMouse.keyboard.holdArrow.description" },
           { labelKey: "keyboardMouse.keyboard.alt.label", descriptionKey: "keyboardMouse.keyboard.alt.description" },
+          { labelKey: "keyboardMouse.keyboard.centerSnap.label", descriptionKey: "keyboardMouse.keyboard.centerSnap.description" },
         ],
       },
       {

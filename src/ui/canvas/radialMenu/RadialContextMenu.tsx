@@ -13,6 +13,7 @@ import {
   Ellipse,
   Eraser,
   GitMerge,
+  LoaderPinwheel,
   Maximize,
   Minus,
   MousePointer2,
@@ -110,6 +111,8 @@ function buildDescriptor(
       return { icon: Waypoints, tooltip: t("threadToolbar.zigzag"), onSelect: () => store.setThreadTool("zigzag") };
     case "threadParabolic":
       return { icon: Croissant, tooltip: t("threadToolbar.parabolic"), onSelect: () => store.setThreadTool("parabolic") };
+    case "threadRadial":
+      return { icon: LoaderPinwheel, tooltip: t("threadToolbar.radial"), onSelect: () => store.setThreadTool("radial") };
     case "threadEraser":
       return { icon: Eraser, tooltip: t("threadToolbar.eraser"), onSelect: () => store.setThreadTool("eraser") };
     case "threadSegment":

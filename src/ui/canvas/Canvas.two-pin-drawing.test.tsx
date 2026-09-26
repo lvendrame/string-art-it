@@ -258,3 +258,22 @@ describe("useTwoPinSequenceDrawing — hook-level edge cases", () => {
     expect(() => result.current.handleMouseMove(pins[1], 5)).not.toThrow();
   });
 });
+
+describe("Canvas — Radial two-pin drawing", () => {
+  it("two clicks commit spokes from the anchor to every other pin of the path", () => {
+    const store = new EditorStore();
+    const layerId = store.getState().pinLayers[0].id;
+    store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: 8 });
+    store.setMode("thread");
+    store.setThreadTool("radial");
+    const pins = store.getState().pinLayers[0].pinPaths[0].pins;
+    render(<Canvas store={store} />);
+    const svg = screen.getByRole("img", { name: "Board canvas" });
+
+    fireEvent.mouseDown(svg, screenOf(pins[0]));
+    fireEvent.mouseDown(svg, screenOf(pins[3]));
+
+    const [thread] = store.getState().threadLayers[0].threadPaths;
+    expect(thread.pinIds).toEqual(pins.slice(1).flatMap((p) => [pins[0].id, p.id]));
+  });
+});

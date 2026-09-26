@@ -1,11 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { findPinById, type EditorState, type EditorStore } from "@application/document";
+import { findPinById, isTwoPinDraftTool, type EditorState, type EditorStore } from "@application/document";
 import type { Point } from "@domain/paths";
 import { nearestThreadInsertionPin } from "./hitTesting";
-
-function isTwoPinTool(tool: EditorState["threadTool"]): tool is "zigzag" | "parabolic" {
-  return tool === "zigzag" || tool === "parabolic";
-}
 
 // docs/specs/35-zigzag-parabolic-tools.md — Zig-zag/Parabolic click workflow: click 1
 // sets the anchor pin, click 2 picks the second pin and computes every valid resulting
@@ -26,7 +22,7 @@ export function useTwoPinSequenceDrawing(store: EditorStore, state: EditorState,
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       const s = store.getState();
-      if (s.mode !== "thread" || !isTwoPinTool(s.threadTool)) return;
+      if (s.mode !== "thread" || !isTwoPinDraftTool(s.threadTool)) return;
       if (e.key === "Escape") {
         store.cancelTwoPinDraft();
       } else if (e.key === "ArrowLeft") {
@@ -38,7 +34,7 @@ export function useTwoPinSequenceDrawing(store: EditorStore, state: EditorState,
   }, [store]);
 
   function handleMouseDown(raw: Point, maxDist: number): void {
-    if (!isTwoPinTool(state.threadTool)) return;
+    if (!isTwoPinDraftTool(state.threadTool)) return;
     const draft = state.twoPinDraft;
 
     // 3rd click: a free-position click confirms whichever candidate is previewed —

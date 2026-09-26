@@ -41,7 +41,7 @@ The Polygon/Star family (Pentagon, Hexagon, Octagon, Star-5/6/8, Pentagram, Hept
 
 Two mutually exclusive slice sets depending on `threadDraft`:
 
-- **Normal** (`threadDraft === null`): Draw, Eraser, Segment — each calls `EditorStore.setThreadTool("draw" | "eraser" | "segment-eraser")`, identical to `ThreadToolbar`.
+- **Normal** (`threadDraft === null`): Draw, Zig-zag, Parabolic, Radial, Eraser, Segment — each calls `EditorStore.setThreadTool(...)`, identical to `ThreadToolbar`. A two-pin draft (Zig-zag/Parabolic/Radial) swaps in its own Back/Cancel set ([35-zigzag-parabolic-tools.md](./35-zigzag-parabolic-tools.md), [37-radial-thread-tool.md](./37-radial-thread-tool.md)).
 - **Draft in progress** (`threadDraft !== null`): Cut, Back, Next — entirely replaces the normal set (there is no "switch thread tool" action while mid-draft, matching how the toolbar itself behaves).
   - **Cut** → `EditorStore.finishThreadDraft(activeThreadLayerId)` — same call the old instant right-click made; finishes the draft at its last confirmed pin, no new segment added.
   - **Back** → `EditorStore.retractThreadDraft()` — same as pressing `ArrowLeft` ([22-thread-follow-pattern.md](./22-thread-follow-pattern.md), `useThreadDrawing.ts`).

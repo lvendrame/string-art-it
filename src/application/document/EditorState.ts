@@ -83,8 +83,15 @@ export interface PinDefaults extends PinStyle {
 }
 
 // docs/specs/24-thread-mode, docs/specs/27-thread-select-tool.md,
-// docs/specs/35-zigzag-parabolic-tools.md
-export type ThreadTool = "draw" | "eraser" | "segment-eraser" | "select" | "zigzag" | "parabolic";
+// docs/specs/35-zigzag-parabolic-tools.md, docs/specs/37-radial-thread-tool.md
+export type ThreadTool = "draw" | "eraser" | "segment-eraser" | "select" | "zigzag" | "parabolic" | "radial";
+
+// Thread tools driven by the two-click TwoPinDraft flow.
+export type TwoPinDraftTool = "zigzag" | "parabolic" | "radial";
+
+export function isTwoPinDraftTool(tool: ThreadTool): tool is TwoPinDraftTool {
+  return tool === "zigzag" || tool === "parabolic" || tool === "radial";
+}
 
 export interface ThreadDefaults {
   colours: string[];
@@ -116,7 +123,7 @@ export type PolygonDraft = { points: Point[] } | null;
 // (live preview) and a 3rd click commits it. Transient, non-undoable, same treatment
 // as ThreadDraft/PolygonDraft above.
 export type TwoPinDraft = {
-  tool: "zigzag" | "parabolic";
+  tool: TwoPinDraftTool;
   firstPinId: string;
   candidates: string[][];
   chosenIndex: number;

@@ -83,7 +83,7 @@ export function interleave<T>(a: T[], b: T[]): T[] {
   return out;
 }
 
-function pinIdAt(path: PinPath, index: number, groupIndex: number): string {
+export function pinIdAt(path: PinPath, index: number, groupIndex: number): string {
   const pin = path.pins[index];
   return groupIndex === -1 ? pin.id : mirroredPinId(pin.id, groupIndex);
 }

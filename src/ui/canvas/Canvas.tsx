@@ -4,6 +4,7 @@ import {
   boardPath,
   DRAG_TOOLS,
   geometryToPath,
+  isTwoPinDraftTool,
   type EditorMode,
   type EditorStore,
   type PinPathGeometry,
@@ -129,6 +130,7 @@ const THREAD_TOOL_CURSORS: Record<ThreadTool, string> = {
   "segment-eraser": SCISSORS_CURSOR,
   zigzag: "crosshair",
   parabolic: "crosshair",
+  radial: "crosshair",
 };
 
 function canvasCursor(
@@ -174,7 +176,7 @@ export function Canvas({ store }: { store: EditorStore }) {
     cursorDoc,
   );
   const twoPinDrawing = useTwoPinSequenceDrawing(store, state, threadLayerId);
-  const isTwoPinTool = state.threadTool === "zigzag" || state.threadTool === "parabolic";
+  const isTwoPinTool = isTwoPinDraftTool(state.threadTool);
   const selectTool = useSelectTool(store, state);
   const moveTool = useMoveTool(store, state);
   const rotateTool = useRotateTool(store, state);

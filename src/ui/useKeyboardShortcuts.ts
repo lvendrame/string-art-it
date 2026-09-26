@@ -89,7 +89,7 @@ export function useKeyboardShortcuts(store: EditorStore, deps: KeyboardShortcutD
       const key = e.key.toLowerCase();
       const bare = !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey;
       if (bare) {
-        const tool = { d: "draw", s: "select", e: "eraser", c: "segment-eraser", z: "zigzag", p: "parabolic" } as const;
+        const tool = { d: "draw", s: "select", e: "eraser", c: "segment-eraser", z: "zigzag", p: "parabolic", r: "radial" } as const;
         if (key in tool) {
           store.setThreadTool(tool[key as keyof typeof tool]);
           return true;

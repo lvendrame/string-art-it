@@ -68,7 +68,7 @@ Scoped to `BoardSetup.tsx` only, via its own local `keydown` listener (not the c
 
 | Key | Action |
 |---|---|
-| `D` `S` `E` `C` | Draw / Select / Eraser / Segment |
+| `D` `Z` `P` `R` `S` `E` `C` | Draw / Zig-zag / Parabolic / Radial / Select / Eraser / Segment |
 | `Shift+1` / `Shift+2` / `Shift+3` | Sets colour count to 1, 2, or 3 |
 | `Shift++` / `Shift+-` | Increases/decreases thread width by 0.5, clamped to 0.5–5 |
 

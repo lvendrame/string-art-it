@@ -27,6 +27,7 @@ export type RadialMenuSliceId =
   | "threadDraw"
   | "threadZigzag"
   | "threadParabolic"
+  | "threadRadial"
   | "threadEraser"
   | "threadSegment"
   | "threadCut"
@@ -74,7 +75,7 @@ export function getRadialMenuSliceIds(state: EditorState): RadialMenuSliceId[] {
       }
       return state.threadDraft !== null
         ? ["threadCut", "threadBack", "threadNext"]
-        : ["threadDraw", "threadZigzag", "threadParabolic", "threadEraser", "threadSegment"];
+        : ["threadDraw", "threadZigzag", "threadParabolic", "threadRadial", "threadEraser", "threadSegment"];
     case "pan":
       return ["panFit", "panZoomIn", "panZoomOut"];
     case "play":

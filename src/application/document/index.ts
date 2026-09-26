@@ -27,9 +27,12 @@ export type {
   ThreadDefaults,
   ThreadDraft,
   TwoPinDraft,
+  TwoPinDraftTool,
   ZigzagSettings,
   ParabolicSettings,
 } from "./EditorState";
+export { isTwoPinDraftTool } from "./EditorState";
+export { computeRadialSequence } from "./radialSequence";
 export { EditorStore, canCommitSelectionMerge } from "./EditorStore";
 export {
   geometryToPath,

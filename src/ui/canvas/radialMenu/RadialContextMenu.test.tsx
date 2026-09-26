@@ -168,6 +168,7 @@ describe("RadialContextMenu", () => {
       ["Draw", "draw"],
       ["Zig-zag", "zigzag"],
       ["Parabolic", "parabolic"],
+      ["Radial", "radial"],
       ["Eraser", "eraser"],
       ["Segment", "segment-eraser"],
     ];

@@ -14,6 +14,7 @@ import type {
   Selection,
   ThreadDefaults,
   ThreadTool,
+  TwoPinDraftTool,
   ZigzagSettings,
   ParabolicSettings,
 } from "./EditorState";
@@ -54,6 +55,7 @@ import {
 import { createThreadPath, type ThreadPath } from "./threadPath";
 import { computeNextPatternPinId } from "./threadPattern";
 import { computeCrossPathCandidates, computeSamePathCandidates } from "./twoPinSequence";
+import { computeRadialSequence } from "./radialSequence";
 import { serializeProject, type ProjectFile, type SerializableDocument } from "./projectFile";
 import { defaultPrintSettings, type PrintSettings } from "./printSettings";
 import { seedCounterFrom } from "./idCounter";
@@ -897,10 +899,11 @@ export class EditorStore {
       ...this.state,
       threadTool: tool,
       selection,
-      // docs/specs/35-zigzag-parabolic-tools.md: switching away from Zig-zag/Parabolic
+      // docs/specs/35-zigzag-parabolic-tools.md: switching away from a two-pin tool
       // with an uncommitted twoPinDraft discards it, matching setMode's mode-exit
       // cleanup and setPinTool's polygonDraft-discard-on-tool-switch precedent.
-      ...(tool !== "zigzag" && tool !== "parabolic" && this.state.twoPinDraft ? { twoPinDraft: null } : {}),
+      // Switching between two-pin tools keeps the draft's own tool, so it's discarded too.
+      ...(this.state.twoPinDraft && this.state.twoPinDraft.tool !== tool ? { twoPinDraft: null } : {}),
     };
     this.notify();
   }
@@ -1025,7 +1028,7 @@ export class EditorStore {
   // --- Zig-zag / Parabolic thread tools (docs/specs/35-zigzag-parabolic-tools.md) ---
 
   // Click 1: remember the anchor pin, awaiting a second pin (candidates stays empty).
-  startTwoPinDraft(tool: "zigzag" | "parabolic", pinId: string): void {
+  startTwoPinDraft(tool: TwoPinDraftTool, pinId: string): void {
     this.state = { ...this.state, twoPinDraft: { tool, firstPinId: pinId, candidates: [], chosenIndex: 0 } };
     this.notify();
   }
@@ -1039,6 +1042,10 @@ export class EditorStore {
   chooseSecondPin(layerId: string, pinId: string): void {
     const draft = this.state.twoPinDraft;
     if (!draft || pinId === draft.firstPinId) return;
+    if (draft.tool === "radial") {
+      this.commitTwoPinSequence(layerId, [computeRadialSequence(this.state.pinLayers, draft.firstPinId, pinId)]);
+      return;
+    }
     const settings = draft.tool === "zigzag" ? this.state.zigzagSettings : this.state.parabolicSettings;
     const same = computeSamePathCandidates(this.state.pinLayers, draft.firstPinId, pinId, draft.tool, settings);
     const candidates = same.length > 0 ? same : computeCrossPathCandidates(this.state.pinLayers, draft.firstPinId, pinId, draft.tool, settings);

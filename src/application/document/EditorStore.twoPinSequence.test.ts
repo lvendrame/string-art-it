@@ -76,3 +76,55 @@ describe("EditorStore Zig-zag/Parabolic: closed-path full-fill commits separate 
     expect(store.getState().threadLayers[0].threadPaths).toHaveLength(1);
   });
 });
+
+describe("EditorStore Radial (docs/specs/37-radial-thread-tool.md)", () => {
+  function startRadial() {
+    const store = new EditorStore();
+    const { pins } = seedClosedPins(store, 6);
+    const threadLayerId = store.getState().threadLayers[0].id;
+    store.setMode("thread");
+    store.setThreadTool("radial");
+    return { store, pins, threadLayerId };
+  }
+
+  it("commits one continuous spoke path on the second click, skipping the anchor", () => {
+    const { store, pins, threadLayerId } = startRadial();
+
+    store.startTwoPinDraft("radial", pins[2].id);
+    store.chooseSecondPin(threadLayerId, pins[0].id);
+
+    const a = pins[2].id;
+    const threads = store.getState().threadLayers[0].threadPaths;
+    expect(store.getState().twoPinDraft).toBeNull();
+    expect(threads).toHaveLength(1);
+    expect(threads[0].pinIds).toEqual([a, pins[0].id, a, pins[1].id, a, pins[3].id, a, pins[4].id, a, pins[5].id]);
+  });
+
+  it("is one undo step", () => {
+    const { store, pins, threadLayerId } = startRadial();
+    store.startTwoPinDraft("radial", pins[2].id);
+    store.chooseSecondPin(threadLayerId, pins[0].id);
+
+    store.undo();
+    expect(store.getState().threadLayers[0].threadPaths).toHaveLength(0);
+    store.redo();
+    expect(store.getState().threadLayers[0].threadPaths).toHaveLength(1);
+  });
+
+  it("discards the draft without committing on a locked Thread Layer", () => {
+    const { store, pins, threadLayerId } = startRadial();
+    store.toggleThreadLayerLocked(threadLayerId);
+    store.startTwoPinDraft("radial", pins[2].id);
+    store.chooseSecondPin(threadLayerId, pins[0].id);
+
+    expect(store.getState().twoPinDraft).toBeNull();
+    expect(store.getState().threadLayers[0].threadPaths).toHaveLength(0);
+  });
+
+  it("switching to another two-pin tool discards the radial draft", () => {
+    const { store, pins } = startRadial();
+    store.startTwoPinDraft("radial", pins[2].id);
+    store.setThreadTool("zigzag");
+    expect(store.getState().twoPinDraft).toBeNull();
+  });
+});

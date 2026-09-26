@@ -98,3 +98,15 @@ describe("useKeyboardShortcuts — Delete", () => {
     expect(store.getState().pinLayers[0].pinPaths).toHaveLength(0);
   });
 });
+
+describe("useKeyboardShortcuts — Thread mode", () => {
+  it("'r' selects the Radial tool", () => {
+    const store = new EditorStore();
+    store.setMode("thread");
+    renderHook(() => useKeyboardShortcuts(store, makeDeps()));
+
+    fireEvent.keyDown(window, { key: "r" });
+
+    expect(store.getState().threadTool).toBe("radial");
+  });
+});

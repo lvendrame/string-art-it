@@ -150,6 +150,12 @@ export interface ParabolicSettings {
   cycles: number;
 }
 
+// docs/specs/37-radial-thread-tool.md §Configuration — 1-based stride over the target
+// path's pins: 1 = every pin, 2 = every other pin.
+export interface RadialSettings {
+  step: number;
+}
+
 // docs/specs/38-repeat-pattern-tool.md — the pins clicked so far with the Repeat tool.
 // Transient, non-undoable, same treatment as ThreadDraft above.
 export type RepeatDraft = { pinIds: string[] } | null;
@@ -188,6 +194,7 @@ export interface EditorState {
   twoPinDraft: TwoPinDraft;
   zigzagSettings: ZigzagSettings;
   parabolicSettings: ParabolicSettings;
+  radialSettings: RadialSettings;
   repeatDraft: RepeatDraft;
   repeatSettings: RepeatSettings;
 }

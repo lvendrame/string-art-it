@@ -66,4 +66,31 @@ describe("computeRadialSequence", () => {
     const layers = layerOf(linePath("a", ids(1, 3), 0, { type: "horizontal", axis: { x: 0, y: 0 } }));
     expect(computeRadialSequence(layers, "2~mirror-0", "1~mirror-0")).toEqual(["2~mirror-0", "1~mirror-0", "2~mirror-0", "3~mirror-0"]);
   });
+
+  describe("step", () => {
+    it("step 1 keeps every pin", () => {
+      const layers = layerOf(linePath("a", ids(1, 6), 0), linePath("b", ids(7, 12), 10));
+      expect(computeRadialSequence(layers, "3", "11", 1)).toEqual(computeRadialSequence(layers, "3", "11"));
+    });
+
+    it("step 2 skips every other pin of the target path", () => {
+      const layers = layerOf(linePath("a", ids(1, 6), 0), linePath("b", ids(7, 12), 10));
+      expect(computeRadialSequence(layers, "3", "11", 2)).toEqual(["3", "7", "3", "9", "3", "11"]);
+    });
+
+    it("step 3 skips the next two pins", () => {
+      const layers = layerOf(linePath("a", ids(1, 2), 0), linePath("b", ids(1, 12).map((n) => `b${n}`), 10));
+      expect(computeRadialSequence(layers, "1", "b5", 3)).toEqual(["1", "b1", "1", "b4", "1", "b7", "1", "b10"]);
+    });
+
+    it("strides before dropping an anchor that lies on the target path", () => {
+      const layers = layerOf(circlePath("a", ids(1, 8)));
+      expect(computeRadialSequence(layers, "3", "1", 2)).toEqual(["3", "1", "3", "5", "3", "7"]);
+    });
+
+    it("a step at least the path length keeps only the first pin", () => {
+      const layers = layerOf(linePath("a", ids(1, 2), 0), linePath("b", ids(3, 6), 10));
+      expect(computeRadialSequence(layers, "1", "4", 10)).toEqual(["1", "3"]);
+    });
+  });
 });

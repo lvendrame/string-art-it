@@ -17,6 +17,7 @@ import type {
   TwoPinDraftTool,
   ZigzagSettings,
   ParabolicSettings,
+  RadialSettings,
   RepeatSettings,
 } from "./EditorState";
 import type { Point } from "@domain/paths";
@@ -77,6 +78,7 @@ const DEFAULT_THREAD_DEFAULTS: ThreadDefaults = { colours: ["#5b8def"], width: 1
 // fullFill off reproduces the tools' original (pre-configuration) shipped behaviour.
 const DEFAULT_ZIGZAG_SETTINGS: ZigzagSettings = { stepA: 0, stepB: 0, fullFill: false };
 const DEFAULT_PARABOLIC_SETTINGS: ParabolicSettings = { stepA: 0, stepB: 0, fullFill: false, cycles: 1 };
+const DEFAULT_RADIAL_SETTINGS: RadialSettings = { step: 1 };
 const DEFAULT_REPEAT_SETTINGS: RepeatSettings = { cycles: 1, fullFill: false, colours: [DEFAULT_THREAD_DEFAULTS.colours[0]] };
 
 // eraser/path-eraser aren't shape tools — switching to one shouldn't clobber the pin
@@ -146,6 +148,7 @@ export class EditorStore {
       twoPinDraft: null,
       zigzagSettings: DEFAULT_ZIGZAG_SETTINGS,
       parabolicSettings: DEFAULT_PARABOLIC_SETTINGS,
+      radialSettings: DEFAULT_RADIAL_SETTINGS,
       repeatDraft: null,
       repeatSettings: DEFAULT_REPEAT_SETTINGS,
       ...initial,
@@ -935,6 +938,11 @@ export class EditorStore {
     this.notify();
   }
 
+  setRadialSettings(patch: Partial<RadialSettings>): void {
+    this.state = { ...this.state, radialSettings: { ...this.state.radialSettings, ...patch } };
+    this.notify();
+  }
+
   setRepeatSettings(patch: Partial<RepeatSettings>): void {
     this.state = { ...this.state, repeatSettings: { ...this.state.repeatSettings, ...patch } };
     this.notify();
@@ -1056,7 +1064,7 @@ export class EditorStore {
     const draft = this.state.twoPinDraft;
     if (!draft || pinId === draft.firstPinId) return;
     if (draft.tool === "radial") {
-      this.commitTwoPinSequence(layerId, [computeRadialSequence(this.state.pinLayers, draft.firstPinId, pinId)]);
+      this.commitTwoPinSequence(layerId, [computeRadialSequence(this.state.pinLayers, draft.firstPinId, pinId, this.state.radialSettings.step)]);
       return;
     }
     const settings = draft.tool === "zigzag" ? this.state.zigzagSettings : this.state.parabolicSettings;

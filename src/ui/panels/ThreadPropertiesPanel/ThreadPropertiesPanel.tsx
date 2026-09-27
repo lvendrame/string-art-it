@@ -5,6 +5,7 @@ import { SliderField } from "@ui/panels/fields/SliderField";
 import { coloursForCount } from "@ui/panels/threadColourPalette";
 import { ZigzagSettingsBox } from "./ZigzagSettingsBox";
 import { ParabolicSettingsBox } from "./ParabolicSettingsBox";
+import { RadialSettingsBox } from "./RadialSettingsBox";
 import { RepeatSettingsBox } from "./RepeatSettingsBox";
 import { ThreadStatsBox } from "./ThreadStatsBox";
 import "./ThreadPropertiesPanel.css";
@@ -88,6 +89,7 @@ export function ThreadPropertiesPanel({ store }: { store: EditorStore }) {
 
       {state.threadTool === "zigzag" && <ZigzagSettingsBox store={store} settings={state.zigzagSettings} />}
       {state.threadTool === "parabolic" && <ParabolicSettingsBox store={store} settings={state.parabolicSettings} />}
+      {state.threadTool === "radial" && <RadialSettingsBox store={store} settings={state.radialSettings} />}
       {state.threadTool === "repeat" && <RepeatSettingsBox store={store} settings={state.repeatSettings} />}
 
       {selected && <ThreadStatsBox thread={selected} pinLayers={state.pinLayers} />}

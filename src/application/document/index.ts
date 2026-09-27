@@ -30,6 +30,7 @@ export type {
   TwoPinDraftTool,
   ZigzagSettings,
   ParabolicSettings,
+  RadialSettings,
   RepeatDraft,
   RepeatSettings,
 } from "./EditorState";

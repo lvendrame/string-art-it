@@ -101,6 +101,18 @@ describe("EditorStore Radial (docs/specs/37-radial-thread-tool.md)", () => {
     expect(threads[0].pinIds).toEqual([a, pins[0].id, a, pins[1].id, a, pins[3].id, a, pins[4].id, a, pins[5].id]);
   });
 
+  it("defaults to step 1 and applies radialSettings.step as the stride", () => {
+    const { store, pins, threadLayerId } = startRadial();
+    expect(store.getState().radialSettings.step).toBe(1);
+    store.setRadialSettings({ step: 2 });
+
+    store.startTwoPinDraft("radial", pins[1].id);
+    store.chooseSecondPin(threadLayerId, pins[0].id);
+
+    const a = pins[1].id;
+    expect(store.getState().threadLayers[0].threadPaths[0].pinIds).toEqual([a, pins[0].id, a, pins[2].id, a, pins[4].id]);
+  });
+
   it("is one undo step", () => {
     const { store, pins, threadLayerId } = startRadial();
     store.startTwoPinDraft("radial", pins[2].id);

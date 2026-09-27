@@ -112,6 +112,14 @@ describe("ThreadPropertiesPanel", () => {
     expect(screen.getByText(/parabolic/i)).toBeInTheDocument();
   });
 
+  it("shows the Radial settings box while the Radial tool is active", () => {
+    const store = new EditorStore();
+    store.setMode("thread");
+    store.setThreadTool("radial");
+    render(<ThreadPropertiesPanel store={store} />);
+    expect(screen.getByText("Radial settings")).toBeInTheDocument();
+  });
+
   it("the Repeat tool swaps strand colours/twist pitch for its own settings box", () => {
     const store = new EditorStore();
     store.setMode("thread");

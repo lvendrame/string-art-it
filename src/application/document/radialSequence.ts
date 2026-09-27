@@ -11,8 +11,13 @@ function targetPathPinIds(layers: PinLayer[], targetPinId: string): string[] {
   return target.path.pins.map((_, i) => pinIdAt(target.path, i, target.groupIndex));
 }
 
-export function computeRadialSequence(layers: PinLayer[], anchorPinId: string, targetPinId: string): string[] {
+function everyNth<T>(list: T[], step: number): T[] {
+  const stride = Math.max(1, Math.floor(step));
+  return list.filter((_, i) => i % stride === 0);
+}
+
+export function computeRadialSequence(layers: PinLayer[], anchorPinId: string, targetPinId: string, step = 1): string[] {
   if (anchorPinId === targetPinId || !findPinPosition(layers, anchorPinId)) return [];
-  const spokes = targetPathPinIds(layers, targetPinId).filter((id) => id !== anchorPinId);
+  const spokes = everyNth(targetPathPinIds(layers, targetPinId), step).filter((id) => id !== anchorPinId);
   return spokes.flatMap((id) => [anchorPinId, id]);
 }

@@ -41,7 +41,21 @@ Everything else is inherited unchanged from spec 35's two-pin draft:
 - One commit = one undo step.
 - Two clicks on the same pin do nothing.
 
-No settings panel — Radial has no step/full-fill/cycles configuration.
+## Configuration
+
+A **Radial settings** box in the Thread Properties panel (shown only while Radial is active) has one control:
+
+- **Step** (slider 1–10, default 1) — 1-based stride over the target path's pins. 1 uses every pin, 2 every other pin, 3 skips two, and so on. The stride always starts at path index 0 and is applied *before* the anchor is dropped, so spoke positions stay regular wherever the anchor sits. Next-draw setting (`EditorState.radialSettings`), not undoable, same treatment as Zig-zag/Parabolic settings. Unlike their 0-based "pins skipped" sliders, Radial's Step counts the stride itself.
+
+```text
+Paths (1..6) and (7..12); Step 2; click 3, then 11
+→ pinIds [3,7,3,9,3,11]
+
+Closed path (1..8); Step 2; click 3, then 1
+→ stride keeps 1,3,5,7; anchor 3 dropped → pinIds [3,1,3,5,3,7]
+```
+
+No full-fill/cycles configuration.
 
 ## UI
 
@@ -81,6 +95,16 @@ Feature: Radial thread tool
     When the user completes a Radial draft
     Then no Thread Path is created and the draft is cleared
 
+  Scenario: Step 2 skips every other target pin
+    Given Pin Paths with pins 1..6 and 7..12, the Radial tool active and Step 2
+    When the user clicks pin 3, then pin 11
+    Then one Thread Path is created with pin order 3,7,3,9,3,11
+
+  Scenario: Step strides before dropping the anchor
+    Given a closed Pin Path with pins 1..8, the Radial tool active and Step 2
+    When the user clicks pin 3, then pin 1
+    Then the Thread Path's pin order is 3,1,3,5,3,7
+
   Scenario: R shortcut
     Given the Thread tab is active
     When the user presses R
@@ -89,5 +113,5 @@ Feature: Radial thread tool
 
 ## Scope limits
 
-- No step/stride, reverse-order, or start-at-clicked-pin options.
+- No reverse-order or start-at-clicked-pin options.
 - No live spoke preview before click 2 — only the anchor and hovered pin highlight, as with spec 35's pre-candidate state.

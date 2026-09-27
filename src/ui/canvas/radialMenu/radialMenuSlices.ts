@@ -1,4 +1,4 @@
-import { canCommitSelectionMerge, type EditorState } from "@application/document";
+import { canCommitSelectionMerge, MIN_REPEAT_PINS, type EditorState } from "@application/document";
 
 // docs/specs/25-radial-context-menu.md — which slices the radial context menu shows,
 // derived purely from EditorState (mode + the relevant sub-state per mode). Kept
@@ -28,6 +28,7 @@ export type RadialMenuSliceId =
   | "threadZigzag"
   | "threadParabolic"
   | "threadRadial"
+  | "threadRepeat"
   | "threadEraser"
   | "threadSegment"
   | "threadCut"
@@ -36,6 +37,9 @@ export type RadialMenuSliceId =
   | "twoPinResolve"
   | "twoPinBack"
   | "twoPinCancel"
+  | "repeatGenerate"
+  | "repeatBack"
+  | "repeatCancel"
   | "panFit"
   | "panZoomIn"
   | "panZoomOut"
@@ -73,9 +77,15 @@ export function getRadialMenuSliceIds(state: EditorState): RadialMenuSliceId[] {
           ? ["twoPinResolve", "twoPinBack", "twoPinCancel"]
           : ["twoPinBack", "twoPinCancel"];
       }
+      // docs/specs/38-repeat-pattern-tool.md — Generate only once enough pins exist.
+      if (state.repeatDraft) {
+        return state.repeatDraft.pinIds.length >= MIN_REPEAT_PINS
+          ? ["repeatGenerate", "repeatBack", "repeatCancel"]
+          : ["repeatBack", "repeatCancel"];
+      }
       return state.threadDraft !== null
         ? ["threadCut", "threadBack", "threadNext"]
-        : ["threadDraw", "threadZigzag", "threadParabolic", "threadRadial", "threadEraser", "threadSegment"];
+        : ["threadDraw", "threadZigzag", "threadParabolic", "threadRadial", "threadRepeat", "threadEraser", "threadSegment"];
     case "pan":
       return ["panFit", "panZoomIn", "panZoomOut"];
     case "play":

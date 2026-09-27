@@ -1,0 +1,117 @@
+{
+  "file": "ui/panels/fields/ColourListField.tsx",
+  "classes": [
+    "btn",
+    "colour-list-field",
+    "colour-list-field__action-btn",
+    "colour-list-field__actions",
+    "colour-list-field__legend",
+    "colour-list-field__note",
+    "colour-list-field__swatch",
+    "colour-list-field__swatches",
+    "colour-list-field__title"
+  ],
+  "cssRules": [
+    {
+      "selector": ".colour-list-field",
+      "file": "ui/panels/fields/ColourListField.css",
+      "declarations": {
+        "display": "flex",
+        "flex-direction": "column",
+        "gap": "8px",
+        "margin": "0",
+        "background": "var(--bg-app)",
+        "border": "1px solid var(--border)",
+        "border-radius": "var(--radius-md)",
+        "padding": "10px"
+      }
+    },
+    {
+      "selector": ".colour-list-field__legend",
+      "file": "ui/panels/fields/ColourListField.css",
+      "declarations": {
+        "display": "flex",
+        "justify-content": "space-between",
+        "align-items": "center",
+        "width": "100%",
+        "padding": "0"
+      }
+    },
+    {
+      "selector": ".colour-list-field__title",
+      "file": "ui/panels/fields/ColourListField.css",
+      "declarations": {
+        "font-size": "11px",
+        "font-weight": "700",
+        "letter-spacing": "0.06em",
+        "color": "var(--text-tertiary)",
+        "text-transform": "uppercase"
+      }
+    },
+    {
+      "selector": ".colour-list-field__actions",
+      "file": "ui/panels/fields/ColourListField.css",
+      "declarations": {
+        "display": "flex",
+        "gap": "6px"
+      }
+    },
+    {
+      "selector": ".colour-list-field__action-btn",
+      "file": "ui/panels/fields/ColourListField.css",
+      "declarations": {
+        "width": "24px",
+        "height": "24px",
+        "padding": "0",
+        "justify-content": "center",
+        "border-radius": "5px",
+        "font-size": "14px",
+        "font-weight": "700"
+      }
+    },
+    {
+      "selector": ".colour-list-field__swatches",
+      "file": "ui/panels/fields/ColourListField.css",
+      "declarations": {
+        "display": "flex",
+        "align-items": "center",
+        "gap": "6px",
+        "flex-wrap": "wrap"
+      }
+    },
+    {
+      "selector": ".colour-list-field__swatch",
+      "file": "ui/panels/fields/ColourListField.css",
+      "declarations": {
+        "width": "24px",
+        "height": "24px",
+        "border": "1px solid var(--border-strong)",
+        "border-radius": "5px",
+        "background": "none",
+        "padding": "0"
+      }
+    },
+    {
+      "selector": ".colour-list-field__note",
+      "file": "ui/panels/fields/ColourListField.css",
+      "declarations": {
+        "font-size": "10.5px",
+        "color": "var(--text-tertiary)"
+      }
+    },
+    {
+      "selector": ".btn",
+      "file": "ui/theme.css",
+      "declarations": {
+        "border": "1px solid var(--border)",
+        "background": "var(--bg-panel-2)",
+        "color": "var(--text-secondary)",
+        "cursor": "pointer",
+        "display": "flex",
+        "align-items": "center",
+        "transition": "background 120ms ease,\n    color 120ms ease,\n    border-color 120ms ease"
+      }
+    }
+  ],
+  "inlineStyleBlocks": []
+}

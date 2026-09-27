@@ -5,6 +5,7 @@ import { GeneratorToolbar } from "@ui/toolbars/GeneratorToolbar";
 import { useEditorState } from "@ui/useEditorStore";
 import { CheckboxField } from "@ui/panels/fields/CheckboxField";
 import { SliderField } from "@ui/panels/fields/SliderField";
+import { ColourListField } from "@ui/panels/fields/ColourListField";
 import { SelectField } from "./SelectField";
 import "./GeneratorPanel.css";
 
@@ -77,20 +78,6 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
   // debounce timer forever (including after generatePattern's own store update
   // triggers a re-render), regenerating in an endless loop even with no user input.
   const visibleColours = useMemo(() => colours.slice(0, Math.max(1, maxColours)), [colours, maxColours]);
-
-  function addColour() {
-    if (visibleColours.length >= maxColours) return;
-    setColours([...visibleColours, PALETTE[visibleColours.length % PALETTE.length]]);
-  }
-
-  function removeColour() {
-    if (visibleColours.length <= 1) return;
-    setColours(visibleColours.slice(0, -1));
-  }
-
-  function setColourAt(index: number, value: string) {
-    setColours(visibleColours.map((c, i) => (i === index ? value : c)));
-  }
 
   // docs/specs/32-generator-mode.md — once the user has generated at least once
   // (`draft` exists), every later pattern/param/colour/thread-width edit re-generates
@@ -438,42 +425,19 @@ export function GeneratorPanel({ store }: { store: EditorStore }) {
         )}
       </div>
 
-      <fieldset className="generator-panel__colours-fieldset">
-        <legend className="generator-panel__colours-legend">
-          <span className="generator-panel__section-title">{t("generatorPanel.coloursSectionTitle")}</span>
-          <span className="generator-panel__colour-actions">
-            <button
-              className="btn generator-panel__colour-action-btn"
-              aria-label={t("generatorPanel.addColour")}
-              disabled={visibleColours.length >= maxColours}
-              onClick={addColour}
-            >
-              +
-            </button>
-            <button
-              className="btn generator-panel__colour-action-btn"
-              aria-label={t("generatorPanel.removeColour")}
-              disabled={visibleColours.length <= 1}
-              onClick={removeColour}
-            >
-              −
-            </button>
-          </span>
-        </legend>
-        <div className="generator-panel__swatches">
-          {visibleColours.map((c, i) => (
-            <input
-              key={i}
-              type="color"
-              aria-label={t("generatorPanel.colourN", { n: i + 1 })}
-              value={c}
-              onChange={(e) => setColourAt(i, e.target.value)}
-              className="generator-panel__swatch"
-            />
-          ))}
-        </div>
-        {maxColours > 1 && <div className="generator-panel__colours-note">{t("generatorPanel.coloursMax", { max: maxColours })}</div>}
-      </fieldset>
+      <ColourListField
+        colours={visibleColours}
+        max={maxColours}
+        onChange={setColours}
+        palette={PALETTE}
+        labels={{
+          title: t("generatorPanel.coloursSectionTitle"),
+          add: t("generatorPanel.addColour"),
+          remove: t("generatorPanel.removeColour"),
+          colourN: (n) => t("generatorPanel.colourN", { n }),
+          note: maxColours > 1 ? t("generatorPanel.coloursMax", { max: maxColours }) : undefined,
+        }}
+      />
 
       {/* docs/specs/32-generator-mode.md — intentionally shared with Thread mode's own
           width field (ThreadPropertiesPanel), not generator-scoped: generatePattern()

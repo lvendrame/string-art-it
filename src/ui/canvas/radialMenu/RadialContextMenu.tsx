@@ -12,6 +12,7 @@ import {
   Croissant,
   Ellipse,
   Eraser,
+  Galaxy,
   GitMerge,
   LoaderPinwheel,
   Maximize,
@@ -22,6 +23,7 @@ import {
   PenLine,
   PenTool,
   Play as PlayIcon,
+  Sparkles,
   RectangleHorizontal,
   RotateCw,
   Scaling,
@@ -113,6 +115,8 @@ function buildDescriptor(
       return { icon: Croissant, tooltip: t("threadToolbar.parabolic"), onSelect: () => store.setThreadTool("parabolic") };
     case "threadRadial":
       return { icon: LoaderPinwheel, tooltip: t("threadToolbar.radial"), onSelect: () => store.setThreadTool("radial") };
+    case "threadRepeat":
+      return { icon: Galaxy, tooltip: t("threadToolbar.repeat"), onSelect: () => store.setThreadTool("repeat") };
     case "threadEraser":
       return { icon: Eraser, tooltip: t("threadToolbar.eraser"), onSelect: () => store.setThreadTool("eraser") };
     case "threadSegment":
@@ -129,6 +133,12 @@ function buildDescriptor(
       return { icon: ArrowLeft, tooltip: t("radialMenu.back"), onSelect: () => store.retractTwoPinDraft() };
     case "twoPinCancel":
       return { icon: X, tooltip: t("radialMenu.cancel"), onSelect: () => store.cancelTwoPinDraft() };
+    case "repeatGenerate":
+      return { icon: Sparkles, tooltip: t("radialMenu.generate"), onSelect: () => store.generateRepeatDraft(state.activeThreadLayerId) };
+    case "repeatBack":
+      return { icon: ArrowLeft, tooltip: t("radialMenu.back"), onSelect: () => store.retractRepeatDraft() };
+    case "repeatCancel":
+      return { icon: X, tooltip: t("radialMenu.cancel"), onSelect: () => store.cancelRepeatDraft() };
     case "polygonCut":
       return { icon: Scissors, tooltip: t("radialMenu.cut"), onSelect: () => store.finishPolygonDraft(state.activePinLayerId) };
     case "polygonBack":

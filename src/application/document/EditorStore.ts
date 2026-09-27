@@ -17,6 +17,7 @@ import type {
   TwoPinDraftTool,
   ZigzagSettings,
   ParabolicSettings,
+  RepeatSettings,
 } from "./EditorState";
 import type { Point } from "@domain/paths";
 import { buildGeneratorPattern, GENERATOR_PATTERN_NAMES, maxInscribedRadius, type GeneratorParams } from "./generator/generatorPatterns";
@@ -56,6 +57,7 @@ import { createThreadPath, type ThreadPath } from "./threadPath";
 import { computeNextPatternPinId } from "./threadPattern";
 import { computeCrossPathCandidates, computeSamePathCandidates } from "./twoPinSequence";
 import { computeRadialSequence } from "./radialSequence";
+import { buildRepeatThreadPins, computeRepeatGroups, maxRepeatColours } from "./repeatSequence";
 import { serializeProject, type ProjectFile, type SerializableDocument } from "./projectFile";
 import { defaultPrintSettings, type PrintSettings } from "./printSettings";
 import { seedCounterFrom } from "./idCounter";
@@ -75,6 +77,7 @@ const DEFAULT_THREAD_DEFAULTS: ThreadDefaults = { colours: ["#5b8def"], width: 1
 // fullFill off reproduces the tools' original (pre-configuration) shipped behaviour.
 const DEFAULT_ZIGZAG_SETTINGS: ZigzagSettings = { stepA: 0, stepB: 0, fullFill: false };
 const DEFAULT_PARABOLIC_SETTINGS: ParabolicSettings = { stepA: 0, stepB: 0, fullFill: false, cycles: 1 };
+const DEFAULT_REPEAT_SETTINGS: RepeatSettings = { cycles: 1, fullFill: false, colours: [DEFAULT_THREAD_DEFAULTS.colours[0]] };
 
 // eraser/path-eraser aren't shape tools — switching to one shouldn't clobber the pin
 // defaults a user just dialled in for their next shape.
@@ -143,6 +146,8 @@ export class EditorStore {
       twoPinDraft: null,
       zigzagSettings: DEFAULT_ZIGZAG_SETTINGS,
       parabolicSettings: DEFAULT_PARABOLIC_SETTINGS,
+      repeatDraft: null,
+      repeatSettings: DEFAULT_REPEAT_SETTINGS,
       ...initial,
     };
   }
@@ -265,6 +270,7 @@ export class EditorStore {
       // docs/specs/35-zigzag-parabolic-tools.md: same rule for the Zig-zag/Parabolic
       // draft when leaving Thread mode.
       ...(mode !== "thread" && this.state.twoPinDraft ? { twoPinDraft: null } : {}),
+      ...(mode !== "thread" && this.state.repeatDraft ? { repeatDraft: null } : {}),
     };
     this.notify();
   }
@@ -904,6 +910,7 @@ export class EditorStore {
       // cleanup and setPinTool's polygonDraft-discard-on-tool-switch precedent.
       // Switching between two-pin tools keeps the draft's own tool, so it's discarded too.
       ...(this.state.twoPinDraft && this.state.twoPinDraft.tool !== tool ? { twoPinDraft: null } : {}),
+      ...(this.state.repeatDraft && tool !== "repeat" ? { repeatDraft: null } : {}),
     };
     this.notify();
   }
@@ -924,6 +931,11 @@ export class EditorStore {
 
   setParabolicSettings(patch: Partial<ParabolicSettings>): void {
     this.state = { ...this.state, parabolicSettings: { ...this.state.parabolicSettings, ...patch } };
+    this.notify();
+  }
+
+  setRepeatSettings(patch: Partial<RepeatSettings>): void {
+    this.state = { ...this.state, repeatSettings: { ...this.state.repeatSettings, ...patch } };
     this.notify();
   }
 
@@ -1087,20 +1099,18 @@ export class EditorStore {
   // spurious segment between wherever one arc ends and the next begins.
   private commitTwoPinSequence(layerId: string, pinIdsList: string[][]): void {
     this.state = { ...this.state, twoPinDraft: null };
-    const valid = pinIdsList.filter((ids) => ids.length >= 2);
-    if (valid.length === 0) {
+    const { colours, width, twistPitch } = this.state.threadDefaults;
+    this.commitThreadPaths(layerId, pinIdsList.map((ids) => createThreadPath(ids, colours, width, twistPitch)));
+  }
+
+  // Adds every path with 2+ pins as ONE undo step; a locked layer discards them all.
+  private commitThreadPaths(layerId: string, paths: ThreadPath[]): void {
+    const valid = paths.filter((path) => path.pinIds.length >= 2);
+    if (valid.length === 0 || isThreadLayerLocked(this.state.threadLayers, layerId)) {
       this.notify();
       return;
     }
-    if (isThreadLayerLocked(this.state.threadLayers, layerId)) {
-      this.notify();
-      return;
-    }
-    let nextLayers = this.state.threadLayers;
-    for (const ids of valid) {
-      const threadPath = createThreadPath(ids, this.state.threadDefaults.colours, this.state.threadDefaults.width, this.state.threadDefaults.twistPitch);
-      nextLayers = addThreadPathToLayers(nextLayers, layerId, threadPath);
-    }
+    const nextLayers = valid.reduce((layers, path) => addThreadPathToLayers(layers, layerId, path), this.state.threadLayers);
     const command = new SetValueCommand<ThreadLayer[]>((l) => this.setThreadLayers(l), this.state.threadLayers, nextLayers);
     this.history.run(command);
   }
@@ -1125,6 +1135,44 @@ export class EditorStore {
     }
     this.state = { ...this.state, twoPinDraft: { ...draft, candidates: [], chosenIndex: 0 } };
     this.notify();
+  }
+
+  // --- Repeat pattern tool (docs/specs/38-repeat-pattern-tool.md) ---
+
+  // Each click appends a pin; clicking the last pin again does nothing.
+  extendRepeatDraft(pinId: string): void {
+    const pinIds = this.state.repeatDraft?.pinIds ?? [];
+    if (pinIds[pinIds.length - 1] === pinId) return;
+    this.state = { ...this.state, repeatDraft: { pinIds: [...pinIds, pinId] } };
+    this.notify();
+  }
+
+  retractRepeatDraft(): void {
+    const draft = this.state.repeatDraft;
+    if (!draft) return;
+    const pinIds = draft.pinIds.slice(0, -1);
+    this.state = { ...this.state, repeatDraft: pinIds.length > 0 ? { pinIds } : null };
+    this.notify();
+  }
+
+  cancelRepeatDraft(): void {
+    if (!this.state.repeatDraft) return;
+    this.state = { ...this.state, repeatDraft: null };
+    this.notify();
+  }
+
+  // Enter / "Generate": no-op (draft kept) until enough pins are picked.
+  generateRepeatDraft(layerId: string): void {
+    const draft = this.state.repeatDraft;
+    if (!draft) return;
+    const { cycles, fullFill, colours } = this.state.repeatSettings;
+    const groups = computeRepeatGroups(this.state.pinLayers, draft.pinIds, cycles, fullFill);
+    if (!groups) return;
+    this.state = { ...this.state, repeatDraft: null };
+    const usedColours = colours.slice(0, maxRepeatColours(cycles));
+    const { width, twistPitch } = this.state.threadDefaults;
+    const paths = buildRepeatThreadPins(groups, usedColours.length).map((ids, g) => createThreadPath(ids, [usedColours[g % usedColours.length]], width, twistPitch));
+    this.commitThreadPaths(layerId, paths);
   }
 
   deleteThreadPath(layerId: string, pathId: string): void {
@@ -1387,6 +1435,7 @@ export class EditorStore {
       threadDraft: null,
       generatorDraft: null,
       twoPinDraft: null,
+      repeatDraft: null,
     };
     this.notify();
   }

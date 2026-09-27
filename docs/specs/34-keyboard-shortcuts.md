@@ -68,7 +68,7 @@ Scoped to `BoardSetup.tsx` only, via its own local `keydown` listener (not the c
 
 | Key | Action |
 |---|---|
-| `D` `Z` `P` `R` `S` `E` `C` | Draw / Zig-zag / Parabolic / Radial / Select / Eraser / Segment |
+| `D` `Z` `P` `R` `T` `S` `E` `C` | Draw / Zig-zag / Parabolic / Radial / Repeat / Select / Eraser / Segment |
 | `Shift+1` / `Shift+2` / `Shift+3` | Sets colour count to 1, 2, or 3 |
 | `Shift++` / `Shift+-` | Increases/decreases thread width by 0.5, clamped to 0.5–5 |
 
@@ -94,6 +94,7 @@ Arrow keys pan the viewport by a fixed screen-pixel step (bigger with Shift held
 | `useKeyboardTransform.ts` (Edit-mode Move/Rotation/Scale nudge) | `mode === "select"` and `selectTool` is `move`, `rotate`, or `scale` — checked on the **tool**, not on whether a selection exists, so arrows stay silent (not pan) if e.g. Move is picked with nothing selected | all 4 arrows |
 | `useThreadDrawing.ts` (Thread draft retract / pattern-follow) | `mode === "thread"` and a Thread draft is in progress | `ArrowLeft`, `ArrowRight` only |
 | `usePolygonDrawing.ts` (Path tool draft retract) | `mode === "pin"`, `pinTool === "polygon"`, and a Path draft is in progress | `ArrowLeft` only |
+| `useRepeatDrawing.ts` (Repeat draft retract; also owns `Enter` generate / `Escape` cancel) | `mode === "thread"` and a Repeat draft is in progress | `ArrowLeft` only |
 
 Outside those conditions — including Thread/Pin mode with no draft in progress, Generate/Pan/Play mode, or Edit mode with the Select tool — arrows pan. Direction matches `usePanInteraction.ts`'s existing mouse drag-to-pan exactly: the board moves in the direction of the arrow, same as it follows a mouse drag (pressing Right moves the board right, i.e. the viewport's `panOrigin.x` decreases — the same sign relationship that hook's `origin.x - dx/zoom` has for a positive drag `dx`). `Ctrl/Cmd+Arrow` and `Alt+Arrow` are left alone entirely (never pan, never claimed), since `Alt+Left/Right` is the browser's own back/forward navigation shortcut on most platforms.
 

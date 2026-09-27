@@ -45,6 +45,7 @@ import { usePinDrawing } from "./usePinDrawing";
 import { useFreehandDrawing } from "./useFreehandDrawing";
 import { usePolygonDrawing } from "./usePolygonDrawing";
 import { useThreadDrawing } from "./useThreadDrawing";
+import { useRepeatDrawing } from "./useRepeatDrawing";
 import { useTwoPinSequenceDrawing } from "./useTwoPinSequenceDrawing";
 import { useSelectTool } from "./useSelectTool";
 import { useMoveTool } from "./useMoveTool";
@@ -131,6 +132,7 @@ const THREAD_TOOL_CURSORS: Record<ThreadTool, string> = {
   zigzag: "crosshair",
   parabolic: "crosshair",
   radial: "crosshair",
+  repeat: "crosshair",
 };
 
 function canvasCursor(
@@ -177,6 +179,8 @@ export function Canvas({ store }: { store: EditorStore }) {
   );
   const twoPinDrawing = useTwoPinSequenceDrawing(store, state, threadLayerId);
   const isTwoPinTool = isTwoPinDraftTool(state.threadTool);
+  const repeatDrawing = useRepeatDrawing(store, state);
+  const isRepeatTool = state.threadTool === "repeat";
   const selectTool = useSelectTool(store, state);
   const moveTool = useMoveTool(store, state);
   const rotateTool = useRotateTool(store, state);
@@ -232,6 +236,8 @@ export function Canvas({ store }: { store: EditorStore }) {
     if (state.mode === "thread") {
       if (isTwoPinTool) {
         twoPinDrawing.handleMouseDown(raw, maxDist);
+      } else if (isRepeatTool) {
+        repeatDrawing.handleMouseDown(raw, maxDist);
       } else {
         threadDrawing.handleMouseDown(raw, maxDist);
       }
@@ -288,7 +294,8 @@ export function Canvas({ store }: { store: EditorStore }) {
 
     const { raw } = updateCursor(e);
     if (state.mode === "thread" && isTwoPinTool) twoPinDrawing.handleMouseMove(raw, maxDist);
-    if (state.mode === "thread" && !isTwoPinTool) threadDrawing.handleMouseMove(raw, maxDist);
+    if (state.mode === "thread" && isRepeatTool) repeatDrawing.handleMouseMove(raw, maxDist);
+    if (state.mode === "thread" && !isTwoPinTool && !isRepeatTool) threadDrawing.handleMouseMove(raw, maxDist);
     if (state.mode === "pin" && state.pinTool === "freehand") freehandDrawing.handleMouseMove(raw, viewport);
     if (state.mode === "select" && state.selectTool === "select") selectTool.handleMouseMove(raw, e.clientX, e.clientY);
     if (state.mode === "select" && state.selectTool === "move") moveTool.handleMouseMove(resolvePoint(raw));
@@ -408,6 +415,16 @@ export function Canvas({ store }: { store: EditorStore }) {
             />
           )}
 
+          {state.mode === "thread" && state.repeatDraft && (
+            <ThreadDraftLayer
+              state={state}
+              threadDraft={state.repeatDraft}
+              cursorDoc={cursorDoc}
+              threadCandidateId={repeatDrawing.hoverPinId}
+              colours={state.repeatSettings.colours.slice(0, 1)}
+            />
+          )}
+
           {state.mode === "thread" && state.twoPinDraft && (
             <TwoPinDraftLayer
               state={state}
@@ -476,7 +493,16 @@ export function Canvas({ store }: { store: EditorStore }) {
             </>
           )}
 
-          {state.mode === "thread" && !isTwoPinTool && (
+          {state.mode === "thread" && isRepeatTool && (
+            <PinHighlightOverlay
+              pinLayers={state.pinLayers}
+              lastPinId={state.repeatDraft?.pinIds.at(-1) ?? null}
+              threadCandidateId={repeatDrawing.hoverPinId}
+              usedPinIds={state.repeatDraft?.pinIds.slice(0, -1) ?? []}
+            />
+          )}
+
+          {state.mode === "thread" && !isTwoPinTool && !isRepeatTool && (
             <PinHighlightOverlay
               pinLayers={state.pinLayers}
               lastPinId={state.threadDraft?.pinIds.at(-1) ?? null}
@@ -522,7 +548,7 @@ export function Canvas({ store }: { store: EditorStore }) {
         pinTool={state.pinTool}
         previewGeometry={activePreviewGeometry}
         spacing={state.pinDefaults.spacing}
-        threadStatusText={isTwoPinTool ? twoPinDrawing.statusText : threadDrawing.statusText}
+        threadStatusText={isTwoPinTool ? twoPinDrawing.statusText : isRepeatTool ? repeatDrawing.statusText : threadDrawing.statusText}
       />
     </div>
   );

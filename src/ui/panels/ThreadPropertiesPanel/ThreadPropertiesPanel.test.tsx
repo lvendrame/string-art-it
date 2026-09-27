@@ -112,6 +112,17 @@ describe("ThreadPropertiesPanel", () => {
     expect(screen.getByText(/parabolic/i)).toBeInTheDocument();
   });
 
+  it("the Repeat tool swaps strand colours/twist pitch for its own settings box", () => {
+    const store = new EditorStore();
+    store.setMode("thread");
+    store.setThreadTool("repeat");
+    render(<ThreadPropertiesPanel store={store} />);
+    expect(screen.getByText("Repeat settings")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "2" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Twist pitch")).not.toBeInTheDocument();
+    expect(screen.getByText("Width")).toBeInTheDocument();
+  });
+
   it("only one set of colour/width fields is ever rendered (no duplication)", () => {
     const store = new EditorStore();
     const { threadLayerId, threadPathId } = seedThread(store);

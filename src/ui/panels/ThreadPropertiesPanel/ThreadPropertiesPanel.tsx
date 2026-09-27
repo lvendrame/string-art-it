@@ -5,6 +5,7 @@ import { SliderField } from "@ui/panels/fields/SliderField";
 import { coloursForCount } from "@ui/panels/threadColourPalette";
 import { ZigzagSettingsBox } from "./ZigzagSettingsBox";
 import { ParabolicSettingsBox } from "./ParabolicSettingsBox";
+import { RepeatSettingsBox } from "./RepeatSettingsBox";
 import { ThreadStatsBox } from "./ThreadStatsBox";
 import "./ThreadPropertiesPanel.css";
 
@@ -19,6 +20,9 @@ export function ThreadPropertiesPanel({ store }: { store: EditorStore }) {
   const selected = store.getSelectedThreadPath();
   const values = selected ? { colours: selected.colours, width: selected.width, twistPitch: selected.twistPitch } : state.threadDefaults;
   const colours = values.colours;
+  // docs/specs/38-repeat-pattern-tool.md — Repeat paints each group in one colour from
+  // its own list, so the strand colour/twist fields don't apply to it.
+  const showStrandColours = state.threadTool !== "repeat";
 
   function setColourCount(n: number) {
     store.setThreadProperty({ colours: coloursForCount(colours, n) });
@@ -30,29 +34,33 @@ export function ThreadPropertiesPanel({ store }: { store: EditorStore }) {
         {selected ? t("threadPropertiesPanel.titleSelected") : t("threadPropertiesPanel.titleDefaults")}
       </div>
 
-      <div className="thread-properties-panel__section-title">{t("threadPropertiesPanel.coloursSectionTitle")}</div>
-      <div className="thread-properties-panel__colour-count-row">
-        {[1, 2, 3].map((n) => (
-          <button
-            key={n}
-            className={`btn thread-properties-panel__colour-count-btn${colours.length === n ? " btn-active" : ""}`}
-            onClick={() => setColourCount(n)}
-          >
-            {n}
-          </button>
-        ))}
-      </div>
-      <div className="thread-properties-panel__swatches">
-        {colours.map((c, i) => (
-          <input
-            key={i}
-            type="color"
-            value={c}
-            onChange={(e) => store.setThreadProperty({ colours: colours.map((existing, idx) => (idx === i ? e.target.value : existing)) })}
-            className="thread-properties-panel__swatch"
-          />
-        ))}
-      </div>
+      {showStrandColours && (
+        <>
+          <div className="thread-properties-panel__section-title">{t("threadPropertiesPanel.coloursSectionTitle")}</div>
+          <div className="thread-properties-panel__colour-count-row">
+            {[1, 2, 3].map((n) => (
+              <button
+                key={n}
+                className={`btn thread-properties-panel__colour-count-btn${colours.length === n ? " btn-active" : ""}`}
+                onClick={() => setColourCount(n)}
+              >
+                {n}
+              </button>
+            ))}
+          </div>
+          <div className="thread-properties-panel__swatches">
+            {colours.map((c, i) => (
+              <input
+                key={i}
+                type="color"
+                value={c}
+                onChange={(e) => store.setThreadProperty({ colours: colours.map((existing, idx) => (idx === i ? e.target.value : existing)) })}
+                className="thread-properties-panel__swatch"
+              />
+            ))}
+          </div>
+        </>
+      )}
 
       <SliderField
         label={t("threadPropertiesPanel.width")}
@@ -63,7 +71,7 @@ export function ThreadPropertiesPanel({ store }: { store: EditorStore }) {
         onChange={(v) => store.setThreadProperty({ width: v })}
       />
 
-      {colours.length > 1 && (
+      {showStrandColours && colours.length > 1 && (
         <label className="thread-properties-panel__row">
           {t("threadPropertiesPanel.twistPitch")}
           <input
@@ -80,6 +88,7 @@ export function ThreadPropertiesPanel({ store }: { store: EditorStore }) {
 
       {state.threadTool === "zigzag" && <ZigzagSettingsBox store={store} settings={state.zigzagSettings} />}
       {state.threadTool === "parabolic" && <ParabolicSettingsBox store={store} settings={state.parabolicSettings} />}
+      {state.threadTool === "repeat" && <RepeatSettingsBox store={store} settings={state.repeatSettings} />}
 
       {selected && <ThreadStatsBox thread={selected} pinLayers={state.pinLayers} />}
     </div>

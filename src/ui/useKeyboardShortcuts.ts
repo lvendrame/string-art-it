@@ -89,7 +89,7 @@ export function useKeyboardShortcuts(store: EditorStore, deps: KeyboardShortcutD
       const key = e.key.toLowerCase();
       const bare = !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey;
       if (bare) {
-        const tool = { d: "draw", s: "select", e: "eraser", c: "segment-eraser", z: "zigzag", p: "parabolic", r: "radial" } as const;
+        const tool = { d: "draw", s: "select", e: "eraser", c: "segment-eraser", z: "zigzag", p: "parabolic", r: "radial", t: "repeat" } as const;
         if (key in tool) {
           store.setThreadTool(tool[key as keyof typeof tool]);
           return true;
@@ -188,8 +188,9 @@ export function useKeyboardShortcuts(store: EditorStore, deps: KeyboardShortcutD
     // nothing is selected yet, matching "a selected tool that uses the arrow keys"),
     // an in-progress Thread Draw draft (useThreadDrawing.ts, ArrowLeft retract /
     // ArrowRight pattern-follow), an in-progress Path tool draft (usePolygonDrawing.ts,
-    // ArrowLeft retract), and an in-progress Zig-zag/Parabolic draft
-    // (useTwoPinSequenceDrawing.ts, ArrowLeft retract). Those hooks are independent
+    // ArrowLeft retract), an in-progress Zig-zag/Parabolic draft
+    // (useTwoPinSequenceDrawing.ts, ArrowLeft retract), and an in-progress Repeat draft
+    // (useRepeatDrawing.ts, ArrowLeft retract). Those hooks are independent
     // `window` keydown listeners that also fire on this same event — re-deriving their
     // "would I act" predicate here (rather than a shared preventDefault flag) is what
     // keeps this purely additive without touching those files.
@@ -204,6 +205,9 @@ export function useKeyboardShortcuts(store: EditorStore, deps: KeyboardShortcutD
         return true;
       }
       if (state.mode === "thread" && state.twoPinDraft && key === "ArrowLeft") {
+        return true;
+      }
+      if (state.mode === "thread" && state.repeatDraft && key === "ArrowLeft") {
         return true;
       }
       return false;

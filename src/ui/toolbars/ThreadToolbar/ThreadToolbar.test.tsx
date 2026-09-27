@@ -19,6 +19,7 @@ describe("ThreadToolbar", () => {
     ["Zig-zag [Z]", "zigzag"],
     ["Parabolic [P]", "parabolic"],
     ["Radial [R]", "radial"],
+    ["Repeat [T]", "repeat"],
     ["Select [S]", "select"],
     ["Eraser [E]", "eraser"],
     ["Segment [C]", "segment-eraser"],

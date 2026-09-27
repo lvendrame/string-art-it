@@ -1,4 +1,4 @@
-import { Croissant, Eraser, LoaderPinwheel, MousePointer2, PenLine, Scissors, Waypoints } from "lucide-react";
+import { Croissant, Eraser, Galaxy, LoaderPinwheel, MousePointer2, PenLine, Scissors, Waypoints } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { EditorStore } from "@application/document";
 import { useEditorState } from "@ui/useEditorStore";
@@ -45,6 +45,13 @@ export function ThreadToolbar({ store }: { store: EditorStore }) {
         >
           <LoaderPinwheel size={14} />
           {t("threadToolbar.radial")} [R]
+        </button>
+        <button
+          className={`btn thread-toolbar__tool${state.threadTool === "repeat" ? " btn-active" : ""}`}
+          onClick={() => store.setThreadTool("repeat")}
+        >
+          <Galaxy size={14} />
+          {t("threadToolbar.repeat")} [T]
         </button>
         <button
           className={`btn thread-toolbar__tool${state.threadTool === "select" ? " btn-active" : ""}`}

@@ -55,6 +55,7 @@
       "zigzag": { "label": "Zigzag", "description": "Cliquez sur une première broche, puis sur une deuxième, pour insérer un éventail de segments en zigzag entre elles. Même tracé : miroir des deux extrémités vers le milieu. Tracés différents : alterne en descendant chaque tracé depuis sa propre ancre jusqu\u2019à ce que l\u2019un des deux soit épuisé. Un tracé fermé ou un second tracé offrant un vrai choix de direction nécessite un 3e clic, à une position libre, pour confirmer l\u2019arc/la direction (l\u2019aperçu en direct suit le curseur) ; Échap annule, Flèche Gauche revient d\u2019un pas." },
       "parabolic": { "label": "Parabolique", "description": "Cliquez sur une première broche, puis sur une deuxième, pour insérer un éventail de type courbe de broderie entre elles. Même tracé : relie la première moitié de la plage à la seconde, dans l\u2019ordre. Tracés différents : relie le segment propre à chaque tracé, le second tracé étant parcouru à l\u2019envers vers sa propre ancre. Un tracé fermé ou un second tracé offrant un vrai choix de direction nécessite un 3e clic, à une position libre, pour confirmer l\u2019arc/la direction (l\u2019aperçu en direct suit le curseur) ; Échap annule, Flèche Gauche revient d\u2019un pas." },
       "radial": { "label": "Radial", "description": "Cliquez sur une broche d’ancrage, puis sur n’importe quelle broche d’un tracé, pour relier l’ancre à toutes les broches de ce tracé, dans l’ordre du tracé — un fil continu qui revient à l’ancre entre chaque rayon. L’ancre elle-même est ignorée si elle se trouve sur ce tracé. Échap annule, Flèche Gauche revient d’un pas." },
+      "repeat": { "label": "Répéter", "description": "Cliquez des clous dans l’ordre, puis appuyez sur Entrée (ou clic droit Générer). Les clous cliqués sont divisés en deux moitiés appariées (1er avec 1er, 2e avec 2e, …) ; l’écart de numéro de chaque paire prolonge le motif de Cycles groupes supplémentaires. Au moins 4 clous ; un dernier clou impair est ignoré. Remplissage complet continue jusqu’à ce que la première paire atteigne son clou de départ. Avec plusieurs couleurs, chaque groupe alterne la couleur. Échap annule, Flèche gauche retire le dernier clou." },
       "eraser": { "label": "Gomme", "description": "Cliquez sur un Tracé de Fil pour supprimer tout le tracé en un seul clic." },
       "segment": { "label": "Segment", "description": "Cliquez sur un segment pour le supprimer, divisant le tracé en jusqu'à deux fragments restants (un fragment avec moins de 2 broches est abandonné). Les broches elles-mêmes ne sont pas affectées." }
     },
@@ -192,6 +193,7 @@
         "zigzag": { "label": "Z", "description": "Outil Zigzag." },
         "parabolic": { "label": "P", "description": "Outil Parabolique." },
         "radial": { "label": "R", "description": "Outil Radial." },
+        "repeat": { "label": "T", "description": "Outil Répéter." },
         "select": { "label": "S", "description": "Outil Sélection." },
         "eraser": { "label": "E", "description": "Outil Gomme." },
         "segmentEraser": { "label": "C", "description": "Outil Segment." },

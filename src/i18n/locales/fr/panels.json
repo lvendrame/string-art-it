@@ -76,6 +76,11 @@
     "stepB": "Pas B",
     "fullFill": "Remplissage complet",
     "cycles": "Cycles",
+    "repeatSectionTitle": "Paramètres de répétition",
+    "colourN": "Couleur {{n}}",
+    "addColour": "Ajouter une couleur",
+    "removeColour": "Retirer la dernière couleur",
+    "repeatColoursMax": "Jusqu’à {{max}} (Cycles + 2)",
     "stats": {
       "title": "Statistiques",
       "segments": "Segments",

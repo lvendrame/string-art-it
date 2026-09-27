@@ -55,7 +55,7 @@ describe("getRadialMenuSliceIds", () => {
 
   it("Thread mode: normal slice set with no draft in progress", () => {
     const state = new EditorStore({ mode: "thread", threadDraft: null }).getState();
-    expect(getRadialMenuSliceIds(state)).toEqual(["threadDraw", "threadZigzag", "threadParabolic", "threadRadial", "threadEraser", "threadSegment"]);
+    expect(getRadialMenuSliceIds(state)).toEqual(["threadDraw", "threadZigzag", "threadParabolic", "threadRadial", "threadRepeat", "threadEraser", "threadSegment"]);
   });
 
   it("Thread mode: draft slice set entirely replaces the normal set", () => {
@@ -77,6 +77,16 @@ describe("getRadialMenuSliceIds", () => {
       twoPinDraft: { tool: "zigzag", firstPinId: "1", candidates: [["1", "2"]], chosenIndex: 0 },
     }).getState();
     expect(getRadialMenuSliceIds(state)).toEqual(["twoPinResolve", "twoPinBack", "twoPinCancel"]);
+  });
+
+  it("Thread mode: Repeat draft below 4 pins shows Back/Cancel only", () => {
+    const state = new EditorStore({ mode: "thread", repeatDraft: { pinIds: ["1", "2", "3"] } }).getState();
+    expect(getRadialMenuSliceIds(state)).toEqual(["repeatBack", "repeatCancel"]);
+  });
+
+  it("Thread mode: Repeat draft with 4+ pins adds Generate", () => {
+    const state = new EditorStore({ mode: "thread", repeatDraft: { pinIds: ["1", "2", "3", "4"] } }).getState();
+    expect(getRadialMenuSliceIds(state)).toEqual(["repeatGenerate", "repeatBack", "repeatCancel"]);
   });
 
   it("Pan mode", () => {

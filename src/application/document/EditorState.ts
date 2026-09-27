@@ -83,8 +83,9 @@ export interface PinDefaults extends PinStyle {
 }
 
 // docs/specs/24-thread-mode, docs/specs/27-thread-select-tool.md,
-// docs/specs/35-zigzag-parabolic-tools.md, docs/specs/37-radial-thread-tool.md
-export type ThreadTool = "draw" | "eraser" | "segment-eraser" | "select" | "zigzag" | "parabolic" | "radial";
+// docs/specs/35-zigzag-parabolic-tools.md, docs/specs/37-radial-thread-tool.md,
+// docs/specs/38-repeat-pattern-tool.md
+export type ThreadTool = "draw" | "eraser" | "segment-eraser" | "select" | "zigzag" | "parabolic" | "radial" | "repeat";
 
 // Thread tools driven by the two-click TwoPinDraft flow.
 export type TwoPinDraftTool = "zigzag" | "parabolic" | "radial";
@@ -149,6 +150,18 @@ export interface ParabolicSettings {
   cycles: number;
 }
 
+// docs/specs/38-repeat-pattern-tool.md — the pins clicked so far with the Repeat tool.
+// Transient, non-undoable, same treatment as ThreadDraft above.
+export type RepeatDraft = { pinIds: string[] } | null;
+
+// docs/specs/38-repeat-pattern-tool.md §Configuration — next-draw settings, same
+// plain-state treatment as ZigzagSettings. `colours` alternate per generated group.
+export interface RepeatSettings {
+  cycles: number;
+  fullFill: boolean;
+  colours: string[];
+}
+
 export interface EditorState {
   board: Board;
   mode: EditorMode;
@@ -175,4 +188,6 @@ export interface EditorState {
   twoPinDraft: TwoPinDraft;
   zigzagSettings: ZigzagSettings;
   parabolicSettings: ParabolicSettings;
+  repeatDraft: RepeatDraft;
+  repeatSettings: RepeatSettings;
 }

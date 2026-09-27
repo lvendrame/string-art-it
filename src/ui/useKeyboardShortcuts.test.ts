@@ -109,4 +109,27 @@ describe("useKeyboardShortcuts — Thread mode", () => {
 
     expect(store.getState().threadTool).toBe("radial");
   });
+
+  it("'t' selects the Repeat tool", () => {
+    const store = new EditorStore();
+    store.setMode("thread");
+    renderHook(() => useKeyboardShortcuts(store, makeDeps()));
+
+    fireEvent.keyDown(window, { key: "t" });
+
+    expect(store.getState().threadTool).toBe("repeat");
+  });
+
+  it("ArrowLeft does not pan while a Repeat draft is in progress", () => {
+    const store = new EditorStore();
+    store.setMode("thread");
+    store.setThreadTool("repeat");
+    store.extendRepeatDraft("p1");
+    const before = store.getState().viewport;
+    renderHook(() => useKeyboardShortcuts(store, makeDeps()));
+
+    fireEvent.keyDown(window, { key: "ArrowLeft" });
+
+    expect(store.getState().viewport).toBe(before);
+  });
 });

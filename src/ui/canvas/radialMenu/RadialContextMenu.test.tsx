@@ -169,6 +169,7 @@ describe("RadialContextMenu", () => {
       ["Zig-zag", "zigzag"],
       ["Parabolic", "parabolic"],
       ["Radial", "radial"],
+      ["Repeat", "repeat"],
       ["Eraser", "eraser"],
       ["Segment", "segment-eraser"],
     ];
@@ -215,6 +216,23 @@ describe("RadialContextMenu", () => {
       twoPinDraft: { tool: "zigzag", firstPinId: "p1", candidates: [], chosenIndex: 0 },
     });
     expect(tooltipContents(container)).toEqual(["Back", "Cancel"]);
+  });
+
+  it("Repeat draft shows Generate/Back/Cancel, each firing the matching store method", () => {
+    const { store, container } = renderMenu({ mode: "thread", repeatDraft: { pinIds: ["p1", "p2", "p3", "p4"] } });
+    expect(tooltipContents(container)).toEqual(["Generate", "Back", "Cancel"]);
+
+    const generate = vi.spyOn(store, "generateRepeatDraft");
+    clickSlice(container, "Generate");
+    expect(generate).toHaveBeenCalledWith(store.getState().activeThreadLayerId);
+
+    const retract = vi.spyOn(store, "retractRepeatDraft");
+    clickSlice(container, "Back");
+    expect(retract).toHaveBeenCalledTimes(1);
+
+    const cancel = vi.spyOn(store, "cancelRepeatDraft");
+    clickSlice(container, "Cancel");
+    expect(cancel).toHaveBeenCalledTimes(1);
   });
 
   it("Pan-mode slices Fit/Zoom in/Zoom out change the viewport", () => {

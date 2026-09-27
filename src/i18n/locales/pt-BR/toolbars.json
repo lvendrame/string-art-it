@@ -66,6 +66,7 @@
     "zigzag": "Zigue-zague",
     "parabolic": "Parabólico",
     "radial": "Radial",
+    "repeat": "Repetir",
     "select": "Selecionar",
     "eraser": "Borracha",
     "segment": "Segmento",
@@ -111,6 +112,7 @@
   },
   "radialMenu": {
     "cut": "Cortar",
+    "generate": "Gerar",
     "back": "Voltar",
     "next": "Avançar",
     "cancel": "Cancelar"

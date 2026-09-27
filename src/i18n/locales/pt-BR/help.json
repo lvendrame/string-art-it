@@ -55,6 +55,7 @@
       "zigzag": { "label": "Zigue-zague", "description": "Clique em um primeiro pino e depois em um segundo para inserir um leque em zigue-zague de segmentos entre eles. Mesmo caminho: espelha das duas pontas em direção ao meio. Caminhos diferentes: alterna descendo cada caminho a partir de sua própria âncora até que um deles se esgote. Um caminho fechado ou um segundo caminho com uma escolha real de direção exige um 3º clique, em posição livre, para confirmar qual arco/direção usar (a pré-visualização ao vivo segue o cursor); Esc cancela, Seta Esquerda volta um passo." },
       "parabolic": { "label": "Parabólico", "description": "Clique em um primeiro pino e depois em um segundo para inserir um leque em curva de bordado entre eles. Mesmo caminho: liga a primeira metade do intervalo à segunda metade, em ordem. Caminhos diferentes: liga o trecho de cada caminho, com o segundo caminho percorrido em sentido inverso até sua própria âncora. Um caminho fechado ou um segundo caminho com uma escolha real de direção exige um 3º clique, em posição livre, para confirmar qual arco/direção usar (a pré-visualização ao vivo segue o cursor); Esc cancela, Seta Esquerda volta um passo." },
       "radial": { "label": "Radial", "description": "Clique em um pino âncora e depois em qualquer pino de um Caminho de Pinos para ligar a âncora a todos os pinos desse caminho, na ordem do caminho — uma linha contínua que volta à âncora entre cada raio. A própria âncora é ignorada quando está nesse caminho. Esc cancela, Seta Esquerda volta um passo." },
+      "repeat": { "label": "Repetir", "description": "Clique nos pinos em ordem e pressione Enter (ou clique direito Gerar). Os pinos clicados são divididos em duas metades pareadas (1º com 1º, 2º com 2º, …); o salto de número de cada par estende o padrão por mais Ciclos grupos. Exige pelo menos 4 pinos; um último pino ímpar é ignorado. Preenchimento completo continua até o primeiro par alcançar seu pino inicial. Com várias cores, cada grupo alterna a cor. Esc cancela, Seta esquerda remove o último pino." },
       "eraser": { "label": "Borracha", "description": "Clique em um Caminho de Linha para remover o caminho inteiro em um único clique." },
       "segment": { "label": "Segmento", "description": "Clique em um segmento para removê-lo, dividindo o caminho em até dois fragmentos restantes (um fragmento com menos de 2 pinos é descartado). Os próprios pinos permanecem intactos." }
     },
@@ -192,6 +193,7 @@
         "zigzag": { "label": "Z", "description": "Ferramenta Zigue-zague." },
         "parabolic": { "label": "P", "description": "Ferramenta Parabólico." },
         "radial": { "label": "R", "description": "Ferramenta Radial." },
+        "repeat": { "label": "T", "description": "Ferramenta Repetir." },
         "select": { "label": "S", "description": "Ferramenta Selecionar." },
         "eraser": { "label": "E", "description": "Ferramenta Borracha." },
         "segmentEraser": { "label": "C", "description": "Ferramenta Segmento." },

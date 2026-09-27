@@ -76,6 +76,11 @@
     "stepB": "Paso B",
     "fullFill": "Relleno completo",
     "cycles": "Ciclos",
+    "repeatSectionTitle": "Ajustes de repetición",
+    "colourN": "Color {{n}}",
+    "addColour": "Añadir color",
+    "removeColour": "Quitar último color",
+    "repeatColoursMax": "Hasta {{max}} (Ciclos + 2)",
     "stats": {
       "title": "Estadísticas",
       "segments": "Segmentos",

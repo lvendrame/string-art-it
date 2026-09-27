@@ -30,9 +30,12 @@ export type {
   TwoPinDraftTool,
   ZigzagSettings,
   ParabolicSettings,
+  RepeatDraft,
+  RepeatSettings,
 } from "./EditorState";
 export { isTwoPinDraftTool } from "./EditorState";
 export { computeRadialSequence } from "./radialSequence";
+export { MIN_REPEAT_PINS, buildRepeatThreadPins, computeRepeatGroups, fullFillCycleCount, maxRepeatColours } from "./repeatSequence";
 export { EditorStore, canCommitSelectionMerge } from "./EditorStore";
 export {
   geometryToPath,

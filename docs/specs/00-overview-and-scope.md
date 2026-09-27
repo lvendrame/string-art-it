@@ -87,6 +87,7 @@ The application must allow users to:
 | Zig-Zag and Parabolic thread tools | [35-zigzag-parabolic-tools.md](./35-zigzag-parabolic-tools.md) |
 | Layer merge (merge a layer into the layer above) | [36-layer-merge.md](./36-layer-merge.md) |
 | Radial thread tool | [37-radial-thread-tool.md](./37-radial-thread-tool.md) |
+| Repeat pattern thread tool | [38-repeat-pattern-tool.md](./38-repeat-pattern-tool.md) |
 
 ## MVP Scope
 

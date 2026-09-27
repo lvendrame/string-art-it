@@ -5,7 +5,8 @@ import { screenDistanceToDocument, type Viewport } from "@domain/transforms";
 
 const MIN_POINT_DISTANCE_PX = 3;
 
-// Freehand pin drawing: click-drag to hand-draw an arbitrary Pin Path. A distinct
+// Freehand pin drawing: click-drag to hand-draw an arbitrary Pin Path; a plain click
+// adds a one-pin path at the clicked point. A distinct
 // interaction pattern from the click-based/bbox-drag tools in usePinDrawing.ts — this
 // is a continuous point capture, so it owns its own hook. Points are raw cursor
 // positions (no mid-gesture snapping — snapping every sampled point would turn a
@@ -30,7 +31,7 @@ export function useFreehandDrawing(store: EditorStore, layerId: string) {
   }
 
   function handleMouseUp(): void {
-    if (points.length >= 2) store.addPinPath(layerId, { type: "freehand", points });
+    if (points.length >= 1) store.addPinPath(layerId, { type: "freehand", points });
     setPoints([]);
   }
 

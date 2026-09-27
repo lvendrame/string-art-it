@@ -27,7 +27,7 @@
       "circle": { "label": "Cercle", "description": "Appuyez, glissez, relâchez pour dimensionner un Tracé de Broches en Cercle." },
       "rect": { "label": "Rect.", "description": "Appuyez, glissez, relâchez une boîte englobante. Maintenez Alt en glissant pour la contraindre à un Carré." },
       "square": { "label": "Carré", "description": "Appuyez, glissez, relâchez pour dimensionner un Tracé de Broches en Carré." },
-      "freehand": { "label": "Main levée", "description": "Glissez pour échantillonner un tracé de broches à main levée pendant que vous vous déplacez." },
+      "freehand": { "label": "Main levée", "description": "Glissez pour échantillonner un tracé de broches à main levée pendant que vous vous déplacez ; cliquez pour placer une seule broche." },
       "path": { "label": "Tracé", "description": "Cliquez pour placer des sommets un par un, se refermant en un Tracé de Broches — Échap, clic droit Couper, ou un clic de retour sur le premier sommet le terminent tous ; Flèche Gauche/Retour annule le dernier sommet ; clic droit Annuler abandonne tout le brouillon." },
       "eraser": { "label": "Gomme", "description": "Cliquez sur une broche pour ne supprimer que cette broche." },
       "pathEraser": { "label": "Gomme de Tracé", "description": "Cliquez sur un Tracé de Broches pour supprimer tout le tracé, ce qui se répercute sur tous les segments de fil qui référençaient ses broches. Une seule étape d'annulation." },

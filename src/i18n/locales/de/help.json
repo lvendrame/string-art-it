@@ -27,7 +27,7 @@
       "circle": { "label": "Kreis", "description": "Drücken, ziehen, loslassen, um einen kreisförmigen Stiftpfad zu dimensionieren." },
       "rect": { "label": "Rck.", "description": "Drücken, ziehen, loslassen für ein Begrenzungsrechteck. Halten Sie Alt beim Ziehen, um es auf ein Quadrat zu beschränken." },
       "square": { "label": "Quadrat", "description": "Drücken, ziehen, loslassen, um einen quadratischen Stiftpfad zu dimensionieren." },
-      "freehand": { "label": "Freihand", "description": "Ziehen, um während der Bewegung einen Freihand-Stiftpfad abzutasten." },
+      "freehand": { "label": "Freihand", "description": "Ziehen, um während der Bewegung einen Freihand-Stiftpfad abzutasten; klicken, um einen einzelnen Stift zu setzen." },
       "path": { "label": "Pfad", "description": "Klicken, um nacheinander Eckpunkte zu setzen und zu einem Stiftpfad zu schließen — Escape, Rechtsklick Schneiden oder ein Klick zurück auf den ersten Eckpunkt beenden ihn; Pfeil-Links/Zurück macht den letzten Eckpunkt rückgängig; Rechtsklick Abbrechen verwirft den gesamten Entwurf." },
       "eraser": { "label": "Radierer", "description": "Klicken Sie auf einen Stift, um nur diesen einen Stift zu entfernen." },
       "pathEraser": { "label": "Pfad-Radierer", "description": "Klicken Sie auf einen Stiftpfad, um den gesamten Pfad zu entfernen; dies wirkt sich kaskadierend auf alle Fadensegmente aus, die seine Stifte referenzierten. Ein einziger Rückgängig-Schritt." },

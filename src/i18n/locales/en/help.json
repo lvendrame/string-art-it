@@ -27,7 +27,7 @@
       "circle": { "label": "Circle", "description": "Press-drag-release to size a Circle Pin Path." },
       "rect": { "label": "Rect", "description": "Press-drag-release a bounding box. Hold Alt while dragging to constrain it to a Square." },
       "square": { "label": "Square", "description": "Press-drag-release to size a Square Pin Path." },
-      "freehand": { "label": "Freehand", "description": "Drag to sample a freehand path of pins as you move." },
+      "freehand": { "label": "Freehand", "description": "Drag to sample a freehand path of pins as you move; click to place a single pin." },
       "path": { "label": "Path", "description": "Click to drop vertices one at a time, closing into a Pin Path — Esc, right-click Cut, or clicking back on the first vertex all finish it; ArrowLeft/Back undoes the last vertex; right-click Cancel discards the whole draft." },
       "eraser": { "label": "Eraser", "description": "Click a pin to remove that one pin." },
       "pathEraser": { "label": "Path Eraser", "description": "Click a Pin Path to remove the whole path, cascading into any thread segments that referenced its pins. One undo step." },

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pathLength } from "@domain/paths";
+import { distributeOpenPath, pathLength } from "@domain/paths";
 import { freehandShape } from "./freehand";
 
 describe("freehandShape", () => {
@@ -10,9 +10,9 @@ describe("freehandShape", () => {
     expect(pathLength(path)).toBeCloseTo(3 + 4, 6);
   });
 
-  it("a single point produces a zero-length, zero-segment path", () => {
+  it("a single point produces a zero-length path anchored at that point", () => {
     const path = freehandShape([{ x: 5, y: 5 }]);
-    expect(path.segments).toHaveLength(0);
     expect(pathLength(path)).toBe(0);
+    expect(distributeOpenPath(path, 10)).toEqual([{ x: 5, y: 5 }]);
   });
 });

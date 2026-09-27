@@ -27,7 +27,7 @@
       "circle": { "label": "Círculo", "description": "Presiona, arrastra y suelta para dimensionar un Trazado de Pines en Círculo." },
       "rect": { "label": "Rect.", "description": "Presiona, arrastra y suelta un cuadro delimitador. Mantén Alt presionado mientras arrastras para restringirlo a un Cuadrado." },
       "square": { "label": "Cuadrado", "description": "Presiona, arrastra y suelta para dimensionar un Trazado de Pines en Cuadrado." },
-      "freehand": { "label": "Mano libre", "description": "Arrastra para muestrear un trazado de pines a mano libre mientras te mueves." },
+      "freehand": { "label": "Mano libre", "description": "Arrastra para muestrear un trazado de pines a mano libre mientras te mueves; haz clic para colocar un solo pin." },
       "path": { "label": "Trazado", "description": "Haz clic para colocar vértices uno a uno, cerrando en un Trazado de Pines — Escape, clic derecho Cortar, o hacer clic de nuevo en el primer vértice lo terminan; Flecha Izquierda/Atrás deshace el último vértice; clic derecho Cancelar descarta todo el borrador." },
       "eraser": { "label": "Borrador", "description": "Haz clic en un pin para eliminar solo ese pin." },
       "pathEraser": { "label": "Borrador de Trazado", "description": "Haz clic en un Trazado de Pines para eliminar el trazado completo, propagándose a cualquier segmento de hilo que referenciara sus pines. Un único paso de deshacer." },

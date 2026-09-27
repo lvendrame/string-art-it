@@ -44,12 +44,14 @@ describe("useFreehandDrawing", () => {
     expect(store.getState().pinLayers[0].pinPaths[0].geometry).toMatchObject({ type: "freehand" });
   });
 
-  it("mouse up with fewer than 2 points does not commit a path", () => {
+  it("mouse up after a plain click commits a one-pin path at that point", () => {
     const { store, result } = setup();
 
-    act(() => result.current.handleMouseDown({ x: 0, y: 0 }));
+    act(() => result.current.handleMouseDown({ x: 7, y: 9 }));
     act(() => result.current.handleMouseUp());
 
-    expect(store.getState().pinLayers[0].pinPaths).toHaveLength(0);
+    const pinPaths = store.getState().pinLayers[0].pinPaths;
+    expect(pinPaths).toHaveLength(1);
+    expect(pinPaths[0].pins.map((p) => ({ x: p.x, y: p.y }))).toEqual([{ x: 7, y: 9 }]);
   });
 });

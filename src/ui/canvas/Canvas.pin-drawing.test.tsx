@@ -90,7 +90,7 @@ describe("Canvas — pin drawing interaction", () => {
     expect(paths[0].pins.length).toBeGreaterThan(1);
   });
 
-  it("Freehand drag with fewer than two points (a plain click) creates nothing", () => {
+  it("Freehand plain click creates a one-pin path at the clicked point", () => {
     const store = new EditorStore();
     store.setPinTool("freehand");
     render(<Canvas store={store} />);
@@ -99,7 +99,11 @@ describe("Canvas — pin drawing interaction", () => {
     mouseDownAt(svg, 200, 200);
     fireEvent.mouseUp(svg, { clientX: 200, clientY: 200 });
 
-    expect(store.getState().pinLayers[0].pinPaths).toHaveLength(0);
+    const pinPaths = store.getState().pinLayers[0].pinPaths;
+    expect(pinPaths).toHaveLength(1);
+    expect(pinPaths[0].pins).toHaveLength(1);
+    expect(pinPaths[0].pins[0].x).toBeCloseTo(10, 6);
+    expect(pinPaths[0].pins[0].y).toBeCloseTo(10, 6);
   });
 
   it("eraser removes the nearest pin on click", () => {

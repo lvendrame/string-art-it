@@ -27,7 +27,7 @@
       "circle": { "label": "Círculo", "description": "Pressione, arraste e solte para dimensionar um Caminho de Pinos em Círculo." },
       "rect": { "label": "Ret.", "description": "Pressione, arraste e solte uma caixa delimitadora. Mantenha Alt pressionado ao arrastar para restringir a um Quadrado." },
       "square": { "label": "Quadrado", "description": "Pressione, arraste e solte para dimensionar um Caminho de Pinos em Quadrado." },
-      "freehand": { "label": "Livre", "description": "Arraste para amostrar um caminho de pinos à mão livre conforme você se move." },
+      "freehand": { "label": "Livre", "description": "Arraste para amostrar um caminho de pinos à mão livre conforme você se move; clique para colocar um único pino." },
       "path": { "label": "Caminho", "description": "Clique para colocar vértices um de cada vez, fechando em um Caminho de Pinos — Esc, clique direito Cortar, ou clicar de volta no primeiro vértice terminam o rascunho; Seta Esquerda/Voltar desfaz o último vértice; clique direito Cancelar descarta todo o rascunho." },
       "eraser": { "label": "Borracha", "description": "Clique em um pino para remover apenas esse pino." },
       "pathEraser": { "label": "Borracha de Caminho", "description": "Clique em um Caminho de Pinos para remover o caminho inteiro, propagando para quaisquer segmentos de linha que referenciavam seus pinos. Um único passo de desfazer." },

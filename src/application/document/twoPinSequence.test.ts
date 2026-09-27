@@ -302,8 +302,8 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
   it("Parabolic same-closed-path pair: full-fill is a single continuous constant-offset walk, NOT the two-arc shape", () => {
     // Confirmed against a real reported example (141-pin ring, pins 125 & 22): the
     // resulting sequence keeps the SAME (A,B) offset constant while both pins advance
-    // together — [125,22, 126,23, ...] — for one full lap, stopping just before it
-    // would repeat the very first pair again. This is NOT firstHalf/secondHalf pairing
+    // together — [125,22, 126,23, ...] — for one full lap, ending back on A's own
+    // start so the lap's last B→A connecting segment is drawn too. This is NOT firstHalf/secondHalf pairing
     // (Zig-zag's own closed-path full-fill shape, which stays unchanged) — Parabolic's
     // is a plain "walk A forward, walk B forward in lockstep" using the SAME
     // extractIds/strideList/interleave primitives, not the arc-split algorithm.
@@ -313,9 +313,9 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
     expect(candidates).toHaveLength(1);
     expect(candidates[0].extraSequences).toBeUndefined();
     // offset = 2 (index of p3 minus index of p1), constant across all 8 pairs:
-    // (p1,p3),(p2,p4),(p3,p5),(p4,p6),(p5,p7),(p6,p8),(p7,p1),(p8,p2).
+    // (p1,p3),(p2,p4),(p3,p5),(p4,p6),(p5,p7),(p6,p8),(p7,p1),(p8,p2), then back to p1.
     expect(candidates[0].sequence).toEqual(
-      seq("p1", "p3", "p2", "p4", "p3", "p5", "p4", "p6", "p5", "p7", "p6", "p8", "p7", "p1", "p8", "p2"),
+      seq("p1", "p3", "p2", "p4", "p3", "p5", "p4", "p6", "p5", "p7", "p6", "p8", "p7", "p1", "p8", "p2", "p1"),
     );
   });
 
@@ -340,9 +340,9 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
     const thrice = computeSamePathCandidates(layers, "p1", "p3", "parabolic", settingsThrice)[0];
     expect(once.extraSequences).toBeUndefined();
     expect(thrice.extraSequences).toBeUndefined();
-    expect(once.sequence).toHaveLength(16); // 8 pairs
-    expect(thrice.sequence).toHaveLength(48); // 24 pairs (3x)
-    expect(thrice.sequence.slice(0, 16)).toEqual(once.sequence);
+    expect(once.sequence).toHaveLength(17); // 8 pairs + closing pin
+    expect(thrice.sequence).toHaveLength(49); // 24 pairs (3x) + closing pin
+    expect(thrice.sequence.slice(0, 17)).toEqual(once.sequence);
   });
 
   it("Zig-zag cycles=3 still repeats the arc-pair 3 times as 6 separate strands (unchanged)", () => {
@@ -364,9 +364,9 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
     const candidates = computeSamePathCandidates(layers, "p125", "p22", "parabolic", settings);
     expect(candidates).toHaveLength(1);
     const sequence = candidates[0].sequence;
-    expect(sequence).toHaveLength(282); // 141 pairs, no closing repeat back to (125,22)
+    expect(sequence).toHaveLength(283); // 141 pairs + closing pin 125, no repeat of the (125,22) pair
     expect(sequence.slice(0, 10)).toEqual(seq("p125", "p22", "p126", "p23", "p127", "p24", "p128", "p25", "p129", "p26"));
-    expect(sequence.slice(-2)).toEqual(seq("p124", "p21"));
+    expect(sequence.slice(-3)).toEqual(seq("p124", "p21", "p125"));
     // The (A,B) PAIR never repeats — pin 125 can legitimately reappear later as part of
     // B's own lap (it eventually walks through every pin, including where A started),
     // but the very first pair specifically is never re-inserted a second time.
@@ -387,9 +387,9 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
     const candidates = computeSamePathCandidates(layers, "p99", "p19", "parabolic", settings);
     expect(candidates).toHaveLength(1);
     const sequence = candidates[0].sequence;
-    expect(sequence).toHaveLength(122); // 61 pairs
+    expect(sequence).toHaveLength(123); // 61 pairs + closing pin
     expect(sequence.slice(0, 10)).toEqual(seq("p99", "p19", "p100", "p21", "p101", "p23", "p102", "p25", "p103", "p27"));
-    expect(sequence.slice(-6)).toEqual(seq("p38", "p16", "p39", "p18", "p40", "p20"));
+    expect(sequence.slice(-7)).toEqual(seq("p38", "p16", "p39", "p18", "p40", "p20", "p41"));
   });
 
   it("cycles=3 on that same example continues the SAME walk for 3 origin-passes, as one continuous strand", () => {
@@ -399,9 +399,9 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
     const once = computeSamePathCandidates(layers, "p99", "p19", "parabolic", settingsOnce)[0];
     const thrice = computeSamePathCandidates(layers, "p99", "p19", "parabolic", settingsThrice)[0];
     expect(thrice.extraSequences).toBeUndefined();
-    expect(thrice.sequence).toHaveLength(360); // 180 pairs
+    expect(thrice.sequence).toHaveLength(361); // 180 pairs + closing pin
     expect(thrice.sequence.slice(0, once.sequence.length)).toEqual(once.sequence);
-    expect(thrice.sequence.slice(-10)).toEqual(seq("p36", "p12", "p37", "p14", "p38", "p16", "p39", "p18", "p40", "p20"));
+    expect(thrice.sequence.slice(-11)).toEqual(seq("p36", "p12", "p37", "p14", "p38", "p16", "p39", "p18", "p40", "p20", "p41"));
   });
 
   it("reproduces the exact reported example: 151-pin ring, pins 124 & 15, Step A 0 / Step B 2, Parabolic full-fill", () => {
@@ -415,9 +415,9 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
     const candidates = computeSamePathCandidates(layers, "p124", "p15", "parabolic", settings);
     expect(candidates).toHaveLength(1);
     const sequence = candidates[0].sequence;
-    expect(sequence).toHaveLength(104); // 52 pairs
+    expect(sequence).toHaveLength(105); // 52 pairs + closing pin
     expect(sequence.slice(0, 8)).toEqual(seq("p124", "p15", "p125", "p18", "p126", "p21", "p127", "p24"));
-    expect(sequence.slice(-6)).toEqual(seq("p22", "p11", "p23", "p14", "p24", "p17"));
+    expect(sequence.slice(-7)).toEqual(seq("p22", "p11", "p23", "p14", "p24", "p17", "p25"));
   });
 
   it("stops as soon as either anchor returns to its OWN starting pin — that's one cycle", () => {
@@ -431,8 +431,8 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
     const candidates = computeSamePathCandidates(layers, "p1", "p2", "parabolic", settings);
     expect(candidates).toHaveLength(1);
     const sequence = candidates[0].sequence;
-    expect(sequence).toHaveLength(6); // 3 pairs — bounded by B's shorter cycle
-    expect(sequence).toEqual(seq("p1", "p2", "p2", "p6", "p3", "p10"));
+    expect(sequence).toHaveLength(7); // 3 pairs — bounded by B's shorter cycle — + closing pin
+    expect(sequence).toEqual(seq("p1", "p2", "p2", "p6", "p3", "p10", "p4"));
   });
 
   it("uses the shorter of the two anchors' own cycle lengths even when neither divides the other", () => {
@@ -444,8 +444,8 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
     const candidates = computeSamePathCandidates(layers, "p1", "p2", "parabolic", settings);
     expect(candidates).toHaveLength(1);
     const sequence = candidates[0].sequence;
-    expect(sequence).toHaveLength(8); // 4 pairs — bounded by A's shorter cycle
-    expect(sequence).toEqual(seq("p1", "p2", "p4", "p4", "p7", "p6", "p10", "p8"));
+    expect(sequence).toHaveLength(9); // 4 pairs — bounded by A's shorter cycle — + A's own start
+    expect(sequence).toEqual(seq("p1", "p2", "p4", "p4", "p7", "p6", "p10", "p8", "p1"));
   });
 
   it("a side that overshoots its own origin (stride doesn't divide pinCount) includes the overshooting pin", () => {
@@ -461,7 +461,7 @@ describe("full-fill — Case 1 (same Pin Path)", () => {
     const candidates = computeSamePathCandidates(layers, "p1", "p2", "parabolic", settings);
     expect(candidates).toHaveLength(1);
     const sequence = candidates[0].sequence;
-    expect(sequence).toHaveLength(10); // 5 pairs
-    expect(sequence).toEqual(seq("p1", "p2", "p2", "p5", "p3", "p8", "p4", "p1", "p5", "p4"));
+    expect(sequence).toHaveLength(11); // 5 pairs + closing pin
+    expect(sequence).toEqual(seq("p1", "p2", "p2", "p5", "p3", "p8", "p4", "p1", "p5", "p4", "p6"));
   });
 });

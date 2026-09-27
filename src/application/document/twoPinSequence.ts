@@ -117,14 +117,17 @@ function ringSide(path: PinPath, startIndex: number, stride: number, hopCount: n
 // Parabolic + closed path + full-fill: pin A and pin B advance together around the
 // ring, one hop each per step, until the FIRST of the two reaches or passes its own
 // starting pin for the `cycles`-th time — one continuous Thread Path, not `cycles`
-// separate repeats of the same short walk.
+// separate repeats of the same short walk. Ends on A's next pin so the last B→A
+// connecting segment is drawn too (on an exact lap that pin is A's own start).
 function ringWalkSequence(path: PinPath, indexA: number, indexB: number, groupIndex: number, settings: TwoPinFillSettings): string[] {
   const strideA = Math.max(0, Math.floor(settings.stepA)) + 1;
   const strideB = Math.max(0, Math.floor(settings.stepB)) + 1;
   const n = path.pins.length;
   const cycles = Math.max(1, Math.floor(settings.cycles ?? 1));
   const hopCount = Math.min(hopsToPassOwnOrigin(n, strideA, cycles), hopsToPassOwnOrigin(n, strideB, cycles));
-  return interleave(ringSide(path, indexA, strideA, hopCount, groupIndex), ringSide(path, indexB, strideB, hopCount, groupIndex));
+  const sideA = ringSide(path, indexA, strideA, hopCount + 1, groupIndex);
+  const sideB = ringSide(path, indexB, strideB, hopCount, groupIndex);
+  return [...interleave(sideA, sideB), sideA[hopCount]];
 }
 
 // Case 1 (same Pin Path): one contiguous range walked from A to B (range[0] === A,

@@ -161,7 +161,7 @@
       },
       "tabs": {
         "heading": "Tabs wechseln",
-        "tabSwitch": { "label": "1-6", "description": "Springt direkt zum Tab Bearbeiten (1), Stift (2), Faden (3), Generieren (4), Verschieben (5) oder Wiedergabe (6)." }
+        "tabSwitch": { "label": "1-6", "description": "Springt direkt zum Tab Stift (1), Bearbeiten (2), Faden (3), Generieren (4), Verschieben (5) oder Wiedergabe (6)." }
       },
       "edit": {
         "heading": "Bearbeiten-Tab",

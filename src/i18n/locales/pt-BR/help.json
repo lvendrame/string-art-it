@@ -161,7 +161,7 @@
       },
       "tabs": {
         "heading": "Trocar de aba",
-        "tabSwitch": { "label": "1-6", "description": "Vai direto para a aba Editar (1), Pino (2), Fio (3), Gerar (4), Mover (5) ou Reproduzir (6)." }
+        "tabSwitch": { "label": "1-6", "description": "Vai direto para a aba Pino (1), Editar (2), Fio (3), Gerar (4), Mover (5) ou Reproduzir (6)." }
       },
       "edit": {
         "heading": "Aba Editar",

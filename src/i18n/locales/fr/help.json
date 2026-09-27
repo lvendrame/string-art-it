@@ -161,7 +161,7 @@
       },
       "tabs": {
         "heading": "Changer d'onglet",
-        "tabSwitch": { "label": "1-6", "description": "Va directement à l'onglet Édition (1), Broche (2), Fil (3), Générer (4), Déplacement (5) ou Lecture (6)." }
+        "tabSwitch": { "label": "1-6", "description": "Va directement à l'onglet Broche (1), Édition (2), Fil (3), Générer (4), Déplacement (5) ou Lecture (6)." }
       },
       "edit": {
         "heading": "Onglet Édition",

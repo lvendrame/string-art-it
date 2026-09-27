@@ -273,13 +273,12 @@ export function Canvas({ store }: { store: EditorStore }) {
     if (state.pinTool === "text") {
       // docs/specs/29-text-pin-path.md — single click, no drag: place an empty Text
       // Pin Path immediately (awaiting only the default font, never blocking on the
-      // user's own typing). addPinPath() already auto-switches to Select/Edit mode and
-      // selects the new path (EditorStore.ts) — the same "hands off to Edit mode"
-      // behaviour every other pin tool already gets, so no extra sync code is needed
-      // here for the "click once -> Edit tab, path selected" flow.
-      void buildTextGeometry(point, "", DEFAULT_FONT_ID, "regular", false, DEFAULT_TEXT_SIZE, 0).then((geometry) =>
-        store.addPinPath(layerId, geometry),
-      );
+      // user's own typing), then hand off to Edit mode with it selected — the Text
+      // field lives in SelectionPanel, so an empty Text Pin Path is only typeable there.
+      void buildTextGeometry(point, "", DEFAULT_FONT_ID, "regular", false, DEFAULT_TEXT_SIZE, 0).then((geometry) => {
+        const pathId = store.addPinPath(layerId, geometry);
+        if (pathId) store.editPinPath(layerId, pathId);
+      });
       return;
     }
 

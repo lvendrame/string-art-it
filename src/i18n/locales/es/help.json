@@ -161,7 +161,7 @@
       },
       "tabs": {
         "heading": "Cambiar de pestaña",
-        "tabSwitch": { "label": "1-6", "description": "Salta directamente a la pestaña Editar (1), Pin (2), Hilo (3), Generar (4), Desplazar (5) o Reproducir (6)." }
+        "tabSwitch": { "label": "1-6", "description": "Salta directamente a la pestaña Pin (1), Editar (2), Hilo (3), Generar (4), Desplazar (5) o Reproducir (6)." }
       },
       "edit": {
         "heading": "Pestaña Editar",

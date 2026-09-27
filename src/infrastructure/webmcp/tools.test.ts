@@ -108,7 +108,7 @@ describe("registerWebMcpTools", () => {
     expect(store.getState().board.dimensions.diameter).not.toBe(45);
   });
 
-  it("add_pin_path creates a real, selected Pin Path and returns its id", () => {
+  it("add_pin_path creates a real Pin Path and returns its id", () => {
     const { registered } = installMockModelContext();
     const store = new EditorStore();
     const layerId = store.getState().pinLayers[0].id;
@@ -123,7 +123,6 @@ describe("registerWebMcpTools", () => {
     const path = store.getState().pinLayers[0].pinPaths[0];
     expect(path.id).toBe(result.pathId);
     expect(path.pins.length).toBeGreaterThan(0);
-    expect(store.getState().selection).toEqual({ type: "pinPaths", refs: [{ layerId, pathId: path.id }] });
   });
 
   it("add_pin_path on a locked layer fails structurally, not by throwing", () => {

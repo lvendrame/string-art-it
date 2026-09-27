@@ -269,6 +269,7 @@ describe("Canvas", () => {
 
     // Source pins at doc(10,10)/(30,10); mirrored across x=50 land at doc(90,10)/(70,10).
     fireEvent.mouseDown(svg, { clientX: 520, clientY: 200 }); // mirrored pin at doc(90,10)
+    fireEvent.mouseUp(svg, { clientX: 520, clientY: 200 });
 
     expect(store.getState().selection).toEqual({ type: "pinPaths", refs: [{ layerId, pathId }] });
   });

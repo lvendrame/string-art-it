@@ -208,6 +208,7 @@ describe("Canvas — pin drawing interaction", () => {
     render(<Canvas store={store} />);
     const svg = screen.getByRole("img", { name: "Board canvas" });
     mouseDownAt(svg, 200, 200); // doc(10,10), the line's start pin
+    fireEvent.mouseUp(svg, { clientX: 200, clientY: 200 });
 
     expect(store.getState().selection).toEqual({ type: "pinPaths", refs: [{ layerId, pathId }] });
   });

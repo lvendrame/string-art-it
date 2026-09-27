@@ -18,7 +18,7 @@ import type { PlaybackTransport } from "./toolbars/usePlaybackTransport";
 
 // docs/specs/34-keyboard-shortcuts.md — the six mode tabs in ModeSwitcher.tsx's own
 // display order, which the bare-digit shortcuts (1-6) index into.
-const MODE_ORDER: EditorMode[] = ["select", "pin", "thread", "generate", "pan", "play"];
+const MODE_ORDER: EditorMode[] = ["pin", "select", "thread", "generate", "pan", "play"];
 
 interface VideoExportState {
   isExporting: boolean;

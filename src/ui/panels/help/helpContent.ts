@@ -31,8 +31,7 @@ export interface HelpTab {
 // Keyboard & Mouse have no corresponding EditorMode, so they're simply never a target.
 // docs/specs/32-generator-mode.md added a 6th Editor mode with no matching Help tab of
 // its own yet (out of scope for that milestone — see its Scope section) — mapped to
-// "edit" for now, same as the pre-existing HELP_TABS[0].id fallback this Record exists
-// to make explicit, so opening Help from Generator mode still lands somewhere sensible
+// "edit" for now, so opening Help from Generator mode still lands somewhere sensible
 // rather than needing a runtime `??` to paper over a missing key.
 export const MODE_TO_HELP_TAB: Record<EditorMode, HelpTabId> = {
   select: "edit",
@@ -49,32 +48,6 @@ export const MODE_TO_HELP_TAB: Record<EditorMode, HelpTabId> = {
 // (common:modes.*) so the same word is never translated twice in two places; everything
 // else resolves from the "help" namespace via HelpPanel.tsx's t().
 export const HELP_TABS: HelpTab[] = [
-  {
-    id: "edit",
-    labelKey: "common:modes.select",
-    icon: MousePointer2,
-    sections: [
-      {
-        headingKey: "edit.tools.heading",
-        items: [
-          { labelKey: "edit.tools.select.label", descriptionKey: "edit.tools.select.description" },
-          { labelKey: "edit.tools.move.label", descriptionKey: "edit.tools.move.description" },
-          { labelKey: "edit.tools.rotation.label", descriptionKey: "edit.tools.rotation.description" },
-          { labelKey: "edit.tools.scale.label", descriptionKey: "edit.tools.scale.description" },
-          { labelKey: "edit.tools.merge.label", descriptionKey: "edit.tools.merge.description" },
-        ],
-      },
-      {
-        headingKey: "edit.selectionPanel.heading",
-        items: [
-          { labelKey: "edit.selectionPanel.pinDistance.label", descriptionKey: "edit.selectionPanel.pinDistance.description" },
-          { labelKey: "edit.selectionPanel.geometryFields.label", descriptionKey: "edit.selectionPanel.geometryFields.description" },
-          { labelKey: "edit.selectionPanel.symmetry.label", descriptionKey: "edit.selectionPanel.symmetry.description" },
-          { labelKey: "edit.selectionPanel.deletePinPath.label", descriptionKey: "edit.selectionPanel.deletePinPath.description" },
-        ],
-      },
-    ],
-  },
   {
     id: "pin",
     labelKey: "common:modes.pin",
@@ -112,6 +85,32 @@ export const HELP_TABS: HelpTab[] = [
           { labelKey: "pin.symmetry.modes.label", descriptionKey: "pin.symmetry.modes.description" },
           { labelKey: "pin.symmetry.interval.label", descriptionKey: "pin.symmetry.interval.description" },
           { labelKey: "pin.symmetry.centre.label", descriptionKey: "pin.symmetry.centre.description" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "edit",
+    labelKey: "common:modes.select",
+    icon: MousePointer2,
+    sections: [
+      {
+        headingKey: "edit.tools.heading",
+        items: [
+          { labelKey: "edit.tools.select.label", descriptionKey: "edit.tools.select.description" },
+          { labelKey: "edit.tools.move.label", descriptionKey: "edit.tools.move.description" },
+          { labelKey: "edit.tools.rotation.label", descriptionKey: "edit.tools.rotation.description" },
+          { labelKey: "edit.tools.scale.label", descriptionKey: "edit.tools.scale.description" },
+          { labelKey: "edit.tools.merge.label", descriptionKey: "edit.tools.merge.description" },
+        ],
+      },
+      {
+        headingKey: "edit.selectionPanel.heading",
+        items: [
+          { labelKey: "edit.selectionPanel.pinDistance.label", descriptionKey: "edit.selectionPanel.pinDistance.description" },
+          { labelKey: "edit.selectionPanel.geometryFields.label", descriptionKey: "edit.selectionPanel.geometryFields.description" },
+          { labelKey: "edit.selectionPanel.symmetry.label", descriptionKey: "edit.selectionPanel.symmetry.description" },
+          { labelKey: "edit.selectionPanel.deletePinPath.label", descriptionKey: "edit.selectionPanel.deletePinPath.description" },
         ],
       },
     ],

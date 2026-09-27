@@ -32,9 +32,7 @@ describe("EditorStore Pin Path (Polygon) draft", () => {
       type: "polygon",
       points: [{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 4, y: 4 }, { x: 0, y: 4 }],
     });
-    // addPinPath's existing "hand off to Edit mode with it selected" behaviour.
-    expect(store.getState().mode).toBe("select");
-    expect(store.getState().selection).toEqual({ type: "pinPaths", refs: [{ layerId, pathId: paths[0].id }] });
+    expect(store.getState().mode).toBe("pin");
   });
 
   it("committing a Path Pin Path is undoable", () => {

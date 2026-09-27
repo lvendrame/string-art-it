@@ -33,7 +33,7 @@ points.length < 3   → discards: the draft is cleared, nothing is added to the
 
 This is the same "discard below a minimum, commit at or above it" shape as Thread's draft ([12-thread-editor.md](./12-thread-editor.md) §Ending/Cutting Thread), just with a different minimum (3 vertices for a closed polygon vs. Thread's 2 pins for a segment) and no Esc/Cut asymmetry — Thread's Esc and right-click Cut behave slightly differently at very short drafts; Path's Esc and Cut are identical at every vertex count.
 
-A newly committed Path Pin Path hands off to Edit mode with it selected, same as every other shape tool ([08-pin-tools-and-properties.md](./08-pin-tools-and-properties.md) — `EditorStore.addPinPath`'s existing behaviour, unchanged).
+A newly committed Path Pin Path leaves the editor in Pin mode with the Path tool still active, same as every other shape tool ([08-pin-tools-and-properties.md](./08-pin-tools-and-properties.md) — `EditorStore.addPinPath` never changes mode).
 
 ## Removing vertices mid-draft
 

@@ -71,6 +71,8 @@ Picking any Pin tool (a shape/Freehand/Path/Text draw tool, Eraser, or Path Eras
 
 Switching into Pin mode itself — e.g. clicking the Pin tab — also resets the pin properties and symmetry back to their defaults, unconditionally (regardless of which Pin tool was last active). This keeps "land on the Pin tab" behaviour consistent whether the user gets there by clicking the tab or by picking a draw tool while already in it.
 
+Committing a new Pin Path keeps the editor in Pin mode with the same tool and pin properties active, so the user can keep drawing. The one exception is the Text tool, which hands off to Edit mode with the new path selected so its Text field is ready to type into ([29-text-pin-path.md](./29-text-pin-path.md)).
+
 ## Shape Constraint Modifier
 
 `Alt` is the constraint modifier:
@@ -134,6 +136,7 @@ Feature: Pin drawing tools
     Given the editor is in PIN mode
     When the user selects the "Circle" tool, presses at a point, drags, and releases
     Then a Circle Pin Path is created whose centre is the press point and whose radius is the distance to the release point
+    And the editor stays in PIN mode with the Circle tool still active
 
   Scenario: Line tool uses a single press-drag-release gesture
     Given the editor is in PIN mode

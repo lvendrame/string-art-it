@@ -7,8 +7,8 @@ import "./ModeSwitcher.css";
 
 function modes(t: TFunction<["common", "toolbars"]>): { id: EditorMode; label: string; icon: ComponentType<{ size?: number }> }[] {
   return [
-    { id: "select", label: t("modes.select", { ns: "common" }), icon: MousePointer2 },
     { id: "pin", label: t("modes.pin", { ns: "common" }), icon: PinIcon },
+    { id: "select", label: t("modes.select", { ns: "common" }), icon: MousePointer2 },
     { id: "thread", label: t("modes.thread", { ns: "common" }), icon: Spline },
     { id: "generate", label: t("modes.generate", { ns: "common" }), icon: Wand2 },
     { id: "pan", label: t("modes.pan", { ns: "common" }), icon: Hand },

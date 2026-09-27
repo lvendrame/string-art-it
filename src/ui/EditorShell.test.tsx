@@ -200,7 +200,7 @@ describe("EditorShell Stats and Print overlays", () => {
     expect(container.querySelector('[data-tooltip-content="Line"]')).not.toBeNull();
   });
 
-  it("Ctrl+click that commits an Arc (switching to Edit mode) does not open the menu", () => {
+  it("Ctrl+click that commits an Arc does not open the menu", () => {
     const store = new EditorStore();
     store.setMode("pin");
     store.setPinTool("arc");
@@ -210,7 +210,8 @@ describe("EditorShell Stats and Print overlays", () => {
     fireEvent.mouseDown(svg, { clientX: 200, clientY: 200 });
     fireEvent.mouseDown(svg, { clientX: 280, clientY: 200 });
     fireEvent.mouseDown(svg, { clientX: 240, clientY: 240, ctrlKey: true });
-    expect(store.getState().mode).toBe("select");
+    expect(store.getState().pinLayers[0].pinPaths).toHaveLength(1);
+    expect(store.getState().mode).toBe("pin");
     fireEvent.contextMenu(svg, { ctrlKey: true });
 
     expect(container.querySelector(".radial-context-menu__backdrop")).toBeNull();

@@ -26,9 +26,8 @@ export function SelectionPanel({ store }: { store: EditorStore }) {
   // since `state.selection` only gets a new reference from an explicit store.select()
   // call — geometry edits from typing go through updatePinPathGeometry instead and
   // never touch it). This is what the Text tool's placement click relies on: it selects
-  // the freshly-created empty path via the same generic addPinPath -> setMode("select")
-  // + select() flow every pin tool already gets, and this effect turns that selection
-  // change into "the Text field is ready to type into" with no extra click.
+  // the freshly-created empty path via addPinPath -> editPinPath, and this effect turns
+  // that selection change into "the Text field is ready to type into" with no extra click.
   useEffect(() => {
     if (state.selection.type !== "pinPaths" || state.selection.refs.length !== 1) return;
     if (store.getSelectedPinPath()?.geometry.type !== "text") return;

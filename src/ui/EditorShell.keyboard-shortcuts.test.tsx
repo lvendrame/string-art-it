@@ -72,7 +72,7 @@ describe("EditorShell keyboard shortcuts — global", () => {
   it("digits 1-6 switch tabs", () => {
     const store = new EditorStore();
     render(<EditorShell store={store} onNewProject={() => {}} />);
-    const order = ["select", "pin", "thread", "generate", "pan", "play"] as const;
+    const order = ["pin", "select", "thread", "generate", "pan", "play"] as const;
 
     order.forEach((mode, i) => {
       fireEvent.keyDown(window, { key: String(i + 1) });

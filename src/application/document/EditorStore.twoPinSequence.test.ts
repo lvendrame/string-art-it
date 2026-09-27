@@ -4,6 +4,7 @@ import { EditorStore } from "./EditorStore";
 function seedClosedPins(store: EditorStore, count: number) {
   const layerId = store.getState().pinLayers[0].id;
   const pathId = store.addPinPath(layerId, { type: "circle", center: { x: 0, y: 0 }, radius: count })!;
+  store.editPinPath(layerId, pathId);
   store.setPinProperty({ spacing: (2 * Math.PI * count) / count });
   return { layerId, pathId, pins: store.getState().pinLayers[0].pinPaths[0].pins };
 }

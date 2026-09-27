@@ -161,7 +161,7 @@
       },
       "tabs": {
         "heading": "Switch tabs",
-        "tabSwitch": { "label": "1-6", "description": "Jumps directly to the Edit (1), Pin (2), Thread (3), Generate (4), Pan (5), or Play (6) tab." }
+        "tabSwitch": { "label": "1-6", "description": "Jumps directly to the Pin (1), Edit (2), Thread (3), Generate (4), Pan (5), or Play (6) tab." }
       },
       "edit": {
         "heading": "Edit tab",

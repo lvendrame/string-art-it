@@ -43,6 +43,10 @@ describe("detectInitialLanguage", () => {
     expect(detectInitialLanguage(nav, null)).toBe("ja");
   });
 
+  it.each(["ru", "ru-RU", "RU-by"])("maps browser locale %s to ru when nothing is stored", (nav) => {
+    expect(detectInitialLanguage(nav, null)).toBe("ru");
+  });
+
   it.each(["en-US", "ko-KR", undefined])("falls back to en for %s when nothing is stored", (nav) => {
     expect(detectInitialLanguage(nav, null)).toBe("en");
   });

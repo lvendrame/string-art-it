@@ -19,5 +19,6 @@ export function detectInitialLanguage(
   if (lower.startsWith("nl")) return "nl";
   if (lower.startsWith("pl")) return "pl";
   if (lower.startsWith("ja")) return "ja";
+  if (lower.startsWith("ru")) return "ru";
   return "en";
 }

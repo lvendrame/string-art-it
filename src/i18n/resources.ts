@@ -115,6 +115,19 @@ import errorsJa from "./locales/ja/errors.json";
 import cookieConsentJa from "./locales/ja/cookieConsent.json";
 import landingJa from "./locales/ja/landing.json";
 
+import commonRu from "./locales/ru/common.json";
+import boardSetupRu from "./locales/ru/boardSetup.json";
+import editorShellRu from "./locales/ru/editorShell.json";
+import menusRu from "./locales/ru/menus.json";
+import toolbarsRu from "./locales/ru/toolbars.json";
+import panelsRu from "./locales/ru/panels.json";
+import printPreviewRu from "./locales/ru/printPreview.json";
+import canvasRu from "./locales/ru/canvas.json";
+import helpRu from "./locales/ru/help.json";
+import errorsRu from "./locales/ru/errors.json";
+import cookieConsentRu from "./locales/ru/cookieConsent.json";
+import landingRu from "./locales/ru/landing.json";
+
 export const resources = {
   en: {
     common: commonEn,
@@ -241,6 +254,20 @@ export const resources = {
     errors: errorsJa,
     cookieConsent: cookieConsentJa,
     landing: landingJa,
+  },
+  ru: {
+    common: commonRu,
+    boardSetup: boardSetupRu,
+    editorShell: editorShellRu,
+    menus: menusRu,
+    toolbars: toolbarsRu,
+    panels: panelsRu,
+    printPreview: printPreviewRu,
+    canvas: canvasRu,
+    help: helpRu,
+    errors: errorsRu,
+    cookieConsent: cookieConsentRu,
+    landing: landingRu,
   },
 } as const;
 

@@ -1,5 +1,5 @@
 import { createRef } from "react";
-import { act, render, screen, fireEvent } from "@testing-library/react";
+import { act, render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import i18n from "@i18n";
 import { LanguageSwitcher, type LanguageSwitcherHandle } from "./LanguageSwitcher";
@@ -35,12 +35,12 @@ describe("LanguageSwitcher", () => {
     expect(screen.getByRole("option", { name: "한국어" })).toBeInTheDocument();
   });
 
-  it("selecting a language changes i18n.language and persists it", () => {
+  it("selecting a language changes i18n.language and persists it", async () => {
     render(<LanguageSwitcher />);
     fireEvent.click(screen.getByRole("button", { name: "Change language: English" }));
     fireEvent.click(screen.getByRole("option", { name: "Português (BR)" }));
 
-    expect(i18n.language).toBe("pt-BR");
+    await waitFor(() => expect(i18n.language).toBe("pt-BR"));
     expect(window.localStorage.getItem("stringartit:language:v1")).toBe("pt-BR");
   });
 
@@ -120,7 +120,7 @@ describe("LanguageSwitcher", () => {
     expect(screen.getByRole("listbox")).toBeInTheDocument();
 
     act(() => ref.current!.openOrCycle());
-    expect(i18n.language).toBe("pt-BR"); // next after English in SUPPORTED_LANGUAGES order
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+    await waitFor(() => expect(i18n.language).toBe("pt-BR")); // next after English in SUPPORTED_LANGUAGES order
   });
 });

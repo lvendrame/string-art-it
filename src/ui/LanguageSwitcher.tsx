@@ -2,6 +2,7 @@ import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Check, ChevronDown, Globe } from "lucide-react";
 import { LANGUAGE_META, SUPPORTED_LANGUAGES, isSupportedLanguage, type SupportedLanguage } from "@i18n/languages";
+import { switchLanguage } from "@i18n";
 import { AnchoredPopover } from "./AnchoredPopover";
 import { usePopoverDismiss } from "./usePopoverDismiss";
 import "./LanguageSwitcher.css";
@@ -30,7 +31,7 @@ export const LanguageSwitcher = forwardRef<LanguageSwitcherHandle>(function Lang
   usePopoverDismiss(containerRef, open, () => setOpen(false));
 
   function select(lng: SupportedLanguage) {
-    void i18n.changeLanguage(lng);
+    void switchLanguage(lng).catch(() => {});
     setOpen(false);
   }
 

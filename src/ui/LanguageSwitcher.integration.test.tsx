@@ -10,7 +10,7 @@ describe("LanguageSwitcher integration", () => {
     await i18n.changeLanguage("en");
   });
 
-  it("switching to Portuguese re-renders Board Setup's text live", () => {
+  it("switching to Portuguese re-renders Board Setup's text live", async () => {
     const store = new EditorStore();
     render(<BoardSetup store={store} onContinue={() => {}} />);
 
@@ -19,11 +19,11 @@ describe("LanguageSwitcher integration", () => {
     fireEvent.click(screen.getByRole("button", { name: "Change language: English" }));
     fireEvent.click(screen.getByRole("option", { name: "Português (BR)" }));
 
+    expect(await screen.findByText("Novo Quadro")).toBeInTheDocument();
     expect(screen.queryByText("New Board")).not.toBeInTheDocument();
-    expect(screen.getByText("Novo Quadro")).toBeInTheDocument();
   });
 
-  it("switching to Portuguese re-renders the Editor Shell top bar live", () => {
+  it("switching to Portuguese re-renders the Editor Shell top bar live", async () => {
     const store = new EditorStore();
     render(<EditorShell store={store} onNewProject={() => {}} />);
 
@@ -32,6 +32,6 @@ describe("LanguageSwitcher integration", () => {
     fireEvent.click(screen.getByRole("button", { name: "Change language: English" }));
     fireEvent.click(screen.getByRole("option", { name: "Português (BR)" }));
 
-    expect(screen.getByRole("button", { name: /Imprimir/ })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: /Imprimir/ })).toBeInTheDocument();
   });
 });

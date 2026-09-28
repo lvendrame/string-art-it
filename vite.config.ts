@@ -6,6 +6,13 @@ function src(...segments: string[]) {
   return fileURLToPath(new URL(["./src", ...segments].join("/"), import.meta.url));
 }
 
+// One lazily-loaded chunk per non-English language (English stays in the main bundle,
+// see src/i18n/resources.ts).
+function localeChunkName(moduleId: string): string | null {
+  const lng = /\/src\/i18n\/locales\/([^/]+)\//.exec(moduleId)?.[1];
+  return lng && lng !== "en" ? `locale-${lng}` : null;
+}
+
 export default defineConfig({
   plugins: [react()],
   resolve: {
@@ -20,6 +27,13 @@ export default defineConfig({
   },
   build: {
     sourcemap: true,
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [{ name: localeChunkName }],
+        },
+      },
+    },
   },
   test: {
     environment: "jsdom",

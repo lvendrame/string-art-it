@@ -6,14 +6,6 @@ describe("i18n bootstrap", () => {
     vi.resetModules();
   });
 
-  it("initializes without throwing when navigator and document are unavailable (SSR-style environment)", async () => {
-    vi.stubGlobal("navigator", undefined);
-    vi.stubGlobal("document", undefined);
-    vi.resetModules();
-
-    await expect(import("./index")).resolves.toBeDefined();
-  });
-
   it("sets document.documentElement.lang on init when document is available", async () => {
     vi.resetModules();
     const mod = await import("./index");

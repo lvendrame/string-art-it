@@ -23,6 +23,7 @@ export default defineConfig({
   },
   test: {
     environment: "jsdom",
+    pool: "vmThreads",
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
     // svg2pdf.js's package.json "main" (used by Vitest's Node/SSR module resolution)

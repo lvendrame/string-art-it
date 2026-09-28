@@ -51,6 +51,10 @@ describe("detectInitialLanguage", () => {
     expect(detectInitialLanguage(nav, null)).toBe("uk");
   });
 
+  it.each(["tr", "tr-TR", "TR-cy"])("maps browser locale %s to tr when nothing is stored", (nav) => {
+    expect(detectInitialLanguage(nav, null)).toBe("tr");
+  });
+
   it.each(["en-US", "ko-KR", undefined])("falls back to en for %s when nothing is stored", (nav) => {
     expect(detectInitialLanguage(nav, null)).toBe("en");
   });

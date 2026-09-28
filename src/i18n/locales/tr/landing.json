@@ -1,0 +1,38 @@
+{
+  "hero": {
+    "title": "Çevrimiçi String Art Tasarlayın — Ücretsiz String Art Düzenleyici ve Oluşturucu",
+    "subtitle": "Bir daireyi, ovali, dikdörtgeni, kareyi veya üçgeni doğrudan tarayıcınızda çivi ve ipten bir string art desenine dönüştürün. Çivileri yerleştirin, ipleri katmanlar boyunca bağlayın ve yapmaya hazır bir şablon yazdırın — ücretsiz, kayıt ve indirme gerektirmez."
+  },
+  "features": {
+    "heading": "Neler yapabilirsiniz",
+    "items": {
+      "shapes": { "title": "Her pano şekli", "description": "Kendi gerçek ölçülerinizle bir daire, oval, dikdörtgen, kare veya üçgenden başlayın." },
+      "pins": { "title": "Hassas çivi yerleşimi", "description": "Çivileri çizgiler, yaylar, çokgenler ve yıldızlar boyunca tam aralık denetimiyle eşit dağıtın." },
+      "threads": { "title": "Çok katmanlı ipler", "description": "Çivileri tek veya çok renkli iplerle bağlayın, ayrı ip katmanlarında düzenleyin." },
+      "layers": { "title": "Çivi ve ip katmanları", "description": "Çivileri ve ipleri görünürlük ve kilitleme ile kendi katmanlarında düzenli tutun." },
+      "undo": { "title": "Tam geçmiş", "description": "Her değişiklik geri alınabilir ve yinelenebilir, böylece özgürce deneyebilirsiniz." },
+      "print": { "title": "Baskıya hazır şablonlar", "description": "Gerçeğini yapmak için çivi numaraları ve kılavuzlar içeren baskıya hazır bir şablon dışa aktarın." }
+    }
+  },
+  "howItWorks": {
+    "heading": "Nasıl çalışır",
+    "steps": {
+      "setup": { "title": "Panonuzu hazırlayın", "description": "Bir şekil seçin ve gerçek ölçülerini ve görünümünü girin." },
+      "pins": { "title": "Çivilerinizi yerleştirin", "description": "Hassas, eşit aralıklı çivilerle çivi yolları çizin." },
+      "threads": { "title": "İpleri bağlayın", "description": "Çiviler arasında istediğiniz kadar katmanda ip yolları çizin." },
+      "print": { "title": "Dışa aktarın ve yazdırın", "description": "Bir yapım şablonu yazdırın veya daha sonra devam etmek için projenizi kaydedin." }
+    }
+  },
+  "faq": {
+    "heading": "Sık sorulan sorular",
+    "items": {
+      "whatIsStringArt": { "question": "String art nedir?", "answer": "String art, bir pano üzerine çakılmış çiviler arasına ip gerilerek geometrik desenler ve resimler oluşturulan bir tekniktir. StringArtIt, çivi ve ip düzenini fiziksel olarak yapmadan önce dijital olarak tasarlamanızı sağlar." },
+      "isFree": { "question": "StringArtIt ücretsiz mi?", "answer": "Evet. StringArtIt tamamen tarayıcınızda çalışır ve kayıt gerektirmeden ücretsiz kullanılabilir." },
+      "needsAccount": { "question": "Hesap oluşturmam gerekiyor mu?", "answer": "Hesap gerekmez. Projeniz tarayıcınızda kalır ve daha sonra yeniden açmak için bir dosyaya kaydedebilirsiniz." },
+      "shapes": { "question": "Hangi pano şekilleri destekleniyor?", "answer": "Daire, oval, dikdörtgen, kare ve üçgen panolar; her biri kendi gerçek ölçüleri ve görünümüyle." },
+      "print": { "question": "Gerçek string art'ı yapmak için şablon yazdırabilir miyim?", "answer": "Evet. Baskı Önizleme; çivileri, kılavuzları ve çivi numaralarını gösteren, 1:1 ölçekte ya da sayfaya sığdırılarak yazdırılabilen bir yapım şablonu oluşturur." },
+      "saveProject": { "question": "Projemi kaydedip daha sonra devam edebilir miyim?", "answer": "Evet. Projenizi bir dosyaya kaydedip daha sonra yeniden açabilirsiniz; sayfadan ayrılırsanız otomatik kayıt, kaydedilmemiş çalışmanızı geri yüklemeyi önerir." },
+      "symmetry": { "question": "StringArtIt simetrik desenleri destekliyor mu?", "answer": "Evet. Yatay, dikey, çift ve radyal simetri araçlarıyla bir kez çizip ayna veya radyal kopyaları otomatik olarak oluşturabilirsiniz." }
+    }
+  }
+}

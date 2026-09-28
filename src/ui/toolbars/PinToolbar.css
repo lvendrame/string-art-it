@@ -48,4 +48,6 @@
   color: inherit;
   border: none;
   font-size: 12px;
+  min-width: 0;
+  text-overflow: ellipsis;
 }

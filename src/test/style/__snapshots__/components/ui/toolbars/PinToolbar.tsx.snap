@@ -106,7 +106,9 @@
         "background": "transparent",
         "color": "inherit",
         "border": "none",
-        "font-size": "12px"
+        "font-size": "12px",
+        "min-width": "0",
+        "text-overflow": "ellipsis"
       }
     }
   ],

@@ -27,6 +27,7 @@ describe("LanguageSwitcher", () => {
     expect(screen.getByRole("option", { name: "Italiano" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "Nederlands" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "Polski" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "日本語" })).toBeInTheDocument();
   });
 
   it("selecting a language changes i18n.language and persists it", () => {

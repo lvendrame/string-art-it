@@ -24,8 +24,10 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
   font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .generator-toolbar__select {
@@ -33,4 +35,6 @@
   color: inherit;
   border: none;
   font-size: 12px;
+  min-width: 0;
+  text-overflow: ellipsis;
 }

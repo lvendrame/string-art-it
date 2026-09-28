@@ -1,0 +1,38 @@
+{
+  "hero": {
+    "title": "Projektuj string art online — darmowy edytor i generator string art",
+    "subtitle": "Zamień koło, owal, prostokąt, kwadrat lub trójkąt we wzór string art z gwoździ i nici, prosto w przeglądarce. Wbijaj gwoździe, łącz nici na wielu warstwach i wydrukuj gotowy szablon do wykonania — za darmo, bez rejestracji i bez pobierania."
+  },
+  "features": {
+    "heading": "Co możesz zrobić",
+    "items": {
+      "shapes": { "title": "Dowolny kształt deski", "description": "Zacznij od koła, owalu, prostokąta, kwadratu lub trójkąta o własnych, rzeczywistych wymiarach." },
+      "pins": { "title": "Precyzyjne rozmieszczenie gwoździ", "description": "Rozmieszczaj gwoździe równomiernie wzdłuż linii, łuków, wielokątów i gwiazd z dokładną kontrolą odstępów." },
+      "threads": { "title": "Nici na wielu warstwach", "description": "Łącz gwoździe nićmi jedno- lub wielokolorowymi, uporządkowanymi na osobnych warstwach nici." },
+      "layers": { "title": "Warstwy gwoździ i nici", "description": "Trzymaj gwoździe i nici na osobnych warstwach, z widocznością i blokowaniem." },
+      "undo": { "title": "Pełna historia zmian", "description": "Każdą zmianę można cofnąć i ponowić, więc możesz swobodnie eksperymentować." },
+      "print": { "title": "Szablony gotowe do druku", "description": "Wyeksportuj szablon gotowy do druku z numerami gwoździ i liniami pomocniczymi, aby wykonać prawdziwą pracę." }
+    }
+  },
+  "howItWorks": {
+    "heading": "Jak to działa",
+    "steps": {
+      "setup": { "title": "Przygotuj deskę", "description": "Wybierz kształt i podaj jego rzeczywiste wymiary oraz wygląd." },
+      "pins": { "title": "Rozmieść gwoździe", "description": "Rysuj ścieżki gwoździ z precyzyjnym, równomiernym rozmieszczeniem." },
+      "threads": { "title": "Połącz nici", "description": "Rysuj ścieżki nici między gwoździami na dowolnej liczbie warstw." },
+      "print": { "title": "Eksportuj i drukuj", "description": "Wydrukuj szablon do wykonania lub zapisz projekt, aby wrócić do niego później." }
+    }
+  },
+  "faq": {
+    "heading": "Najczęściej zadawane pytania",
+    "items": {
+      "whatIsStringArt": { "question": "Czym jest string art?", "answer": "String art to technika, w której nić lub sznurek nawija się między gwoździami wbitymi w deskę, tworząc geometryczne wzory i obrazy. StringArtIt pozwala zaprojektować układ gwoździ i nici cyfrowo, zanim wykonasz go naprawdę." },
+      "isFree": { "question": "Czy StringArtIt jest darmowy?", "answer": "Tak. StringArtIt działa w całości w przeglądarce i jest darmowy, bez konieczności rejestracji." },
+      "needsAccount": { "question": "Czy muszę zakładać konto?", "answer": "Konto nie jest potrzebne. Projekt zostaje w Twojej przeglądarce, a możesz go zapisać do pliku, aby otworzyć go później." },
+      "shapes": { "question": "Jakie kształty desek są obsługiwane?", "answer": "Deski w kształcie koła, owalu, prostokąta, kwadratu i trójkąta, każda z własnymi rzeczywistymi wymiarami i wyglądem." },
+      "print": { "question": "Czy mogę wydrukować szablon, aby wykonać prawdziwy string art?", "answer": "Tak. Podgląd wydruku tworzy szablon z gwoździami, liniami pomocniczymi i numerami gwoździ, do druku w skali 1:1 lub dopasowany do strony." },
+      "saveProject": { "question": "Czy mogę zapisać projekt i wrócić do niego później?", "answer": "Tak. Możesz zapisać projekt do pliku i otworzyć go później, a autozapis zaproponuje przywrócenie niezapisanej pracy, jeśli opuścisz stronę." },
+      "symmetry": { "question": "Czy StringArtIt obsługuje wzory symetryczne?", "answer": "Tak. Narzędzia symetrii poziomej, pionowej, podwójnej i radialnej pozwalają narysować coś raz i automatycznie tworzyć lustrzane lub promieniste kopie." }
+    }
+  }
+}

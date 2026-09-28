@@ -2,13 +2,13 @@
 
 ## Purpose
 
-StringArtIt ships in thirteen languages: English (default), Portuguese (pt-BR), Spanish (es), French (fr), German (de), Italian (it), Dutch (nl), Polish (pl), Japanese (ja), Russian (ru), Ukrainian (uk), Turkish (tr), and Simplified Chinese (zh-CN). A user switches between them via a language dropdown present on both the Board Setup screen and the main Editor's top bar; the choice applies immediately across the whole UI and persists across reloads. This spec covers the language-switching mechanism, translation coverage, and the explicit scope boundaries of what does and does not get translated.
+StringArtIt ships in fourteen languages: English (default), Portuguese (pt-BR), Spanish (es), French (fr), German (de), Italian (it), Dutch (nl), Polish (pl), Japanese (ja), Russian (ru), Ukrainian (uk), Turkish (tr), Simplified Chinese (zh-CN), and Korean (ko). A user switches between them via a language dropdown present on both the Board Setup screen and the main Editor's top bar; the choice applies immediately across the whole UI and persists across reloads. This spec covers the language-switching mechanism, translation coverage, and the explicit scope boundaries of what does and does not get translated.
 
 Language selection is ephemeral UI/application preference, not document state — it never routes through `EditorStore`'s `HistoryStack`/`Command` machinery and is never undoable, matching how `overlay` (Stats/Print/Help) and Play mode's local transport state are already treated ([01-architecture.md](./01-architecture.md)).
 
 ## Supported Languages & Detection
 
-Thirteen languages: `en` (English, default), `pt-BR` (Portuguese), `es` (Spanish), `fr` (French), `de` (German), `it` (Italian), `nl` (Dutch), `pl` (Polish), `ja` (Japanese), `ru` (Russian), `uk` (Ukrainian), `tr` (Turkish), and `zh-CN` (Simplified Chinese). On first visit, with no saved preference, the initial language is detected from `navigator.language` by case-insensitive prefix match: `pt*` (`pt`, `pt-BR`, `pt-PT`, …) resolves to `pt-BR`; `es*` resolves to `es`; `fr*` resolves to `fr`; `de*` resolves to `de`; `it*` resolves to `it`; `nl*` resolves to `nl`; `pl*` resolves to `pl`; `ja*` resolves to `ja`; `ru*` resolves to `ru`; `uk*` resolves to `uk`; `tr*` resolves to `tr`; `zh*` (including Traditional `zh-TW`/`zh-HK`, until a Traditional locale exists) resolves to `zh-CN`; anything else falls back to `en`. Once the user makes an explicit choice via the Language Switcher, it is persisted to `localStorage` under `stringartit:language:v1` (mirroring the `stringartit:autosave:v1` convention in `src/infrastructure/persistence/autosave.ts`) and that stored choice always wins over browser-locale detection on subsequent visits.
+Fourteen languages: `en` (English, default), `pt-BR` (Portuguese), `es` (Spanish), `fr` (French), `de` (German), `it` (Italian), `nl` (Dutch), `pl` (Polish), `ja` (Japanese), `ru` (Russian), `uk` (Ukrainian), `tr` (Turkish), `zh-CN` (Simplified Chinese), and `ko` (Korean). On first visit, with no saved preference, the initial language is detected from `navigator.language` by case-insensitive prefix match: `pt*` (`pt`, `pt-BR`, `pt-PT`, …) resolves to `pt-BR`; `es*` resolves to `es`; `fr*` resolves to `fr`; `de*` resolves to `de`; `it*` resolves to `it`; `nl*` resolves to `nl`; `pl*` resolves to `pl`; `ja*` resolves to `ja`; `ru*` resolves to `ru`; `uk*` resolves to `uk`; `tr*` resolves to `tr`; `zh*` (including Traditional `zh-TW`/`zh-HK`, until a Traditional locale exists) resolves to `zh-CN`; `ko*` resolves to `ko`; anything else falls back to `en`. Once the user makes an explicit choice via the Language Switcher, it is persisted to `localStorage` under `stringartit:language:v1` (mirroring the `stringartit:autosave:v1` convention in `src/infrastructure/persistence/autosave.ts`) and that stored choice always wins over browser-locale detection on subsequent visits.
 
 ## Language Switcher
 
@@ -59,7 +59,7 @@ Feature: Language switcher
   Scenario: Dropdown lists every supported language
     Given the Language Switcher is closed
     When the user opens it
-    Then "English", "Português (BR)", "Español", "Français", "Deutsch", "Italiano", "Nederlands", "Polski", "日本語", "Русский", "Українська", "Türkçe", and "简体中文" are all listed as options
+    Then "English", "Português (BR)", "Español", "Français", "Deutsch", "Italiano", "Nederlands", "Polski", "日本語", "Русский", "Українська", "Türkçe", "简体中文", and "한국어" are all listed as options
 
   Scenario: Selecting a language updates visible text immediately
     Given the app is showing English text in Board Setup

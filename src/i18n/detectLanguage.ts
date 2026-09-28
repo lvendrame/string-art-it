@@ -23,5 +23,6 @@ export function detectInitialLanguage(
   if (lower.startsWith("uk")) return "uk";
   if (lower.startsWith("tr")) return "tr";
   if (lower.startsWith("zh")) return "zh-CN";
+  if (lower.startsWith("ko")) return "ko";
   return "en";
 }

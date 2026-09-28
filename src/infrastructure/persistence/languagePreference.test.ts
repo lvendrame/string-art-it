@@ -17,7 +17,7 @@ describe("languagePreference", () => {
   });
 
   it("ignores a corrupted/unsupported stored value", () => {
-    window.localStorage.setItem("stringartit:language:v1", "ko");
+    window.localStorage.setItem("stringartit:language:v1", "sv");
     expect(getStoredLanguage()).toBeNull();
   });
 

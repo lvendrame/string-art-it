@@ -167,6 +167,19 @@ import errorsZhCN from "./locales/zh-CN/errors.json";
 import cookieConsentZhCN from "./locales/zh-CN/cookieConsent.json";
 import landingZhCN from "./locales/zh-CN/landing.json";
 
+import commonKo from "./locales/ko/common.json";
+import boardSetupKo from "./locales/ko/boardSetup.json";
+import editorShellKo from "./locales/ko/editorShell.json";
+import menusKo from "./locales/ko/menus.json";
+import toolbarsKo from "./locales/ko/toolbars.json";
+import panelsKo from "./locales/ko/panels.json";
+import printPreviewKo from "./locales/ko/printPreview.json";
+import canvasKo from "./locales/ko/canvas.json";
+import helpKo from "./locales/ko/help.json";
+import errorsKo from "./locales/ko/errors.json";
+import cookieConsentKo from "./locales/ko/cookieConsent.json";
+import landingKo from "./locales/ko/landing.json";
+
 export const resources = {
   en: {
     common: commonEn,
@@ -349,6 +362,20 @@ export const resources = {
     errors: errorsZhCN,
     cookieConsent: cookieConsentZhCN,
     landing: landingZhCN,
+  },
+  ko: {
+    common: commonKo,
+    boardSetup: boardSetupKo,
+    editorShell: editorShellKo,
+    menus: menusKo,
+    toolbars: toolbarsKo,
+    panels: panelsKo,
+    printPreview: printPreviewKo,
+    canvas: canvasKo,
+    help: helpKo,
+    errors: errorsKo,
+    cookieConsent: cookieConsentKo,
+    landing: landingKo,
   },
 } as const;
 

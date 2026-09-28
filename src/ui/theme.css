@@ -40,6 +40,14 @@ html:lang(zh-CN) body {
   font-family: "Manrope", system-ui, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
 }
 
+html:lang(ko) body {
+  font-family: "Manrope", system-ui, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+}
+
+:lang(ko) {
+  word-break: keep-all;
+}
+
 .mono {
   font-family: "JetBrains Mono", ui-monospace, monospace;
 }

@@ -1,0 +1,38 @@
+{
+  "hero": {
+    "title": "Progetta string art online — Editor e generatore di string art gratuito",
+    "subtitle": "Trasforma un cerchio, un ovale, un rettangolo, un quadrato o un triangolo in un disegno di string art con chiodi e fili, direttamente nel browser. Posiziona i chiodi, collega i fili su più livelli e stampa un modello pronto da realizzare — gratis, senza registrazione e senza download."
+  },
+  "features": {
+    "heading": "Cosa puoi fare",
+    "items": {
+      "shapes": { "title": "Qualsiasi forma di tavola", "description": "Parti da un cerchio, un ovale, un rettangolo, un quadrato o un triangolo con le tue dimensioni reali." },
+      "pins": { "title": "Posizionamento preciso dei chiodi", "description": "Distribuisci i chiodi in modo uniforme lungo linee, archi, poligoni e stelle con un controllo esatto della spaziatura." },
+      "threads": { "title": "Fili su più livelli", "description": "Collega i chiodi con fili a uno o più colori, organizzati in livelli di fili separati." },
+      "layers": { "title": "Livelli di chiodi e fili", "description": "Tieni chiodi e fili organizzati nei rispettivi livelli, con visibilità e blocco." },
+      "undo": { "title": "Cronologia completa", "description": "Ogni modifica si può annullare e ripetere, così puoi sperimentare liberamente." },
+      "print": { "title": "Modelli pronti per la stampa", "description": "Esporta un modello pronto per la stampa con numeri dei chiodi e linee guida per realizzare l'opera reale." }
+    }
+  },
+  "howItWorks": {
+    "heading": "Come funziona",
+    "steps": {
+      "setup": { "title": "Prepara la tavola", "description": "Scegli una forma e inserisci le sue dimensioni reali e il suo aspetto." },
+      "pins": { "title": "Posiziona i chiodi", "description": "Disegna percorsi di chiodi con un posizionamento preciso e uniforme." },
+      "threads": { "title": "Collega i fili", "description": "Disegna percorsi di filo tra i chiodi su tutti i livelli che vuoi." },
+      "print": { "title": "Esporta e stampa", "description": "Stampa un modello di realizzazione o salva il progetto per continuare a lavorarci più tardi." }
+    }
+  },
+  "faq": {
+    "heading": "Domande frequenti",
+    "items": {
+      "whatIsStringArt": { "question": "Che cos'è la string art?", "answer": "La string art è una tecnica in cui un filo viene avvolto tra chiodi disposti su una tavola per formare motivi geometrici e immagini. StringArtIt ti permette di progettare in digitale la disposizione di chiodi e fili prima di realizzarla fisicamente." },
+      "isFree": { "question": "StringArtIt è gratuito?", "answer": "Sì. StringArtIt funziona interamente nel browser ed è gratuito, senza bisogno di registrazione." },
+      "needsAccount": { "question": "Devo creare un account?", "answer": "Non serve alcun account. Il progetto resta nel tuo browser e puoi salvarlo in un file per riaprirlo più tardi." },
+      "shapes": { "question": "Quali forme di tavola sono supportate?", "answer": "Tavole a cerchio, ovale, rettangolo, quadrato e triangolo, ognuna con dimensioni reali e aspetto personalizzati." },
+      "print": { "question": "Posso stampare un modello per realizzare la string art reale?", "answer": "Sì. L'Anteprima di stampa genera un modello di realizzazione con chiodi, linee guida e numeri dei chiodi, stampabile in scala 1:1 o adattato alla pagina." },
+      "saveProject": { "question": "Posso salvare il progetto e riprenderlo più tardi?", "answer": "Sì. Puoi salvare il progetto in un file e riaprirlo più tardi, e il salvataggio automatico ti proporrà di ripristinare il lavoro non salvato se lasci la pagina." },
+      "symmetry": { "question": "StringArtIt supporta i motivi simmetrici?", "answer": "Sì. Gli strumenti di simmetria orizzontale, verticale, doppia e radiale ti permettono di disegnare una volta e generare automaticamente copie speculari o radiali." }
+    }
+  }
+}

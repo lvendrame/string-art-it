@@ -8,7 +8,7 @@ describe("detectInitialLanguage", () => {
   });
 
   it("ignores an unsupported stored value and falls back to detection", () => {
-    expect(detectInitialLanguage("en-US", "it")).toBe("en");
+    expect(detectInitialLanguage("en-US", "ja")).toBe("en");
   });
 
   it.each(["pt", "pt-BR", "pt-PT", "PT-br"])("maps browser locale %s to pt-BR when nothing is stored", (nav) => {
@@ -27,7 +27,11 @@ describe("detectInitialLanguage", () => {
     expect(detectInitialLanguage(nav, null)).toBe("de");
   });
 
-  it.each(["en-US", "it-IT", undefined])("falls back to en for %s when nothing is stored", (nav) => {
+  it.each(["it", "it-IT", "IT-ch"])("maps browser locale %s to it when nothing is stored", (nav) => {
+    expect(detectInitialLanguage(nav, null)).toBe("it");
+  });
+
+  it.each(["en-US", "ja-JP", undefined])("falls back to en for %s when nothing is stored", (nav) => {
     expect(detectInitialLanguage(nav, null)).toBe("en");
   });
 });

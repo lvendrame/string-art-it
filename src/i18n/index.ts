@@ -3,7 +3,7 @@ import { initReactI18next } from "react-i18next";
 import { resources, NAMESPACES } from "./resources";
 import { detectInitialLanguage } from "./detectLanguage";
 import { getStoredLanguage, setStoredLanguage } from "@infrastructure/persistence/languagePreference";
-import { isSupportedLanguage } from "./languages";
+import { isSupportedLanguage, SUPPORTED_LANGUAGES } from "./languages";
 
 const initialLanguage = detectInitialLanguage(
   typeof navigator !== "undefined" ? navigator.language : undefined,
@@ -18,7 +18,7 @@ const initOptions: InitOptions = {
   resources,
   lng: initialLanguage,
   fallbackLng: "en",
-  supportedLngs: ["en", "pt-BR", "es", "fr", "de"],
+  supportedLngs: SUPPORTED_LANGUAGES,
   ns: NAMESPACES,
   defaultNS: "common",
   interpolation: { escapeValue: false },

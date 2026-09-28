@@ -1,0 +1,38 @@
+{
+  "hero": {
+    "title": "Ontwerp string art online — gratis string art-editor en -generator",
+    "subtitle": "Maak van een cirkel, ovaal, rechthoek, vierkant of driehoek een string art-patroon met spijkers en draad, gewoon in je browser. Plaats spijkers, verbind draden over meerdere lagen en druk een sjabloon af dat klaar is om te maken — gratis, zonder aanmelding en zonder download."
+  },
+  "features": {
+    "heading": "Wat je kunt doen",
+    "items": {
+      "shapes": { "title": "Elke bordvorm", "description": "Begin met een cirkel, ovaal, rechthoek, vierkant of driehoek met je eigen echte afmetingen." },
+      "pins": { "title": "Nauwkeurige spijkerplaatsing", "description": "Verdeel spijkers gelijkmatig langs lijnen, bogen, veelhoeken en sterren met exacte controle over de afstand." },
+      "threads": { "title": "Draden in meerdere lagen", "description": "Verbind spijkers met één- of meerkleurige draden, georganiseerd in aparte draadlagen." },
+      "layers": { "title": "Spijker- en draadlagen", "description": "Houd spijkers en draden overzichtelijk in hun eigen lagen, met zichtbaarheid en vergrendeling." },
+      "undo": { "title": "Volledige geschiedenis", "description": "Elke wijziging kun je ongedaan maken en opnieuw uitvoeren, zodat je vrij kunt experimenteren." },
+      "print": { "title": "Sjablonen klaar om af te drukken", "description": "Exporteer een afdrukklaar sjabloon met spijkernummers en hulplijnen om het echte werk te maken." }
+    }
+  },
+  "howItWorks": {
+    "heading": "Zo werkt het",
+    "steps": {
+      "setup": { "title": "Stel je bord in", "description": "Kies een vorm en vul de echte afmetingen en het uiterlijk in." },
+      "pins": { "title": "Plaats je spijkers", "description": "Teken spijkerpaden met nauwkeurige, gelijkmatig verdeelde spijkers." },
+      "threads": { "title": "Verbind de draden", "description": "Teken draadpaden tussen spijkers over zoveel lagen als je wilt." },
+      "print": { "title": "Exporteren en afdrukken", "description": "Druk een bouwsjabloon af, of sla je project op om er later verder aan te werken." }
+    }
+  },
+  "faq": {
+    "heading": "Veelgestelde vragen",
+    "items": {
+      "whatIsStringArt": { "question": "Wat is string art?", "answer": "String art is een techniek waarbij draad of garen wordt gespannen tussen spijkers die op een plank zijn geplaatst, zodat er geometrische patronen en afbeeldingen ontstaan. Met StringArtIt ontwerp je die indeling van spijkers en draad digitaal voordat je hem echt maakt." },
+      "isFree": { "question": "Is StringArtIt gratis?", "answer": "Ja. StringArtIt draait volledig in je browser en is gratis te gebruiken, zonder aanmelding." },
+      "needsAccount": { "question": "Moet ik een account aanmaken?", "answer": "Er is geen account nodig. Je project blijft in je browser en je kunt het opslaan als bestand om het later weer te openen." },
+      "shapes": { "question": "Welke bordvormen worden ondersteund?", "answer": "Cirkel-, ovale, rechthoekige, vierkante en driehoekige borden, elk met eigen echte afmetingen en uiterlijk." },
+      "print": { "question": "Kan ik een sjabloon afdrukken om de echte string art te maken?", "answer": "Ja. Het Afdrukvoorbeeld maakt een bouwsjabloon met spijkers, hulplijnen en spijkernummers, af te drukken op schaal 1:1 of passend op de pagina." },
+      "saveProject": { "question": "Kan ik mijn project opslaan en later verdergaan?", "answer": "Ja. Je kunt je project als bestand opslaan en later weer openen, en de automatische opslag biedt aan om niet-opgeslagen werk te herstellen als je de pagina verlaat." },
+      "symmetry": { "question": "Ondersteunt StringArtIt symmetrische patronen?", "answer": "Ja. Met horizontale, verticale, dubbele en radiale symmetrie teken je één keer en worden gespiegelde of radiale kopieën automatisch gemaakt." }
+    }
+  }
+}

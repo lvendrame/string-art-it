@@ -157,7 +157,9 @@
         "fit": { "label": "0", "description": "Resets the viewport to fit the whole board in view." },
         "grid": { "label": "Ctrl/Cmd+Shift+G", "description": "Toggles grid line visibility." },
         "snap": { "label": "Ctrl/Cmd+Shift+A", "description": "Toggles snap-to-grid." },
-        "delete": { "label": "Delete / Backspace", "description": "Deletes the selected Pin Paths, pins, or Thread Path, along with any thread segments attached to deleted pins." }
+        "delete": { "label": "Delete / Backspace", "description": "Deletes the selected Pin Paths, pins, or Thread Path, along with any thread segments attached to deleted pins." },
+        "copy": { "label": "Ctrl/Cmd+C", "description": "Copies the selected Pin Paths with every Thread Path attached to them, or the selected Thread Path with every Pin Path its pins belong to. Works across boards and browser tabs." },
+        "paste": { "label": "Ctrl/Cmd+V", "description": "Pastes copied Pin Paths and Thread Paths into the active Pin and Thread layers, offset 10 mm per paste, as a single undo step." }
       },
       "tabs": {
         "heading": "Switch tabs",

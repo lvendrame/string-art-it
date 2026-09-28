@@ -157,7 +157,9 @@
         "fit": { "label": "0", "description": "Redefine a área de visualização para ajustar todo o quadro." },
         "grid": { "label": "Ctrl/Cmd+Shift+G", "description": "Ativa ou desativa a visibilidade das linhas da grade." },
         "snap": { "label": "Ctrl/Cmd+Shift+A", "description": "Ativa ou desativa o alinhamento à grade." },
-        "delete": { "label": "Delete / Backspace", "description": "Exclui os Caminhos de Pinos, pinos ou o Caminho de Linha selecionados, junto com quaisquer segmentos de linha ligados aos pinos excluídos." }
+        "delete": { "label": "Delete / Backspace", "description": "Exclui os Caminhos de Pinos, pinos ou o Caminho de Linha selecionados, junto com quaisquer segmentos de linha ligados aos pinos excluídos." },
+        "copy": { "label": "Ctrl/Cmd+C", "description": "Copia os Caminhos de Pinos selecionados com todos os Caminhos de Linha ligados a eles, ou o Caminho de Linha selecionado com todos os Caminhos de Pinos de seus pinos. Funciona entre quadros e abas do navegador." },
+        "paste": { "label": "Ctrl/Cmd+V", "description": "Cola os Caminhos de Pinos e de Linha copiados nas camadas de pinos e linhas ativas, deslocados 10 mm a cada colagem, em um único passo de desfazer." }
       },
       "tabs": {
         "heading": "Trocar de aba",

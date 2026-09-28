@@ -29,6 +29,7 @@ import { HelpPanel } from "./panels/help/HelpPanel/HelpPanel";
 import { useEditorState } from "./useEditorStore";
 import { isTextEntryTarget } from "./keyboard";
 import { useKeyboardShortcuts } from "./useKeyboardShortcuts";
+import { useClipboard } from "./useClipboard";
 import "./EditorShell.css";
 
 const EDITOR_SHELL_TOOLTIP_ID = "editor-shell-tooltip";
@@ -112,6 +113,7 @@ export function EditorShell({ store, onNewProject }: { store: EditorStore; onNew
     openHelp: () => setOverlay("help"),
     fileMenuRef,
   });
+  useClipboard(store);
 
   return (
     <div className="editor-shell">

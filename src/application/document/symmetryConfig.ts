@@ -25,6 +25,12 @@ export function symmetryConfigForType(type: SymmetryConfig["type"]): SymmetryCon
   return { type, axis: { x: 0, y: 0 } };
 }
 
+export function translateSymmetry(symmetry: SymmetryConfig, delta: Point): SymmetryConfig {
+  if (symmetry.type === "none") return symmetry;
+  if (symmetry.type === "radial") return { ...symmetry, centre: { x: symmetry.centre.x + delta.x, y: symmetry.centre.y + delta.y } };
+  return { ...symmetry, axis: { x: symmetry.axis.x + delta.x, y: symmetry.axis.y + delta.y } };
+}
+
 // Mirrored/radial copies are DERIVED, never stored — editing the source recalculates
 // them automatically because they're recomputed on every read (docs/specs/06-symmetry
 // §"Edit source -> Regenerate source pins -> Regenerate mirrored instances"). They are

@@ -157,7 +157,9 @@
         "fit": { "label": "0", "description": "Setzt den Ansichtsbereich zurück, um das ganze Board anzuzeigen." },
         "grid": { "label": "Strg/Cmd+Umschalt+G", "description": "Schaltet die Sichtbarkeit der Gitterlinien um." },
         "snap": { "label": "Strg/Cmd+Umschalt+A", "description": "Schaltet das Einrasten am Gitter um." },
-        "delete": { "label": "Delete / Backspace", "description": "Löscht die ausgewählten Stiftpfade, Stifte oder den Fadenpfad sowie alle Fadensegmente, die an gelöschten Stiften hängen." }
+        "delete": { "label": "Delete / Backspace", "description": "Löscht die ausgewählten Stiftpfade, Stifte oder den Fadenpfad sowie alle Fadensegmente, die an gelöschten Stiften hängen." },
+        "copy": { "label": "Ctrl/Cmd+C", "description": "Kopiert die ausgewählten Stiftpfade mit allen daran hängenden Fadenpfaden oder den ausgewählten Fadenpfad mit allen Stiftpfaden seiner Stifte. Funktioniert zwischen Brettern und Browser-Tabs." },
+        "paste": { "label": "Ctrl/Cmd+V", "description": "Fügt kopierte Stiftpfade und Fadenpfade in die aktiven Stift- und Fadenebenen ein, pro Einfügen um 10 mm versetzt, als ein einziger Rückgängig-Schritt." }
       },
       "tabs": {
         "heading": "Tabs wechseln",

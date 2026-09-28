@@ -270,6 +270,8 @@ export const HELP_TABS: HelpTab[] = [
           { labelKey: "keyboardMouse.shortcuts.general.grid.label", descriptionKey: "keyboardMouse.shortcuts.general.grid.description" },
           { labelKey: "keyboardMouse.shortcuts.general.snap.label", descriptionKey: "keyboardMouse.shortcuts.general.snap.description" },
           { labelKey: "keyboardMouse.shortcuts.general.delete.label", descriptionKey: "keyboardMouse.shortcuts.general.delete.description" },
+          { labelKey: "keyboardMouse.shortcuts.general.copy.label", descriptionKey: "keyboardMouse.shortcuts.general.copy.description" },
+          { labelKey: "keyboardMouse.shortcuts.general.paste.label", descriptionKey: "keyboardMouse.shortcuts.general.paste.description" },
         ],
       },
       {

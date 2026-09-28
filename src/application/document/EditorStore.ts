@@ -62,6 +62,16 @@ import { buildRepeatThreadPins, computeRepeatGroups, maxRepeatColours } from "./
 import { serializeProject, type ProjectFile, type SerializableDocument } from "./projectFile";
 import { defaultPrintSettings, type PrintSettings } from "./printSettings";
 import { seedCounterFrom } from "./idCounter";
+import {
+  collectFromPinPaths,
+  collectFromThread,
+  createClipboardPayload,
+  createInstanceToken,
+  instantiateClipboard,
+  pasteDelta,
+  type ClipboardContent,
+  type ClipboardPayload,
+} from "./clipboard";
 
 // A freshly loaded document (Open, autosave restore) may carry ids minted by a counter
 // that had already advanced further than this session's — bump every relevant counter
@@ -118,6 +128,10 @@ export class EditorStore {
   private state: EditorState;
   private readonly history = new HistoryStack();
   private readonly listeners = new Set<() => void>();
+  // docs/specs/39-copy-paste.md — transient, never persisted: identifies this open
+  // board so a paste can tell "same board" from "copied in another tab/board".
+  private boardInstanceId = createInstanceToken();
+  private lastPaste: { copyId: string; count: number } | null = null;
 
   constructor(initial?: Partial<EditorState>) {
     const defaultPinLayer = createPinLayer("Layer 1");
@@ -589,6 +603,70 @@ export class EditorStore {
     );
     this.history.run(command);
     this.select({ type: "none" });
+  }
+
+  // --- Copy / Paste (docs/specs/39-copy-paste.md) ---
+
+  copySelection(): ClipboardPayload | null {
+    const content = this.collectSelectionContent();
+    if (!content || content.pinPaths.length === 0) return null;
+    return createClipboardPayload(content, this.boardInstanceId);
+  }
+
+  private collectSelectionContent(): ClipboardContent | null {
+    const { selection, pinLayers, threadLayers } = this.state;
+    if (selection.type === "threadPath") {
+      const thread = this.getSelectedThreadPath();
+      return thread ? collectFromThread(pinLayers, thread) : null;
+    }
+    if (selection.type === "pinPaths" || selection.type === "pins") {
+      const paths = selection.refs.map((r) => findPinPath(pinLayers, r.layerId, r.pathId)).filter((p): p is PinPath => !!p);
+      return collectFromPinPaths(pinLayers, threadLayers, paths);
+    }
+    return null;
+  }
+
+  // All-or-nothing on locked targets, same rule as Delete/Merge.
+  pasteClipboard(payload: ClipboardPayload): boolean {
+    const { activePinLayerId, activeThreadLayerId, pinLayers, threadLayers } = this.state;
+    if (isLayerLocked(pinLayers, activePinLayerId)) return false;
+    if (payload.threadPaths.length > 0 && isThreadLayerLocked(threadLayers, activeThreadLayerId)) return false;
+    const pasteIndex = this.nextPasteIndex(payload.copyId);
+    const delta = pasteDelta(payload, this.state.board, pasteIndex, payload.sourceBoardId === this.boardInstanceId);
+    const pasted = instantiateClipboard(payload, delta);
+    const prev = { pinLayers, threadLayers };
+    const next = {
+      pinLayers: pasted.pinPaths.reduce((layers, p) => addPinPathToLayers(layers, activePinLayerId, p), pinLayers),
+      threadLayers: pasted.threadPaths.reduce((layers, t) => addThreadPathToLayers(layers, activeThreadLayerId, t), threadLayers),
+    };
+    const command = new SetValueCommand<typeof next>(
+      (v) => {
+        this.state = { ...this.state, ...v };
+        this.notify();
+      },
+      prev,
+      next,
+    );
+    this.history.run(command);
+    this.select(this.selectionForPasted(pasted));
+    return true;
+  }
+
+  private nextPasteIndex(copyId: string): number {
+    const count = this.lastPaste?.copyId === copyId ? this.lastPaste.count + 1 : 1;
+    this.lastPaste = { copyId, count };
+    return count;
+  }
+
+  private selectionForPasted(pasted: ClipboardContent): Selection {
+    const { mode, selectGranularity, activePinLayerId, activeThreadLayerId } = this.state;
+    if (mode === "select" && selectGranularity === "path") {
+      return { type: "pinPaths", refs: pasted.pinPaths.map((p) => ({ layerId: activePinLayerId, pathId: p.id })) };
+    }
+    if (mode === "thread" && pasted.threadPaths.length === 1) {
+      return { type: "threadPath", layerId: activeThreadLayerId, pathId: pasted.threadPaths[0].id };
+    }
+    return { type: "none" };
   }
 
   // docs/specs/26-edit-mode-multi-select.md — every selected Pin Path's live document
@@ -1429,6 +1507,8 @@ export class EditorStore {
   // undoing past a load into the previous document's edits would be incoherent.
   loadProject(doc: SerializableDocument): void {
     this.history.clear();
+    this.boardInstanceId = createInstanceToken();
+    this.lastPaste = null;
     seedIdCountersFrom(doc);
     this.state = {
       ...this.state,

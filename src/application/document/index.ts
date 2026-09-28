@@ -86,6 +86,7 @@ export {
   computeMirroredPinGroups,
   mirroredPinId,
   buildNearestPinRemap,
+  translateSymmetry,
   type SymmetryConfig,
 } from "./symmetryConfig";
 export {
@@ -117,6 +118,20 @@ export {
   duplicateThreadLayer,
   type ThreadLayer,
 } from "./threadLayer";
+export {
+  CLIPBOARD_KIND,
+  CLIPBOARD_VERSION,
+  PASTE_OFFSET,
+  collectFromPinPaths,
+  collectFromThread,
+  createClipboardPayload,
+  serializeClipboard,
+  parseClipboard,
+  instantiateClipboard,
+  pasteDelta,
+  type ClipboardContent,
+  type ClipboardPayload,
+} from "./clipboard";
 export { renameLayer, toggleLayerVisible, toggleLayerLocked, deleteLayer, reorderLayer } from "./layerOps";
 export { totalThreadFrames, truncateThreadLayersAtFrame } from "./playback";
 export {

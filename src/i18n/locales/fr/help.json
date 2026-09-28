@@ -157,7 +157,9 @@
         "fit": { "label": "0", "description": "Réinitialise la zone de visualisation pour afficher tout le plateau." },
         "grid": { "label": "Ctrl/Cmd+Maj+G", "description": "Active ou désactive la visibilité des lignes de grille." },
         "snap": { "label": "Ctrl/Cmd+Maj+A", "description": "Active ou désactive l'alignement sur la grille." },
-        "delete": { "label": "Delete / Backspace", "description": "Supprime les Tracés de Broches, broches ou le Tracé de Fil sélectionnés, ainsi que tout segment de fil attaché aux broches supprimées." }
+        "delete": { "label": "Delete / Backspace", "description": "Supprime les Tracés de Broches, broches ou le Tracé de Fil sélectionnés, ainsi que tout segment de fil attaché aux broches supprimées." },
+        "copy": { "label": "Ctrl/Cmd+C", "description": "Copie les Tracés de Broches sélectionnés avec tous les Tracés de Fil qui y sont attachés, ou le Tracé de Fil sélectionné avec tous les Tracés de Broches de ses broches. Fonctionne entre planches et onglets du navigateur." },
+        "paste": { "label": "Ctrl/Cmd+V", "description": "Colle les Tracés de Broches et de Fil copiés dans les calques de broches et de fils actifs, décalés de 10 mm à chaque collage, en une seule étape d'annulation." }
       },
       "tabs": {
         "heading": "Changer d'onglet",

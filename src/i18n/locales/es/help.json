@@ -157,7 +157,9 @@
         "fit": { "label": "0", "description": "Restablece el área de visualización para ajustar todo el tablero." },
         "grid": { "label": "Ctrl/Cmd+Mayús+G", "description": "Activa o desactiva la visibilidad de las líneas de la cuadrícula." },
         "snap": { "label": "Ctrl/Cmd+Mayús+A", "description": "Activa o desactiva el ajuste a la cuadrícula." },
-        "delete": { "label": "Delete / Backspace", "description": "Elimina los Trazados de Pines, pines o el Trazado de Hilo seleccionados, junto con cualquier segmento de hilo unido a los pines eliminados." }
+        "delete": { "label": "Delete / Backspace", "description": "Elimina los Trazados de Pines, pines o el Trazado de Hilo seleccionados, junto con cualquier segmento de hilo unido a los pines eliminados." },
+        "copy": { "label": "Ctrl/Cmd+C", "description": "Copia los Trazados de Pines seleccionados con todos los Trazados de Hilo unidos a ellos, o el Trazado de Hilo seleccionado con todos los Trazados de Pines de sus pines. Funciona entre tableros y pestañas del navegador." },
+        "paste": { "label": "Ctrl/Cmd+V", "description": "Pega los Trazados de Pines y de Hilo copiados en las capas de pines e hilos activas, desplazados 10 mm por pegado, en un único paso de deshacer." }
       },
       "tabs": {
         "heading": "Cambiar de pestaña",

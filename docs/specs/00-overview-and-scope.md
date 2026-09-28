@@ -88,6 +88,7 @@ The application must allow users to:
 | Layer merge (merge a layer into the layer above) | [36-layer-merge.md](./36-layer-merge.md) |
 | Radial thread tool | [37-radial-thread-tool.md](./37-radial-thread-tool.md) |
 | Repeat pattern thread tool | [38-repeat-pattern-tool.md](./38-repeat-pattern-tool.md) |
+| Copy / paste | [39-copy-paste.md](./39-copy-paste.md) |
 
 ## MVP Scope
 

@@ -44,6 +44,8 @@ Scoped to `BoardSetup.tsx` only, via its own local `keydown` listener (not the c
 | `Ctrl/Cmd+Shift+A` | Toggles snap-to-grid. |
 | `ArrowUp` / `ArrowDown` / `ArrowLeft` / `ArrowRight` | **Fallback pan** — moves the viewport, only when the arrow key isn't already claimed by something else (see "Arrow-key pan" below). `Shift+Arrow` pans by a bigger step, same "Shift = bigger step" convention as the existing Edit-mode nudge. |
 | `Delete` / `Backspace` | Deletes the current selection — Pin Paths, individual pins, or a Thread Path — as one undo step, cascading deleted pins into referencing thread segments (same as the erasers). No-op with nothing selected, or if any involved layer is locked. |
+| `Ctrl/Cmd+C` | Copies the selected Pin Paths (with attached threads) or Thread Path (with its Pin Paths) to the system clipboard — see [39-copy-paste.md](./39-copy-paste.md). Handled via the native `copy` event, not `keydown`. |
+| `Ctrl/Cmd+V` | Pastes copied content (same board or another board/tab) into the active Pin and Thread layers as one undo step — see [39-copy-paste.md](./39-copy-paste.md). Handled via the native `paste` event, since `Cmd+V` is not overridable as a keystroke. |
 | bare `1`–`6` | Switches to the Pin / Edit / Thread / Generate / Pan / Play tab, respectively (same order as `ModeSwitcher.tsx`). |
 
 ## Edit tab (`mode === "select"`)

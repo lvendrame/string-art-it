@@ -26,6 +26,7 @@
   font-size: 12px;
   font-weight: 600;
   gap: 6px;
+  word-break: keep-all;
 }
 
 .thread-toolbar__legend {

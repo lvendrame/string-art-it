@@ -36,6 +36,10 @@ body {
   word-break: auto-phrase;
 }
 
+html:lang(zh-CN) body {
+  font-family: "Manrope", system-ui, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+}
+
 .mono {
   font-family: "JetBrains Mono", ui-monospace, monospace;
 }

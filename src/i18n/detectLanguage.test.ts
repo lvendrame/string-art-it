@@ -55,6 +55,10 @@ describe("detectInitialLanguage", () => {
     expect(detectInitialLanguage(nav, null)).toBe("tr");
   });
 
+  it.each(["zh", "zh-CN", "ZH-hans", "zh-TW"])("maps browser locale %s to zh-CN when nothing is stored", (nav) => {
+    expect(detectInitialLanguage(nav, null)).toBe("zh-CN");
+  });
+
   it.each(["en-US", "ko-KR", undefined])("falls back to en for %s when nothing is stored", (nav) => {
     expect(detectInitialLanguage(nav, null)).toBe("en");
   });

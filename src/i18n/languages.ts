@@ -1,6 +1,6 @@
-export type SupportedLanguage = "en" | "pt-BR" | "es" | "fr" | "de" | "it" | "nl" | "pl" | "ja" | "ru" | "uk" | "tr";
+export type SupportedLanguage = "en" | "pt-BR" | "es" | "fr" | "de" | "it" | "nl" | "pl" | "ja" | "ru" | "uk" | "tr" | "zh-CN";
 
-export const SUPPORTED_LANGUAGES: SupportedLanguage[] = ["en", "pt-BR", "es", "fr", "de", "it", "nl", "pl", "ja", "ru", "uk", "tr"];
+export const SUPPORTED_LANGUAGES: SupportedLanguage[] = ["en", "pt-BR", "es", "fr", "de", "it", "nl", "pl", "ja", "ru", "uk", "tr", "zh-CN"];
 
 export const LANGUAGE_META: Record<SupportedLanguage, { nativeLabel: string }> = {
   en: { nativeLabel: "English" },
@@ -15,6 +15,7 @@ export const LANGUAGE_META: Record<SupportedLanguage, { nativeLabel: string }> =
   ru: { nativeLabel: "Русский" },
   uk: { nativeLabel: "Українська" },
   tr: { nativeLabel: "Türkçe" },
+  "zh-CN": { nativeLabel: "简体中文" },
 };
 
 export function isSupportedLanguage(value: string | null | undefined): value is SupportedLanguage {

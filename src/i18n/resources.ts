@@ -154,6 +154,19 @@ import errorsTr from "./locales/tr/errors.json";
 import cookieConsentTr from "./locales/tr/cookieConsent.json";
 import landingTr from "./locales/tr/landing.json";
 
+import commonZhCN from "./locales/zh-CN/common.json";
+import boardSetupZhCN from "./locales/zh-CN/boardSetup.json";
+import editorShellZhCN from "./locales/zh-CN/editorShell.json";
+import menusZhCN from "./locales/zh-CN/menus.json";
+import toolbarsZhCN from "./locales/zh-CN/toolbars.json";
+import panelsZhCN from "./locales/zh-CN/panels.json";
+import printPreviewZhCN from "./locales/zh-CN/printPreview.json";
+import canvasZhCN from "./locales/zh-CN/canvas.json";
+import helpZhCN from "./locales/zh-CN/help.json";
+import errorsZhCN from "./locales/zh-CN/errors.json";
+import cookieConsentZhCN from "./locales/zh-CN/cookieConsent.json";
+import landingZhCN from "./locales/zh-CN/landing.json";
+
 export const resources = {
   en: {
     common: commonEn,
@@ -322,6 +335,20 @@ export const resources = {
     errors: errorsTr,
     cookieConsent: cookieConsentTr,
     landing: landingTr,
+  },
+  "zh-CN": {
+    common: commonZhCN,
+    boardSetup: boardSetupZhCN,
+    editorShell: editorShellZhCN,
+    menus: menusZhCN,
+    toolbars: toolbarsZhCN,
+    panels: panelsZhCN,
+    printPreview: printPreviewZhCN,
+    canvas: canvasZhCN,
+    help: helpZhCN,
+    errors: errorsZhCN,
+    cookieConsent: cookieConsentZhCN,
+    landing: landingZhCN,
   },
 } as const;
 

@@ -242,3 +242,36 @@ describe("EditorStore thread layer operations mirror pin layers", () => {
     expect(store.getState().threadLayers).toHaveLength(2);
   });
 });
+
+describe("EditorStore active layer never dangles", () => {
+  it("undoing a thread layer creation falls back to an existing active thread layer", () => {
+    const store = new EditorStore();
+    const first = store.getState().threadLayers[0].id;
+    store.addThreadLayer();
+    store.undo();
+
+    expect(store.getState().threadLayers).toHaveLength(1);
+    expect(store.getState().activeThreadLayerId).toBe(first);
+  });
+
+  it("undoing a pin layer creation falls back to an existing active pin layer", () => {
+    const store = new EditorStore();
+    const first = store.getState().pinLayers[0].id;
+    store.addPinLayer();
+    store.undo();
+
+    expect(store.getState().activePinLayerId).toBe(first);
+  });
+
+  it("redoing a thread layer deletion re-points the active thread layer", () => {
+    const store = new EditorStore();
+    store.addThreadLayer();
+    const second = store.getState().threadLayers[1].id;
+    store.deleteThreadLayer(second);
+    store.undo();
+    store.setActiveThreadLayer(second);
+    store.redo();
+
+    expect(store.getState().activeThreadLayerId).toBe(store.getState().threadLayers[0].id);
+  });
+});

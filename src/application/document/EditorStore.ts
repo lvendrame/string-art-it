@@ -119,6 +119,11 @@ function seedIdCountersFrom(doc: SerializableDocument): void {
   }
 }
 
+function existingLayerIdOrFirst(layers: { id: string }[], layerId: string): string {
+  if (layers.length === 0 || layers.some((l) => l.id === layerId)) return layerId;
+  return layers[0].id;
+}
+
 // The Document Engine's mutable root (docs/specs/01-architecture.md). Board mutations
 // route through HistoryStack (undoable, per docs/specs/03-board-configuration.md
 // "Board dimension change is undoable"); mode/grid/snap/viewport are transient
@@ -177,7 +182,16 @@ export class EditorStore {
   };
 
   private notify(): void {
+    this.ensureActiveLayersExist();
     for (const listener of this.listeners) listener();
+  }
+
+  // Undo/redo of layer create/delete/generate can remove the active layer.
+  private ensureActiveLayersExist(): void {
+    const activePinLayerId = existingLayerIdOrFirst(this.state.pinLayers, this.state.activePinLayerId);
+    const activeThreadLayerId = existingLayerIdOrFirst(this.state.threadLayers, this.state.activeThreadLayerId);
+    if (activePinLayerId === this.state.activePinLayerId && activeThreadLayerId === this.state.activeThreadLayerId) return;
+    this.state = { ...this.state, activePinLayerId, activeThreadLayerId };
   }
 
   private setBoard(board: Board): void {
